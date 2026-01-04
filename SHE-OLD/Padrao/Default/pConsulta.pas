@@ -1,0 +1,842 @@
+unit pConsulta;
+
+interface
+
+uses
+  oPrincipal,
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, ComCtrls, ImgList, ExtCtrls, dxCntner, dxTL, dxDBCtrl,
+  dxDBGrid, DB, IBCustomDataSet, IBQuery, IBStoredProc, math, StrUtils,
+  IBEvents, IBDatabase, StdCtrls, dxEdLib, dxDBELib, dxExEdtr, rxSpeedbar,
+  IBSQL, cxGraphics, cxControls, dxStatusBar, dxPageControl, ActnList;
+
+type
+  TFrmConsulta = class(TForm)
+    PNLForm: TPanel;
+    TConsulta: TIBTransaction;
+    SQLConsulta: TIBSQL;
+    QConsulta: TIBQuery;
+    Cadastro: TIBQuery;
+    DTSCadastro: TDataSource;
+    TEdicao: TIBTransaction;
+    SQLEdicao: TIBSQL;
+    SPEdicao: TIBStoredProc;
+    QEdicao: TIBQuery;
+    TEvent: TIBTransaction;
+    SPEvent: TIBStoredProc;
+    SBRodape: TdxStatusBar;
+    EEvent: TIBEvents;
+    TSEdicao: TIBTransaction;
+    SQLSEdicao: TIBSQL;
+    QSEdicao: TIBQuery;
+    PNLPrincipal: TPanel;
+    PNLPrincipalRodape: TPanel;
+    PNLPrincipalME: TPanel;
+    PNLPrincipalMD: TPanel;
+    ILMenu: TImageList;
+    ILEdicao: TImageList;
+    PNLFormRodape: TPanel;
+    PNLFormRodapeME: TPanel;
+    PNLFormRodapeMD: TPanel;
+    PNLCadastro: TPanel;
+    PNLCadastroCabecalho: TPanel;
+    PNLCadastroMenu: TPanel;
+    GBMenu: TGroupBox;
+    PNLCustomize: TPanel;
+    PNLCustomizeEdicao: TPanel;
+    GBEdicao: TGroupBox;
+    SBEdicao: TSpeedBar;
+    SSEdicao: TSpeedbarSection;
+    SIEInclui: TSpeedItem;
+    SIEAltera: TSpeedItem;
+    SIEExclui: TSpeedItem;
+    SIESalva: TSpeedItem;
+    SIECancela: TSpeedItem;
+    PNLCustomizeSumario: TPanel;
+    PNLCustomizeConsulta: TPanel;
+    GBCadastro: TGroupBox;
+    PCConsulta: TdxPageControl;
+    TSConsulta: TdxTabSheet;
+    DBGConsulta: TdxDBGrid;
+    PNLCustomizeCabecalho: TPanel;
+    PNLCustomizeRodape: TPanel;
+    SBMenu: TSpeedBar;
+    SSPrincipal: TSpeedbarSection;
+    SIMRefresh: TSpeedItem;
+    SIMPesquisa: TSpeedItem;
+    SIMRelatorios: TSpeedItem;
+    SIMSaida: TSpeedItem;
+    SQLEvent: TIBSQL;
+    EEventAdmin: TIBEvents;
+    ALPrincipal: TActionList;
+    ACTRefresh: TAction;
+    ACTExecEvent: TAction;
+    ACTPesquisa: TAction;
+    ACTRelatorios: TAction;
+    ACTEAppend: TAction;
+    ACTEEdit: TAction;
+    ACTEDelete: TAction;
+    ACTEPost: TAction;
+    ACTECancel: TAction;
+    ACTMAppend: TAction;
+    ACTMEdit: TAction;
+    ACTMDelete: TAction;
+    ACTMPost: TAction;
+    ACTMCancel: TAction;
+    ACTSaida: TAction;
+    ACTPSQ_OK: TAction;
+    ACTPSQ_FOCUS: TAction;
+    procedure FormCreate(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+    procedure FormActivate(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure FormKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure FormKeyPress(Sender: TObject; var Key: Char);
+    procedure FormPaint(Sender: TObject);
+    procedure FormResize(Sender: TObject);
+    procedure SIMRefreshClick(Sender: TObject);
+    procedure SIMRelatoriosClick(Sender: TObject);
+    procedure SIMSaidaClick(Sender: TObject);
+    procedure SIEIncluiClick(Sender: TObject);
+    procedure SIEAlteraClick(Sender: TObject);
+    procedure SIEExcluiClick(Sender: TObject);
+    procedure CadastroAfterOpen(DataSet: TDataSet);
+    procedure CadastroBeforeOpen(DataSet: TDataSet);
+    procedure DBGConsultaBackgroundDrawEvent(Sender: TObject;
+      ACanvas: TCanvas; ARect: TRect);
+    procedure DBGConsultaKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure DBGConsultaDblClick(Sender: TObject);
+    procedure EEventEventAlert(Sender: TObject; EventName: String;
+      EventCount: Integer; var CancelAlerts: Boolean);
+    procedure DTSCadastroDataChange(Sender: TObject; Field: TField);
+    procedure EEventAdminEventAlert(Sender: TObject; EventName: String;
+      EventCount: Integer; var CancelAlerts: Boolean);
+    procedure ACTExecEventExecute(Sender: TObject);
+    procedure ACTPesquisaExecute(Sender: TObject);
+  private
+    { Private declarations }
+    FCurrentEvent: String;
+    FForceClose  : Boolean;
+
+    { método para atribuição\validação de valor }
+    procedure _SetCurrentEvent(const AValue: String);
+    procedure _SetForceClose  (const AValue: Boolean);
+  public
+    { Public declarations }
+    REC_SHE_DEF: TREC_SHE_DEF;
+    RECPrincipal: TRECPrincipal;
+
+    procedure _Edicao(AEV: String = 'U';AIDPK: String = '0';ACDPK: String = '');
+
+    property CurrentEvent: String  read FCurrentEvent write _SetCurrentEvent;
+    property ForceClose  : Boolean read FForceClose   write _SetForceClose;
+
+    Constructor Create(AOwner   : TComponent;
+                 const AEP_ID   : Integer;
+                       AIDPK    : LongInt;
+                       AIDEV    : LongInt;
+                       ACDEV    : Word;
+                       AFB_TB_PK: String); reintroduce; overload;
+
+    class procedure _ExecForm(AOwner   : TComponent;var AForm; AFormPesquisa: Boolean = False; AFormStyle: TFormStyle = fsMDIChild;
+                              AEP_ID   : Integer = 0;
+                              AIDPK    : LongInt = 0;
+                              AIDEV    : LongInt = 0;
+                              ACDEV    : Word    = 0;
+                              AFB_TB_PK: String  = '');
+
+    Destructor  Destroy; override;
+  end;
+
+var
+  FrmConsulta: TFrmConsulta;
+
+  _Form: TStringList = Nil;
+  _FormPesquisa: Boolean;
+
+implementation
+
+uses uPrincipal, bPrincipal;
+
+{$R *.dfm}
+
+procedure TFrmConsulta._SetCurrentEvent(const AValue: String);
+begin
+  FCurrentEvent := AValue;
+end;
+
+procedure TFrmConsulta._SetForceClose(const AValue: Boolean);
+begin
+  FForceClose := AValue;
+end;
+
+Class procedure TFrmConsulta._ExecForm(AOwner: TComponent;var AForm; AFormPesquisa: Boolean = False; AFormStyle: TFormStyle = fsMDIChild;
+                              AEP_ID   : Integer = 0;
+                              AIDPK    : LongInt = 0;
+                              AIDEV    : LongInt = 0;
+                              ACDEV    : Word    = 0;
+                              AFB_TB_PK: String  = '');
+var
+  idxForm: Integer;
+begin
+  if not Assigned(_Form) then
+  begin
+    _Form := TStringList.Create;
+    _Form.Sorted := True;
+  end;
+
+  { Inicia pela pesquisa }
+  _FormPesquisa := AFormPesquisa;
+
+  if not _Form.Find(ClassName,idxForm) then
+  idxForm := _Form.Add(ClassName);
+
+  if ((TForm(AForm) = Nil) or (ACDEV = 1)) then
+  TForm(AForm) := Self.Create (AOwner,
+                               AEP_ID,
+                               AIDPK ,
+                               AIDEV ,
+                               ACDEV ,
+                               AFB_TB_PK);
+
+  _Form.Objects[idxForm] := TObject(@AForm);
+
+  TForm(AForm).FormStyle   := AFormStyle;
+  if TForm(AForm).FormStyle = fsNormal then
+  begin
+    TForm(AForm).Visible := False;
+    TForm(AForm).ShowModal;
+  end else
+  begin
+    TForm(AForm).Visible := True;
+    TForm(AForm).Show;
+  end;
+end;
+
+Constructor TFrmConsulta.Create(AOwner: TComponent;
+                                const AEP_ID   : Integer;
+                                      AIDPK    : LongInt;
+                                      AIDEV    : LongInt;
+                                      ACDEV    : Word;
+                                      AFB_TB_PK: String);
+begin
+  oIREC_SHE_DEF(REC_SHE_DEF);
+
+  REC_SHE_DEF.EP_ID := INTTOSTR(AEP_ID);
+  REC_SHE_DEF.IDPK  := INTTOSTR(AIDPK );
+
+  REC_SHE_DEF.IDEV  := INTTOSTR(AIDEV);
+  REC_SHE_DEF.CDEV  := INTTOSTR(ACDEV);
+
+  REC_SHE_DEF.FB_TB_PK := AFB_TB_PK;
+  
+  inherited Create(AOwner);
+end;
+
+Destructor TFrmConsulta.Destroy;
+type
+  PtrForm = ^TForm;
+var
+  idxForm: Integer;
+begin
+  try
+    if TForm(Self).Name <> EmptyStr then
+    if Assigned(_Form) and _Form.Find(ClassName,idxForm) and (_Form.Objects[idxForm] <> Nil) then
+       try
+         { Eventos }
+         try
+           try
+             EEvent.UnRegisterEvents;
+           except
+             on E: Exception do
+             begin
+               oErro(Application.Handle,'Falha ao tentar fechar eventos !'+#13+#13+
+                                        'Error Code: '+E.Message+'.'      +#13+
+                                         Caption+'.');
+             end;
+           end;
+
+         finally
+           try
+             { Transação Principal }
+             try
+               oFTransact(TConsulta);
+             except
+               on E: Exception do
+               begin
+                 oErro(Application.Handle,'Falha ao tentar fechar tabelas !'+#13+#13+
+                                          'Error Code: '+E.Message+'.'      +#13+
+                                           Caption+'.');
+               end;
+             end;
+
+           finally
+             { record e afins }
+             try
+               Finalize(REC_SHE_DEF);
+               FillChar(REC_SHE_DEF,SizeOf(REC_SHE_DEF),0);
+             except
+               on E: Exception do
+               begin
+                oErro(Application.Handle,'Falha ao tentar esvaziar memória !'+#13+#13+
+                                         'Error Code: '+E.Message+'.'        +#13+
+                                          Caption+'.');
+               end;
+             end;
+
+             { record e afins }
+             try
+               oFREC_SHE_DEF(REC_SHE_DEF);
+             except
+               on E: Exception do
+               begin
+                oErro(Application.Handle,'Falha ao tentar esvaziar memória !'+#13+#13+
+                                         'Error Code: '+E.Message+'.'        +#13+
+                                          Caption+'.');
+               end;
+             end;
+
+           end;
+         end;
+
+       finally
+         PtrForm(_Form.Objects[idxForm])^ := Nil;
+         _Form.Objects[idxForm] := Nil;
+       end;
+  finally
+    inherited;
+  end;
+end;
+
+procedure TFrmConsulta.FormCreate(Sender: TObject);
+begin
+  { INICIALIZAÇÃO }
+  oOTransact(TConsulta); { Transação }
+
+  { FORM MANAGER }
+  REC_SHE_DEF.FPosition := Self.Position; { Página }
+  //SetCursorPos(500,Self.Top); { Cursor }
+
+  { ACCESS MANAGER }
+  REC_SHE_DEF.FForceClose := ForceClose;
+  REC_SHE_DEF.FAlert      := 'Usuário não Autorizado.' + #13 +
+                             'Favor entrar em contato com o administrador do sistema.';
+
+  { VALIDATE GRANT USER }
+  REC_SHE_DEF.GAppend   := (RECUsuarios.Grupo = 'DEV') or (REC_SHE_DEF.GAdmin);
+  REC_SHE_DEF.GEdit     := (RECUsuarios.Grupo = 'DEV') or (REC_SHE_DEF.GAdmin);
+  REC_SHE_DEF.GDelete   := (RECUsuarios.Grupo = 'DEV') or (REC_SHE_DEF.GAdmin);
+
+  REC_SHE_DEF.GPost     := (RECUsuarios.Grupo = 'DEV') or (REC_SHE_DEF.GAdmin);
+  REC_SHE_DEF.GValidate := (RECUsuarios.Grupo = 'DEV') or (REC_SHE_DEF.GAdmin);
+  REC_SHE_DEF.GCancel   := (RECUsuarios.Grupo = 'DEV') or (REC_SHE_DEF.GAdmin);
+
+  REC_SHE_DEF.GView     := (RECUsuarios.Grupo = 'DEV') or (REC_SHE_DEF.GAdmin);
+  REC_SHE_DEF.GPrint    := (RECUsuarios.Grupo = 'DEV') or (REC_SHE_DEF.GAdmin);
+
+  REC_SHE_DEF.GControl  := (RECUsuarios.Grupo = 'DEV') or (REC_SHE_DEF.GAdmin);
+  REC_SHE_DEF.GAdmin    := (RECUsuarios.Grupo = 'DEV') or (REC_SHE_DEF.GAdmin);
+
+  if not REC_SHE_DEF.GAdmin then
+  begin
+    { SET GRANT USERT }
+    oUSER(REC_SHE_DEF);
+  end;
+
+  { ACCESS DENIED }
+  if (not REC_SHE_DEF.FForceClose) and (REC_SHE_DEF.FForceCaixa) and (REC_SHE_DEF.IDEV = 0) and
+     (RECParametros.STCX <> 'Caixa Aberto') then
+  begin
+    ForceClose := True;
+
+    REC_SHE_DEF.FForceClose := ForceClose;
+    REC_SHE_DEF.FAlert      := 'Caixa não Aberto.' + #13 +
+                               'Favor entrar em contato com o administrador do sistema.';
+  end;
+
+  { ACCESS ABORT }
+  if (REC_SHE_DEF.FForceClose) or (not REC_SHE_DEF.GView) then
+  begin
+    oErro(Application.Handle,'ACESSO NEGADO !' + #13 + #13 +
+                              REC_SHE_DEF.FAlert);
+
+    Self.Visible := False;
+    Self.Height  := 0;
+    Self.Width   := 0;
+
+    PostMessage(Handle, WM_CLOSE, 0, 0);
+  end;
+end;
+
+procedure TFrmConsulta.FormShow(Sender: TObject);
+begin
+  OnShow := Nil;
+  if REC_SHE_DEF.FForceClose then
+  Exit;
+
+  { Botões }
+  SIMRelatorios.Enabled := (REC_SHE_DEF.GPrint);
+
+  { Paineis }
+  PNLFormRodape.Visible        := (PNLFormRodape.Height        > 0);
+  PNLFormRodapeME.Visible      := (PNLFormRodapeME.Width       > 0);
+  PNLFormRodapeMD.Visible      := (PNLFormRodapeMD.Width       > 0);
+  PNLPrincipalMD.Visible       := (PNLPrincipalMD.Width        > 0);
+  PNLPrincipalME.Visible       := (PNLPrincipalME.Width        > 0);
+  PNLPrincipalRodape.Visible   := (PNLPrincipalRodape.Height   > 0);
+  PNLCadastroCabecalho.Visible := (PNLCadastroCabecalho.Height > 0);
+  PNLCustomizeSumario.Visible  := (PNLCustomizeSumario.Height  > 0);
+  SBEdicao.Visible             := PNLCustomizeEdicao.Visible;
+end;
+
+procedure TFrmConsulta.FormActivate(Sender: TObject);
+begin
+  OnActivate := Nil;
+  if REC_SHE_DEF.FForceClose then
+  Exit;
+
+  { EVENTOS }
+  try
+    { Limpa Eventos }
+    REC_SHE_DEF.FB_EVE_ADM := EmptyStr; { Admin    }
+    REC_SHE_DEF.FB_EVE_CTR := EmptyStr; { Controle }
+    REC_SHE_DEF.FB_EVE_PAD := EmptyStr; { Login    }
+
+    try
+      { Addmin }
+      EEventAdmin.UnregisterEvents;
+      EEventAdmin.Events.Clear;
+
+      { Padrão }
+      EEvent.UnregisterEvents;
+      EEvent.Events.Clear;
+
+      { Registra Eventos }
+      if REC_SHE_DEF.FB_Event <> EmptyStr then
+      begin
+        { Admin }
+        REC_SHE_DEF.FB_EVE_ADM := REC_SHE_DEF.FB_Event + '-' + oStrZero(RECParametros.EP_ID,3) + '-ADM';
+        EEventAdmin.Events.Add(REC_SHE_DEF.FB_EVE_ADM);
+        EEventAdmin.RegisterEvents;
+
+        if not RECUsuarios.IS_EVE_ADM then
+        begin
+          { Padrão }
+          REC_SHE_DEF.FB_EVE_PAD := REC_SHE_DEF.FB_Event + '-' + oStrZero(RECParametros.EP_ID,3) + '-' + oStrZero(RECUsuarios.ID,3);
+          EEvent.Events.Add(REC_SHE_DEF.FB_EVE_PAD);
+          EEvent.RegisterEvents;
+        end;  
+      end;
+    except
+      on E: Exception do
+      begin
+        { Limpa Eventos }
+        REC_SHE_DEF.FB_EVE_ADM := EmptyStr; { Admin    }
+        REC_SHE_DEF.FB_EVE_CTR := EmptyStr; { Controle }
+        REC_SHE_DEF.FB_EVE_PAD := EmptyStr; { Login    }
+
+        oErro(Application.Handle,'Falha ao tentar executar evento !' + #13 +
+                                  REC_SHE_DEF.FB_Event   + '.' + #13 + #13 +
+                                  E.Message              + '.' + #13 + #13 +
+                                 'Favor entrar em contato com o administrador do sistema.');
+      end;
+    end;
+
+  finally
+    Screen.Cursor := crDefault;
+    REC_SHE_DEF.FInitialize := False; { SET FORM ACTIVATE }
+  end;
+end;
+
+procedure TFrmConsulta.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  OnClose := Nil;
+  Action  := caFree;
+end;
+
+procedure TFrmConsulta.FormKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  case key of
+       vk_escape: Close; //ACTCancela.Execute;
+       vk_return: if (not (ActiveControl is TdxDBGrid) and
+                      not (ActiveControl is TdxDBMemo) and
+                      not (ActiveControl is TdxMemo)   and
+                      not (ActiveControl is TListBox)) then
+                      SelectNext (ActiveControl,True,True);
+
+       38       : if (not (ActiveControl is TdxDBGrid) and
+                      not (ActiveControl is TdxDBMemo) and
+                      not (ActiveControl is TdxMemo)   and
+                      not (ActiveControl is TListBox)) then
+                      SelectNext(ActiveControl,False,True);
+
+       40       : if (not (ActiveControl is TdxDBGrid) and
+                      not (ActiveControl is TdxDBMemo) and
+                      not (ActiveControl is TdxMemo)   and
+                      not (ActiveControl is TListBox)) then
+                      SelectNext (ActiveControl,True,True);
+
+       118: SIMPesquisa.Click;
+       116: SIMRefresh.Click;
+  end;
+end;
+
+procedure TFrmConsulta.FormKeyPress(Sender: TObject; var Key: Char);
+begin
+  if key = #5 then
+  {[Ctrl+E]} else
+  if key = #8 then
+  {[Ctrl+H]} else
+  if key = #9 then
+  {[Ctrl+I]} else
+  if key = #16 then
+  {[Ctrl+P]}
+  SIMRelatorios.Click else
+  if key = #19 then
+  {[Ctrl+S]} else
+  if key = #22 then
+  {[Ctrl+V]};
+end;
+
+procedure TFrmConsulta.FormPaint(Sender: TObject);
+var
+  AMainFormScreen: TRect;
+  FHeight,
+  FWidth ,
+  H,
+  T,
+  B,
+  L,R: Word;
+begin
+  if (not Showing) or (REC_SHE_DEF.FForceClose) then
+  Exit;
+
+  { Ajusta o Form para o tamanho da area livre do MainForm }
+  GetWindowRect(FrmPrincipal.ClientHandle,AMainFormScreen);
+
+  T := AMainFormScreen.Top;
+  B := AMainFormScreen.Bottom;
+  L := AMainFormScreen.Left;
+  R := AMainFormScreen.Right;
+  H := B;
+
+  if REC_SHE_DEF.FPosition = poDesigned then
+  begin
+    if (HelpContext = 0) then { % da altura }
+    if (AMainFormScreen.Bottom - AMainFormScreen.Top < Self.Height) then { Área livre menor que página }
+    HelpContext := 95; { % }
+
+    FHeight := IFThen(HelpContext     > 0,Trunc((H-T) * (HelpContext     / 100)),0);
+    FWidth  := IFThen(AlphaBlendValue > 0,Trunc((R-L) * (AlphaBlendValue / 100)),0);
+
+    if (REC_SHE_DEF.FTop > 0) and (REC_SHE_DEF.FLeft > 0) then
+    begin
+      Top    := REC_SHE_DEF.FTop;
+      Left   := REC_SHE_DEF.FLeft;
+
+      if Top + Height > B then
+      begin
+        Top := Top - ((Top + Height) - B);
+      end;
+
+      if Left + Width > R then
+      begin
+        Left := Left - ((Left + Width) - R);
+      end;
+
+    end else
+    begin
+      if FHeight > 0 then Height := FHeight;
+      if FWidth  > 0 then Width  := FWidth;
+
+      if FormStyle = fsNormal then
+      begin
+        //if FHeight > 0 then
+        Top := (T  + (H - Height)) div 2;
+
+        //if FWidth > 0 then
+        Left := ((R + L) - Width )  div 2;
+      end else
+      //if (FHeight > 0) or (FWidth  > 0) then
+      begin
+        Top  := ((B - T ) - Height) div 2;
+        Left := ((R - L)  - Width ) div 2;
+      end;
+    end;
+  end else
+  if (REC_SHE_DEF.FWorkArea) and (FormStyle = fsNormal) then
+  begin
+    Top    := Screen.WorkAreaTop;
+    Left   := Screen.WorkAreaLeft;
+    Width  := Screen.WorkAreaWidth;
+    Height := Screen.WorkAreaHeight;
+  end else
+  if (REC_SHE_DEF.FMainArea) and (FormStyle = fsNormal) then
+  begin
+    Top    := 0;
+    Left   := 0;
+    Width  := R - L - 5;
+    Height := H - T - 5;
+  end else
+  if REC_SHE_DEF.FPosition = poDefault then
+  begin
+    Top    := IFThen(FormStyle = fsNormal,T,0);
+    Left   := IFThen(FormStyle = fsNormal,L,0);
+    Width  := IFThen(REC_SHE_DEF.FPosition = poDefault,R - L - 5,0);
+    Height := IFThen(REC_SHE_DEF.FPosition = poDefault,H - T - 5,0);
+  end;
+end;
+
+procedure TFrmConsulta.FormResize(Sender: TObject);
+begin
+  if (not Showing) or (REC_SHE_DEF.FForceClose) then
+  Exit;
+
+  if Self <> Nil then
+     try
+       { VER DIM TELA }
+       REC_SHE_DEF.FHeight := Self.Height;
+       REC_SHE_DEF.FWidth  := Self.Width ;
+
+       if RECUsuarios.Id = 0 then
+       Self.Caption := 'Dimensões: Monitor = ' + IntToStr(Screen.Width) + ' x ' + IntToStr(Screen.Height) + ' - APP = ' + IntToStr(REC_SHE_DEF.FWidth)  + ' x ' + IntToStr(REC_SHE_DEF.FHeight) + '. ' + Self.Caption;
+       Paint;
+    finally
+      { After Resize }
+       oResize(DBGConsulta);
+    end;
+end;
+
+procedure TFrmConsulta.SIMRefreshClick(Sender: TObject);
+begin
+  oRefresh(Cadastro);
+end;
+
+procedure TFrmConsulta.SIMRelatoriosClick(Sender: TObject);
+begin
+  if (not SBMenu.Enabled)          or (not SBMenu.Visible) or
+     (not SIMRelatorios.Enabled)   or (not SIMRelatorios.Visible) or
+     (not PNLCadastroMenu.Enabled) or (not PNLCadastroMenu.Visible) then
+  Abort;
+
+  ActiveControl := Nil;
+  DBGConsulta.SetFocus;
+end;
+
+procedure TFrmConsulta.SIMSaidaClick(Sender: TObject);
+begin
+  Close;
+end;
+
+procedure TFrmConsulta.SIEIncluiClick(Sender: TObject);
+begin
+  if (not SBEdicao.Enabled )          or (not SBEdicao.Visible ) or
+     (not SIEInclui.Enabled)          or (not SIEInclui.Visible) or
+     (not PNLCustomizeEdicao.Enabled) or (not PNLCustomizeEdicao.Visible) or
+     (Cadastro.State <> dsBrowse) then
+  Abort;
+
+  ActiveControl := Nil;
+  DBGConsulta.SetFocus;
+
+  if not REC_SHE_DEF.GAppend then
+  oException(Nil,'Acesso Negado !'+#13+
+                 'Favor entrar em contato com o administrador do sistema.'+#13+
+                 'Administrador: ');
+
+  SBRodape.Panels[0].Text := 'Inclusão';
+end;
+
+procedure TFrmConsulta.SIEAlteraClick(Sender: TObject);
+begin
+  if (not SBEdicao.Enabled )          or (not SBEdicao.Visible ) or
+     (not SIEAltera.Enabled)          or (not SIEAltera.Visible) or
+     (not PNLCustomizeEdicao.Enabled) or (not PNLCustomizeEdicao.Visible) or
+     (Cadastro.State <> dsBrowse)     or (Cadastro.Fields[0].IsNull) then
+  Abort;
+
+  ActiveControl := Nil;
+  DBGConsulta.SetFocus;
+
+  if not REC_SHE_DEF.GView then
+  oException(Nil,'Acesso Negado !'+#13+
+                 'Favor entrar em contato com o administrador do sistema.'+#13+
+                 'Administrador: ');
+
+  SBRodape.Panels[0].Text := IFThen(REC_SHE_DEF.GEdit,'Alteração','Consulta');
+end;
+
+procedure TFrmConsulta.SIEExcluiClick(Sender: TObject);
+begin
+  if (not SBEdicao.Enabled )          or (not SBEdicao.Visible )          or
+     (not SIEExclui.Enabled)          or (not SIEExclui.Visible)          or
+     (not PNLCustomizeEdicao.Enabled) or (not PNLCustomizeEdicao.Visible) or
+     (Cadastro.State <> dsBrowse)     or (Cadastro.Fields[0].IsNull) then
+  Abort;
+
+  ActiveControl := Nil;
+  DBGConsulta.SetFocus;
+
+  if not REC_SHE_DEF.GDelete then
+  oException(Nil,'Acesso Negado !'+#13+
+                 'Favor entrar em contato com o administrador do sistema.'+#13+
+                 'Administrador: ');
+
+  if oYesNo(handle,'Confirma Exclusão ?') = mrNo then
+  Abort;
+
+  try
+    oOTransact(TEdicao);
+    with SQLEdicao do
+    begin
+      SQL.Clear;
+      SQL.Add('DELETE FROM '+REC_SHE_DEF.FB_TB_PK);
+      SQL.Add('WHERE '+REC_SHE_DEF.FB_FD_ED_PK + ' = ''' + REC_SHE_DEF.IDPK + '''');
+      ExecQuery;
+    end;
+
+    TEdicao.Commit;
+  except
+    on E: Exception do
+    begin
+      TEdicao.Rollback;
+      REC_SHE_DEF.Selected := False;
+
+      oException(Nil,oFBException(E.Message));
+    end;
+  end;
+end;
+
+procedure TFrmConsulta.CadastroAfterOpen(DataSet: TDataSet);
+begin
+  Screen.Cursor := crDefault;
+  SBRodape.Panels[0].Text := 'Consulta';
+end;
+
+procedure TFrmConsulta.CadastroBeforeOpen(DataSet: TDataSet);
+begin
+  Screen.Cursor := crAppStart;
+end;
+
+procedure TFrmConsulta.DTSCadastroDataChange(Sender: TObject; Field: TField);
+begin
+  if REC_SHE_DEF.IDPK <> -3 then
+  begin
+    REC_SHE_DEF.FB_FD_ED_PK := Cadastro.Fields[0].FieldName;
+    if Cadastro.Fields[0].DataType in [ftSmallint, ftInteger, ftWord, ftLargeInt] then
+    REC_SHE_DEF.IDPK := IntToStr(Cadastro.Fields[0].AsInteger) else
+    if Cadastro.Fields[0].DataType in [ftWideString, ftString, ftUnknown] then
+    REC_SHE_DEF.IDPK := Cadastro.Fields[0].AsString;
+  end;  
+end;
+
+procedure TFrmConsulta.DBGConsultaBackgroundDrawEvent(Sender: TObject;
+  ACanvas: TCanvas; ARect: TRect);
+var
+  Text : String;
+begin
+  with ACanvas do
+  begin
+    Brush.Color := clBtnShadow;
+    FillRect(ARect);
+
+    if (Sender as TdxDBGrid).GroupColumnCount = 0 then
+    begin
+      Font.Color := clMenu;
+      Text := 'Arraste as colunas para poder agrupá-las.';
+      TextOut(ARect.Left, ARect.Top, Text);
+    end;
+  end;
+end;
+
+procedure TFrmConsulta.DBGConsultaKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  case key of
+       vk_escape: SIMSaida.Click;
+       vk_insert: SIEInclui.Click;
+       vk_return: DBGConsultaDblClick(Self);
+       vk_delete: SIEExclui.Click;
+  end;
+end;
+
+procedure TFrmConsulta.DBGConsultaDblClick(Sender: TObject);
+begin
+  SIEAltera.Click;
+end;
+
+procedure TFrmConsulta._Edicao(AEV: String = 'U';AIDPK: String = '0';ACDPK: String = '');
+begin
+  if oEmpty(AIDPK) then
+     AIDPK := '0';
+
+  if ((oEmpty(AEV)) or ((AEV <> 'I') and (AIDPK = '0') and (oEmpty(ACDPK)))) then
+       Abort;
+end;
+
+procedure TFrmConsulta.EEventEventAlert(Sender: TObject; EventName: String;
+  EventCount: Integer; var CancelAlerts: Boolean);
+begin
+  oRefresh(Cadastro);
+end;
+
+procedure TFrmConsulta.EEventAdminEventAlert(Sender: TObject;
+  EventName: String; EventCount: Integer; var CancelAlerts: Boolean);
+begin
+  if RECUsuarios.IS_EVE_ADM then
+  oRefresh(Cadastro);
+end;
+
+procedure TFrmConsulta.ACTExecEventExecute(Sender: TObject);
+var
+  i: word;
+begin
+  if REC_SHE_DEF.FB_Event <> EmptyStr then
+     try
+       oOTransact(TEvent);
+
+       { Admin }
+       SPEvent.Close;
+       SPEvent.StoredProcName := 'SP_SHE_EVE_ADM';
+       SPEvent.Prepare;
+
+       for i := 0 to SPEvent.ParamCount - 1 do
+       SPEvent.Params[i].Value := Null;
+
+       SPEvent.Params[0].Value := REC_SHE_DEF.FB_EVE_ADM;
+       SPEvent.ExecProc;
+
+       { Padrão }
+       SPEvent.Close;
+       SPEvent.StoredProcName := 'SP_SHE_EVE_PAD';
+       SPEvent.Prepare;
+
+       for i := 0 to SPEvent.ParamCount - 1 do
+       SPEvent.Params[i].Value := Null;
+
+       SPEvent.Params[0].Value := REC_SHE_DEF.FB_EVE_PAD;
+       SPEvent.ExecProc;
+
+       oCTransact(TEvent);
+     except
+       on E: Exception do
+       begin
+         oCTransact(TEvent,ltRollback);
+         oErro(Application.Handle,'Falha ao tentar executar evento !' + #13 +
+                                   REC_SHE_DEF.FB_Event   + '.' + #13 + #13 +
+                                   E.Message              + '.');
+       end;
+     end;
+end;
+
+procedure TFrmConsulta.ACTPesquisaExecute(Sender: TObject);
+begin
+  if (not SBMenu.Enabled) or (not SBMenu.Visible) then
+
+  Abort;
+end;
+
+end.
