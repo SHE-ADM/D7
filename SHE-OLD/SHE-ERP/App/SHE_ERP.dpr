@@ -1,0 +1,173 @@
+program SHE_ERP;
+{$I C:\Sheild\Projetos\Delphi\Fontes\Lib\FastMM\FastMM4Options.inc} // incluir arquivo de configuração
+{$SetPEFlags $20} // Permite que o aplicativo acesse até 4GB de RAM em sistemas x64
+
+uses
+  FastMM4 in '..\..\..\Lib\FastMM\FastMM4.pas',
+  hkHints in '..\..\..\Lib\Default\HkHints.pas',
+  StrInt in '..\..\..\Lib\Default\StrInt.pas',
+  StrIntImp in '..\..\..\Lib\Default\StrIntImp.pas',
+  oPrincipal in '..\..\..\Lib\Default\oPrincipal.pas',
+  bPrincipal in '..\..\..\Lib\Data Modulo\bPrincipal.pas' {FBird: TDataModule},
+  pLogin in '..\..\..\Lib\Default\pLogin.pas' {FrmLogin},
+  pSplash in '..\..\..\Lib\Default\pSplash.pas' {FrmSplash},
+  Forms,
+  SysUtils,
+  uPrincipal in 'uPrincipal.pas' {FrmPrincipal},
+  pSobre in '..\..\..\Lib\Default\pSobre.pas' {FrmSobre},
+  pImpressoras in '..\..\..\Lib\Relatórios\pImpressoras.pas' {FrmImpressoras},
+  pSenha in '..\..\..\Lib\Default\pSenha.pas' {FrmSenha},
+  pDefault in '..\..\Padrao\Default\pDefault.pas' {FrmDefault},
+  pDefaultConsulta in '..\..\Padrao\Default\pDefaultConsulta.pas' {FrmDefaultConsulta},
+  pDefaultConsultaGrid in '..\..\Padrao\Default\pDefaultConsultaGrid.pas' {FrmDefaultConsultaGrid},
+  pDefaultConsultaOld in '..\..\Padrao\Default\pDefaultConsultaOld.pas' {FrmDefaultConsultaOld},
+  pDefaultEdicao in '..\..\Padrao\Default\pDefaultEdicao.pas' {FrmDefaultEdicao},
+  pDefaultEdicaoGrid in '..\..\Padrao\Default\pDefaultEdicaoGrid.pas' {FrmDefaultEdicaoGrid},
+  pDefaultGrid in '..\..\Padrao\Default\pDefaultGrid.pas' {FrmDefaultGrid},
+  pCAD_PRO_EDI in '..\..\Padrao\Produtos\pcad_pro_edi.pas' {FrmCAD_PRO_EDI},
+  pProduto in '..\..\Padrao\Produtos\pProduto.pas' {FrmProduto},
+  pRelatorios in '..\..\..\Lib\Relatórios\pRelatorios.pas' {FrmRelatorios},
+  qFicha_Tecnica in '..\..\..\Lib\Relatórios\Produtos\qFicha_Tecnica.pas' {qrpFicha_Tecnica: TQuickRep},
+  pExporta in '..\..\..\Lib\Relatórios\pExporta.pas' {FrmExporta},
+  pProduto_Instrucao_Lavagem in '..\..\Padrao\Produtos\pProduto_Instrucao_Lavagem.pas' {FrmProduto_Instrucao_Lavagem},
+  pRelatorios_OLD in '..\..\Padrao\Relatorios\pRelatorios_OLD.pas' {FrmRelatorios_OLD},
+  qGerencial_Estoque_Unidade_Medida in '..\..\Padrao\Relatorios\qGerencial_Estoque_Unidade_Medida.pas' {qrpGerencial_Estoque_Unidade_Medida: TQuickRep},
+  qGerencial_NF_Peso in '..\..\Padrao\Relatorios\qGerencial_NF_Peso.pas' {qrpGerencial_NF_Peso: TQuickRep},
+  qProduto_Compra_Planejamento in '..\..\Padrao\Relatorios\qProduto_Compra_Planejamento.pas' {qrpProduto_Compra_Planejamento: TQuickRep},
+  qGER_CRD in '..\..\Padrao\Relatorios\QGER_CRD.pas' {QRPGER_CRD: TQuickRep},
+  qProduto_Custo_Importado in '..\..\Padrao\Relatorios\qProduto_Custo_Importado.pas' {qrpProduto_Custo_Importado: TQuickRep},
+  qPROSpedFiscal in '..\..\Padrao\Relatorios\qPROSpedFiscal.pas' {qrpPROSpedFiscal: TQuickRep},
+  qProduto_Estoque in '..\..\Padrao\Relatorios\qProduto_Estoque.pas' {qrpProduto_Estoque: TQuickRep},
+  qProduto_Estoque_Etiqueta in '..\..\Padrao\Relatorios\qProduto_Estoque_Etiqueta.pas' {qrpProduto_Estoque_Etiqueta: TQuickRep},
+  pConsulta in '..\..\Padrao\Default\pConsulta.pas' {FrmConsulta},
+  pcad_cli in '..\..\Padrao\Cadastros\pcad_cli.pas' {frmcad_cli},
+  pcad_cli_edi in '..\..\Padrao\Cadastros\pcad_cli_edi.pas' {frmcad_cli_edi},
+  pcad_cli_inf in '..\..\Padrao\Cadastros\pcad_cli_inf.pas' {frmcad_cli_inf},
+  pcad_con in '..\..\Padrao\Cadastros\pcad_con.pas' {frmcad_con},
+  pcad_con_edi in '..\..\Padrao\Cadastros\pcad_con_edi.pas' {frmcad_con_edi},
+  pcad_for in '..\..\Padrao\Cadastros\pcad_for.pas' {frmcad_for},
+  pcad_for_edi in '..\..\Padrao\Cadastros\pcad_for_edi.pas' {frmcad_for_edi},
+  pCAD_REP in '..\..\Padrao\Cadastros\pCAD_REP.pas' {FrmCAD_REP},
+  pcad_rep_edi in '..\..\Padrao\Cadastros\pcad_rep_edi.pas' {frmcad_rep_edi},
+  pCAD_TRA in '..\..\Padrao\Cadastros\pCAD_TRA.pas' {FrmCAD_TRA},
+  pcad_tra_edi in '..\..\Padrao\Cadastros\pcad_tra_edi.pas' {frmcad_tra_edi},
+  pPesquisaCodigoMunicipal in '..\..\Padrao\Consultas\pPesquisaCodigoMunicipal.pas' {FrmPesquisaCodigoMunicipal},
+  pPesquisaLogradouros in '..\..\Padrao\Consultas\pPesquisaLogradouros.pas' {FrmPesquisaLogradouros},
+  pPSQCAD in '..\..\Padrao\Consultas\pPSQCAD.pas' {FrmPSQCAD},
+  pPSQEND in '..\..\Padrao\Consultas\pPSQEND.pas' {FrmPSQEND},
+  pPSQ_CAD_PAD in '..\..\Padrao\Consultas\pPSQ_CAD_PAD.pas' {FrmPSQ_CAD_PAD},
+  pemail in '..\..\Padrao\pemail.pas' {FrmEmail},
+  pimporta_geral in '..\..\Padrao\pimporta_geral.pas' {frmimporta_geral},
+  pimporta_geral_favorecido in '..\..\Padrao\pimporta_geral_favorecido.pas' {frmimporta_geral_favorecido},
+  pNFeConsultaSefaz in '..\..\..\Lib\Sefaz\pNFeConsultaSefaz.pas' {FrmNFeConsultaSefaz},
+  pven_nfe in '..\..\..\Lib\Fiscal\pven_nfe.pas' {FrmVEN_NFE},
+  parquivo_geral in '..\..\Padrao\Relatorios\parquivo_geral.pas' {frmarquivo_geral},
+  prelatorio_geral in '..\..\Padrao\Relatorios\prelatorio_geral.pas' {frmrelatorio_geral},
+  qcob_ped in '..\..\Padrao\Relatorios\qcob_ped.pas' {qrpcob_ped: TQuickRep},
+  qcob_ped_oca in '..\..\Padrao\Relatorios\qcob_ped_oca.pas' {qrpcob_ped_oca: TQuickRep},
+  qcob_rom in '..\..\Padrao\Relatorios\qcob_rom.pas' {qrpcob_rom: TQuickRep},
+  qcob_rom_ref in '..\..\Padrao\Relatorios\qcob_rom_ref.pas' {qrpcob_rom_ref: TQuickRep},
+  qpag_com in '..\..\Padrao\Relatorios\qpag_com.pas' {qrppag_com: TQuickRep},
+  qPCConferencia in '..\..\Padrao\Relatorios\qPCConferencia.pas' {qrpPCConferencia: TQuickRep},
+  qPCOrdem in '..\..\Padrao\Relatorios\qPCOrdem.pas' {qrpPCOrdem: TQuickRep},
+  qrom_con_001 in '..\..\Padrao\Relatorios\qrom_con_001.pas' {qrprom_con_001: TQuickRep},
+  qsep_ped in '..\..\Padrao\Relatorios\qsep_ped.pas' {qrpsep_ped: TQuickRep},
+  qven_con in '..\..\Padrao\Relatorios\qven_con.pas' {qrpven_con: TQuickRep},
+  qven_ped in '..\..\Padrao\Relatorios\qven_ped.pas' {qrpven_ped: TQuickRep},
+  qven_prc in '..\..\Padrao\Relatorios\qven_prc.pas' {qrpven_prc: TQuickRep},
+  pven_nfd in '..\..\Padrao\Fiscal\pven_nfd.pas' {frmven_nfd},
+  pctr_ped in '..\..\Padrao\Vendas\pctr_ped.pas' {frmctr_ped},
+  pctr_ped_bai in '..\..\Padrao\Vendas\pctr_ped_bai.pas' {frmctr_ped_bai},
+  pctr_rom in '..\..\Padrao\Vendas\pctr_rom.pas' {frmctr_rom},
+  pven_ped in '..\..\Padrao\Vendas\pven_ped.pas' {FrmVEN_PED},
+  pven_rom in '..\..\Padrao\Vendas\pven_rom.pas' {frmven_rom},
+  qfin_dup in '..\..\Padrao\Relatorios\qfin_dup.pas' {qrpfin_dup: TQuickRep},
+  pnfe_cce in '..\..\Padrao\Fiscal\pnfe_cce.pas' {frmnfe_cce},
+  pfin_dup in '..\..\Padrao\Financeiro\pfin_dup.pas' {frmfin_dup},
+  pfin_dup_edi in '..\..\Padrao\Financeiro\pfin_dup_edi.pas' {frmfin_dup_edi},
+  pfin_rec_bai in '..\..\Padrao\Financeiro\pfin_rec_bai.pas' {frmfin_rec_bai},
+  pfin_rec_con in '..\..\Padrao\Financeiro\pfin_rec_con.pas' {frmfin_rec_con},
+  pFRecebimento_Edicao in '..\..\Padrao\Financeiro\pFRecebimento_Edicao.pas' {FrmFRecebimento_Edicao},
+  qfin_rec_ger in '..\..\Padrao\Relatorios\qfin_rec_ger.pas' {qrpfin_rec_ger: TQuickRep},
+  qfin_rec_ger_consolidado in '..\..\Padrao\Relatorios\qfin_rec_ger_consolidado.pas' {qrpfin_rec_ger_consolidado: TQuickRep},
+  pProduto_Categoria in '..\..\Padrao\Produtos\pProduto_Categoria.pas' {FrmProduto_Categoria},
+  pProduto_Cor in '..\..\Padrao\Produtos\pProduto_Cor.pas' {FrmProduto_Cor},
+  pProduto_Devolucao_Cancelamento in '..\..\Padrao\Produtos\pProduto_Devolucao_Cancelamento.pas' {FrmProduto_Devolucao_Cancelamento},
+  pProduto_Grupo in '..\..\Padrao\Produtos\pProduto_Grupo.pas' {FrmProduto_Grupo},
+  pProduto_Imagem in '..\..\Padrao\Produtos\pProduto_Imagem.pas' {FrmProduto_Imagem},
+  pProduto_Preco_Faixa_Comissao in '..\..\Padrao\Produtos\pProduto_Preco_Faixa_Comissao.pas' {FrmProduto_Preco_Faixa_Comissao},
+  pProduto_SubCategoria in '..\..\Padrao\Produtos\pProduto_SubCategoria.pas' {FrmProduto_SubCategoria},
+  pProduto_SubGrupo in '..\..\Padrao\Produtos\pProduto_SubGrupo.pas' {FrmProduto_SubGrupo},
+  pProduto_Pesquisa in '..\..\Padrao\Consultas\pProduto_Pesquisa.pas' {FrmProduto_Pesquisa},
+  pConsultaCNPJ in '..\..\Padrao\Consultas\pConsultaCNPJ.pas' {FrmConsultaCNPJ},
+  pcai_abr in '..\..\Padrao\Caixa\pcai_abr.pas' {frmcai_abr},
+  pcai_fec in '..\..\Padrao\Caixa\pcai_fec.pas' {frmcai_fec},
+  pcai_mov in '..\..\Padrao\Caixa\pcai_mov.pas' {frmcai_mov},
+  pcai_sar in '..\..\Padrao\Caixa\pcai_sar.pas' {frmcai_sar},
+  pcai_sar_edi in '..\..\Padrao\Caixa\pcai_sar_edi.pas' {frmcai_sar_edi},
+  pNFeConsulta in '..\..\Padrao\Fiscal\pNFeConsulta.pas' {FrmNFeConsulta},
+  pNFeSaida in '..\..\Padrao\Fiscal\pNFeSaida.pas' {FrmNFeSaida},
+  pNFeSaidaConsulta in '..\..\Padrao\Fiscal\pNFeSaidaConsulta.pas' {FrmNFeSaidaConsulta},
+  pEtiqueta_Geral in '..\..\Padrao\Etiquetas\petiqueta_geral.pas' {FrmEtiqueta_Geral},
+  qEtiqueta_Cartela in '..\..\Padrao\Relatorios\Etiquetas\qEtiqueta_Cartela.pas' {qrpEtiqueta_Cartela: TQuickRep},
+  qEtiqueta_Cartela2 in '..\..\Padrao\Relatorios\Etiquetas\qEtiqueta_Cartela2.pas' {qrpEtiqueta_Cartela2: TQuickRep},
+  qEtiqueta_Id in '..\..\Padrao\Relatorios\Etiquetas\qEtiqueta_Id.pas' {qrpEtiqueta_Id: TQuickRep},
+  pCAD_PRO_EST_DEL in '..\..\Padrao\Estoque\pCAD_PRO_EST_DEL.pas',
+  pent_pro in '..\..\Padrao\Estoque\pent_pro.pas' {frment_pro},
+  pEstoque in '..\..\Padrao\Estoque\pEstoque.pas' {FrmEstoque},
+  pEstoqueDefeitos in '..\..\Padrao\Estoque\pEstoqueDefeitos.pas' {FrmEstoqueDefeitos},
+  peti_pro in '..\..\Padrao\Estoque\peti_pro.pas' {frmeti_pro},
+  pEXP_SEP_COL in '..\..\Padrao\Expedição\pEXP_SEP_COL.pas' {FrmEXP_SEP_COL},
+  pEXP_SEP_MAN in '..\..\Padrao\Expedição\pEXP_SEP_MAN.pas' {FrmEXP_SEP_MAN},
+  pSHE_DEF_EDI in '..\..\..\Lib\Default\pSHE_DEF_EDI.pas' {FrmSHE_DEF_EDI},
+  pctr_prc in '..\..\Padrao\Compras\pctr_prc.pas' {frmctr_prc},
+  pven_prc in '..\..\Padrao\Compras\pven_prc.pas' {frmven_prc},
+  pctr_prg in '..\..\Padrao\Programados\pctr_prg.pas' {frmctr_prg},
+  pven_prg in '..\..\Padrao\Programados\pven_prg.pas' {frmven_prg},
+  ptab_nat in '..\..\Padrao\Tabelas\ptab_nat.pas' {frmtab_nat},
+  ptab_nat_edi in '..\..\Padrao\Tabelas\ptab_nat_edi.pas' {frmtab_nat_edi},
+  ptab_pag in '..\..\Padrao\Tabelas\ptab_pag.pas' {frmtab_pag},
+  ppag_com in '..\..\Padrao\Financeiro\ppag_com.pas' {frmpag_com},
+  pPadr1 in '..\..\Padrao\ppadr1.pas' {FrmPadr1},
+  pPadr2 in '..\..\Padrao\pPadr2.pas' {FrmPadr2},
+  pPadr3 in '..\..\Padrao\pPadr3.pas' {FrmPadr3},
+  pProduto_Custo_Importado in '..\..\Padrao\Custos\pProduto_Custo_Importado.pas' {FrmProduto_Custo_Importado},
+  pProduto_Custo_Importado_Edicao in '..\..\Padrao\Custos\pProduto_Custo_Importado_Edicao.pas' {FrmProduto_Custo_Importado_Edicao},
+  pProduto_Segmento in '..\..\Padrao\Produtos\pProduto_Segmento.pas' {FrmProduto_Segmento},
+  pPadr5 in '..\..\Padrao\pPadr5.pas' {FrmPadr5},
+  pPesquisa in '..\..\Padrao\Consultas\pPesquisa.pas' {FrmPesquisa},
+  qEST_ENT_ROM in '..\..\..\Lib\Relatórios\Estoque\qEST_ENT_ROM.pas' {qrpEST_ENT_ROM: TQuickRep},
+  qEST_ETQ_PAD in '..\..\..\Lib\Relatórios\Estoque\qEST_ETQ_PAD.pas' {qrpEST_ETQ_PAD: TQuickRep},
+  qEST_ETQ_PEQ in '..\..\..\Lib\Relatórios\Estoque\qEST_ETQ_PEQ.pas' {qrpEST_ETQ_PEQ: TQuickRep},
+  qGER_EST_UCOM_UPESO in '..\..\..\Lib\Relatórios\Gerenciais\Estoque\QGER_EST_UCOM_UPESO.pas' {QRPGER_EST_UCOM_UPESO: TQuickRep},
+  qGER_VEN_FAT_CRD in '..\..\..\Lib\Relatórios\Gerenciais\Vendas\QGER_VEN_FAT_CRD.pas' {QRPGER_VEN_FAT_CRD: TQuickRep},
+  pSHE_DEF_PSQ in '..\..\..\Lib\Default\pSHE_DEF_PSQ.pas' {FrmSHE_DEF_PSQ},
+  pCAD_PRO_PSQ in '..\..\..\Lib\Produtos\pCAD_PRO_PSQ.pas' {FrmCAD_PRO_PSQ},
+  pctr_nfe in '..\..\..\Lib\Fiscal\pctr_nfe.pas' {frmctr_nfe};
+
+{$R *.res}
+
+begin
+  Application.Initialize;
+  Application.Title := 'SHE-ERP';
+
+  FrmSplash := TFrmSplash.Create(Nil);
+  FrmSplash.Refresh;
+  FrmSplash.Show;
+
+  FBird := TFBird.Create(Application);
+
+  FrmLogin := TFrmLogin.Create(Nil);
+  FrmLogin.ShowModal;
+
+  Application.CreateForm(TFrmPrincipal, FrmPrincipal);
+  Application.Initialize;
+
+  FreeAndNil(FrmSplash);
+  FreeAndNil(FrmLogin);
+
+  oPRN_EXE(Application.Handle,'Relatórios');
+  
+  Application.Run;
+  FreeAndNil(FrmPrincipal);
+end.
