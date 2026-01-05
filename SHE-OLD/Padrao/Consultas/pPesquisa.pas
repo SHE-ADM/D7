@@ -888,7 +888,7 @@ begin
          if cbCAMPO.Text = 'Nº Pedido' then
             cField := 'PK.ROM_DERO' else
          if cbCAMPO.Text = 'Nº Romaneio' then
-            cField := 'PK.ROM_CDRO' else
+            cField := 'PK.ID' else
          if cbCAMPO.Text = 'Nº Nota Fiscal' then
             cField := 'PK.ROM_CDNF' else
          if cbCAMPO.Text = 'Nº Container' then

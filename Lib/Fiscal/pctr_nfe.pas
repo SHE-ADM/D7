@@ -1110,7 +1110,6 @@ begin
         end;
       end;
 
-      SQL.Add('ORDER BY ' + IFThen(LeftStr(FrmPesquisa.CField,2) = 'PK',FrmPesquisa.CField,'PK.CD_NO'));
       SQL.Add('ORDER BY PK.ID DESC');  //IFThen(LeftStr(FrmPesquisa.CField,2) = 'PK',FrmPesquisa.CField,'PK.CD_NO'));
     end;
 

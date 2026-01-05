@@ -399,12 +399,12 @@ begin
 
   { FORM SCREEN }
   REC_SHE_DEF.FPosition := Self.Position; { Posição }
-
   REC_SHE_DEF.FMainArea := False; { Aplicativo }
   REC_SHE_DEF.FWorkArea := False; { Windows    }
 
-  { ACCESS MANAGER }
-  REC_SHE_DEF.FB_Event := 'PED_RDV_ADM'; { Eventos }
+  { EVENTOS }
+  REC_SHE_DEF.FB_Event   := 'PED_RDV_ADM'; { Evento Principal }
+  REC_SHE_DEF.FB_EVE_EDT := 'FIS_NFE_ADM'; { Evento Edição }
 
   { GRANT USER }
   REC_SHE_DEF.GDescricao  := 'Pedidos';
@@ -847,11 +847,6 @@ begin
      FrmPrincipal.ACTLOG_DENIED.Execute;
 
   {$ELSE}
-     if oYesNo(handle,'Confirma Emissão da Nota fiscal ?'      + #13   + #13 +
-                      'Pedido Nº ' + CadastroROM_DERO.AsString + ' - ' + CadastroDECV.AsString + #13 +
-                       CadastroDECD.AsString) = mrNo then
-        Abort;
-   
      if Pos('AGUA',CadastroROM_STFI.AsString) > 0 then
         oException(Nil,'Emissão de Nota Fiscal não Permitida !' +#13+
                         CadastroROM_STFI.AsString);

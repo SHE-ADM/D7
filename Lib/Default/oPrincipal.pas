@@ -1209,7 +1209,8 @@ Type TRECParametros = record
 
     NFE_MODFRETE: Variant;
     NFE_MODFRETE_REF: String[10];
-    NFE_MODFRETE_DESC: String[60];
+    NFE_MODFRETE_DESC,
+    NFE_ESPECIE: String[60];
 
     NFE_ICMS: Word;
     NFE_CREDITO_ICMS: Double;

@@ -1115,7 +1115,7 @@ begin
         IDCR := IEIDCR.Text;
 
         PK_QTDE := CEQTDE.Value;
-        PK_QTRL := StrToInt(CEQTRL.Text);
+        PK_QTRL := Trunc(CEQTRL.Value);
 
         PK_TSDE := CETSDE.Value;
         PK_TDSC := LATDSC.Caption;
@@ -2628,6 +2628,10 @@ begin
 
       { Prazos }
       PEDEPG.Text := IFThen(REC_SHE_DEF.CDEV = 1,Current.ByName('DEPG').AsString,RECParametros.PED_PRZ_NO);
+
+      { TOTAIS }
+      CETSDE.Value := Current.ByName('PK_TSDE').AsCurrency;
+      CETCDE.Value := Current.ByName('PK_TCDE').AsCurrency;
 
       { Transporte }
       PEDECT.Tag   := Current.ByName('IDCT').AsInteger;

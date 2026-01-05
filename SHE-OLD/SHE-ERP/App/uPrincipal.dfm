@@ -11307,7 +11307,7 @@ object FrmPrincipal: TFrmPrincipal
     object MPSheild: TMenuItem
       Caption = 'Sheid'
       object MIComissao: TMenuItem
-        Caption = 'Comiss'#245'es'
+        Action = ACTADM_COMISSAO
       end
       object estedemesa1: TMenuItem
         Caption = 'Teste de mesa'

@@ -1636,7 +1636,7 @@ inherited frmctr_ped: Tfrmctr_ped
               Font.Color = clWindowText
               Font.Height = -12
               Font.Name = 'Tahoma'
-              Font.Style = [fsBold]
+              Font.Style = []
               Width = 85
               BandIndex = 0
               RowIndex = 0
@@ -1653,7 +1653,7 @@ inherited frmctr_ped: Tfrmctr_ped
               Font.Name = 'Tahoma'
               Font.Style = [fsBold]
               Visible = False
-              Width = 158
+              Width = 80
               BandIndex = 0
               RowIndex = 0
               FieldName = 'CTNR'
@@ -1732,25 +1732,6 @@ inherited frmctr_ped: Tfrmctr_ped
               SummaryFooterType = cstAvg
               SummaryFooterField = 'ID'
               SummaryFooterFormat = 'PRZ M'#201'D'
-            end
-            object DBGConsultaD_HTSA: TdxDBGridColumn
-              Alignment = taCenter
-              HeaderAlignment = taCenter
-              Visible = False
-              Width = 45
-              BandIndex = 0
-              RowIndex = 0
-              FieldName = 'D_HTSA'
-              SummaryFooterType = cstAvg
-              SummaryFooterField = 'D_HNSA'
-              SummaryFooterFormat = '00":00"'
-            end
-            object DBGConsultaD_HNSA: TdxDBGridColumn
-              Visible = False
-              Width = 43
-              BandIndex = 0
-              RowIndex = 0
-              FieldName = 'D_HNSA'
             end
             object DBGConsultaSTPD: TdxDBGridColumn
               Font.Charset = ANSI_CHARSET
@@ -1887,7 +1868,7 @@ inherited frmctr_ped: Tfrmctr_ped
             end
             object DBGConsultaCNCD: TdxDBGridMaskColumn
               Visible = False
-              Width = 43
+              Width = 40
               BandIndex = 1
               RowIndex = 0
               FieldName = 'CNCD'
@@ -1898,7 +1879,7 @@ inherited frmctr_ped: Tfrmctr_ped
               Font.Height = -11
               Font.Name = 'Tahoma'
               Font.Style = []
-              Width = 95
+              Width = 92
               BandIndex = 1
               RowIndex = 0
               FieldName = 'GPCD'
@@ -19626,7 +19607,7 @@ inherited frmctr_ped: Tfrmctr_ped
       Size = 14
     end
     object CadastroGPCD: TIBStringField
-      DisplayLabel = 'Grupo Comercial'
+      DisplayLabel = 'Grupo Com.'
       FieldName = 'GPCD'
       Origin = '"VW_PED_VEN_CAB_004"."GPCD"'
       Size = 60
