@@ -417,9 +417,7 @@ type
     CadastroC_IDPK: TLargeintField;
     DBGConsultaC_IDPK: TdxDBGridColumn;
     DBGConsultaBQST: TdxDBGridMaskColumn;
-    DBGConsultaD_HTSA: TdxDBGridColumn;
     CadastroD_HTSA: TIBStringField;
-    DBGConsultaD_HNSA: TdxDBGridColumn;
     CadastroD_HNSA: TIBBCDField;
     CadastroINFADOS: TIBStringField;
     CadastroINFSTOS: TIBStringField;
@@ -1006,7 +1004,7 @@ begin
       { Pedido }
       if (AColumn = DBGConsultaDEPK  ) or (AColumn = DBGConsultaDTPK  ) or (AColumn = DBGConsultaHTPK) or
          (AColumn = DBGConsultaCDNF  ) or (AColumn = DBGConsultaDTNF  ) or (AColumn = DBGConsultaHTNF) or
-         (AColumn = DBGConsultaD_DTSA) or (AColumn = DBGConsultaD_HTSA) or
+         (AColumn = DBGConsultaD_DTSA) or
          (AColumn = DBGConsultaSTPD  ) or (AColumn = DBGConsultaRECO  ) or (AColumn = DBGConsultaD_DEST) then
       begin
         AColor      := clGray;
@@ -1055,7 +1053,7 @@ begin
       end;
 
       { Saída }
-      if (AColumn = DBGConsultaD_DTSA) or (AColumn = DBGConsultaD_HTSA) then
+      if (AColumn = DBGConsultaD_DTSA)  then
           if (ANode.Values[DBGConsultaD_DTSA.Index] > 0) then
           begin
             AColor      := clPurple;
@@ -1172,7 +1170,6 @@ begin
   DBGConsultaDTNF.Visible   := False;
   DBGConsultaHTNF.Visible   := False;
   DBGConsultaD_DTSA.Visible := False;
-  DBGConsultaD_HTSA.Visible := False;
 
   { Clientes }
   DBGConsultaGPCD.Visible := False; { Grupo Comercial }
@@ -1277,7 +1274,6 @@ begin
   if CadastroD_DTSA.AsDateTime > 0 then
   begin
     DBGConsultaD_DTSA.Visible := True;
-    DBGConsultaD_HTSA.Visible := True;
   end;
 
   { Clientes }
@@ -1327,19 +1323,7 @@ begin
                         IFThen((PosCount = 00) and (CadastroINFADCAD.AsString <> EmptyStr) ,30,
                         IFThen((PosCount = 01),040,
                         IFThen((PosCount = 02),055,
-                        IFThen((PosCount = 03),070,
-                        IFThen((PosCount = 04),080,
-                        IFThen((PosCount = 05),090,
-                        IFThen((PosCount = 06),100,
-                        IFThen((PosCount = 07),110,
-                        IFThen((PosCount = 08),120,
-                        IFThen((PosCount = 09),130,
-                        IFThen((PosCount = 10),140,
-                        IFThen((PosCount = 11),150,
-                        IFThen((PosCount = 12),160,
-                        IFThen((PosCount = 13),170,
-                        IFThen((PosCount = 14),180,
-                        IFThen((PosCount = 15),190,200)))))))))))))))));
+                        IFThen((PosCount = 03),070,080)))));
 
   PNLLOGOS.Visible  := (CadastroINFADOS.AsString  <> EmptyStr);
   PNLLOGPRN.Visible := (CadastroINFADPRN.AsString <> EmptyStr);
@@ -2009,7 +1993,7 @@ begin
         end;
       end;
 
-      SQL.Add('ORDER BY ' + IFThen(LeftStr(FrmPesquisa.CField,2) = 'PK',FrmPesquisa.CField,'PK.CD_NO'));
+      SQL.Add('ORDER BY PK.ID DESC'); //+ IFThen(LeftStr(FrmPesquisa.CField,2) = 'PK',FrmPesquisa.CField,'PK.CD_NO'));
     end;
 
     if FrmPesquisa.EDTXT.Text <> EmptyStr then

@@ -914,53 +914,56 @@ procedure TFrmPadr2.ACTEveRegisterExecute(Sender: TObject);
 begin
   { UNREGISTER EVENTS }
   if EEvent.Registered then
-     try
-       EEvent.UnregisterEvents;
-       EEvent.Events.Clear;
 
-       REC_SHE_DEF.FB_EVE_ADM := EmptyStr; { Admin  }
-       REC_SHE_DEF.FB_EVE_PAD := EmptyStr; { Padrão }
-       REC_SHE_DEF.FB_EVE_EDT := EmptyStr; { Edição }
-     except
-       on E: Exception do
-       begin
-         oErro(Handle,'Falha ao tentar limpar evento Padrão !' + #13 +
-                      'Erro: ' + E.Message + '.');
-       end;
-     end;
+  try
+    EEvent.UnregisterEvents;
+    EEvent.Events.Clear;
+
+    REC_SHE_DEF.FB_EVE_ADM := EmptyStr; { Admin  }
+    REC_SHE_DEF.FB_EVE_PAD := EmptyStr; { Padrão }
+  except
+    on E: Exception do
+    begin
+      oErro(Handle,'Falha ao tentar limpar evento Padrão !' + #13 +
+                   'Erro: ' + E.Message + '.');
+    end;
+  end;
 
   { REGISTER EVENTS }
   REC_SHE_DEF.FB_Event := TRIM(REC_SHE_DEF.FB_Event);
   if REC_SHE_DEF.FB_Event <> EmptyStr then
-     try
-       { ADMIN }
-       REC_SHE_DEF.FB_EVE_ADM := REC_SHE_DEF.FB_Event + '-' + oStrZero(RECParametros.EP_ID,3) + '-ADM';
-       EEvent.Events.Add(REC_SHE_DEF.FB_EVE_ADM);
 
-       { PADRÃO }
-       if not RECUsuarios.IS_EVE_ADM then
-       begin
-         REC_SHE_DEF.FB_EVE_PAD := REC_SHE_DEF.FB_Event + '-' + oStrZero(RECParametros.EP_ID,3) + '-' + oStrZero(RECUsuarios.ID,3);
-         EEvent.Events.Add(REC_SHE_DEF.FB_EVE_PAD);
-       end;
+  try
+    { ADMIN }
+    REC_SHE_DEF.FB_EVE_ADM := REC_SHE_DEF.FB_Event + '-' + oStrZero(RECParametros.EP_ID,3) + '-ADM';
+    EEvent.Events.Add(REC_SHE_DEF.FB_EVE_ADM);
 
-       { EDIÇÃO }
-       if ACTEveRegister.Tag > 0 then
-       begin
-         REC_SHE_DEF.FB_EVE_EDT := REC_SHE_DEF.FB_Event + '-' + oStrZero(RECParametros.EP_ID,3) + '-EDT' + oStrZero(ACTEveRegister.Tag,3);
-         EEvent.Events.Add(REC_SHE_DEF.FB_EVE_EDT);
+    { PADRÃO }
+    if not RECUsuarios.IS_EVE_ADM then
+    begin
+      REC_SHE_DEF.FB_EVE_PAD := REC_SHE_DEF.FB_Event + '-' + oStrZero(RECParametros.EP_ID,3) + '-' + oStrZero(RECUsuarios.ID,3);
+      EEvent.Events.Add(REC_SHE_DEF.FB_EVE_PAD);
+    end;
 
-         ACTEveRegister.Tag := 0;
-       end;
+    { EDIÇÃO }
+    if REC_SHE_DEF.FB_EVE_EDT <> EmptyStr then
+    begin
+      if ACTEveRegister.Tag > 0 then
+      REC_SHE_DEF.FB_EVE_EDT := REC_SHE_DEF.FB_EVE_EDT + '-' + oStrZero(RECParametros.EP_ID,3) + '-' + oStrZero(ACTEveRegister.Tag,3) else
+      REC_SHE_DEF.FB_EVE_EDT := REC_SHE_DEF.FB_EVE_EDT + '-' + oStrZero(RECParametros.EP_ID,3) + '-' + oStrZero(RECUsuarios.ID,3);
 
-       EEvent.RegisterEvents;
-     except
-       on E: Exception do
-       begin
-         oErro(Application.Handle,'Falha ao tentar registrar evento !' + #13 +
-                                  'Erro: '   + E.Message + '.');
-       end;
-     end;
+      EEvent.Events.Add(REC_SHE_DEF.FB_EVE_EDT);
+      ACTEveRegister.Tag := 0;
+    end;
+
+    EEvent.RegisterEvents;
+  except
+    on E: Exception do
+    begin
+      oErro(Application.Handle,'Falha ao tentar registrar evento !' + #13 +
+                               'Erro: '   + E.Message + '.');
+    end;
+  end;
 end;
 
 procedure TFrmPadr2.ACTEveExecuteExecute(Sender: TObject);

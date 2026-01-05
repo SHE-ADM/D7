@@ -629,6 +629,7 @@ begin
       RECParametros.NFE_MODFRETE      := Current.ByName('NFE_MODFRETE'     ).AsString;
       RECParametros.NFE_MODFRETE_REF  := Current.ByName('NFE_MODFRETE_REF' ).AsString;
       RECParametros.NFE_MODFRETE_DESC := Current.ByName('NFE_MODFRETE_DESC').AsString;
+      RECParametros.NFE_ESPECIE       := Current.ByName('NFE_ESPECIE'      ).AsString;
 
       RECParametros.NFE_ICMS              :=  Current.ByName('NFE_ICMS'             ).AsInteger;
       RECParametros.NFE_CREDITO_ICMS      :=  Current.ByName('NFE_CREDITO_ICMS'     ).AsFloat;

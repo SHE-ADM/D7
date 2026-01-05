@@ -940,69 +940,6 @@ type
 
     DTSFIS_NFE_SUM: TDataSource;
     FIS_NFE_SUM: TIBQuery;
-    FIS_NFE_SUMID: TLargeintField;
-    FIS_NFE_SUMIDEV: TLargeintField;
-    FIS_NFE_SUMNFE_NITEMPED: TIntegerField;
-    FIS_NFE_SUMNFE_QCOM: TIBBCDField;
-    FIS_NFE_SUMNFE_RCOM: TIntegerField;
-    FIS_NFE_SUMLBL_VPROD: TIBStringField;
-    FIS_NFE_SUMNFE_VPROD: TIBBCDField;
-    FIS_NFE_SUMLBL_VDESC: TIBStringField;
-    FIS_NFE_SUMNFE_VDESC: TIBBCDField;
-    FIS_NFE_SUMLBL_VBC: TIBStringField;
-    FIS_NFE_SUMNFE_VBC: TIBBCDField;
-    FIS_NFE_SUMLBL_CBS_VBCCBS: TIBStringField;
-    FIS_NFE_SUMNFE_CBS_VBCCBS: TIBBCDField;
-    FIS_NFE_SUMLBL_CBS_VCBS: TIBStringField;
-    FIS_NFE_SUMNFE_CBS_VCBS: TIBBCDField;
-    FIS_NFE_SUMLBL_IBSMUN_VBCMUN: TIBStringField;
-    FIS_NFE_SUMNFE_IBSMUN_VBCIBSMUN: TIBBCDField;
-    FIS_NFE_SUMLBL_IBSMUN_VIBSMUN: TIBStringField;
-    FIS_NFE_SUMNFE_IBSMUN_VIBSMUN: TIBBCDField;
-    FIS_NFE_SUMLBL_IBSUF_VBCIBSUF: TIBStringField;
-    FIS_NFE_SUMNFE_IBSUF_VBCIBSUF: TIBBCDField;
-    FIS_NFE_SUMLBL_IBSUF_VIBSUF: TIBStringField;
-    FIS_NFE_SUMNFE_IBSUF_VIBSUF: TIBBCDField;
-    FIS_NFE_SUMLBL_VICMS: TIBStringField;
-    FIS_NFE_SUMNFE_VICMS: TIBBCDField;
-    FIS_NFE_SUMLBL_VICMSUFDEST: TIBStringField;
-    FIS_NFE_SUMNFE_VICMSUFDEST: TIBBCDField;
-    FIS_NFE_SUMLBL_VICMSUFREMET: TIBStringField;
-    FIS_NFE_SUMNFE_VICMSUFREMET: TIBBCDField;
-    FIS_NFE_SUMLBL_VICMSDESON: TIBStringField;
-    FIS_NFE_SUMNFE_VICMSDESON: TIBBCDField;
-    FIS_NFE_SUMLBL_VBCCREDICMSSN: TIBStringField;
-    FIS_NFE_SUMNFE_VBCCREDICMSSN: TIBBCDField;
-    FIS_NFE_SUMLBL_VCREDICMSSN: TIBStringField;
-    FIS_NFE_SUMNFE_VCREDICMSSN: TIBBCDField;
-    FIS_NFE_SUMLBL_VBCST: TIBStringField;
-    FIS_NFE_SUMNFE_VBCST: TIBBCDField;
-    FIS_NFE_SUMLBL_VST: TIBStringField;
-    FIS_NFE_SUMNFE_VST: TIBBCDField;
-    FIS_NFE_SUMLBL_VIPI: TIBStringField;
-    FIS_NFE_SUMNFE_VIPI: TIBBCDField;
-    FIS_NFE_SUMLBL_VPIS: TIBStringField;
-    FIS_NFE_SUMNFE_VPIS: TIBBCDField;
-    FIS_NFE_SUMLBL_VCOFINS: TIBStringField;
-    FIS_NFE_SUMNFE_VCOFINS: TIBBCDField;
-    FIS_NFE_SUMLBL_VFRETE: TIBStringField;
-    FIS_NFE_SUMNFE_VFRETE: TIBBCDField;
-    FIS_NFE_SUMLBL_VSEG: TIBStringField;
-    FIS_NFE_SUMNFE_VSEG: TIBBCDField;
-    FIS_NFE_SUMLBL_VSERV: TIBStringField;
-    FIS_NFE_SUMNFE_VSERV: TIBBCDField;
-    FIS_NFE_SUMLBL_VII: TIBStringField;
-    FIS_NFE_SUMNFE_VII: TIBBCDField;
-    FIS_NFE_SUMLBL_VFCPUFDEST: TIBStringField;
-    FIS_NFE_SUMNFE_VFCPUFDEST: TIBBCDField;
-    FIS_NFE_SUMLBL_VOUTRO: TIBStringField;
-    FIS_NFE_SUMNFE_VOUTRO: TIBBCDField;
-    FIS_NFE_SUMLBL_VTOTTRIB: TIBStringField;
-    FIS_NFE_SUMNFE_VTOTTRIB: TIBBCDField;
-    FIS_NFE_SUMLBL_VDUP: TIBStringField;
-    FIS_NFE_SUMNFE_VDUP: TIBBCDField;
-    FIS_NFE_SUMLBL_VNF: TIBStringField;
-    FIS_NFE_SUMNFE_VNF: TIBBCDField;
     DBGEdicaoNFE_VSERV: TdxDBGridMaskColumn;
     DBGEdicaoNFE_VFRETE: TdxDBGridMaskColumn;
     DBGEdicaoNFE_VSEG: TdxDBGridMaskColumn;
@@ -1155,6 +1092,73 @@ type
     FIS_NFE_ADMNFE_AUT_XML_CNPJ: TIBStringField;
     FIS_NFE_ADMNFE_AUT_XML_CPF: TIBStringField;
     ACTCAD_PRO_EST_LAN: TAction;
+    FIS_NFE_SUMID: TLargeintField;
+    FIS_NFE_SUMIDEV: TLargeintField;
+    FIS_NFE_SUMNFE_NITEMPED: TIntegerField;
+    FIS_NFE_SUMNFE_QCOM: TIBBCDField;
+    FIS_NFE_SUMNFE_RCOM: TIntegerField;
+    FIS_NFE_SUMLBL_VPROD: TIBStringField;
+    FIS_NFE_SUMNFE_VPROD: TIBBCDField;
+    FIS_NFE_SUMLBL_VDESC: TIBStringField;
+    FIS_NFE_SUMNFE_VDESC: TIBBCDField;
+    FIS_NFE_SUMLBL_VBC: TIBStringField;
+    FIS_NFE_SUMNFE_VBC: TIBBCDField;
+    FIS_NFE_SUMLBL_CBS_VBCCBS: TIBStringField;
+    FIS_NFE_SUMNFE_CBS_VBCCBS: TIBBCDField;
+    FIS_NFE_SUMLBL_CBS_VCBS: TIBStringField;
+    FIS_NFE_SUMNFE_CBS_VCBS: TIBBCDField;
+    FIS_NFE_SUMLBL_IBSMUN_VBCMUN: TIBStringField;
+    FIS_NFE_SUMNFE_IBSMUN_VBCIBSMUN: TIBBCDField;
+    FIS_NFE_SUMLBL_IBSMUN_VIBSMUN: TIBStringField;
+    FIS_NFE_SUMNFE_IBSMUN_VIBSMUN: TIBBCDField;
+    FIS_NFE_SUMLBL_IBSCBS_VBCIBSCBS: TIBStringField;
+    FIS_NFE_SUMNFE_IBSCBS_VBCIBSCBS: TIBBCDField;
+    FIS_NFE_SUMLBL_IBSUF_VBCIBSUF: TIBStringField;
+    FIS_NFE_SUMNFE_IBSUF_VBCIBSUF: TIBBCDField;
+    FIS_NFE_SUMLBL_IBSUF_VIBSUF: TIBStringField;
+    FIS_NFE_SUMNFE_IBSUF_VIBSUF: TIBBCDField;
+    FIS_NFE_SUMLBL_VICMS: TIBStringField;
+    FIS_NFE_SUMNFE_VICMS: TIBBCDField;
+    FIS_NFE_SUMLBL_VICMSUFDEST: TIBStringField;
+    FIS_NFE_SUMNFE_VICMSUFDEST: TIBBCDField;
+    FIS_NFE_SUMLBL_VICMSUFREMET: TIBStringField;
+    FIS_NFE_SUMNFE_VICMSUFREMET: TIBBCDField;
+    FIS_NFE_SUMLBL_VICMSDESON: TIBStringField;
+    FIS_NFE_SUMNFE_VICMSDESON: TIBBCDField;
+    FIS_NFE_SUMLBL_VBCCREDICMSSN: TIBStringField;
+    FIS_NFE_SUMNFE_VBCCREDICMSSN: TIBBCDField;
+    FIS_NFE_SUMLBL_VCREDICMSSN: TIBStringField;
+    FIS_NFE_SUMNFE_VCREDICMSSN: TIBBCDField;
+    FIS_NFE_SUMLBL_VBCST: TIBStringField;
+    FIS_NFE_SUMNFE_VBCST: TIBBCDField;
+    FIS_NFE_SUMLBL_VST: TIBStringField;
+    FIS_NFE_SUMNFE_VST: TIBBCDField;
+    FIS_NFE_SUMLBL_VIPI: TIBStringField;
+    FIS_NFE_SUMNFE_VIPI: TIBBCDField;
+    FIS_NFE_SUMLBL_VPIS: TIBStringField;
+    FIS_NFE_SUMNFE_VPIS: TIBBCDField;
+    FIS_NFE_SUMLBL_VCOFINS: TIBStringField;
+    FIS_NFE_SUMNFE_VCOFINS: TIBBCDField;
+    FIS_NFE_SUMLBL_VFRETE: TIBStringField;
+    FIS_NFE_SUMNFE_VFRETE: TIBBCDField;
+    FIS_NFE_SUMLBL_VSEG: TIBStringField;
+    FIS_NFE_SUMNFE_VSEG: TIBBCDField;
+    FIS_NFE_SUMLBL_VSERV: TIBStringField;
+    FIS_NFE_SUMNFE_VSERV: TIBBCDField;
+    FIS_NFE_SUMLBL_VII: TIBStringField;
+    FIS_NFE_SUMNFE_VII: TIBBCDField;
+    FIS_NFE_SUMLBL_VFCPUFDEST: TIBStringField;
+    FIS_NFE_SUMNFE_VFCPUFDEST: TIBBCDField;
+    FIS_NFE_SUMLBL_VOUTRO: TIBStringField;
+    FIS_NFE_SUMNFE_VOUTRO: TIBBCDField;
+    FIS_NFE_SUMLBL_VTOTTRIB: TIBStringField;
+    FIS_NFE_SUMNFE_VTOTTRIB: TIBBCDField;
+    FIS_NFE_SUMLBL_VDUP: TIBStringField;
+    FIS_NFE_SUMNFE_VDUP: TIBBCDField;
+    FIS_NFE_SUMLBL_VNF: TIBStringField;
+    FIS_NFE_SUMNFE_VNF: TIBBCDField;
+    EDXML: TdxMaskEdit;
+    EDPDF: TdxMaskEdit;
 
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -1344,6 +1348,7 @@ type
       var ErrorText: String; var Accept: Boolean);
     procedure FIS_NFE_ADMNewRecord(DataSet: TDataSet);
     procedure ACTCAD_PRO_EST_LANExecute(Sender: TObject);
+    procedure DEdhSaiEntChange(Sender: TObject);
   private
     { Private declarations }
     FCurrentEvent,
@@ -1364,9 +1369,6 @@ type
     ASEG_NREG: Integer; { Nº Registros }
     ASEG_VREG,          { R$ Registros }
     ASEG_VSLD: Double;  { R$ Saldo }
-
-    NFE_PDF: string;
-    NFE_XML: string;
 
     AID,
     ADIF: Integer;
@@ -1530,24 +1532,30 @@ end;
 procedure TFrmVEN_NFE._WM_AFTER_SHOW(var Msg: TMessage);
 begin
   { INICIALIZAÇÃO DOS COMPONENTES }
+  oPRN_EXE(Application.Handle,'Relatórios');
   try
     Screen.Cursor := crAppStart;
     GBMenuEdicao.Visible := False;
+    PNLPrincipal.Enabled := False;
 
     { AFTER SHOWNING }
     ACTPesquisa.Execute; { Pesquisa Principal }
 
   finally
-
     Screen.Cursor := crDefault;
     GBMenuEdicao.Visible := True;
+    PNLPrincipal.Enabled := True;
   end;
 
   if Showing then
-  if Edicao.RecNo > 0 then
+  if EDDECD.Enabled  then
   begin
-    PostMessage(TWinControl(DBGEdicao).Handle, WM_SETFOCUS, 0, 0);
-    TWinControl(DBGEdicao).SetFocus;
+    PostMessage(TWinControl(EDDECD).Handle, WM_SETFOCUS, 0, 0);
+    TWinControl(EDDECD).SetFocus;
+  end else
+  begin
+    PostMessage(TWinControl(CEQVOL).Handle, WM_SETFOCUS, 0, 0);
+    TWinControl(CEQVOL).SetFocus;
   end;
 end;
 
@@ -1735,12 +1743,12 @@ begin
 
   { FORM SCREEN }
   REC_SHE_DEF.FPosition := Self.Position; { Posição }
-
   REC_SHE_DEF.FMainArea := False; { Aplicativo }
   REC_SHE_DEF.FWorkArea := False; { Windows    }
 
-  { ACCESS MANAGER }
-  REC_SHE_DEF.FB_Event := 'FIS_NFE_ADM'; { Eventos }
+  { EVENTOS }
+  REC_SHE_DEF.FB_Event   := 'PED_RDV_ADM'; { Evento Principal }
+  REC_SHE_DEF.FB_EVE_EDT := ''; { Evento Edição }
 
   { GRANT USER }
   REC_SHE_DEF.GDescricao  := 'Fiscal';
@@ -1777,9 +1785,6 @@ begin
     ACTMPPost.Enabled     := (REC_SHE_DEF.GPost    );
     ACTMPValidate.Enabled := (REC_SHE_DEF.GValidate);
     ACTMPCancel.Enabled   := (REC_SHE_DEF.GCancel  );
-
-    ACTRelatorios.Enabled := (REC_SHE_DEF.GPrint);
-    ACTVisualiza.Enabled  := (REC_SHE_DEF.GPrint);
   end;
   
   if not REC_SHE_DEF.GView then
@@ -2010,9 +2015,6 @@ procedure TFrmVEN_NFE.ACTConsultaExecute(Sender: TObject);
 begin
   { INICIALIZAÇÃO DE TRANSAÇÕES }
   oOTransact(TConsulta); { Principal }
-
-  { TABELAS }
-  oOTransact(TConsulta); { Consultas }
   with SQLConsulta do
   begin
     if REC_SHE_DEF.IDEV = 0 then
@@ -2278,12 +2280,15 @@ begin
     ACTPSQ_CAD_TRA.HelpKeyWord := SQLPKConsulta.Current.ByName('CT_ID').AsString; { Value }
     ACTPSQ_CAD_TRA.Execute;
 
+    { FRETE }
     IEModFrete.Text := SQLPKConsulta.Current.ByName('FRT_MODELO').AsString;
     IEModFrete.Modified := True;
     IEModFrete.ValidateEdit;
 
     CEVFRT.Value := SQLPKConsulta.Current.ByName('FRT_VFRT').AsFloat;
-    CEQVOL.Text  := SQLPKConsulta.Current.ByName('QTRL').AsString;
+    CEQVOL.Value := 0;
+    CEPSBR.Value := 0;
+    CEPSLQ.Value := 0;
 
     { INFORMAÇÕES ADICIONAIS }
     EDInfAdPed.Text := SQLPKConsulta.Current.ByName('INFADCAD').AsString; { Pedido }
@@ -2315,7 +2320,12 @@ begin
                                                                            Trim(SQLPKConsulta.Current.ByName('CP_NO').AsString + ' '   + SQLPKConsulta.Current.ByName('GRD_NO').AsString) + ' ...';
             Application.ProcessMessages;
           end;
-          
+
+          { FRETE }
+          CEQVOL.Value := CEQVOL.Value + SQLPKConsulta.Current.ByName('QTRL').AsInteger;
+          CEPSBR.Value := CEPSBR.Value + SQLPKConsulta.Current.ByName('PSBR').AsCurrency;
+          CEPSLQ.Value := CEPSLQ.Value + SQLPKConsulta.Current.ByName('PSLQ').AsCurrency;
+
           Edicao.Append;
           EdicaoEP_ID.Value        := RECParametros.EP_ID;
           EdicaoCF_ID.Value        := SQLPKConsulta.Current.ByName('CF_ID').AsInteger;
@@ -2360,6 +2370,9 @@ begin
 
           if (SQLPKConsulta.Current.ByName('UQVOL').AsCurrency > 0) and (SQLPKConsulta.Current.ByName('UESP').AsString <> EmptyStr) then
           EdicaoNFE_INFADCAD.Value := EdicaoNFE_INFADCAD.AsString + 'Conteúdo Unitário: ' + SQLPKConsulta.Current.ByName('UQVOL').AsString + ' ' + SQLPKConsulta.Current.ByName('UESP').AsString;
+
+          EdicaoNFE_PSBR.Value := SQLPKConsulta.Current.ByName('PSBR').AsCurrency;
+          EdicaoNFE_PSLQ.Value := SQLPKConsulta.Current.ByName('PSLQ').AsCurrency;
           Edicao.Post;
 
           SQLPKConsulta.Next;
@@ -2862,7 +2875,8 @@ begin
   CEVSEG.Value := 0;
 
   IEModFrete.Text := '9';
-  CEQVOL.Text  := '0';
+  CEQVOL.Value := 0;
+  PEESP.Text := RECParametros.NFE_ESPECIE;
 
   AINFADTRIB := TStringList.Create; { Informações Adicionais }
 
@@ -2939,8 +2953,9 @@ begin
     SQL.Add('CAST(''Base de Cálculo NRT IBS Mun.''  AS VARCHAR(50)) AS LBL_IBSMUN_VBCMUN ,PK.NFE_IBSMUN_VBCIBSMUN,');
     SQL.Add('CAST(''NRT IBS Municipal''             AS VARCHAR(50)) AS LBL_IBSMUN_VIBSMUN,PK.NFE_IBSMUN_VIBSMUN,');
 
-    SQL.Add('CAST(''Base de Cálculo NRT IBS Est.''  AS VARCHAR(50)) AS LBL_IBSUF_VBCIBSUF,PK.NFE_IBSUF_VBCIBSUF,');
-    SQL.Add('CAST(''NRT IBS Estadual''              AS VARCHAR(50)) AS LBL_IBSUF_VIBSUF  ,PK.NFE_IBSUF_VIBSUF,');
+    SQL.Add('CAST(''Base de Cálculo IBS/CBS''       AS VARCHAR(50)) AS LBL_IBSCBS_VBCIBSCBS,PK.NFE_IBSCBS_VBCIBSCBS,');
+    SQL.Add('CAST(''Base de Cálculo NRT IBS Est.''  AS VARCHAR(50)) AS LBL_IBSUF_VBCIBSUF  ,PK.NFE_IBSUF_VBCIBSUF,');
+    SQL.Add('CAST(''NRT IBS Estadual''              AS VARCHAR(50)) AS LBL_IBSUF_VIBSUF    ,PK.NFE_IBSUF_VIBSUF,');
 
     SQL.Add('CAST(''ICMS Estadual''                 AS VARCHAR(50)) AS LBL_VICMS         ,PK.NFE_VICMS       ,');
     SQL.Add('CAST(''ICMS Interestadual UF Dest.''   AS VARCHAR(50)) AS LBL_VICMSUFDEST   ,PK.NFE_VICMSUFDEST ,');
@@ -3277,8 +3292,8 @@ begin
         SPEdicao.ParamByName('RCOM').Value           := EdicaoNFE_RCOM.AsInteger;
 
         SPEdicao.ParamByName('PSCN').Value           := 0;
-        SPEdicao.ParamByName('PSBR').Value           := 0;
-        SPEdicao.ParamByName('PSLQ').Value           := 0;
+        SPEdicao.ParamByName('PSBR').Value           := CEPSBR.Value;
+        SPEdicao.ParamByName('PSLQ').Value           := CEPSLQ.Value;
 
         SPEdicao.ParamByName('VUNCOM').Value         := EdicaoNFE_VUNCOM.AsFloat;
         SPEdicao.ParamByName('VPROD').Value          := EdicaoNFE_VPROD.AsFloat;
@@ -3315,6 +3330,7 @@ begin
         SPEdicao.ParamByName('VICMSSTRET').Value     := EdicaoNFE_VICMSSTRET.AsFloat;
         SPEdicao.ParamByName('PICMSST').Value        := EdicaoNFE_PICMSST.AsFloat;
         SPEdicao.ParamByName('VICMSST').Value        := EdicaoNFE_VICMSST.AsFloat;
+        SPEdicao.ParamByName('VST').Value            := EdicaoNFE_VST.AsFloat;
         SPEdicao.ParamByName('PCREDSN').Value        := EdicaoNFE_PCREDSN.AsFloat;
         SPEdicao.ParamByName('VCREDICMSSN').Value    := EdicaoNFE_VCREDICMSSN.AsFloat;
         SPEdicao.ParamByName('CSTIPI').Value         := EdicaoNFE_CSTIPI.AsString;
@@ -3343,7 +3359,7 @@ begin
         SPEdicao.ParamByName('VALIQISSQN').Value     := 0;
         SPEdicao.ParamByName('VISSQN').Value         := 0;
         SPEdicao.ParamByName('CMUNFGISSQN').Value    := EmptyStr;
-        SPEdicao.ParamByName('CLISTSERV').Value      := EmptyStr;
+        SPEdicao.ParamByName('CLISTSERV').Value      := 0;
         SPEdicao.ParamByName('VNF').Value            := EdicaoNFE_VNF.AsFloat;
         SPEdicao.ParamByName('CEST').Value           := EdicaoNFE_CEST.AsString;
         SPEdicao.ParamByName('VBCSTDEST').Value      := EdicaoNFE_VBCSTDEST.AsFloat;
@@ -3356,6 +3372,30 @@ begin
         SPEdicao.ParamByName('VFCPUFDEST').Value     := EdicaoNFE_VFCPUFDEST.AsFloat;
         SPEdicao.ParamByName('VICMSUFDEST').Value    := EdicaoNFE_VICMSUFDEST.AsFloat;
         SPEdicao.ParamByName('VICMSUFREMET').Value   := EdicaoNFE_VICMSUFREMET.AsFloat;
+
+        SPEdicao.ParamByName('NFE_IS_VBCIS').Value                := EdicaoNFE_IS_VBCIS.AsFloat;
+        SPEdicao.ParamByName('NFE_IS_VIS').Value                  := EdicaoNFE_IS_VIS.AsFloat;
+        SPEdicao.ParamByName('NFE_IS_QTRIB').Value                := EdicaoNFE_IS_QTRIB.AsFloat;
+        SPEdicao.ParamByName('NFE_IBSCBS_VBCIBSCBS').Value        := EdicaoNFE_IBSCBS_VBCIBSCBS.AsFloat;
+        SPEdicao.ParamByName('NFE_IBSCBS_VIBSCBS').Value          := EdicaoNFE_IBSCBS_VIBSCBS.AsFloat;
+        SPEdicao.ParamByName('NFE_IBSUF_VBCIBSUF').Value          := EdicaoNFE_IBSUF_VBCIBSUF.AsFloat;
+        SPEdicao.ParamByName('NFE_IBSUF_VIBSUF').Value            := EdicaoNFE_IBSUF_VIBSUF.AsFloat;
+        SPEdicao.ParamByName('NFE_IBSUF_VDIF').Value              := EdicaoNFE_IBSUF_VDIF.AsFloat;
+        SPEdicao.ParamByName('NFE_IBSUF_VDEVTRIB').Value          := EdicaoNFE_IBSUF_VDEVTRIB.AsFloat;
+        SPEdicao.ParamByName('NFE_IBSMUN_VBCIBSMUN').Value        := EdicaoNFE_IBSMUN_VBCIBSMUN.AsFloat;
+        SPEdicao.ParamByName('NFE_IBSMUN_VIBSMUN').Value          := EdicaoNFE_IBSMUN_VIBSMUN.AsFloat;
+        SPEdicao.ParamByName('NFE_IBSMUN_VDIF').Value             := EdicaoNFE_IBSMUN_VDIF.AsFloat;
+        SPEdicao.ParamByName('NFE_IBSMUN_VDEVTRIB').Value         := EdicaoNFE_IBSMUN_VDEVTRIB.AsFloat;
+        SPEdicao.ParamByName('NFE_IBSMUN_VCREDPRES').Value        := EdicaoNFE_IBSMUN_VCREDPRES.AsFloat;
+        SPEdicao.ParamByName('NFE_IBSMUN_VCREDPRESCONDSUS').Value := EdicaoNFE_IBSMUN_VCREDPRESCONDSUS.AsFloat;
+        SPEdicao.ParamByName('NFE_CBS_VBCCBS').Value              := EdicaoNFE_CBS_VBCCBS.AsFloat;
+        SPEdicao.ParamByName('NFE_CBS_VCBS').Value                := EdicaoNFE_CBS_VCBS.AsFloat;
+        SPEdicao.ParamByName('NFE_CBS_VDIF').Value                := EdicaoNFE_CBS_VDIF.AsFloat;
+        SPEdicao.ParamByName('NFE_CBS_VDEVTRIB').Value            := EdicaoNFE_CBS_VDEVTRIB.AsFloat;
+        SPEdicao.ParamByName('NFE_CBS_VCREDPRES').Value           := EdicaoNFE_CBS_VCREDPRES.AsFloat;
+        SPEdicao.ParamByName('NFE_CBS_VCREDPRESCONDSUS').Value    := EdicaoNFE_CBS_VCREDPRESCONDSUS.AsFloat;
+
+
         SPEdicao.ParamByName('NFCI').Value           := EdicaoNFE_NFCI.AsString;
         SPEdicao.ParamByName('INFADPROD').Value      := EdicaoNFE_INFADCAD.AsString;
         SPEdicao.ExecProc;
@@ -3456,12 +3496,11 @@ begin
     ACTCAD_PRO_EST_LAN.Execute;
 
     oCTransact(TEdicao);
-    oAviso(handle,IFThen(Pos(SBRodape.Panels[5].Text,'100150') > 0,
-                  'Nota fiscal transmitida e registrada com sucesso !',
-
-                  'Nota Fiscal Denegada !' + #13 +
+    if Pos(SBRodape.Panels[5].Text,'100150') = 0 then
+    oAviso(handle,'Nota Fiscal Denegada !' + #13 +
                   'Possíveis problemas fiscais desse destinatário na receita federal.' + #13 + #13 +
-                  'Favor entrar em contato com o cliente e/ou representante.'));
+                  'Favor entrar em contato com o cliente e/ou representante.')
+                  ;
 
     if RECRomaneio.FIN_CSPD then
     bBAI_FINANCEIRO(IFThen(FIS_NFE_DUPId.AsInteger > 0,Trunc(CECDNF.Value),0),IFThen(FIS_NFE_DUPId.AsInteger > 0,0,RECRomaneio.IDFK)) else
@@ -3664,15 +3703,15 @@ end;
 
 procedure TFrmVEN_NFE.ACTEmailExecute(Sender: TObject);
 begin
-  if (FileExists(NFE_PDF)) and (FileExists(NFE_XML)) then
+  if (FileExists(EDPDF.Text)) and (FileExists(EDXML.Text)) then
   try
     frmemail := TFrmemail.Create(self);
     frmemail.cbemail.Text  := PEEmail.Text;
     frmemail.edtitulo.Text := RECParametros.EP_NO+' - NF.: '+CECDNF.Text;
     frmemail.Memo1.Lines.Add('Segue em anexo...') ;
 
-    frmemail.cbarqs.Items.Add(NFE_PDF);
-    frmemail.cbarqs.Items.Add(NFE_XML);
+    frmemail.cbarqs.Items.Add(EDPDF.Text);
+    frmemail.cbarqs.Items.Add(EDXML.Text);
 
     frmemail.ShowModal;
   finally
@@ -3724,6 +3763,7 @@ procedure TFrmVEN_NFE.ACTCheckConstraintsExecute(Sender: TObject);
 var
   ClickedOK: Boolean;
 begin
+  Application.ProcessMessages;
   try
     { Finalidade NFe }
     if IEFinNFe.Text <> '1' then
@@ -3762,7 +3802,7 @@ begin
       TAB_PAG.Open;
     end;
 
-    if TAB_PAGPAG_PARC.AsInteger <> FIS_NFE_DUP.RecordCount then
+    if (IEBOLETO.Text = 'SIM') and (TAB_PAGPAG_PARC.AsInteger <> FIS_NFE_DUP.RecordCount) then
        oException(IECDPG,'Número de parcelas da nota fiscal difere do número de parcelas do prazo selecionado !');
 
     { Triangular }
@@ -3867,6 +3907,8 @@ end;
 
 procedure TFrmVEN_NFE.ACTCheckErrorsExecute(Sender: TObject);
 begin
+  Application.ProcessMessages;
+  
   { Duplicatas }
   FIS_NFE_DUP.DisableControls;
   if FIS_NFE_DUP.State in [dsEdit,dsInsert] then
@@ -4010,12 +4052,22 @@ end;
 
 procedure TFrmVEN_NFE.ACTRelatoriosExecute(Sender: TObject);
 begin
-  { nothing }
+  if not FileExists(EDXML.Text) then
+  oException(Nil,'Arquivo xml de autorização da nota fiscal não encontrado !');
+
+  if not FileExists(EDPDF.Text) then
+  oException(Nil,'Arquivo pdf não encontrado !');
+
+  if ImprimeDanfe(EDXML.Text,EDPDF.Text,1,False) then
+  oAviso(Application.Handle,'Danfe impressa com sucesso !');
 end;
 
 procedure TFrmVEN_NFE.ACTVisualizaExecute(Sender: TObject);
 begin
-  { nothing }
+  if not FileExists(EDXML.Text) then
+  oException(Nil,'Arquivo xml de autorização da nota fiscal não encontrado !');
+
+  ImprimeDanfe(EDXML.Text,'',3,False);
 end;
 
 procedure TFrmVEN_NFE.ACTDashboardsExecute(Sender: TObject);
@@ -4032,53 +4084,56 @@ procedure TFrmVEN_NFE.ACTEveRegisterExecute(Sender: TObject);
 begin
   { UNREGISTER EVENTS }
   if EEvent.Registered then
-     try
-       EEvent.UnregisterEvents;
-       EEvent.Events.Clear;
 
-       REC_SHE_DEF.FB_EVE_ADM := EmptyStr; { Admin  }
-       REC_SHE_DEF.FB_EVE_PAD := EmptyStr; { Padrão }
-       REC_SHE_DEF.FB_EVE_EDT := EmptyStr; { Edição }
-     except
-       on E: Exception do
-       begin
-         oErro(Handle,'Falha ao tentar limpar evento Padrão !' + #13 +
-                      'Erro: ' + E.Message + '.');
-       end;
-     end;
+  try
+    EEvent.UnregisterEvents;
+    EEvent.Events.Clear;
+
+    REC_SHE_DEF.FB_EVE_ADM := EmptyStr; { Admin  }
+    REC_SHE_DEF.FB_EVE_PAD := EmptyStr; { Padrão }
+  except
+    on E: Exception do
+    begin
+      oErro(Handle,'Falha ao tentar limpar evento Padrão !' + #13 +
+                   'Erro: ' + E.Message + '.');
+    end;
+  end;
 
   { REGISTER EVENTS }
   REC_SHE_DEF.FB_Event := TRIM(REC_SHE_DEF.FB_Event);
   if REC_SHE_DEF.FB_Event <> EmptyStr then
-     try
-       { ADMIN }
-       REC_SHE_DEF.FB_EVE_ADM := REC_SHE_DEF.FB_Event + '-' + oStrZero(RECParametros.EP_ID,3) + '-ADM';
-       EEvent.Events.Add(REC_SHE_DEF.FB_EVE_ADM);
 
-       { PADRÃO }
-       if not RECUsuarios.IS_EVE_ADM then
-       begin
-         REC_SHE_DEF.FB_EVE_PAD := REC_SHE_DEF.FB_Event + '-' + oStrZero(RECParametros.EP_ID,3) + '-' + oStrZero(RECUsuarios.ID,3);
-         EEvent.Events.Add(REC_SHE_DEF.FB_EVE_PAD);
-       end;
+  try
+    { ADMIN }
+    REC_SHE_DEF.FB_EVE_ADM := REC_SHE_DEF.FB_Event + '-' + oStrZero(RECParametros.EP_ID,3) + '-ADM';
+    EEvent.Events.Add(REC_SHE_DEF.FB_EVE_ADM);
 
-       { EDIÇÃO }
-       if ACTEveRegister.Tag > 0 then
-       begin
-         REC_SHE_DEF.FB_EVE_EDT := REC_SHE_DEF.FB_Event + '-' + oStrZero(RECParametros.EP_ID,3) + '-EDT' + oStrZero(ACTEveRegister.Tag,3);
-         EEvent.Events.Add(REC_SHE_DEF.FB_EVE_EDT);
+    { PADRÃO }
+    if not RECUsuarios.IS_EVE_ADM then
+    begin
+      REC_SHE_DEF.FB_EVE_PAD := REC_SHE_DEF.FB_Event + '-' + oStrZero(RECParametros.EP_ID,3) + '-' + oStrZero(RECUsuarios.ID,3);
+      EEvent.Events.Add(REC_SHE_DEF.FB_EVE_PAD);
+    end;
 
-         ACTEveRegister.Tag := 0;
-       end;
+    { EDIÇÃO }
+    if REC_SHE_DEF.FB_EVE_EDT <> EmptyStr then
+    begin
+      if ACTEveRegister.Tag > 0 then
+      REC_SHE_DEF.FB_EVE_EDT := REC_SHE_DEF.FB_EVE_EDT + '-' + oStrZero(RECParametros.EP_ID,3) + '-' + oStrZero(ACTEveRegister.Tag,3) else
+      REC_SHE_DEF.FB_EVE_EDT := REC_SHE_DEF.FB_EVE_EDT + '-' + oStrZero(RECParametros.EP_ID,3) + '-' + oStrZero(RECUsuarios.ID,3);
 
-       EEvent.RegisterEvents;
-     except
-       on E: Exception do
-       begin
-         oErro(Application.Handle,'Falha ao tentar registrar evento !' + #13 +
-                                  'Erro: '   + E.Message + '.');
-       end;
-     end;
+      EEvent.Events.Add(REC_SHE_DEF.FB_EVE_EDT);
+      ACTEveRegister.Tag := 0;
+    end;
+
+    EEvent.RegisterEvents;
+  except
+    on E: Exception do
+    begin
+      oErro(Application.Handle,'Falha ao tentar registrar evento !' + #13 +
+                               'Erro: '   + E.Message + '.');
+    end;
+  end;
 end;
 
 procedure TFrmVEN_NFE.ACTEveExecuteExecute(Sender: TObject);
@@ -4139,9 +4194,6 @@ procedure TFrmVEN_NFE.EdicaoBeforeOpen(DataSet: TDataSet);
 begin
   { INICIALIZA FORM SCREEN }
   Screen.Cursor := crHourGlass;
-
-  DBGEdicao.Bands[6].Visible := False;    { Substituição Tributária }
-  DBGEdicaoNFE_NFCI.Visible  := False;    { NFCI }
 
   { COMPOSIÇÃO }
   PNLNFE_XPROX.Caption := EmptyStr;
@@ -4384,7 +4436,6 @@ begin
   Exit;
 
   DBGEdicaoNFE_XPED.Visible  := (IEITEMPED.Text = '1');
-  DBGEdicao.Bands[3].Visible := (LeftStr(EdicaoNFE_CFOP.AsString,1) = '7'); { Tributação }
 
   { Ajuste Colunas }
   if Edicao.State = dsBrowse then
@@ -4441,6 +4492,24 @@ begin
     begin
       AColor      := clGray;
       AFont.Color := clHighLightText;
+    end;
+
+    if (AColumn = DBGEdicaoNFE_QCOM) and (ANode.Values[DBGEdicaoNFE_QCOM.Index] <> Null) then
+    begin
+      AColor      := $00F9F1DF;
+      AFont.Color := clWindowText;
+    end;
+
+    if (AColumn = DBGEdicaoNFE_VUNCOM) and (ANode.Values[DBGEdicaoNFE_VUNCOM.Index] <> Null) then
+    begin
+      AColor      := $00F9F1DF;
+      AFont.Color := clWindowText;
+    end;
+
+    if (AColumn = DBGEdicaoNFE_VNF) and (ANode.Values[DBGEdicaoNFE_VNF.Index] <> Null) then
+    begin
+      AColor      := $00F9F1DF;
+      AFont.Color := clWindowText;
     end;
   end;
 
@@ -6004,7 +6073,7 @@ begin
     EdicaoNFE_PREDBC.Value := TAB_CFOPCFOP_PREDBC.AsFloat;
     EdicaoNFE_PICMS.Value  := IFThen((Pos(EdicaoNFE_CST.AsString,'201202500900') = 0) and (RECParametros.NFE_CRT = 1),0,
                               IFThen(IEUF.Text = 'EX',RECParametros.NFE_ICMS,
-                              IFThen((Pos(EdicaoNFE_ORIG.AsString,'12') > 0) and (IEUF.Text <> RECParametros.LOG_UF),4,
+                              IFThen((Pos(EdicaoNFE_ORIG.AsString,'123') > 0) and (IEUF.Text <> RECParametros.LOG_UF),4,
                               IFThen((IEUF.Text = RECParametros.LOG_UF      ) and (IEUF.Text = 'SP') and
                                      (EdicaoNFE_NCM.AsString   = '39181000'),12,TAB_ALQALQ_ICMS.AsFloat))));
 
@@ -6291,6 +6360,8 @@ begin
 
         PNLSyncEvent.Caption := 'Aguarde, verificando duplicata(s) ...';
         PNLSyncEvent.Refresh;
+
+        Application.ProcessMessages;
         SleepEx(500,False);
 
         PNLSBRodapeSyncEvent.Height := 25;
@@ -6576,11 +6647,7 @@ begin
   ACTXMLValidate.Enabled := False;
   ACTXMLSend.Enabled     := False;
 
-  ACTEmail.Enabled   := False;
   ACTImporta.Enabled := True;
-
-  ACTRelatorios.Enabled := False;
-  ACTVisualiza.Enabled  := False;
 
   Application.ProcessMessages;
 end;
@@ -6597,11 +6664,7 @@ begin
   ACTXMLValidate.Enabled := True;
   ACTXMLSend.Enabled     := False;
 
-  ACTEmail.Enabled   := False;
   ACTImporta.Enabled := False;
-
-  ACTRelatorios.Enabled := False;
-  ACTVisualiza.Enabled  := False;
 
   Application.ProcessMessages;
 end;
@@ -6632,14 +6695,17 @@ begin
   SBRodape.Panels[5].Text := EmptyStr; { CSTAT       }
   SBRodape.Refresh;
 
-  if EDDDD.Text  = EmptyStr then
-     EDDDD.Text := '00';
+  EDPDF.Text := EmptyStr;
+  EDPDF.Refresh;
+
+  EDXML.Text := EmptyStr;
+  EDXML.Refresh;
+
+  if EDDDD.Text = EmptyStr then
+  EDDDD.Text := '00';
 
   if EDFone.Text = EmptyStr then
-     EDFone.Text := '00000000';
-
-  NFE_PDF  := EmptyStr;
-  NFE_XML  := EmptyStr;
+  EDFone.Text := '00000000';
 
   PCEdicao.ActivePage := TSProduto;
   ACTXMLCreate.Tag    := 1;
@@ -6654,6 +6720,7 @@ begin
   SBRodape.Panels[0].Text := 'Aguarde, conectando sefaz ...';
   SBRodape.Refresh;
 
+  Application.ProcessMessages;
   SBRodape.Panels[0].Text := oNFE_API_SEFAZ;
   SBRodape.Refresh;
 
@@ -7596,7 +7663,7 @@ begin
     tTotal[48] := ''; //<vIS> Total do Imposto Seletivo
 
     //<IBSCBSTot> Totais da NF-e com IBS e CBS
-    tTotal[49] := oTextToValor(EdicaoNFE_IBSCBS_VBCIBSCBS.AsFloat,2,True); //<vBCIBSCBS> Valor total da BC do IBS e da CBS
+    tTotal[49] := oTextToValor(FIS_NFE_SUMNFE_IBSCBS_VBCIBSCBS.AsFloat,2,True); //<vBCIBSCBS> Valor total da BC do IBS e da CBS
 
     {<gIBS> Grupo Total do IBS}
     {Para gerar este grupo todas tags abaixo devem ser informadas}
@@ -7604,14 +7671,14 @@ begin
     {<gIBSUF> Grupo Total do IBS da UF}
     tTotal[50] := '0.00'; //<vDif> Valor total do diferimento
     tTotal[51] := '0.00'; //<vDevTrib> Valor total de devolução de tributos
-    tTotal[52] := oTextToValor(EdicaoNFE_IBSUF_VIBSUF.ASFloat,2,True); //<vIBSUF> Valor total do IBS da UF
+    tTotal[52] := oTextToValor(FIS_NFE_SUMNFE_IBSUF_VIBSUF.ASFloat,2,True); //<vIBSUF> Valor total do IBS da UF
 
     {<gIBSMun> Grupo Total do IBS do Município}
     tTotal[53] := '0.00'; //<vDif> Valor total do diferimento
     tTotal[54] := '0.00'; //<vDevTrib> Valor total de devolução de tributos
     tTotal[55] := '0.00'; //<vIBSMun> Valor total do IBS da UF
 
-    tTotal[56] := oTextToValor(EdicaoNFE_IBSUF_VIBSUF.ASFloat,2,True); //<vIBS> Valor total do IBS
+    tTotal[56] := oTextToValor(FIS_NFE_SUMNFE_IBSUF_VIBSUF.ASFloat,2,True); //<vIBS> Valor total do IBS
     tTotal[57] := '0.00'; //<vCredPres> Valor total do crédito presumido
     tTotal[58] := '0.00'; //<vCredPresCondSus> Valor total do crédito presumido em condição suspensiva
 
@@ -7619,7 +7686,7 @@ begin
     {Para gerar este grupo todas tags abaixo devem ser informadas}
     tTotal[59] := '0.00'; //<vDif> Valor total do diferimento
     tTotal[60] := '0.00'; //<vDevTrib> Valor total de devolução de tributos
-    tTotal[61] := oTextToValor(EdicaoNFE_CBS_VCBS.AsFloat,2,True); //<vCBS> Valor total da CBS
+    tTotal[61] := oTextToValor(FIS_NFE_SUMNFE_CBS_VCBS.AsFloat,2,True); //<vCBS> Valor total da CBS
     tTotal[62] := '0.00'; //<vCredPres> Valor total do crédito presumido
     tTotal[63] := '0.00'; //<vCredPresCondSus> Valor total do crédito presumido em condição suspensiva
 
@@ -7680,6 +7747,7 @@ begin
       SBRodape.Refresh;
       
       ACTNFeValidate.Execute;
+      ACTXMLValidate.Execute;
     end else
     begin
       SBRodape.Panels[1].Text := 'Falha na geração do arquivo XML';
@@ -7749,12 +7817,13 @@ begin
 
     repeat
       inc(y);
-      x := GerarLote(Trunc(CECDNF.Value),'',false);
+      x := GerarLote(Trunc(CECDNF.Value),'',False);
 
       if x = 1 then
       Break;
 
-      SleepEx(2000,False);
+      Application.ProcessMessages;
+      SleepEx(1000,False);
     until y = 5;
 
     if x = 1 then
@@ -7775,7 +7844,8 @@ begin
           Break;
         end;
 
-        SleepEx(2000,False);
+        Application.ProcessMessages;
+        SleepEx(1000,False);
       until y = 5;
     end else
 
@@ -7868,12 +7938,13 @@ begin
       SBRodape.Panels[2].Text := 'Tentativa(s): ' + INTTOSTR(Y);
       SBRodape.Refresh;
 
-      SleepEx(2000,False);
+      Application.ProcessMessages;
+      SleepEx(1000,False);
     until y = 5;
   finally
     Screen.cursor := crDefault;
 
-    if SBRodape.Panels[2].Text <> EmptyStr then
+    if (SBRodape.Panels[2].Text <> EmptyStr) and (SBRodape.Panels[5].Text <> '100') then
     begin
       ACTNFeEdicao.Execute;
       oException(Nil,SBRodape.Panels[2].Text + #13 +
@@ -7903,7 +7974,8 @@ begin
     if Pos(SBRodape.Panels[5].Text,'100110150') > 0 then { Transmissão OK }
     Break;
 
-    SleepEx(2000,False);
+    Application.ProcessMessages;
+    SleepEx(1000,False);
   until y = 5;
 
   SBRodape.Panels[1].Text := EmptyStr;
@@ -7923,10 +7995,6 @@ begin
     ACTXMLCreate.Enabled   := False;
     ACTXMLValidate.Enabled := False;
     ACTXMLSend.Enabled     := False;
-
-    ACTRelatorios.Enabled := True;
-    ACTVisualiza.Enabled  := True;
-    ACTEmail.Enabled      := True;
   end;
 
   try
@@ -8899,9 +8967,12 @@ procedure TFrmVEN_NFE.ACTNFePDFExecute(Sender: TObject);
 var
   i: word;
 begin
-  NFE_PDF := EmptyStr;
-  NFE_XML := EmptyStr;
+  EDPDF.Text := EmptyStr;
+  EDPDF.Refresh;
 
+  EDXML.Text := EmptyStr;
+  EDXML.Refresh;
+  
   if (Pos(CECDNF.Text,SBRodape.Panels[3].Text) = 0) or (Length(SBRodape.Panels[3].Text) < 44) then
   oException(Nil,'Código de Barras da Nota Fiscal não Informado !');
 
@@ -8909,52 +8980,64 @@ begin
     Screen.cursor := crAppStart;
     oRegister_UPD_SizeFont(EDINFADNF.Lines.Count);
 
-    NFE_PDF := 'C:\Sheild\NotaFiscal\PDF\'+oStrZero(Trunc(CECDNF.Value),6)+'.pdf';
-    NFE_XML := 'C:\Sheild\NotaFiscal\NFe\arquivos\procnfe\'+oStrZero(RECParametros.SHE_DATA_ANO,4)+oStrZero(RECParametros.SHE_DATA_MES,2)+'\'+SBRodape.Panels[3].Text+'-procNFe.xml';
+    EDPDF.Text := 'C:\Sheild\NotaFiscal\PDF\' + oStrZero(Trunc(CECDNF.Value),6) + '.pdf';
+    EDPDF.Refresh;
 
-    if not FileExists(NFE_XML) then
+    EDXML.Text := 'C:\Sheild\NotaFiscal\NFe\arquivos\procnfe\' + oStrZero(RECParametros.SHE_DATA_ANO,4) + oStrZero(RECParametros.SHE_DATA_MES,2) + '\' + SBRodape.Panels[3].Text + '-procNFe.xml';
+    EDXML.Refresh;
+    
+    if not FileExists(EDXML.Text) then
     begin
       SBRodape.Panels[1].Text := EmptyStr;
       SBRodape.Refresh;
 
       i := 0;
       repeat
+        SBRodape.Panels[0].Text := 'Aguarde, baixando arquivo xml de autorização ...';
         SBRodape.Panels[1].Text := ArquivoDistribuicaoNFe(SBRodape.Panels[3].Text);
         SBRodape.Refresh;
 
-        if FileExists(NFE_XML) then
+        if FileExists(EDXML.Text) then
         begin
-          SBRodape.Panels[1].Text := NFE_XML;
+          SBRodape.Panels[1].Text := EDXML.Text;
           Break;
         end;
 
-        SleepEx(2000,False);
+        Application.ProcessMessages;
+        SleepEx(1000,False);
         inc(i);
       until i = 5;
     end;
 
-    if (FileExists(NFE_XML)) and (not FileExists(NFE_PDF)) then
+    if not FileExists(EDXML.Text) then
+    oErro(Application.Handle,'Arquivo xml de autorização da nota fiscal não encontrado !') else
     begin
-      SBRodape.Panels[1].Text := EmptyStr;
+      SBRodape.Panels[0].Text := 'Aguarde, gerando danfe ...';
       SBRodape.Refresh;
 
       i := 0;
       repeat
-        ImprimeDanfe(NFE_XML,NFE_PDF,2,false);
-
-        if FileExists(NFE_PDF) then
+        if ImprimeDanfe(EDXML.Text,EDPDF.Text,2,False) then
         begin
-          SBRodape.Panels[1].Text := NFE_PDF;
+          ACTRelatorios.Enabled := True;
+          ACTVisualiza.Enabled  := True;
+          ACTEmail.Enabled      := True;
+        end;
+
+        if FileExists(EDPDF.Text) then
+        begin
+          SBRodape.Panels[1].Text := EDPDF.Text;
           Break;
         end;
 
-        SleepEx(2000,False);
+        Application.ProcessMessages;
+        SleepEx(1000,False);
         inc(i);
       until i = 5;
     end;
   finally
     Screen.cursor := crDefault;
-    SBRodape.Refresh;
+    Application.ProcessMessages;
   end;
 end;
 
@@ -9120,6 +9203,44 @@ begin
                            'Erro: '+E.Message);
        end;
      end;
+end;
+
+procedure TFrmVEN_NFE.DEdhSaiEntChange(Sender: TObject);
+begin
+  DecodeDate(DEdhSaiEnt.Date,RECParametros.SHE_DATA_ANO, RECParametros.SHE_DATA_MES, RECParametros.SHE_DATA_DIA);
+ { with REC_SHE_FIS do
+  begin
+    PATH_XML         := PAnsiChar(RECParametros.PATH_SHE + '\' + RECParametros.PATH_NFE_XML         + '\' + RECParametros.CNPJ + '\' + oStrZero(RECParametros.SHE_DATA_ANO,4) + oStrZero(RECParametros.SHE_DATA_MES,2));
+    PATH_XML_PROCNFE := PAnsiChar(RECParametros.PATH_SHE + '\' + RECParametros.PATH_NFE_XML_PROCNFE + '\' + oStrZero(RECParametros.SHE_DATA_ANO,4) + oStrZero(RECParametros.SHE_DATA_MES,2));
+
+    if PATH_XML_LAN <> EmptyStr then
+       PATH_XML_LAN := PAnsiChar(RECParametros.PATH_SHE_LAN + '\' + RECParametros.PATH_NFE_XML + '\' + RECParametros.CNPJ + '\' + oStrZero(RECParametros.SHE_DATA_ANO,4) + oStrZero(RECParametros.SHE_DATA_MES,2));
+
+    if not DirectoryExists(PATH_XML) then
+       try
+         ForceDirectories(PATH_XML);
+       except
+         on E: Exception do
+         begin
+           oAviso(Application.Handle,'Falha ao tentar criar pasta local de arquivos XML !' + #13 +
+                                      PATH_XML + #13 + #13 +
+                                     'Favor entrar em contado com o administrador do sistema.');
+         end;
+       end;
+
+    if PATH_XML_LAN <> EmptyStr then
+    if not DirectoryExists(PATH_XML_LAN) then
+       try
+         ForceDirectories(PATH_XML_LAN);
+       except
+         on E: Exception do
+         begin
+           oAviso(Application.Handle,'Falha ao tentar criar pasta de arquivos XML na rede !' + #13 +
+                                      PATH_XML_LAN + #13 + #13 +
+                                     'Favor entrar em contado com o administrador do sistema.');
+         end;
+       end;
+  end;}
 end;
 
 end.

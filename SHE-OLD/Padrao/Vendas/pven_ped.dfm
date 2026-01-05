@@ -252,6 +252,7 @@ object FrmVEN_PED: TFrmVEN_PED
     0000000000000000000000000000}
   KeyPreview = True
   OldCreateOrder = False
+  Position = poDefault
   Visible = True
   OnActivate = FormActivate
   OnClose = FormClose
