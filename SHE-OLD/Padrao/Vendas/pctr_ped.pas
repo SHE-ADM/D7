@@ -1322,8 +1322,7 @@ begin
   PNLINFADCAD.Height := IFThen((PosCount = 00) and (CadastroINFADCAD.AsString =  EmptyStr) ,00,
                         IFThen((PosCount = 00) and (CadastroINFADCAD.AsString <> EmptyStr) ,30,
                         IFThen((PosCount = 01),040,
-                        IFThen((PosCount = 02),055,
-                        IFThen((PosCount = 03),070,080)))));
+                        IFThen((PosCount = 02),055,70))));
 
   PNLLOGOS.Visible  := (CadastroINFADOS.AsString  <> EmptyStr);
   PNLLOGPRN.Visible := (CadastroINFADPRN.AsString <> EmptyStr);

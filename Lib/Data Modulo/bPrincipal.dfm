@@ -2073,7 +2073,6 @@ object FBird: TFBird
     Top = 368
   end
   object DB_EDI: TIBDatabase
-    Connected = True
     DatabaseName = 'C:\Sheild\FBird\SHE-EDI.FDB'
     Params.Strings = (
       'user_name=sysdba'
