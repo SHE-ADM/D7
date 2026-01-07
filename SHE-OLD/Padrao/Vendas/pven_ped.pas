@@ -2570,7 +2570,7 @@ begin
     SQL.Add('       FK.REST');
 
     SQL.Add('FROM ' + oREPZero('VW_PED_VEN_CAB','_',RECParametros.EP_ID,3) + ' AS PK');
-    SQL.Add('JOIN ' + oREPZero('VW_PED_VEN_ITE','_',RECParametros.EP_ID,3) + ' AS FK ON (FK.IDPK = PK.IDPK)');
+    SQL.Add('LEFT JOIN ' + oREPZero('VW_PED_VEN_ITE','_',RECParametros.EP_ID,3) + ' AS FK ON (FK.IDPK = PK.IDPK)');
     SQL.Add('LEFT JOIN SP_PSQ_CAD_PRO_EST_SLD(:IDEP,FK.IDCP) AS E ON (1 = 1)');
 
     SQL.Add('WHERE    PK.IDEP = ''' + RECParametros.EP_ID + '''');
@@ -2648,67 +2648,71 @@ begin
 
       while not Eof do
       begin
-        Edicao.Append;
-
-        EdicaoROM_IDFK.Value  := Current.ByName('IDFK').AsInteger;
-        EdicaoROM_CDEP.Value  := Current.ByName('IDEP').AsInteger;
-        EdicaoROM_IDPK.Value  := Current.ByName('IDPK').AsInteger;
-
-        EdicaoROM_ITEM.Value  := oStrZero(Current.ByName('ITEM').AsInteger,5);
-        EdicaoROM_IPRO.Value  := Current.ByName('IDCP').AsInteger;
-
-        EdicaoROM_CART.Value  := Current.ByName('ARTIGO').AsString;
-        EdicaoROM_CPRO.Value  := Current.ByName('SKU'   ).AsString;
-        EdicaoROM_CBAR.Value  := Current.ByName('CEAN'  ).AsString;
-
-        EdicaoROM_CCLF.Value  := Current.ByName('NCM' ).AsString;
-        EdicaoROM_PIPI.Value  := Current.ByName('PIPI').AsCurrency;
-
-        EdicaoROM_DPRO.Value  := Current.ByName('DECP').AsString;
-        EdicaoROM_DCOR.Value  := Current.ByName('DGCP').AsString;
-
-        EdicaoROM_DUNI.Value  := Current.ByName('UCOM' ).AsString;
-        EdicaoROM_UCON.Value  := Current.ByName('UCON' ).AsString;
-        EdicaoROM_QTUN.Value  := Current.ByName('UQTDE').AsCurrency;
-
-        EdicaoROM_PESO.Value  := Current.ByName('UPESO' ).AsCurrency;
-        EdicaoROM_PSCN.Value  := Current.ByName('UPSCN' ).AsCurrency;
-        EdicaoROM_METR.Value  := Current.ByName('UMETRO').AsCurrency;
-        EdicaoROM_REND.Value  := Current.ByName('UREND' ).AsCurrency;
-
-        EdicaoROM_QTDE.Value  := Current.ByName('QTDE').AsCurrency;
-        EdicaoROM_QTRL.Value  := Current.ByName('QTRL').AsInteger;
-
-        EdicaoROM_PTABI.Value := Current.ByName('VPRC_PAD_INI').AsCurrency;
-        EdicaoROM_PTABF.Value := Current.ByName('VPRC_PAD_FIM').AsCurrency;
-
-        EdicaoROM_PREC.Value := Current.ByName('VPRC_PAD').AsCurrency;
-        EdicaoROM_UNIT.Value := Current.ByName('VPRC_COM').AsCurrency;
-
-        EdicaoROM_PDSC.Value := Current.ByName('PDSC').AsCurrency;
-        EdicaoROM_VDSC.Value := Current.ByName('VDSC').AsCurrency;
-
-        EdicaoROM_TSDE.Value := Current.ByName('TSDE').AsCurrency;
-        EdicaoROM_TCDE.Value := Current.ByName('TCDE').AsCurrency;
-        EdicaoROM_VIPI.Value := Current.ByName('VIPI').AsCurrency;
-
-        EdicaoROM_PSBR.Value := Current.ByName('PSBR').AsCurrency;
-        EdicaoROM_PSLQ.Value := Current.ByName('PSLQ').AsCurrency;
-
-        EdicaoROM_QDIS.Value  := Current.ByName('EPE_QTDE').AsCurrency;
-        EdicaoROM_RLDI.Value  := Current.ByName('EPE_QTRL').AsInteger;
-        EdicaoROM_STAV.Value  := IFThen(Pos(REC_SHE_DEF.CDEV,'23') > 0,'A',Current.ByName('REST').AsString); // ignora status quanto abatimento ou devolução
-
-        { Expedição }
-        if REC_SHE_DEF.CDEV = 1 then // somente para alteração
+        if Current.ByName('IDFK').AsInteger > 0 then
         begin
-          EdicaoROM_QTPD.Value := Current.ByName('QTSP').AsCurrency;
-          EdicaoROM_RLPD.Value := Current.ByName('RLSP').AsInteger;
-          EdicaoROM_DSEP.Value := Current.ByName('DESP').AsString;
-          EdicaoROM_DTPD.Value := Current.ByName('DTSP').AsDateTime;
+          Edicao.Append;
+
+          EdicaoROM_IDFK.Value  := Current.ByName('IDFK').AsInteger;
+          EdicaoROM_CDEP.Value  := Current.ByName('IDEP').AsInteger;
+          EdicaoROM_IDPK.Value  := Current.ByName('IDPK').AsInteger;
+
+          EdicaoROM_ITEM.Value  := oStrZero(Current.ByName('ITEM').AsInteger,5);
+          EdicaoROM_IPRO.Value  := Current.ByName('IDCP').AsInteger;
+
+          EdicaoROM_CART.Value  := Current.ByName('ARTIGO').AsString;
+          EdicaoROM_CPRO.Value  := Current.ByName('SKU'   ).AsString;
+          EdicaoROM_CBAR.Value  := Current.ByName('CEAN'  ).AsString;
+
+          EdicaoROM_CCLF.Value  := Current.ByName('NCM' ).AsString;
+          EdicaoROM_PIPI.Value  := Current.ByName('PIPI').AsCurrency;
+
+          EdicaoROM_DPRO.Value  := Current.ByName('DECP').AsString;
+          EdicaoROM_DCOR.Value  := Current.ByName('DGCP').AsString;
+
+          EdicaoROM_DUNI.Value  := Current.ByName('UCOM' ).AsString;
+          EdicaoROM_UCON.Value  := Current.ByName('UCON' ).AsString;
+          EdicaoROM_QTUN.Value  := Current.ByName('UQTDE').AsCurrency;
+
+          EdicaoROM_PESO.Value  := Current.ByName('UPESO' ).AsCurrency;
+          EdicaoROM_PSCN.Value  := Current.ByName('UPSCN' ).AsCurrency;
+          EdicaoROM_METR.Value  := Current.ByName('UMETRO').AsCurrency;
+          EdicaoROM_REND.Value  := Current.ByName('UREND' ).AsCurrency;
+
+          EdicaoROM_QTDE.Value  := Current.ByName('QTDE').AsCurrency;
+          EdicaoROM_QTRL.Value  := Current.ByName('QTRL').AsInteger;
+
+          EdicaoROM_PTABI.Value := Current.ByName('VPRC_PAD_INI').AsCurrency;
+          EdicaoROM_PTABF.Value := Current.ByName('VPRC_PAD_FIM').AsCurrency;
+
+          EdicaoROM_PREC.Value := Current.ByName('VPRC_PAD').AsCurrency;
+          EdicaoROM_UNIT.Value := Current.ByName('VPRC_COM').AsCurrency;
+
+          EdicaoROM_PDSC.Value := Current.ByName('PDSC').AsCurrency;
+          EdicaoROM_VDSC.Value := Current.ByName('VDSC').AsCurrency;
+
+          EdicaoROM_TSDE.Value := Current.ByName('TSDE').AsCurrency;
+          EdicaoROM_TCDE.Value := Current.ByName('TCDE').AsCurrency;
+          EdicaoROM_VIPI.Value := Current.ByName('VIPI').AsCurrency;
+
+          EdicaoROM_PSBR.Value := Current.ByName('PSBR').AsCurrency;
+          EdicaoROM_PSLQ.Value := Current.ByName('PSLQ').AsCurrency;
+
+          EdicaoROM_QDIS.Value  := Current.ByName('EPE_QTDE').AsCurrency;
+          EdicaoROM_RLDI.Value  := Current.ByName('EPE_QTRL').AsInteger;
+          EdicaoROM_STAV.Value  := IFThen(Pos(REC_SHE_DEF.CDEV,'23') > 0,'A',Current.ByName('REST').AsString); // ignora status quanto abatimento ou devolução
+
+          { Expedição }
+          if REC_SHE_DEF.CDEV = 1 then // somente para alteração
+          begin
+            EdicaoROM_QTPD.Value := Current.ByName('QTSP').AsCurrency;
+            EdicaoROM_RLPD.Value := Current.ByName('RLSP').AsInteger;
+            EdicaoROM_DSEP.Value := Current.ByName('DESP').AsString;
+            EdicaoROM_DTPD.Value := Current.ByName('DTSP').AsDateTime;
+          end;
+
+          Edicao.Post;
         end;
 
-        Edicao.Post;
         Next;
       end;
 

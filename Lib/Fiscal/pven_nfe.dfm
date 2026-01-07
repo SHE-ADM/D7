@@ -485,7 +485,7 @@ object FrmVEN_NFE: TFrmVEN_NFE
             Style.ButtonTransparence = ebtNone
             Style.Shadow = False
             TabOrder = 4
-            Text = '01'
+            Text = '15'
             OnChange = IETPAGChange
             DropDownRows = 17
             Descriptions.Strings = (
@@ -560,7 +560,7 @@ object FrmVEN_NFE: TFrmVEN_NFE
             Style.ButtonTransparence = ebtNone
             Style.Shadow = False
             TabOrder = 5
-            Text = '0'
+            Text = '1'
             Descriptions.Strings = (
               #192' Vista'
               #192' Prazo')
@@ -2709,7 +2709,7 @@ object FrmVEN_NFE: TFrmVEN_NFE
                 Left = 0
                 Top = 0
                 Width = 54
-                Height = 489
+                Height = 508
                 Align = alLeft
                 Caption = ' Edi'#231#227'o '
                 Font.Charset = ANSI_CHARSET
@@ -2723,7 +2723,7 @@ object FrmVEN_NFE: TFrmVEN_NFE
                   Left = 2
                   Top = 19
                   Width = 50
-                  Height = 468
+                  Height = 487
                   Cursor = crHandPoint
                   Font.Charset = ANSI_CHARSET
                   Font.Color = clBlack
@@ -2816,7 +2816,7 @@ object FrmVEN_NFE: TFrmVEN_NFE
                 Left = 54
                 Top = 0
                 Width = 1559
-                Height = 489
+                Height = 508
                 Align = alClient
                 Caption = '  Consulta  '
                 Font.Charset = ANSI_CHARSET
@@ -2830,7 +2830,7 @@ object FrmVEN_NFE: TFrmVEN_NFE
                   Left = 2
                   Top = 19
                   Width = 1555
-                  Height = 468
+                  Height = 487
                   Bands = <
                     item
                       Alignment = taLeftJustify
@@ -3684,33 +3684,18 @@ object FrmVEN_NFE: TFrmVEN_NFE
               end
               object PNLConsultaBOT: TPanel
                 Left = 0
-                Top = 489
+                Top = 508
                 Width = 1613
-                Height = 79
+                Height = 60
                 Align = alBottom
                 BevelOuter = bvNone
                 TabOrder = 2
-                object PNLNFE_XPROX: TPanel
-                  Left = 0
-                  Top = -1
-                  Width = 1613
-                  Height = 20
-                  Align = alBottom
-                  Color = clGray
-                  Font.Charset = ANSI_CHARSET
-                  Font.Color = clWhite
-                  Font.Height = -13
-                  Font.Name = 'Segoe UI Semibold'
-                  Font.Style = [fsBold, fsItalic]
-                  ParentFont = False
-                  TabOrder = 0
-                end
                 object GBINFADTEC: TGroupBox
                   Left = 0
-                  Top = 19
+                  Top = 0
                   Width = 1613
                   Height = 60
-                  Align = alBottom
+                  Align = alClient
                   Caption = '  Informa'#231#245'es T'#233'cnicas do Produto  '
                   Color = clBtnFace
                   Font.Charset = ANSI_CHARSET
@@ -3720,7 +3705,7 @@ object FrmVEN_NFE: TFrmVEN_NFE
                   Font.Style = [fsBold, fsItalic]
                   ParentColor = False
                   ParentFont = False
-                  TabOrder = 1
+                  TabOrder = 0
                   object DBINFADTEC: TdxDBMemo
                     Left = 2
                     Top = 19
@@ -3939,7 +3924,6 @@ object FrmVEN_NFE: TFrmVEN_NFE
                   end
                   object SIMEDEdit: TSpeedItem
                     Tag = 1
-                    Action = ACTMPEdit
                     BtnCaption = 'Alterar'
                     Caption = 'SIMEDEdit'
                     Cursor = crHandPoint
@@ -3949,7 +3933,7 @@ object FrmVEN_NFE: TFrmVEN_NFE
                     Left = 9
                     Top = 45
                     Visible = True
-                    OnClick = ACTMPEditExecute
+                    OnClick = SIMEDEditClick
                     SectionName = 'Edi'#231#227'o'
                   end
                   object SIMEDDelete: TSpeedItem
@@ -3971,7 +3955,6 @@ object FrmVEN_NFE: TFrmVEN_NFE
                     Tag = 2
                     BtnCaption = 'Salvar'
                     Caption = 'SIMEDPost'
-                    Enabled = False
                     Cursor = crHandPoint
                     Hint = 'Salva Edi'#231#227'o'
                     ImageIndex = 3
@@ -3979,6 +3962,7 @@ object FrmVEN_NFE: TFrmVEN_NFE
                     Left = 9
                     Top = 125
                     Visible = True
+                    OnClick = SIMEDPostClick
                     SectionName = 'Edi'#231#227'o'
                   end
                   object SIMEDCancel: TSpeedItem
@@ -4062,54 +4046,69 @@ object FrmVEN_NFE: TFrmVEN_NFE
                   PreviewFont.Height = -13
                   PreviewFont.Name = 'Segoe UI Semibold'
                   PreviewFont.Style = [fsBold, fsItalic]
+                  object DBGFIS_NFE_DUPID: TdxDBGridColumn
+                    BandIndex = 0
+                    RowIndex = 0
+                    FieldName = 'ID'
+                  end
+                  object DBGFIS_NFE_DUPIDEV: TdxDBGridColumn
+                    BandIndex = 0
+                    RowIndex = 0
+                    FieldName = 'IDEV'
+                  end
                   object DBGFIS_NFE_DUPNFE_NITEMPED: TdxDBGridMaskColumn
-                    Alignment = taLeftJustify
-                    Width = 55
                     BandIndex = 0
                     RowIndex = 0
                     FieldName = 'NFE_NITEMPED'
                   end
-                  object DBGFIS_NFE_DUPNFE_NDUP: TdxDBGridMaskColumn
-                    Width = 100
+                  object DBGFIS_NFE_DUPNFE_CDNF: TdxDBGridColumn
                     BandIndex = 0
                     RowIndex = 0
-                    FieldName = 'NFE_NDUP'
+                    FieldName = 'NFE_CDNF'
                   end
                   object DBGFIS_NFE_DUPNFE_DTNF: TdxDBGridDateColumn
-                    Width = 80
                     BandIndex = 0
                     RowIndex = 0
                     FieldName = 'NFE_DTNF'
                   end
-                  object DBGFIS_NFE_DUPNFE_DVENC: TdxDBGridDateColumn
-                    Width = 80
+                  object DBGFIS_NFE_DUPNFE_VNF: TdxDBGridCurrencyColumn
                     BandIndex = 0
                     RowIndex = 0
-                    FieldName = 'NFE_DVENC'
-                  end
-                  object DBGFIS_NFE_DUPNFE_VORIG: TdxDBGridCurrencyColumn
-                    HeaderAlignment = taRightJustify
-                    Width = 120
-                    BandIndex = 0
-                    RowIndex = 0
-                    FieldName = 'NFE_VORIG'
+                    FieldName = 'NFE_VNF'
                     Nullable = False
                   end
-                  object DBGFIS_NFE_DUPNFE_VDESC: TdxDBGridCurrencyColumn
-                    HeaderAlignment = taRightJustify
-                    Width = 120
+                  object DBGFIS_NFE_DUPNFE_NDUP: TdxDBGridMaskColumn
                     BandIndex = 0
                     RowIndex = 0
-                    FieldName = 'NFE_VDESC'
+                    FieldName = 'NFE_NDUP'
+                  end
+                  object DBGFIS_NFE_DUPNFE_DTVC: TdxDBGridDateColumn
+                    BandIndex = 0
+                    RowIndex = 0
+                    FieldName = 'NFE_DTVC'
+                  end
+                  object DBGFIS_NFE_DUPNFE_VLIQ: TdxDBGridCurrencyColumn
+                    BandIndex = 0
+                    RowIndex = 0
+                    FieldName = 'NFE_VLIQ'
                     Nullable = False
                   end
                   object DBGFIS_NFE_DUPNFE_VDUP: TdxDBGridCurrencyColumn
-                    HeaderAlignment = taRightJustify
-                    Width = 120
                     BandIndex = 0
                     RowIndex = 0
                     FieldName = 'NFE_VDUP'
                     Nullable = False
+                  end
+                  object DBGFIS_NFE_DUPNFE_VDSC: TdxDBGridCurrencyColumn
+                    BandIndex = 0
+                    RowIndex = 0
+                    FieldName = 'NFE_VDSC'
+                    Nullable = False
+                  end
+                  object DBGFIS_NFE_DUPFLAG: TdxDBGridMaskColumn
+                    BandIndex = 0
+                    RowIndex = 0
+                    FieldName = 'FLAG'
                   end
                 end
               end
@@ -4120,7 +4119,7 @@ object FrmVEN_NFE: TFrmVEN_NFE
                 Left = 0
                 Top = 0
                 Width = 60
-                Height = 573
+                Height = 568
                 Align = alLeft
                 Caption = ' Edi'#231#227'o '
                 Font.Charset = ANSI_CHARSET
@@ -4134,7 +4133,7 @@ object FrmVEN_NFE: TFrmVEN_NFE
                   Left = 2
                   Top = 19
                   Width = 56
-                  Height = 552
+                  Height = 547
                   Cursor = crHandPoint
                   Font.Charset = ANSI_CHARSET
                   Font.Color = clBlack
@@ -4233,7 +4232,7 @@ object FrmVEN_NFE: TFrmVEN_NFE
                 Left = 60
                 Top = 0
                 Width = 1553
-                Height = 573
+                Height = 568
                 Align = alClient
                 Caption = '  Consulta  '
                 Font.Charset = ANSI_CHARSET
@@ -4247,7 +4246,7 @@ object FrmVEN_NFE: TFrmVEN_NFE
                   Left = 2
                   Top = 19
                   Width = 1549
-                  Height = 552
+                  Height = 547
                   Bands = <
                     item
                     end>
@@ -4354,7 +4353,7 @@ object FrmVEN_NFE: TFrmVEN_NFE
                         Left = 0
                         Top = 0
                         Width = 1160
-                        Height = 525
+                        Height = 520
                         Align = alClient
                       end
                       object LAxLgr: TLabel
@@ -19766,7 +19765,7 @@ object FrmVEN_NFE: TFrmVEN_NFE
                     Left = 0
                     Top = 409
                     Width = 449
-                    Height = 164
+                    Height = 159
                     Align = alClient
                     Caption = '  Informa'#231#245'es Adicionais do Cadastro  '
                     Color = clBtnFace
@@ -19797,7 +19796,7 @@ object FrmVEN_NFE: TFrmVEN_NFE
                       Style.Shadow = False
                       TabOrder = 0
                       ReadOnly = False
-                      Height = 143
+                      Height = 138
                       StoredValues = 64
                     end
                   end
@@ -27089,6 +27088,7 @@ object FrmVEN_NFE: TFrmVEN_NFE
   object FIS_NFE_DUP: TIBDataSet
     Database = FBird.DB_EDI
     Transaction = TSEdicao
+    AfterDelete = FIS_NFE_DUPAfterDelete
     OnNewRecord = FIS_NFE_DUPNewRecord
     DeleteSQL.Strings = (
       'delete from FIS_NFE_DUP'
@@ -28196,6 +28196,9 @@ object FrmVEN_NFE: TFrmVEN_NFE
         'CAST('#39'Duplicatas (Boletos)'#39'        AS VARCHAR(50)) AS LBL_VDUP  ' +
         '        ,PK.NFE_VDUP,'
       
+        'CAST('#39'Nota Fiscal + IBS/CBS'#39'       AS VARCHAR(50)) AS LBL_VNFTOT' +
+        '        ,PK.NFE_VNFTOT,'
+      
         'CAST('#39'Nota Fiscal'#39'                 AS VARCHAR(50)) AS LBL_VNF   ' +
         '        ,PK.NFE_VNF'
       ''
@@ -28545,16 +28548,27 @@ object FrmVEN_NFE: TFrmVEN_NFE
       Precision = 18
       Size = 2
     end
-    object FIS_NFE_SUMLBL_VNF: TIBStringField
-      FieldName = 'LBL_VNF'
+    object FIS_NFE_SUMLBL_VNFTOT: TIBStringField
+      FieldName = 'LBL_VNFTOT'
       ProviderFlags = []
       Size = 50
+    end
+    object FIS_NFE_SUMNFE_VNFTOT: TIBBCDField
+      FieldName = 'NFE_VNFTOT'
+      Origin = '"FIS_NFE_SUM"."NFE_VNFTOT"'
+      Precision = 18
+      Size = 2
     end
     object FIS_NFE_SUMNFE_VNF: TIBBCDField
       FieldName = 'NFE_VNF'
       Origin = '"FIS_NFE_SUM"."NFE_VNF"'
       Precision = 18
       Size = 2
+    end
+    object FIS_NFE_SUMLBL_VNF: TIBStringField
+      FieldName = 'LBL_VNF'
+      ProviderFlags = []
+      Size = 50
     end
   end
   object DTSFIS_NFE_SUM: TDataSource

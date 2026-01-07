@@ -160,16 +160,16 @@ inherited frmctr_ped: Tfrmctr_ped
     end
   end
   inherited pnlbot: TPanel
-    Top = 556
+    Top = 586
     Width = 1904
-    Height = 410
+    Height = 380
     Color = clHighlightText
     Visible = True
     object GBFKPedidos: TGroupBox
       Left = 0
       Top = 0
       Width = 1584
-      Height = 410
+      Height = 380
       Align = alLeft
       Caption = '  Itens  '
       Color = clHighlightText
@@ -185,7 +185,7 @@ inherited frmctr_ped: Tfrmctr_ped
         Left = 2
         Top = 19
         Width = 1580
-        Height = 389
+        Height = 359
         ActivePage = TSFKPedidos
         Align = alClient
         Font.Charset = ANSI_CHARSET
@@ -210,7 +210,7 @@ inherited frmctr_ped: Tfrmctr_ped
             Left = 0
             Top = 0
             Width = 1580
-            Height = 362
+            Height = 332
             Bands = <
               item
                 Caption = 'Produtos'
@@ -725,7 +725,7 @@ inherited frmctr_ped: Tfrmctr_ped
           end
           object PNLTAB_PRC: TPanel
             Left = 0
-            Top = 362
+            Top = 332
             Width = 1580
             Height = 0
             Align = alBottom
@@ -1234,7 +1234,7 @@ inherited frmctr_ped: Tfrmctr_ped
       Left = 1584
       Top = 0
       Width = 320
-      Height = 410
+      Height = 380
       Align = alRight
       Color = clHighlightText
       Font.Charset = ANSI_CHARSET
@@ -1248,7 +1248,7 @@ inherited frmctr_ped: Tfrmctr_ped
         Left = 1
         Top = 1
         Width = 318
-        Height = 346
+        Height = 316
         Align = alClient
         Caption = '  Imagem do Produto  '
         Font.Charset = ANSI_CHARSET
@@ -1262,7 +1262,7 @@ inherited frmctr_ped: Tfrmctr_ped
           Left = 2
           Top = 19
           Width = 314
-          Height = 325
+          Height = 295
           Cursor = crHandPoint
           Hint = 'Amostragem do Produto'#13#10'Click para visualizar tela inteira'
           Align = alClient
@@ -1274,7 +1274,7 @@ inherited frmctr_ped: Tfrmctr_ped
       end
       object GBIMG_ILA: TGroupBox
         Left = 1
-        Top = 347
+        Top = 317
         Width = 318
         Height = 62
         Align = alBottom
@@ -1523,10 +1523,10 @@ inherited frmctr_ped: Tfrmctr_ped
   end
   inherited pnldbg: TPanel
     Width = 1904
-    Height = 459
+    Height = 489
     inherited DSConsulta: TdxDockSite
       Width = 1879
-      Height = 459
+      Height = 489
       Cursor = crHandPoint
       ManagerColor = False
       DockType = 0
@@ -1534,25 +1534,25 @@ inherited frmctr_ped: Tfrmctr_ped
       OriginalHeight = 448
       inherited LDSConsulta: TdxLayoutDockSite
         Width = 1879
-        Height = 459
+        Height = 489
         DockType = 1
         OriginalWidth = 1698
         OriginalHeight = 200
       end
       inherited DPConsulta: TdxDockPanel
         Width = 1879
-        Height = 459
+        Height = 489
         Cursor = crHandPoint
         DockType = 1
         OriginalWidth = 1698
         OriginalHeight = 140
         inherited gbDET: TGroupBox
           Width = 1875
-          Height = 455
+          Height = 485
           Caption = '  Venda  '
           inherited DBGConsulta: TdxDBGrid
             Width = 1871
-            Height = 434
+            Height = 464
             Bands = <
               item
                 Alignment = taLeftJustify
@@ -2213,7 +2213,7 @@ inherited frmctr_ped: Tfrmctr_ped
           end
           object PNLINFADCAD: TPanel
             Left = 2
-            Top = 453
+            Top = 483
             Width = 1871
             Height = 0
             Cursor = crHandPoint
@@ -2264,7 +2264,7 @@ inherited frmctr_ped: Tfrmctr_ped
         end
         object PNLINFADLOG: TPanel
           Left = 0
-          Top = 455
+          Top = 485
           Width = 1875
           Height = 0
           Cursor = crHandPoint
@@ -2466,7 +2466,7 @@ inherited frmctr_ped: Tfrmctr_ped
       Left = 1879
       Top = 0
       Width = 25
-      Height = 459
+      Height = 489
       Cursor = crHandPoint
       Font.Charset = ANSI_CHARSET
       Font.Color = clBlack
@@ -2477,12 +2477,12 @@ inherited frmctr_ped: Tfrmctr_ped
       Align = alRight
       DockType = 0
       OriginalWidth = 25
-      OriginalHeight = 459
+      OriginalHeight = 489
       object dxLayoutDockSite1: TdxLayoutDockSite
         Left = 0
         Top = 0
         Width = 0
-        Height = 459
+        Height = 489
         Visible = False
         DockType = 1
         OriginalWidth = 590
@@ -2492,7 +2492,7 @@ inherited frmctr_ped: Tfrmctr_ped
         Left = 0
         Top = 0
         Width = 0
-        Height = 459
+        Height = 489
         Visible = False
         ActiveChildIndex = -1
         AllowFloating = True
@@ -2528,7 +2528,7 @@ inherited frmctr_ped: Tfrmctr_ped
             Left = 0
             Top = 0
             Width = 21
-            Height = 433
+            Height = 463
             Cursor = crHandPoint
             Bands = <
               item
@@ -2717,7 +2717,7 @@ inherited frmctr_ped: Tfrmctr_ped
             Left = 0
             Top = 0
             Width = 0
-            Height = 433
+            Height = 463
             Cursor = crHandPoint
             Bands = <
               item

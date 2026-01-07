@@ -891,8 +891,8 @@ begin
        '', { Descrição Principal }
 
        0, { Evento Principal }
-       2, { Tipo   Evento - 0: Copiado    1: Vazio  2: Romaneado }
-       1, { Código Evento - 0: Triangular 1: Normal 2: Complementar 3: Ajustes 4:Devolução }
+       2, { Código Evento - 0: Triangular 1: Normal 2: Complementar 3: Ajustes 4:Devolução }
+       1, { Tipo   Evento - 0: Copiado    1: Vazio  2: Romaneado }
 
        oREPZero('ROM_CAB','_',RECParametros.EP_ID,3), { Tabela }
        '' { Get }
