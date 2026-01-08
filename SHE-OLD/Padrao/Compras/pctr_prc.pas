@@ -418,11 +418,11 @@ begin
 
   if (CadastroDEST.AsString  = 'PENDENTE') or (CadastroDEST.AsString  = 'EMBARCADO') then
   begin
-    siBRO.ImageIndex := 7;
+    siBRO.ImageIndex := 5;
     siBRO.BtnCaption := 'Finalizar';
   end else if Pos('FIN',CadastroDEST.AsString) > 0 then
   begin
-    siBRO.ImageIndex := 8;
+    siBRO.ImageIndex := 6;
     siBRO.BtnCaption := 'Re-abrir';
   end;
 

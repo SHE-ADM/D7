@@ -417,9 +417,7 @@ type
     CadastroC_IDPK: TLargeintField;
     DBGConsultaC_IDPK: TdxDBGridColumn;
     DBGConsultaBQST: TdxDBGridMaskColumn;
-    DBGConsultaD_HTSA: TdxDBGridColumn;
     CadastroD_HTSA: TIBStringField;
-    DBGConsultaD_HNSA: TdxDBGridColumn;
     CadastroD_HNSA: TIBBCDField;
     CadastroINFADOS: TIBStringField;
     CadastroINFSTOS: TIBStringField;
@@ -462,9 +460,7 @@ type
     CadastroD_RLSP: TIntegerField;
     DBGConsultaD_QTRL: TdxDBGridColumn;
     DBGConsultaD_QTSP: TdxDBGridColumn;
-    DBGConsultaD_DTOS: TdxDBGridDateColumn;
     DBGConsultaDTSP: TdxDBGridColumn;
-    DBGConsultaD_HTSP: TdxDBGridColumn;
     CadastroIDEV: TLargeintField;
     CAD_PRO_IMG: TIBQuery;
     CAD_PRO_IMGIMG_ID: TLargeintField;
@@ -495,6 +491,10 @@ type
     CAD_PRO_IMGILA_INS8: TIBStringField;
     CAD_PRO_IMGD_ILA_INS8: TIBStringField;
     DTSCAD_PRO_IMG: TDataSource;
+    ACTEdicaoPedido: TAction;
+    ACTEdicaoDevolucao: TAction;
+    ACTEdicaoAbatimento: TAction;
+    PNLIMG_PAD: TPanel;
     GBIMG_PAD: TGroupBox;
     IMG_PAD: TImage;
     GBIMG_ILA: TGroupBox;
@@ -514,9 +514,6 @@ type
     DBILA_BMP6: TDBImage;
     DBILA_BMP7: TDBImage;
     DBILA_BMP8: TDBImage;
-    ACTEdicaoPedido: TAction;
-    ACTEdicaoAbatimento: TAction;
-    ACTEdicaoDevolucao: TAction;
     procedure FormCreate(Sender: TObject);
     procedure dbgConsultaCustomDrawCell(Sender: TObject; ACanvas: TCanvas;
       ARect: TRect; ANode: TdxTreeListNode; AColumn: TdxTreeListColumn;
@@ -585,7 +582,7 @@ var
 implementation
 
 uses uPrincipal, bPrincipal,
-     ppesquisa_geral, pctr_ped_bai, pven_ped,
+     pPesquisa, pctr_ped_bai, pven_ped,
      pProduto_Devolucao_Cancelamento, pcad_cli_edi, prelatorio_geral,
   pven_nfe, pven_rom;
 
@@ -606,9 +603,9 @@ begin
   REC_SHE_DEF.FB_Event := 'PED_PDV_ADM'; { Eventos }
 
   { GRANT USER }
-  REC_SHE_DEF.GDescricao  := 'Vendas';
-  REC_SHE_DEF.GReferencia := 'Pedidos';
-  REC_SHE_DEF.GRegra      := 'Controlar';
+  REC_SHE_DEF.GDescricao  := 'Pedidos';
+  REC_SHE_DEF.GReferencia := 'Vendas';
+  REC_SHE_DEF.GRegra      := 'Permissões Gerais';
   REC_SHE_DEF.GAdmin      := False;
   inherited;
 
@@ -651,7 +648,7 @@ end;
 procedure Tfrmctr_ped.SICAD_CLI_CRDClick(Sender: TObject);
 begin
   if CadastroId.AsInteger = 0 then
-     oException(DBGConsulta,'Cliente não Selecionado !');
+  oException(DBGConsulta,'Cliente não Selecionado !');
 
   uPSQSCORE(self,CadastroIDCD.AsString,EmptyStr);
 end;
@@ -876,7 +873,7 @@ begin
      oException(DBGConsulta,'Cancelamento não Permitido !'+#13+
                                       'Pedido não Finalizado !');
 
-  bPSQUSER('USU_AUTO','Vendas','Pedidos','Cancelar Baixa',true);
+  //RICARDObPSQUSER('USU_AUTO','Vendas','Pedidos','Cancelar Baixa',true);
   try
     Cadastro.DisableControls;
 
@@ -1007,7 +1004,7 @@ begin
       { Pedido }
       if (AColumn = DBGConsultaDEPK  ) or (AColumn = DBGConsultaDTPK  ) or (AColumn = DBGConsultaHTPK) or
          (AColumn = DBGConsultaCDNF  ) or (AColumn = DBGConsultaDTNF  ) or (AColumn = DBGConsultaHTNF) or
-         (AColumn = DBGConsultaD_DTSA) or (AColumn = DBGConsultaD_HTSA) or
+         (AColumn = DBGConsultaD_DTSA) or
          (AColumn = DBGConsultaSTPD  ) or (AColumn = DBGConsultaRECO  ) or (AColumn = DBGConsultaD_DEST) then
       begin
         AColor      := clGray;
@@ -1056,7 +1053,7 @@ begin
       end;
 
       { Saída }
-      if (AColumn = DBGConsultaD_DTSA) or (AColumn = DBGConsultaD_HTSA) then
+      if (AColumn = DBGConsultaD_DTSA)  then
           if (ANode.Values[DBGConsultaD_DTSA.Index] > 0) then
           begin
             AColor      := clPurple;
@@ -1076,7 +1073,7 @@ begin
       end;
 
       { Expedição }
-      if (AColumn = DBGConsultaD_DTOS) or (AColumn = DBGConsultaDTSP) or (AColumn = DBGConsultaD_HTSP) or (AColumn = DBGConsultaRLSP) or (AColumn = DBGConsultaVTSP) then
+      if (AColumn = DBGConsultaDTSP) or (AColumn = DBGConsultaRLSP) or (AColumn = DBGConsultaVTSP) then
       IF (ANode.Values[DBGConsultaRLSP.Index] > 0) then
       begin
         AColor      := clWindowText;
@@ -1089,7 +1086,7 @@ begin
         AColor      := clWindowText;
         AFont.Color := clHighLightText;
 
-        if ANode.Values[DBGConsultaPPSP.Index] < 90 then
+        if ANode.Values[DBGConsultaPPSP.Index] < 100 then
         begin
           AColor      := $0080FFFF; //$00002FEC $000031F4 $00C4FFC4 $00D9FFFF;
           AFont.Color := clWindowText;
@@ -1173,7 +1170,6 @@ begin
   DBGConsultaDTNF.Visible   := False;
   DBGConsultaHTNF.Visible   := False;
   DBGConsultaD_DTSA.Visible := False;
-  DBGConsultaD_HTSA.Visible := False;
 
   { Clientes }
   DBGConsultaGPCD.Visible := False; { Grupo Comercial }
@@ -1278,7 +1274,6 @@ begin
   if CadastroD_DTSA.AsDateTime > 0 then
   begin
     DBGConsultaD_DTSA.Visible := True;
-    DBGConsultaD_HTSA.Visible := True;
   end;
 
   { Clientes }
@@ -1327,20 +1322,7 @@ begin
   PNLINFADCAD.Height := IFThen((PosCount = 00) and (CadastroINFADCAD.AsString =  EmptyStr) ,00,
                         IFThen((PosCount = 00) and (CadastroINFADCAD.AsString <> EmptyStr) ,30,
                         IFThen((PosCount = 01),040,
-                        IFThen((PosCount = 02),055,
-                        IFThen((PosCount = 03),070,
-                        IFThen((PosCount = 04),080,
-                        IFThen((PosCount = 05),090,
-                        IFThen((PosCount = 06),100,
-                        IFThen((PosCount = 07),110,
-                        IFThen((PosCount = 08),120,
-                        IFThen((PosCount = 09),130,
-                        IFThen((PosCount = 10),140,
-                        IFThen((PosCount = 11),150,
-                        IFThen((PosCount = 12),160,
-                        IFThen((PosCount = 13),170,
-                        IFThen((PosCount = 14),180,
-                        IFThen((PosCount = 15),190,200)))))))))))))))));
+                        IFThen((PosCount = 02),055,70))));
 
   PNLLOGOS.Visible  := (CadastroINFADOS.AsString  <> EmptyStr);
   PNLLOGPRN.Visible := (CadastroINFADPRN.AsString <> EmptyStr);
@@ -1625,7 +1607,7 @@ begin
     ACTEdicaoPedido.Tag,         { Código Principal }
     ACTEdicaoPedido.HelpKeyword, { Descrição Principal }
   
-    CadastroIDEV.AsInteger,          { Código Evento }
+    CadastroIDEV.AsInteger,      { Código Evento }
     ACTEdicaoPedido.HelpContext, { Tipo   Evento }
   
     '', { Tabela }
@@ -1665,7 +1647,7 @@ procedure Tfrmctr_ped.ACTEdicaoAbatimentoExecute(Sender: TObject);
 begin
   if (Cadastro.State <> dsBrowse) or (Cadastro.RecNo = 0) then
   Abort;
-  
+
   ACTEdicaoPedido.HelpContext := 3; { Abatimento }
   ACTEdicaoPedido.HelpKeyword := CadastroDEPK.AsString; { Pedido }
   ACTEdicaoPedido.Tag := CadastroIDPK.AsLargeInt; { Cadastro }
@@ -1722,7 +1704,7 @@ begin
                               'Pedido possui etiquetas separadas.');
   end;
 
-  bPSQUSER('USU_AUTO','Vendas','Pedidos','Cancelar',true);
+  //RICARDObPSQUSER('USU_AUTO','Vendas','Pedidos','Cancelar',true);
 
   try
     Cadastro.DisableControls;
@@ -1892,11 +1874,11 @@ begin
 
   if not REC_SHE_DEF.FInitialize then
   try
-    FrmPesquisa_Geral := TFrmPesquisa_Geral.Create(Self);
-    FrmPesquisa_Geral.Tag := 98;
-    FrmPesquisa_Geral.ShowModal;
+    FrmPesquisa := TFrmPesquisa.Create(Self);
+    FrmPesquisa.Tag := 7;
+    FrmPesquisa.ShowModal;
   finally
-    if   FrmPesquisa_Geral.Editado then
+    if   FrmPesquisa.Editado then
     with Cadastro do
     begin
       oCTransact(TConsulta);
@@ -1947,10 +1929,10 @@ begin
       SQL.Add('FROM ' + oREPZero('VW_PED_VEN_CAB','_',RECParametros.EP_ID,3) + ' AS PK');
 
       { PESQUISA DATA }
-      if (FrmPesquisa_Geral.dxDT1.Date > 0) and (FrmPesquisa_Geral.dxDT2.Date > 0) and (FrmPesquisa_Geral.dxDT1.Date <= FrmPesquisa_Geral.dxDT2.Date) then
+      if (FrmPesquisa.dxDT1.Date > 0) and (FrmPesquisa.dxDT2.Date > 0) and (FrmPesquisa.dxDT1.Date <= FrmPesquisa.dxDT2.Date) then
       begin
-        SQL.Add('WHERE ' + FrmPesquisa_Geral.cData + ' BETWEEN ''' + FormatDateTime('mm/dd/yy',FrmPesquisa_Geral.dxDT1.Date) + ''' AND ''' + FormatDateTime('mm/dd/yy',FrmPesquisa_Geral.dxDT2.Date) + '''');
-        SBRodape.Panels[1].Text := 'Pesquisado Data ' + FrmPesquisa_Geral.cbData.Text + ' ' + FormatDateTime('mm/dd/yy',FrmPesquisa_Geral.dxDT1.Date) + ' até ' + FormatDateTime('mm/dd/yy',FrmPesquisa_Geral.dxDT2.Date);
+        SQL.Add('WHERE ' + FrmPesquisa.cData + ' BETWEEN ''' + FormatDateTime('mm/dd/yy',FrmPesquisa.dxDT1.Date) + ''' AND ''' + FormatDateTime('mm/dd/yy',FrmPesquisa.dxDT2.Date) + '''');
+        SBRodape.Panels[1].Text := 'Pesquisado Data ' + FrmPesquisa.cbData.Text + ' ' + FormatDateTime('mm/dd/yy',FrmPesquisa.dxDT1.Date) + ' até ' + FormatDateTime('mm/dd/yy',FrmPesquisa.dxDT2.Date);
       end;
 
       SQL.Add('),'); { RECURSIVE FIM }
@@ -1963,37 +1945,37 @@ begin
       SQL.Add('SELECT PK.* FROM PK');
 
       { PESQUISA TEXTO PRINCIPAL }
-      if (FrmPesquisa_Geral.EDTXT.Text <> EmptyStr) and (LeftStr(FrmPesquisa_Geral.CField,2) = 'PK') then
-      SQL.Add('WHERE ' + FrmPesquisa_Geral.CField + ' ' + FrmPesquisa_Geral.cPesquisaWhere + ' ''' + FrmPesquisa_Geral.EDTXT.Text + FrmPesquisa_Geral.cPesquisaLike + '''');
+      if (FrmPesquisa.EDTXT.Text <> EmptyStr) and (LeftStr(FrmPesquisa.CField,2) = 'PK') then
+      SQL.Add('WHERE ' + FrmPesquisa.CField + ' ' + FrmPesquisa.cPesquisaWhere + ' ''' + FrmPesquisa.EDTXT.Text + FrmPesquisa.cPesquisaLike + '''');
       SQL.Add(')'); { CTE FIM }
 
       { CTE SELECT }
       SQL.Add('SELECT DISTINCT PK.* FROM CTE_PSQ AS PK');
 
       { SUB QUERY }
-      if (FrmPesquisa_Geral.EDTXT.Text <> EmptyStr) and (LeftStr(FrmPesquisa_Geral.CField,2) <> 'PK') then
+      if (FrmPesquisa.EDTXT.Text <> EmptyStr) and (LeftStr(FrmPesquisa.CField,2) <> 'PK') then
       begin
         { INÍCIO }
         SQL.Add('WHERE EXISTS');
         SQL.Add('(');
 
         { PEDIDOS }
-        if Pos('PV_PK.',FrmPesquisa_Geral.CField) > 0 then
+        if Pos('PV_PK.',FrmPesquisa.CField) > 0 then
         begin
-          FrmPesquisa_Geral.CField     := oStrTran(FrmPesquisa_Geral.CField,'PV_PK.','FK.');
+          FrmPesquisa.CField     := oStrTran(FrmPesquisa.CField,'PV_PK.','FK.');
           SQL.Add('SELECT FIRST 1 FK.ID FROM ' +  oREPZero('PED_VEN_CAB','_',RECParametros.EP_ID,3) + ' AS FK');
         end;
 
         { FINANCEIRO BANCÁRIO }
-        if Pos('FN_PK.',FrmPesquisa_Geral.CField) > 0 then
+        if Pos('FN_PK.',FrmPesquisa.CField) > 0 then
         begin
-          FrmPesquisa_Geral.CField     := oStrTran(FrmPesquisa_Geral.CField,'FN_PK.','FK.');
+          FrmPesquisa.CField     := oStrTran(FrmPesquisa.CField,'FN_PK.','FK.');
           SQL.Add('SELECT FIRST 1 FK.ID FROM ' +  oREPZero('VW_PSQ_FIN_REC_BAN','_',RECParametros.EP_ID,3) + ' AS FK');
         end;
 
         { PESQUISA TEXTO SECUNDÁRIO }
         SQL.Add('WHERE FK.CD_ID = PK.CD_ID');
-        SQL.Add('AND ' + FrmPesquisa_Geral.CField + ' ' + FrmPesquisa_Geral.cPesquisaWhere + ' ''' + FrmPesquisa_Geral.EDTXT.Text + FrmPesquisa_Geral.cPesquisaLike + '''');
+        SQL.Add('AND ' + FrmPesquisa.CField + ' ' + FrmPesquisa.cPesquisaWhere + ' ''' + FrmPesquisa.EDTXT.Text + FrmPesquisa.cPesquisaLike + '''');
         SQL.Add(')'); { FIM }
 
         { FINANCEIRO CARTEIRA }
@@ -2005,21 +1987,21 @@ begin
 
           { PESQUISA TEXTO SECUNDÁRIO }
           SQL.Add('WHERE FK.CD_ID = PK.CD_ID');
-          SQL.Add('AND ' + FrmPesquisa_Geral.CField + ' ' + FrmPesquisa_Geral.cPesquisaWhere + ' ''' + FrmPesquisa_Geral.EDTXT.Text + FrmPesquisa_Geral.cPesquisaLike + '''');
+          SQL.Add('AND ' + FrmPesquisa.CField + ' ' + FrmPesquisa.cPesquisaWhere + ' ''' + FrmPesquisa.EDTXT.Text + FrmPesquisa.cPesquisaLike + '''');
           SQL.Add(')'); { FIM }
         end;
       end;
 
-      SQL.Add('ORDER BY ' + IFThen(LeftStr(FrmPesquisa_Geral.CField,2) = 'PK',FrmPesquisa_Geral.CField,'PK.CD_NO'));
+      SQL.Add('ORDER BY PK.ID DESC'); //+ IFThen(LeftStr(FrmPesquisa.CField,2) = 'PK',FrmPesquisa.CField,'PK.CD_NO'));
     end;
 
-    if FrmPesquisa_Geral.EDTXT.Text <> EmptyStr then
+    if FrmPesquisa.EDTXT.Text <> EmptyStr then
     begin
-      APSQ_CAD_CLI := FrmPesquisa_Geral.cbCAMPO.Text;
-      SBRodape.Panels[1].Text := SBRodape.Panels[1].Text + ' Pesquisado ' + FrmPesquisa_Geral.cbCampo.Text + ' ' + FrmPesquisa_Geral.EDTXT.Text;
+      APSQ_PED_PDV := FrmPesquisa.cbCAMPO.Text;
+      SBRodape.Panels[1].Text := SBRodape.Panels[1].Text + ' Pesquisado ' + FrmPesquisa.cbCampo.Text + ' ' + FrmPesquisa.EDTXT.Text;
     end;
 
-    FreeAndNil(FrmPesquisa_Geral);
+    FreeAndNil(FrmPesquisa);
   end;
 
   if Cadastro.State = dsInactive then

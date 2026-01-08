@@ -1,36 +1,30 @@
 inherited frmctr_ped: Tfrmctr_ped
-  Left = 3
-  Top = 162
+  Left = 1
+  Top = 1
   HelpType = htKeyword
   HelpKeyword = '3'
   AlphaBlendValue = 0
   Caption = 'Controle de Pedidos'
-  ClientHeight = 1006
-  ClientWidth = 1924
+  ClientHeight = 991
+  ClientWidth = 1904
   OldCreateOrder = True
   PixelsPerInch = 96
   TextHeight = 14
   inherited SpeedBar2: TSpeedBar
-    Width = 1924
+    Width = 1904
     inherited SpeedbarSection5: TSpeedbarSection
       Caption = 'IM'
     end
-    inherited siLIXO: TSpeedItem [4]
-      SectionName = 'IM'
-    end
-    inherited siEVE: TSpeedItem [5]
-      SectionName = 'IM'
-    end
-    inherited siREF: TSpeedItem [6]
+    inherited siREF: TSpeedItem
       Hint = 'Atualiza e Restaura Visualiza'#231#227'o'
       ImageIndex = 15
       SectionName = 'IM'
     end
-    inherited siPSQ: TSpeedItem [7]
+    inherited siPSQ: TSpeedItem
       ImageIndex = 5
       SectionName = 'IM'
     end
-    object SINovo: TSpeedItem [8]
+    object SINovo: TSpeedItem [6]
       Action = ACTMPAppend
       BtnCaption = 'Incluir'
       Cursor = crHandPoint
@@ -43,7 +37,7 @@ inherited frmctr_ped: Tfrmctr_ped
       OnClick = ACTMPAppendExecute
       SectionName = 'IM'
     end
-    object SIAltera: TSpeedItem [9]
+    object SIAltera: TSpeedItem [7]
       Action = ACTMPEdit
       BtnCaption = 'Alterar'
       Cursor = crHandPoint
@@ -56,7 +50,7 @@ inherited frmctr_ped: Tfrmctr_ped
       OnClick = ACTMPEditExecute
       SectionName = 'IM'
     end
-    object SICancela: TSpeedItem [10]
+    object SICancela: TSpeedItem [8]
       Action = ACTMPDelete
       BtnCaption = 'Cancelar'
       Cursor = crHandPoint
@@ -69,11 +63,11 @@ inherited frmctr_ped: Tfrmctr_ped
       OnClick = ACTMPDeleteExecute
       SectionName = 'IM'
     end
-    object SIDevolucao: TSpeedItem [11]
+    object SIDevolucao: TSpeedItem [9]
       Action = ACTEdicaoDevolucao
       BtnCaption = 'Devolu'#231#245'es'
       Cursor = crHandPoint
-      Hint = 'Devolu'#231#245'es de Pedidos'
+      Hint = 'Devolu'#231#245'es de Produtos'
       ImageIndex = 12
       Spacing = -3
       Left = 553
@@ -82,7 +76,7 @@ inherited frmctr_ped: Tfrmctr_ped
       OnClick = ACTEdicaoDevolucaoExecute
       SectionName = 'IM'
     end
-    object SIAbatimento: TSpeedItem [12]
+    object SIAbatimento: TSpeedItem [10]
       Action = ACTEdicaoAbatimento
       BtnCaption = 'Abatimentos'
       Cursor = crHandPoint
@@ -95,30 +89,30 @@ inherited frmctr_ped: Tfrmctr_ped
       OnClick = ACTEdicaoAbatimentoExecute
       SectionName = 'IM'
     end
-    object SICAD_CLI_CRD: TSpeedItem [13]
+    object SICAD_CLI_CRD: TSpeedItem [11]
       BtnCaption = 'Info. Cliente'
       Hint = 'Informa'#231#227'o Comercial do Cliente'
       ImageIndex = 14
       Spacing = -3
-      Left = 773
+      Left = 883
       Top = 3
       Visible = True
       OnClick = SICAD_CLI_CRDClick
       SectionName = 'IM'
     end
-    object SICAD_CLI_EDI: TSpeedItem [14]
+    object SICAD_CLI_EDI: TSpeedItem [12]
       BtnCaption = 'Cad. Cliente'
       Cursor = crHandPoint
       Hint = 'Atutaliza Cadastro do Cliente'
       ImageIndex = 16
       Spacing = -3
-      Left = 883
+      Left = 773
       Top = 3
       Visible = True
       OnClick = SICAD_CLI_EDIClick
       SectionName = 'IM'
     end
-    object SIRomaneio: TSpeedItem [15]
+    object SIRomaneio: TSpeedItem [13]
       BtnCaption = 'Romaneios'
       Hint = 'Gerar romaneio para emiss'#227'o de nota fiscal'
       ImageIndex = 9
@@ -129,7 +123,7 @@ inherited frmctr_ped: Tfrmctr_ped
       OnClick = SIRomaneioClick
       SectionName = 'IM'
     end
-    object SIFinaliza: TSpeedItem [16]
+    object SIFinaliza: TSpeedItem [14]
       BtnCaption = 'Finalizar'
       Cursor = crHandPoint
       Hint = 'Inclui contas a receber e finaliza pedido'
@@ -141,7 +135,7 @@ inherited frmctr_ped: Tfrmctr_ped
       OnClick = SIFinalizaClick
       SectionName = 'IM'
     end
-    object SIEstorno: TSpeedItem [17]
+    object SIEstorno: TSpeedItem [15]
       BtnCaption = 'Re-Abrir'
       Cursor = crHandPoint
       Hint = 'Cancela contas a receber e re-abre pedido'
@@ -159,24 +153,24 @@ inherited frmctr_ped: Tfrmctr_ped
       Left = 1323
       SectionName = 'IM'
     end
-    inherited siSAIR: TSpeedItem [19]
+    inherited siSAIR: TSpeedItem
       ImageIndex = 6
       Left = 1433
       SectionName = 'IM'
     end
   end
   inherited pnlbot: TPanel
-    Top = 571
-    Width = 1924
-    Height = 410
+    Top = 586
+    Width = 1904
+    Height = 380
     Color = clHighlightText
     Visible = True
     object GBFKPedidos: TGroupBox
       Left = 0
       Top = 0
-      Width = 1564
-      Height = 410
-      Align = alClient
+      Width = 1584
+      Height = 380
+      Align = alLeft
       Caption = '  Itens  '
       Color = clHighlightText
       Font.Charset = ANSI_CHARSET
@@ -190,8 +184,8 @@ inherited frmctr_ped: Tfrmctr_ped
       object PCFKPedidos: TdxPageControl
         Left = 2
         Top = 19
-        Width = 1560
-        Height = 389
+        Width = 1580
+        Height = 359
         ActivePage = TSFKPedidos
         Align = alClient
         Font.Charset = ANSI_CHARSET
@@ -215,8 +209,8 @@ inherited frmctr_ped: Tfrmctr_ped
           object DBGITPED: TdxDBGrid
             Left = 0
             Top = 0
-            Width = 1560
-            Height = 362
+            Width = 1580
+            Height = 332
             Bands = <
               item
                 Caption = 'Produtos'
@@ -731,8 +725,8 @@ inherited frmctr_ped: Tfrmctr_ped
           end
           object PNLTAB_PRC: TPanel
             Left = 0
-            Top = 362
-            Width = 1560
+            Top = 332
+            Width = 1580
             Height = 0
             Align = alBottom
             Alignment = taRightJustify
@@ -1236,126 +1230,147 @@ inherited frmctr_ped: Tfrmctr_ped
         end
       end
     end
-    object GBIMG_PAD: TGroupBox
-      Left = 1564
+    object PNLIMG_PAD: TPanel
+      Left = 1584
       Top = 0
-      Width = 360
-      Height = 410
+      Width = 320
+      Height = 380
       Align = alRight
-      Caption = '  Imagem do Produto  '
+      Color = clHighlightText
       Font.Charset = ANSI_CHARSET
       Font.Color = clWindowText
-      Font.Height = -13
-      Font.Name = 'Segoe UI Semibold'
-      Font.Style = [fsBold, fsItalic]
+      Font.Height = -12
+      Font.Name = 'Segoe UI'
+      Font.Style = []
       ParentFont = False
       TabOrder = 1
-      object IMG_PAD: TImage
-        Left = 2
-        Top = 19
-        Width = 356
-        Height = 324
-        Cursor = crHandPoint
-        Hint = 'Amostragem do Produto'#13#10'Click para visualizar tela inteira'
+      object GBIMG_PAD: TGroupBox
+        Left = 1
+        Top = 1
+        Width = 318
+        Height = 316
         Align = alClient
-        ParentShowHint = False
-        ShowHint = True
-        Stretch = True
-        OnClick = IMG_PADClick
+        Caption = '  Imagem do Produto  '
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -13
+        Font.Name = 'Segoe UI Semibold'
+        Font.Style = [fsBold, fsItalic]
+        ParentFont = False
+        TabOrder = 0
+        object IMG_PAD: TImage
+          Left = 2
+          Top = 19
+          Width = 314
+          Height = 295
+          Cursor = crHandPoint
+          Hint = 'Amostragem do Produto'#13#10'Click para visualizar tela inteira'
+          Align = alClient
+          ParentShowHint = False
+          ShowHint = True
+          Stretch = True
+          OnClick = IMG_PADClick
+        end
       end
       object GBIMG_ILA: TGroupBox
-        Left = 2
-        Top = 343
-        Width = 356
-        Height = 65
+        Left = 1
+        Top = 317
+        Width = 318
+        Height = 62
         Align = alBottom
         Caption = '  Instru'#231#245'es de Lavagem'
-        TabOrder = 0
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -13
+        Font.Name = 'Segoe UI Semibold'
+        Font.Style = [fsBold, fsItalic]
+        ParentFont = False
+        TabOrder = 1
         object BVILA_BMP1: TBevel
-          Left = 5
+          Left = 10
           Top = 20
-          Width = 41
-          Height = 40
+          Width = 35
+          Height = 35
           Cursor = crHandPoint
           ParentShowHint = False
           ShowHint = True
           Style = bsRaised
         end
         object BVILA_BMP2: TBevel
-          Left = 48
+          Left = 47
           Top = 20
-          Width = 41
-          Height = 40
+          Width = 35
+          Height = 35
           Cursor = crHandPoint
           ParentShowHint = False
           ShowHint = True
           Style = bsRaised
         end
         object BVILA_BMP3: TBevel
-          Left = 91
+          Left = 84
           Top = 20
-          Width = 41
-          Height = 40
+          Width = 35
+          Height = 35
           Cursor = crHandPoint
           ParentShowHint = False
           ShowHint = True
           Style = bsRaised
         end
         object BVILA_BMP4: TBevel
-          Left = 134
+          Left = 121
           Top = 20
-          Width = 41
-          Height = 40
+          Width = 35
+          Height = 35
           Cursor = crHandPoint
           ParentShowHint = False
           ShowHint = True
           Style = bsRaised
         end
         object BVILA_BMP5: TBevel
-          Left = 177
+          Left = 158
           Top = 20
-          Width = 41
-          Height = 40
+          Width = 35
+          Height = 35
           Cursor = crHandPoint
           ParentShowHint = False
           ShowHint = True
           Style = bsRaised
         end
         object BVILA_BMP6: TBevel
-          Left = 220
+          Left = 195
           Top = 20
-          Width = 41
-          Height = 40
+          Width = 35
+          Height = 35
           Cursor = crHandPoint
           ParentShowHint = False
           ShowHint = True
           Style = bsRaised
         end
         object BVILA_BMP7: TBevel
-          Left = 263
+          Left = 232
           Top = 20
-          Width = 41
-          Height = 40
+          Width = 35
+          Height = 35
           Cursor = crHandPoint
           ParentShowHint = False
           ShowHint = True
           Style = bsRaised
         end
         object BVILA_BMP8: TBevel
-          Left = 306
+          Left = 269
           Top = 20
-          Width = 41
-          Height = 40
+          Width = 35
+          Height = 35
           Cursor = crHandPoint
           ParentShowHint = False
           ShowHint = True
           Style = bsRaised
         end
         object DBILA_BMP1: TDBImage
-          Left = 8
+          Left = 13
           Top = 23
-          Width = 35
-          Height = 35
+          Width = 30
+          Height = 30
           Cursor = crHandPoint
           DataField = 'ILA_BMP1'
           DataSource = DTSCAD_PRO_IMG
@@ -1371,10 +1386,10 @@ inherited frmctr_ped: Tfrmctr_ped
           TabOrder = 0
         end
         object DBILA_BMP2: TDBImage
-          Left = 51
+          Left = 50
           Top = 23
-          Width = 35
-          Height = 35
+          Width = 30
+          Height = 30
           Cursor = crHandPoint
           DataField = 'ILA_BMP2'
           DataSource = DTSCAD_PRO_IMG
@@ -1390,10 +1405,10 @@ inherited frmctr_ped: Tfrmctr_ped
           TabOrder = 1
         end
         object DBILA_BMP3: TDBImage
-          Left = 94
+          Left = 87
           Top = 23
-          Width = 35
-          Height = 35
+          Width = 30
+          Height = 30
           Cursor = crHandPoint
           DataField = 'ILA_BMP3'
           DataSource = DTSCAD_PRO_IMG
@@ -1409,10 +1424,10 @@ inherited frmctr_ped: Tfrmctr_ped
           TabOrder = 2
         end
         object DBILA_BMP4: TDBImage
-          Left = 137
+          Left = 124
           Top = 23
-          Width = 35
-          Height = 35
+          Width = 30
+          Height = 30
           Cursor = crHandPoint
           DataField = 'ILA_BMP4'
           DataSource = DTSCAD_PRO_IMG
@@ -1428,10 +1443,10 @@ inherited frmctr_ped: Tfrmctr_ped
           TabOrder = 3
         end
         object DBILA_BMP5: TDBImage
-          Left = 180
+          Left = 161
           Top = 23
-          Width = 35
-          Height = 35
+          Width = 30
+          Height = 30
           Cursor = crHandPoint
           DataField = 'ILA_BMP5'
           DataSource = DTSCAD_PRO_IMG
@@ -1447,10 +1462,10 @@ inherited frmctr_ped: Tfrmctr_ped
           TabOrder = 4
         end
         object DBILA_BMP6: TDBImage
-          Left = 223
+          Left = 198
           Top = 23
-          Width = 35
-          Height = 35
+          Width = 30
+          Height = 30
           Cursor = crHandPoint
           DataField = 'ILA_BMP6'
           DataSource = DTSCAD_PRO_IMG
@@ -1466,10 +1481,10 @@ inherited frmctr_ped: Tfrmctr_ped
           TabOrder = 5
         end
         object DBILA_BMP7: TDBImage
-          Left = 266
+          Left = 235
           Top = 23
-          Width = 35
-          Height = 35
+          Width = 30
+          Height = 30
           Cursor = crHandPoint
           DataField = 'ILA_BMP7'
           DataSource = DTSCAD_PRO_IMG
@@ -1485,10 +1500,10 @@ inherited frmctr_ped: Tfrmctr_ped
           TabOrder = 6
         end
         object DBILA_BMP8: TDBImage
-          Left = 309
+          Left = 272
           Top = 23
-          Width = 35
-          Height = 35
+          Width = 30
+          Height = 30
           Cursor = crHandPoint
           DataField = 'ILA_BMP8'
           DataSource = DTSCAD_PRO_IMG
@@ -1507,37 +1522,37 @@ inherited frmctr_ped: Tfrmctr_ped
     end
   end
   inherited pnldbg: TPanel
-    Width = 1924
-    Height = 474
+    Width = 1904
+    Height = 489
     inherited DSConsulta: TdxDockSite
-      Width = 1899
-      Height = 474
+      Width = 1879
+      Height = 489
       Cursor = crHandPoint
       ManagerColor = False
       DockType = 0
       OriginalWidth = 768
       OriginalHeight = 448
       inherited LDSConsulta: TdxLayoutDockSite
-        Width = 1899
-        Height = 474
+        Width = 1879
+        Height = 489
         DockType = 1
         OriginalWidth = 1698
         OriginalHeight = 200
       end
       inherited DPConsulta: TdxDockPanel
-        Width = 1899
-        Height = 474
+        Width = 1879
+        Height = 489
         Cursor = crHandPoint
         DockType = 1
         OriginalWidth = 1698
         OriginalHeight = 140
         inherited gbDET: TGroupBox
-          Width = 1895
-          Height = 470
+          Width = 1875
+          Height = 485
           Caption = '  Venda  '
           inherited DBGConsulta: TdxDBGrid
-            Width = 1891
-            Height = 449
+            Width = 1871
+            Height = 464
             Bands = <
               item
                 Alignment = taLeftJustify
@@ -1595,7 +1610,6 @@ inherited frmctr_ped: Tfrmctr_ped
             ShowBands = True
             ShowGrid = False
             ShowRowFooter = True
-            OnCustomDrawCell = dbgConsultaCustomDrawCell
             object DBGConsultaC_IDPK: TdxDBGridColumn
               Visible = False
               Width = 110
@@ -1622,7 +1636,7 @@ inherited frmctr_ped: Tfrmctr_ped
               Font.Color = clWindowText
               Font.Height = -12
               Font.Name = 'Tahoma'
-              Font.Style = [fsBold]
+              Font.Style = []
               Width = 85
               BandIndex = 0
               RowIndex = 0
@@ -1639,7 +1653,7 @@ inherited frmctr_ped: Tfrmctr_ped
               Font.Name = 'Tahoma'
               Font.Style = [fsBold]
               Visible = False
-              Width = 158
+              Width = 80
               BandIndex = 0
               RowIndex = 0
               FieldName = 'CTNR'
@@ -1718,25 +1732,6 @@ inherited frmctr_ped: Tfrmctr_ped
               SummaryFooterType = cstAvg
               SummaryFooterField = 'ID'
               SummaryFooterFormat = 'PRZ M'#201'D'
-            end
-            object DBGConsultaD_HTSA: TdxDBGridColumn
-              Alignment = taCenter
-              HeaderAlignment = taCenter
-              Visible = False
-              Width = 45
-              BandIndex = 0
-              RowIndex = 0
-              FieldName = 'D_HTSA'
-              SummaryFooterType = cstAvg
-              SummaryFooterField = 'D_HNSA'
-              SummaryFooterFormat = '00":00"'
-            end
-            object DBGConsultaD_HNSA: TdxDBGridColumn
-              Visible = False
-              Width = 43
-              BandIndex = 0
-              RowIndex = 0
-              FieldName = 'D_HNSA'
             end
             object DBGConsultaSTPD: TdxDBGridColumn
               Font.Charset = ANSI_CHARSET
@@ -1873,7 +1868,7 @@ inherited frmctr_ped: Tfrmctr_ped
             end
             object DBGConsultaCNCD: TdxDBGridMaskColumn
               Visible = False
-              Width = 43
+              Width = 40
               BandIndex = 1
               RowIndex = 0
               FieldName = 'CNCD'
@@ -1884,7 +1879,7 @@ inherited frmctr_ped: Tfrmctr_ped
               Font.Height = -11
               Font.Name = 'Tahoma'
               Font.Style = []
-              Width = 95
+              Width = 92
               BandIndex = 1
               RowIndex = 0
               FieldName = 'GPCD'
@@ -1997,38 +1992,10 @@ inherited frmctr_ped: Tfrmctr_ped
               SummaryFooterField = 'PDSC'
               SummaryFooterFormat = '0%'
             end
-            object DBGConsultaD_DTOS: TdxDBGridDateColumn
-              Width = 77
-              BandIndex = 5
-              RowIndex = 0
-              FieldName = 'D_DTOS'
-            end
             object DBGConsultaDTSP: TdxDBGridColumn
               BandIndex = 5
               RowIndex = 0
               FieldName = 'DTSP'
-            end
-            object DBGConsultaD_HTSP: TdxDBGridColumn
-              Width = 51
-              BandIndex = 5
-              RowIndex = 0
-              FieldName = 'D_HTSP'
-            end
-            object DBGConsultaRLSP: TdxDBGridColumn
-              Font.Charset = ANSI_CHARSET
-              Font.Color = clWindowText
-              Font.Height = -13
-              Font.Name = 'Tahoma'
-              Font.Style = []
-              HeaderAlignment = taRightJustify
-              Width = 50
-              BandIndex = 5
-              RowIndex = 0
-              FieldName = 'RLSP'
-              SummaryFooterType = cstSum
-              SummaryFooterField = 'D_RLSP'
-              SummaryFooterFormat = '0'
-              DisableFilter = True
             end
             object DBGConsultaD_QTSP: TdxDBGridColumn
               Visible = False
@@ -2050,6 +2017,22 @@ inherited frmctr_ped: Tfrmctr_ped
               SummaryFooterType = cstSum
               SummaryFooterField = 'D_VTSP'
               SummaryFooterFormat = ',##,0.00'
+              DisableFilter = True
+            end
+            object DBGConsultaRLSP: TdxDBGridColumn
+              Font.Charset = ANSI_CHARSET
+              Font.Color = clWindowText
+              Font.Height = -13
+              Font.Name = 'Tahoma'
+              Font.Style = []
+              HeaderAlignment = taRightJustify
+              Width = 50
+              BandIndex = 5
+              RowIndex = 0
+              FieldName = 'RLSP'
+              SummaryFooterType = cstSum
+              SummaryFooterField = 'D_RLSP'
+              SummaryFooterFormat = '0'
               DisableFilter = True
             end
             object DBGConsultaPPSP: TdxDBGridMaskColumn
@@ -2230,8 +2213,8 @@ inherited frmctr_ped: Tfrmctr_ped
           end
           object PNLINFADCAD: TPanel
             Left = 2
-            Top = 468
-            Width = 1891
+            Top = 483
+            Width = 1871
             Height = 0
             Cursor = crHandPoint
             Hint = 'Informa'#231#245'es adicionais do pedido ...'
@@ -2252,7 +2235,7 @@ inherited frmctr_ped: Tfrmctr_ped
             object DBINFADCAD: TdxDBMemo
               Left = 2
               Top = 2
-              Width = 1887
+              Width = 1867
               Cursor = crHandPoint
               Hint = 'Informa'#231#245'es adicionais do pedido ...'
               Align = alClient
@@ -2281,8 +2264,8 @@ inherited frmctr_ped: Tfrmctr_ped
         end
         object PNLINFADLOG: TPanel
           Left = 0
-          Top = 470
-          Width = 1895
+          Top = 485
+          Width = 1875
           Height = 0
           Cursor = crHandPoint
           Align = alBottom
@@ -2301,7 +2284,7 @@ inherited frmctr_ped: Tfrmctr_ped
           object PNLLOGPRN: TPanel
             Left = 382
             Top = 2
-            Width = 1511
+            Width = 1491
             Height = 46
             Cursor = crHandPoint
             Hint = 'Log de Relat'#243'rios'
@@ -2319,7 +2302,7 @@ inherited frmctr_ped: Tfrmctr_ped
             object PNLINFADPRN: TPanel
               Left = 0
               Top = 0
-              Width = 1511
+              Width = 1491
               Height = 46
               Cursor = crHandPoint
               Hint = 'Log de Relat'#243'rios'
@@ -2337,7 +2320,7 @@ inherited frmctr_ped: Tfrmctr_ped
               object DBINFADPRN: TdxDBMemo
                 Left = 0
                 Top = 0
-                Width = 1511
+                Width = 1491
                 Cursor = crHandPoint
                 Hint = 'Log de Relat'#243'rios'
                 Align = alClient
@@ -2480,10 +2463,10 @@ inherited frmctr_ped: Tfrmctr_ped
       end
     end
     object DSResumos: TdxDockSite
-      Left = 1899
+      Left = 1879
       Top = 0
       Width = 25
-      Height = 474
+      Height = 489
       Cursor = crHandPoint
       Font.Charset = ANSI_CHARSET
       Font.Color = clBlack
@@ -2494,12 +2477,12 @@ inherited frmctr_ped: Tfrmctr_ped
       Align = alRight
       DockType = 0
       OriginalWidth = 25
-      OriginalHeight = 474
+      OriginalHeight = 489
       object dxLayoutDockSite1: TdxLayoutDockSite
         Left = 0
         Top = 0
         Width = 0
-        Height = 474
+        Height = 489
         Visible = False
         DockType = 1
         OriginalWidth = 590
@@ -2509,7 +2492,7 @@ inherited frmctr_ped: Tfrmctr_ped
         Left = 0
         Top = 0
         Width = 0
-        Height = 474
+        Height = 489
         Visible = False
         ActiveChildIndex = -1
         AllowFloating = True
@@ -2545,7 +2528,7 @@ inherited frmctr_ped: Tfrmctr_ped
             Left = 0
             Top = 0
             Width = 21
-            Height = 448
+            Height = 463
             Cursor = crHandPoint
             Bands = <
               item
@@ -2734,7 +2717,7 @@ inherited frmctr_ped: Tfrmctr_ped
             Left = 0
             Top = 0
             Width = 0
-            Height = 448
+            Height = 463
             Cursor = crHandPoint
             Bands = <
               item
@@ -2894,10 +2877,10 @@ inherited frmctr_ped: Tfrmctr_ped
     end
   end
   inherited PNLSBRodape: TPanel
-    Top = 981
-    Width = 1924
+    Top = 966
+    Width = 1904
     inherited PNLSBRodapeSyncEvent: TPanel
-      Width = 1914
+      Width = 1894
       inherited GFASyncEvent: TRxGIFAnimator
         Image.Data = {
           251F0000474946383961DC00DB00F7F900000000000000000000000000000000
@@ -3152,15 +3135,14 @@ inherited frmctr_ped: Tfrmctr_ped
           00080400F30504003B}
       end
       inherited PNLSyncEvent: TPanel
-        Width = 1884
+        Width = 1864
       end
     end
     inherited SBRodape: TdxStatusBar
-      Width = 1914
+      Width = 1894
     end
   end
   inherited DTSCadastro: TDataSource
-    OnDataChange = DTSCadastroDataChange
     Left = 152
     Top = 288
   end
@@ -19216,9 +19198,7 @@ inherited frmctr_ped: Tfrmctr_ped
   inherited Cadastro: TIBQuery
     Tag = 1
     AfterScroll = CadastroAfterScroll
-    BeforeOpen = CadastroBeforeOpen
     BeforeScroll = CadastroBeforeScroll
-    OnCalcFields = CadastroCalcFields
     BufferChunks = 4500
     SQL.Strings = (
       'WITH RECURSIVE PK'
@@ -19627,7 +19607,7 @@ inherited frmctr_ped: Tfrmctr_ped
       Size = 14
     end
     object CadastroGPCD: TIBStringField
-      DisplayLabel = 'Grupo Comercial'
+      DisplayLabel = 'Grupo Com.'
       FieldName = 'GPCD'
       Origin = '"VW_PED_VEN_CAB_004"."GPCD"'
       Size = 60
@@ -20197,65 +20177,23 @@ inherited frmctr_ped: Tfrmctr_ped
     Left = 344
     Top = 256
   end
-  inherited EEvent: TIBEvents
-    OnEventAlert = nil
-  end
   inherited ALPrincipal: TActionList
-    inherited ACTEveRegister: TAction
-      OnExecute = nil
-    end
-    inherited ACTEveExecute: TAction
-      OnExecute = nil
-    end
-    inherited ACTMEAppend: TAction
-      OnExecute = nil
-    end
-    inherited ACTMEEdit: TAction
-      OnExecute = nil
-    end
-    inherited ACTMEDelete: TAction
-      OnExecute = nil
-    end
-    inherited ACTMEPost: TAction
-      OnExecute = nil
-    end
-    inherited ACTMECancel: TAction
-      OnExecute = nil
-    end
-    inherited ACTEveExpress: TAction
-      OnExecute = nil
-    end
-    inherited ACTProgressBar: TAction
-      OnExecute = nil
-    end
-    inherited ACTDashboards: TAction
-      OnExecute = nil
-    end
-    inherited ACTCheckConstraints: TAction
-      OnExecute = nil
-    end
-    inherited ACTCheckErrors: TAction
-      OnExecute = nil
-    end
-    inherited ACTEdicao: TAction
-      OnExecute = nil
-    end
     object ACTEdicaoPedido: TAction
       Category = 'Edi'#231#245'es'
       Caption = 'ACTEdicaoPedido'
       OnExecute = ACTEdicaoPedidoExecute
+    end
+    object ACTEdicaoDevolucao: TAction
+      Category = 'Edi'#231#245'es'
+      Caption = 'Devolu'#231#245'es'
+      Hint = 'Devolu'#231#245'es de Produtos'
+      OnExecute = ACTEdicaoDevolucaoExecute
     end
     object ACTEdicaoAbatimento: TAction
       Category = 'Edi'#231#245'es'
       Caption = 'Abatimentos'
       Hint = 'Abatimentos de Pedidos'
       OnExecute = ACTEdicaoAbatimentoExecute
-    end
-    object ACTEdicaoDevolucao: TAction
-      Category = 'Edi'#231#245'es'
-      Caption = 'Devolu'#231#245'es'
-      Hint = 'Devolu'#231#245'es de Pedidos'
-      OnExecute = ACTEdicaoDevolucaoExecute
     end
   end
   object fin_rec_bai: TIBDataSet

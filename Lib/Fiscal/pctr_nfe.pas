@@ -175,7 +175,6 @@ type
     DBGSaidasVOLUME: TdxDBGridMaskColumn;
     DBGSaidasPESOB: TdxDBGridMaskColumn;
     DBGSaidasPESOL: TdxDBGridMaskColumn;
-    SIBOL: TSpeedItem;
     PNLInfAdBol: TPanel;
     EDInfAdBol: TdxMemo;
     Titulo: TIBQuery;

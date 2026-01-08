@@ -988,6 +988,20 @@ procedure Tfrmctr_ped.dbgConsultaCustomDrawCell(Sender: TObject;
   var AText: String; var AColor: TColor; AFont: TFont;
   var AAlignment: TAlignment; var ADone: Boolean);
 begin
+  { Cores
+    Vermelho: $000000F0
+    Mostarda: $0000F0F0
+    Amarelho: $00C3F0F0
+    Ciano   : $00C3F018
+    Ciano   : $00C3C318
+    Ciano   : $0075750E
+    Verde   : $0000C318
+    Azul    : $00C31818
+    Azul    : $00C3750E
+
+
+  }  
+
   if not ASelected then
   begin
     if ANode.Values[DBGConsultaD_DEST.Index] = 'CANCELADO' then
