@@ -299,6 +299,8 @@ type
 
     ACTEdicao: TAction;
     ACTEDI_CAD_PAD: TAction;
+    ACTEDI_CAD_PRO: TAction;
+    ACTEDI_CAD_PRO_EST: TAction;
 
     ACTMPAppend: TAction;
     ACTMPEdit: TAction;
@@ -1083,7 +1085,6 @@ type
     FIS_NFE_ADMNFE_ENT_ENDER_UF: TIBStringField;
     FIS_NFE_ADMNFE_AUT_XML_CNPJ: TIBStringField;
     FIS_NFE_ADMNFE_AUT_XML_CPF: TIBStringField;
-    ACTCAD_PRO_EST_LAN: TAction;
     FIS_NFE_SUMID: TLargeintField;
     FIS_NFE_SUMIDEV: TLargeintField;
     FIS_NFE_SUMNFE_NITEMPED: TIntegerField;
@@ -1166,7 +1167,7 @@ type
     FIS_NFE_SUMLBL_VNFTOT: TIBStringField;
     FIS_NFE_SUMNFE_VNFTOT: TIBBCDField;
 
-    procedure FormCreate(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure FormActivate(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
@@ -1191,6 +1192,8 @@ type
 
     procedure ACTEdicaoExecute(Sender: TObject);
     procedure ACTEDI_CAD_PADExecute(Sender: TObject);
+    procedure ACTEDI_CAD_PROExecute(Sender: TObject);
+    procedure ACTEDI_CAD_PRO_ESTExecute(Sender: TObject);
 
     procedure ACTMPAppendExecute(Sender: TObject);
     procedure ACTMPEditExecute(Sender: TObject);
@@ -1353,7 +1356,6 @@ type
     procedure DBGEdicaoNFE_NCMValidate(Sender: TObject;
       var ErrorText: String; var Accept: Boolean);
     procedure FIS_NFE_ADMNewRecord(DataSet: TDataSet);
-    procedure ACTCAD_PRO_EST_LANExecute(Sender: TObject);
     procedure DEdhSaiEntChange(Sender: TObject);
     procedure SIMEDPostClick(Sender: TObject);
     procedure SIMEDEditClick(Sender: TObject);
@@ -1556,18 +1558,25 @@ begin
     GBMenuEdicao.Visible := True;
     SBMenuPrincipal.Visible := True;
     PNLPrincipal.Enabled := True;
-  end;
 
-  if Showing then
-  if EDDECD.Enabled  then
-  begin
-    PostMessage(TWinControl(EDDECD).Handle, WM_SETFOCUS, 0, 0);
-    TWinControl(EDDECD).SetFocus;
-  end else
-  begin
-    PostMessage(TWinControl(CEQVOL).Handle, WM_SETFOCUS, 0, 0);
-    TWinControl(CEQVOL).SetFocus;
-  end;
+    { SQL INJECTION }
+    ALockWindowUpdate := False; { Desabilita }
+    REC_SHE_DEF.FInitialize := False; { Finaliza Inicialização }
+
+    if Showing then
+    if EDDECD.Enabled  then
+    begin
+      PostMessage(TWinControl(EDDECD).Handle, WM_SETFOCUS, 0, 0);
+      TWinControl(EDDECD).SetFocus;
+    end else
+    begin
+      PostMessage(TWinControl(CEQVOL).Handle, WM_SETFOCUS, 0, 0);
+      TWinControl(CEQVOL).SetFocus;
+    end;
+
+    PCEdicao.ActivePage := TSProduto;
+    Edicao.Last;
+  end;  
 end;
 
 procedure TFrmVEN_NFE._WM_RESIZE(var Message: TMessage);
@@ -1758,8 +1767,8 @@ begin
   REC_SHE_DEF.FWorkArea := False; { Windows    }
 
   { EVENTOS }
-  REC_SHE_DEF.FB_Event   := 'PED_RDV_ADM'; { Evento Principal }
-  REC_SHE_DEF.FB_EVE_EDT := ''; { Evento Edição }
+  REC_SHE_DEF.FB_Event   := 'FIS_NFE_ADM'; { Evento Principal }
+  REC_SHE_DEF.FB_EVE_EDT := 'PED_PDV_ADM'; { Evento Edição }
 
   { GRANT USER }
   REC_SHE_DEF.GDescricao  := 'Fiscal';
@@ -1988,7 +1997,7 @@ begin
     Self.Height := IFThen(REC_SHE_DEF.FPosition = poDefault,REC_SHE_DEF.FHeight - REC_SHE_DEF.FTop  - 5,0);
   end;
 
-  { ricardo RODAPÉ }
+  { RODAPÉ }
   REC_SHE_DEF.FMainWidth := SBRodape.Width;
   for i  := 0 to SBRodape.Panels.Count - 1 do
   if  i  <> 2 then
@@ -2121,7 +2130,7 @@ begin
     FB_PSQ_ID  := '0';      { Identificador }
     FB_PSQ_CPL := EmptyStr; { Complemento }
     FB_PSQ_SBQ := False;    { Sub Query }
-    FB_PSQ_OK  := False;    { Validação }
+    PSQ_OK  := False;    { Validação }
 
     { TEXTO }
     FB_PSQ_FD_NO_PK := EmptyStr; { Campo  }
@@ -2165,6 +2174,8 @@ begin
 
   { INICIALIZA FORM SCREEN }
   { CARREGA PRODUTOS }
+  if REC_SHE_DEF.IDPK > 0 then
+
   try
     Screen.Cursor := crHourGlass;
     ALockWindowUpdate := True;  { Habilita SQL INJECTION }
@@ -2386,16 +2397,10 @@ begin
     Edicao.Open;
 
     { CALCULO FISCAL }
-    if ACTXMLImporta.Tag = 0 then
     ACTNFeCalculate.Tag := 0; { Habilita }
     ACTNFeCalculate.Execute;
     ACTNFeBoleto.Execute; { Duplicatas }
-
-    PCEdicao.ActivePage := TSProduto;
-    Edicao.Last;
   end;
-
-  REC_SHE_DEF.FInitialize := False; { Finaliza Inicialização }
 end;
 
 procedure TFrmVEN_NFE.ACTPSQ_PED_RDVExecute(Sender: TObject);
@@ -2515,7 +2520,7 @@ begin
     SQL.Add('       CAST(MAX(TK.PSBR) OVER(PARTITION BY FK.NFE_CPROD,FK.NFE_ITEMPED) AS NUMERIC(15,2)) AS PSBR,');
     SQL.Add('       CAST(MAX(TK.PSLQ) OVER(PARTITION BY FK.NFE_CPROD,FK.NFE_ITEMPED) AS NUMERIC(15,2)) AS PSLQ,');
 
-    SQL.Add('       PK.DEST,CP.ORIG,FK.NFCI,FK.INFADCAD');
+    SQL.Add('       PK.DEST,FK.NFE_ORIG AS ORIG,FK.NFE_NFCI AS NFCI,NULL AS INFADCAD');
 
     SQL.Add('FROM ' + oREPZero('NFE_CAB','_',RECParametros.EP_ID,3) + ' AS PK');
     SQL.Add('JOIN ' + oREPZero('NFE_TRA','_',RECParametros.EP_ID,3) + ' AS TK ON TK.IDPK = PK.IDPK');
@@ -2871,25 +2876,25 @@ begin
     Close;
     SQL.Clear;
     SQL.Add('DELETE FROM FIS_NFE_ADM AS PK');
-    SQL.Add('WHERE  PK.IDEV = ''' + REC_SHE_DEF.IDEV + '''');
+    SQL.Add('WHERE  PK.IDEV >= ''' + REC_SHE_DEF.IDEV + '''');
     ExecQuery;
 
     Close;
     SQL.Clear;
     SQL.Add('DELETE FROM FIS_NFE_ITE AS PK');
-    SQL.Add('WHERE  PK.IDEV = ''' + REC_SHE_DEF.IDEV + '''');
+    SQL.Add('WHERE  PK.IDEV >= ''' + REC_SHE_DEF.IDEV + '''');
     ExecQuery;
 
     Close;
     SQL.Clear;
     SQL.Add('DELETE FROM FIS_NFE_DUP AS PK');
-    SQL.Add('WHERE  PK.IDEV = ''' + REC_SHE_DEF.IDEV + '''');
+    SQL.Add('WHERE  PK.IDEV >= ''' + REC_SHE_DEF.IDEV + '''');
     ExecQuery;
 
     Close;
     SQL.Clear;
     SQL.Add('DELETE FROM FIS_NFE_MAO AS PK');
-    SQL.Add('WHERE  PK.IDEV = ''' + REC_SHE_DEF.IDEV + '''');
+    SQL.Add('WHERE  PK.IDEV >= ''' + REC_SHE_DEF.IDEV + '''');
     ExecQuery;
   end;
 
@@ -3077,6 +3082,359 @@ begin
   end;
 end;
 
+procedure TFrmVEN_NFE.ACTEDI_CAD_PROExecute(Sender: TObject);
+var
+  REC_SHE_DEF: TREC_SHE_DEF;
+begin
+  if LeftStr(IECFOP.Text,1) = '3' then
+  begin
+    try
+      oOTransact(TEdicao);
+      REC_SHE_DEF.FB_SQL := SQLEdicao;
+      with REC_SHE_DEF.FB_SQL do
+      begin
+        Close;
+        SQL.Clear;
+        SQL.Add('DELETE FROM CAD_PRO');
+        SQL.Add('WHERE  ARTIGO = ''' + CECDNF.Text         + '''');
+        SQL.Add('AND    EP_ID  = ''' + RECParametros.EP_ID + '''');
+        ExecQuery;
+      end;
+
+      try
+        Edicao.DisableControls;
+        Edicao.First;
+
+        while not Edicao.Eof do
+        begin
+          REC_SHE_DEF.ID     := '0';
+          REC_SHE_DEF.CODIGO := EdicaoNFE_CPROD.AsString;
+
+          SPEdicao.Close;
+          SPEdicao.StoredProcName := 'SP_CAD_PRO';
+          SPEdicao.Prepare;
+
+          SPEdicao.ParamByName('ID').Value   := 0;
+          SPEdicao.ParamByName('IDEP').Value := RECParametros.EP_ID;
+
+          SPEdicao.ParamByName('IDCA').Value := RECUsuarios.Id;
+          SPEdicao.ParamByName('CDST').Value := 30;
+
+          SPEdicao.ParamByName('ARTIGO').Value := CECDNF.Value;
+          SPEdicao.ParamByName('NCM').Value    := EdicaoNFE_NCM.AsString;
+          SPEdicao.ParamByName('PIPI').Value   := EdicaoNFE_PIPI.AsFloat;
+
+          SPEdicao.ParamByName('SKU' ).Value := EdicaoNFE_CPROD.AsString;
+          SPEdicao.ParamByName('CEAN').Value := oBarCode(REC_SHE_DEF);
+
+          SPEdicao.ParamByName('DESCRICAO').Value := EdicaoNFE_XPROD.AsString;
+          SPEdicao.ParamByName('TITULO').Value    := NULL;
+          SPEdicao.ParamByName('CMP_PAD').Value   := NULL;
+
+          SPEdicao.ParamByName('IDCOR').Value := 0;
+          SPEdicao.ParamByName('DECOR').Value := NULL;
+
+          SPEdicao.ParamByName('CDGRD').Value := NULL;
+          SPEdicao.ParamByName('REGRD').Value := NULL;
+          SPEdicao.ParamByName('DEGRD').Value := NULL;
+
+          SPEdicao.ParamByName('IDCF').Value   := RECParametros.EP_ID;
+          SPEdicao.ParamByName('CDCF').Value   := NULL;
+          SPEdicao.ParamByName('CEANCF').Value := NULL;
+
+          SPEdicao.ParamByName('UCOM').Value  := EdicaoNFE_UCOM.AsString;
+          SPEdicao.ParamByName('UQVOL').Value := NULL;
+          SPEdicao.ParamByName('UESP').Value  := NULL;
+          SPEdicao.ParamByName('UCON' ).Value := NULL;
+          SPEdicao.ParamByName('UCDBE').Value := 'QT';
+          SPEdicao.ParamByName('UQTDE').Value := 1;
+
+          SPEdicao.ParamByName('UQTDE_VEN_MUL').Value := 1;
+          SPEdicao.ParamByName('UQTDE_VEN_MIN').Value := 1;
+          SPEdicao.ParamByName('UQTDE_EST_MIN').Value := 0;
+
+          SPEdicao.ParamByName('PESO').Value := NULL;
+          SPEdicao.ParamByName('PSCN').Value := NULL;
+
+          SPEdicao.ParamByName('METRO').Value      := NULL;
+          SPEdicao.ParamByName('RENDIMENTO').Value := NULL;
+
+          SPEdicao.ParamByName('GRAMATURA').Value := NULL;
+          SPEdicao.ParamByName('GRAT_T'   ).Value := NULL;
+
+          SPEdicao.ParamByName('LARG_U').Value := NULL;
+          SPEdicao.ParamByName('LARG_T').Value := NULL;
+
+          SPEdicao.ParamByName('ELAS_L').Value := NULL;
+          SPEdicao.ParamByName('ELAS_C').Value := NULL;
+
+          SPEdicao.ParamByName('ENCO_L').Value := NULL;
+          SPEdicao.ParamByName('ENCO_C').Value := NULL;
+          SPEdicao.ParamByName('ENCO_T').Value := NULL;
+
+          SPEdicao.ParamByName('ESPESSURA'     ).Value := NULL;
+          SPEdicao.ParamByName('ESPESSURA_TIPO').Value := NULL;
+
+          SPEdicao.ParamByName('VPRC_COMPRA').Value     := NULL;
+          SPEdicao.ParamByName('VPRC_COMPRA_IMP').Value := EdicaoNFE_VUNCOM.AsFloat;
+
+          SPEdicao.ParamByName('VPRC_PAD'    ).Value := EdicaoNFE_VUNCOM.AsFloat;
+          SPEdicao.ParamByName('VPRC_PAD_PRZ').Value := NULL;
+          SPEdicao.ParamByName('VPRC_PAD_PRO').Value := NULL;
+          SPEdicao.ParamByName('PPRC_PAD_DSC').Value := NULL;
+          SPEdicao.ParamByName('PPRC_PAD_AJU').Value := NULL;
+
+          SPEdicao.ParamByName('VPRC_ATV'    ).Value := NULL;
+          SPEdicao.ParamByName('VPRC_ATV_PRZ').Value := NULL;
+          SPEdicao.ParamByName('VPRC_ATV_PRO').Value := NULL;
+          SPEdicao.ParamByName('PPRC_ATV_DSC').Value := NULL;
+          SPEdicao.ParamByName('PPRC_ATV_AJU').Value := NULL;
+
+          SPEdicao.ParamByName('VPRC_VAR'    ).Value := NULL;
+          SPEdicao.ParamByName('VPRC_VAR_PRZ').Value := NULL;
+          SPEdicao.ParamByName('VPRC_VAR_PRO').Value := NULL;
+
+          SPEdicao.ParamByName('VPRC_REP'    ).Value := NULL;
+          SPEdicao.ParamByName('VPRC_REP_PRZ').Value := NULL;
+          SPEdicao.ParamByName('VPRC_REP_PRO').Value := NULL;
+
+          SPEdicao.ParamByName('VPRC_SITE').Value := NULL;
+          SPEdicao.ParamByName('PMKP_SITE').Value := NULL;
+
+          SPEdicao.ParamByName('IDCOL').Value := 0;
+          SPEdicao.ParamByName('IDSEG').Value := NULL;
+          SPEdicao.ParamByName('IDGRP').Value := NULL;
+          SPEdicao.ParamByName('IDSGP').Value := NULL;
+          SPEdicao.ParamByName('IDCAT').Value := NULL;
+          SPEdicao.ParamByName('IDSCT').Value := NULL;
+
+          SPEdicao.ParamByName('MKP_IDML').Value := NULL;
+          SPEdicao.ParamByName('MKP_IDSP').Value := NULL;
+          SPEdicao.ParamByName('MKP_IDAM').Value := NULL;
+
+          SPEdicao.ParamByName('IDFIN').Value := RECParametros.PRO_IDFIN_CAD;
+          SPEdicao.ParamByName('IDTPV').Value := RECParametros.PRO_IDFIN_EST;
+
+          SPEdicao.ParamByName('IDTPA').Value := NULL;
+          SPEdicao.ParamByName('IDTPD').Value := NULL;
+          SPEdicao.ParamByName('IDTPF').Value := NULL;
+          SPEdicao.ParamByName('IDTPL').Value := NULL;
+
+          SPEdicao.ParamByName('ORIG' ).Value := EdicaoNFE_ORIG.AsString;
+          SPEdicao.ParamByName('CPAIS').Value := IExPais.Text;
+
+          SPEdicao.ParamByName('INFADCAD').Value := NULL;
+          SPEdicao.ParamByName('INFADTEC').Value := EdicaoNFE_INFADCAD.AsString;
+
+          SPEdicao.ParamByName('IP').Value   := RECParametros.IP;
+          SPEdicao.ParamByName('HOST').Value := RECParametros.Host;
+          SPEdicao.ExecProc;
+
+          Edicao.Next;
+        end;
+
+        oCTransact(TEdicao);
+      finally
+        Edicao.EnableControls;
+      end;
+    except
+      on E: Exception do
+      begin
+       oCTransact(TEdicao,ltRollback);
+       oErro(Application.Handle,
+            'Falha ao tentar cadastrar produtos !'                    + #13 +
+            'Favor entrar em contato com o administrador do sistema.' + #13 + #13 +
+            'Erro: ' + E.Message);
+      end;
+    end;
+
+    ACTEDI_CAD_PRO_EST.Execute;
+  end;  
+end;
+
+procedure TFrmVEN_NFE.ACTEDI_CAD_PRO_ESTExecute(Sender: TObject);
+var
+  RECEdicao: TRECEdicao;
+  REC_SHE_EDI: TREC_SHE_EDI;
+  ACDRO: Integer;
+  i: Word;
+begin
+  oOTransact(TEdicao);
+  oIRECEdicao(RECEdicao);
+  oIREC_SHE_EDI(REC_SHE_EDI);
+
+  try
+    { Inicializar Parâmetros: FLAG + campos de pesquisa (IDEP,IDPK,IDFK) }
+    RECEdicao.FLAG := 0;
+
+    { Situação }
+    RECEdicao.CDST := '30';
+    RECEdicao.REST := 'A';
+    RECEdicao.DEST := 'ATIVO';
+
+    { Lançamentos }
+    RECEdicao.CTNR := 'NFe-' + CECDNF.Text;
+    RECEdicao.LOTE := '';
+    RECEdicao.CDI  := '0';
+
+    { Operação }
+    RECEdicao.CDOP := '40';
+    RECEdicao.REOP := '';
+    RECEdicao.DEOP := 'ENTRADA';
+
+    { Tipo }
+    RECEdicao.CDTP := '317';
+
+    { Informações Adicionais }
+    RECEdicao.INFADCAD := EDInfAdNF.Text;
+
+    if RECEdicao.CTNR = EmptyStr then
+    Exit;
+
+    { Registro }
+    with SQLEdicao do
+    begin
+      Close;
+      SQL.Clear;
+      SQL.Add('UPDATE CAD_PRO_ENC');
+      SQL.Add('SET    CDST = 43,');
+      SQL.Add('       REST = ''C'',');
+      SQL.Add('       DEST = ''CANCELADO''');
+      SQL.Add('WHERE  CTNR = ''' + RECEdicao.CTNR + '''');
+      ExecQuery;
+
+      Close;
+      SQL.Clear;
+      SQL.Add('SELECT GEN_ID(IDG_EV,1) FROM RDB$DATABASE');
+      ExecQuery;
+      RECEdicao.IDG_EV := Current.Vars[0].AsString;
+      RECEdicao.IDEV   := RECEdicao.IDG_EV;
+    end;
+
+    { Execute Procedure }
+    RECEdicao.ASPEdicao := SPEdicao;
+    oSP_CAD_PRO_EST_RPK(RECEdicao);
+
+    ACDRO := SPEdicao.ParamByName('rID').AsInteger;
+    if ACDRO > 0 then
+    begin
+      oIREC_SHE_EDI(REC_SHE_EDI);
+      REC_SHE_EDI.FB_SP      := SPEdicao;
+      REC_SHE_EDI.FB_SP_NAME := 'SP_CAD_PRO_EST_RFK_NEW';
+
+      try
+        Edicao.DisableControls;
+        Edicao.First;
+
+        while not Edicao.Eof do
+        begin
+          REC_SHE_EDI.AIDEP := RECParametros.EP_ID;
+          REC_SHE_EDI.AIDLG := RECUsuarios.ID;
+
+          { Situação }
+          REC_SHE_EDI.ACDST := RECEdicao.CDST;
+          REC_SHE_EDI.AREST := RECEdicao.REST;
+          REC_SHE_EDI.ADEST := RECEdicao.DEST;
+
+          { Romaneio }
+          REC_SHE_EDI.ACDRO := RECEdicao.CDRO;
+          REC_SHE_EDI.ADTRO := RECParametros.SHE_DATA;
+          REC_SHE_EDI.ACDI  := RECEdicao.CDI;
+
+          { Etiqueta }
+          with SQLEdicao do
+          begin
+            Close;
+            SQL.Clear;
+            SQL.Add('SELECT GEN_ID(ID_NO_PRO_CDET,1) FROM RDB$DATABASE');
+            ExecQuery;
+            REC_SHE_EDI.ACDET := Current.Vars[0].AsInt64;
+          end;
+
+          REC_SHE_EDI.ACTNR := RECEdicao.CTNR;
+          REC_SHE_EDI.ALOTE := RECEdicao.LOTE;
+          REC_SHE_EDI.AMAPA := RECEdicao.MAPA;
+
+          { Processos }
+          REC_SHE_EDI.ACDTP := RECEdicao.CDTP;
+          REC_SHE_EDI.ACDOP := RECEdicao.CDOP;
+          REC_SHE_EDI.AREOP := RECEdicao.REOP;
+
+          { Itens }
+          REC_SHE_EDI.AIDFK := 0;
+          REC_SHE_EDI.AITEM := EdicaoNFE_NITEMPED.AsInteger;
+
+          { Produtos }
+          with SQLEdicao do
+          begin
+            Close;
+            SQL.Clear;
+            SQL.Add('SELECT CP.CP_ID,CP.AK_ID,CP.EP_ID FROM CAD_PRO AS CP');
+            SQL.Add('WHERE  CP.SKU = ''' + EdicaoNFE_CPROD.AsString + '''');
+            ExecQuery;
+
+            REC_SHE_EDI.AIDCP    := Current.Vars[0].AsInt64;
+            REC_SHE_EDI.AIDAK    := Current.Vars[1].AsInt64;
+            REC_SHE_EDI.ACP_IDEP := Current.Vars[2].AsInteger
+          end;
+
+          { Lançamento }
+          REC_SHE_EDI.AQTDE := EdicaoNFE_QCOM.AsCurrency;
+          REC_SHE_EDI.AQTRL := EdicaoNFE_RCOM.AsInteger;
+
+          { Custo }
+          REC_SHE_EDI.ACF_VPRC_PAD_ORI := '$';
+          REC_SHE_EDI.ACF_VPRC_COM     := EdicaoNFE_VUNCOM.AsFloat;
+
+          { Classificações }
+          REC_SHE_EDI.ACOL_ID := 0; { Coleção - Compras }
+          REC_SHE_EDI.ANFCI   := EdicaoNFE_NFCI.AsString; { Ficha de Conteúdo de Importação }
+
+          { Defeitos }
+          REC_SHE_EDI.AIDDF := 0;
+          REC_SHE_EDI.ACDDF := 0;
+
+          { Informações Adicionais }
+          REC_SHE_EDI.AINFADCAD := '';
+
+          { Registros }
+          REC_SHE_EDI.FB_IDEV := RECEdicao.IDG_EV;
+
+          { Execute Procedure }
+          oSP_CAD_PRO_EST_RFK(REC_SHE_EDI);
+
+          SPEdicao.Close;
+          SPEdicao.StoredProcName := 'SP_CAD_PRO_EST_LAN';
+          SPEdicao.Prepare;
+
+          for i := 0 to SPEdicao.ParamCount - 1 do
+          SPEdicao.Params[i].Value := Null;
+
+          SPEdicao.ParamByName('AEP_ID').Value := RECParametros.EP_ID;
+          SPEdicao.ParamByName('ACP_ID').Value := REC_SHE_EDI.AIDCP;
+          SPEdicao.ExecProc;
+
+          Edicao.Next;
+        end;
+        
+      finally
+        Edicao.EnableControls;
+      end;
+    end;
+
+    oCTransact(TEdicao);
+  except
+    on E: Exception do
+    begin
+     oCTransact(TEdicao,ltRollback);
+     oErro(Application.Handle,
+          'Falha ao tentar efetuar a entrada de estoque !'          + #13 +
+          'Favor entrar em contato com o administrador do sistema.' + #13 + #13 +
+          'Erro: ' + E.Message);
+    end;
+  end;
+end;
+
 procedure TFrmVEN_NFE.ACTMPAppendExecute(Sender: TObject);
 begin
   { nothing }
@@ -3116,8 +3474,6 @@ begin
   except
     on E: Exception do
     begin
-      //RICARDOEnviado := False;
-
       oCTransact(TEdicao,ltRollback);
       oException(Nil    ,'Falha ao tentar atribuir ID de Identificação !'         +#13+
                          'Favor entrar em contato com o administrador do sistema.'+#13+#13+
@@ -3158,8 +3514,6 @@ begin
   except
     on E: Exception do
     begin
-     //RICARDOEnviado := False;
-
      oCTransact(TEdicao,ltRollback);
      oException(Nil    ,'Falha ao tentar atualizar transportadora !'             +#13+
                         'Favor entrar em contato com o administrador do sistema.'+#13+#13+
@@ -3189,8 +3543,6 @@ begin
   except
     on E: Exception do
     begin
-     //RICARDO Enviado := False;
-
      oCTransact(TEdicao,ltRollback);
      oException(Nil    ,'Falha ao tentar registrar notas de serviços !'          +#13+
                         'Favor entrar em contato com o administrador do sistema.'+#13+#13+
@@ -3235,8 +3587,6 @@ begin
   except
     on E: Exception do
     begin
-      //RICARDO Enviado := False;
-
       oCTransact(TEdicao,ltRollback);
       oException(Nil    ,'Falha ao tentar registrar duplicatas !'                 +#13+
                          'Favor entrar em contato com o administrador do sistema.'+#13+#13+
@@ -3266,7 +3616,7 @@ begin
         SPEdicao.ParamByName('CEAN').Value           := EdicaoNFE_CEAN.AsString;
         SPEdicao.ParamByName('NCM').Value            := EdicaoNFE_NCM.AsString;
         SPEdicao.ParamByName('EXTIPI').Value         := EdicaoNFE_EXTIPI.AsString;
-        SPEdicao.ParamByName('DCOR').Value           := EmptyStr;//RICARDOEdicaoCP_GRD_NO.AsString;
+        SPEdicao.ParamByName('DCOR').Value           := EmptyStr;
         SPEdicao.ParamByName('XPROD').Value          := EdicaoNFE_XPROD.AsString;
         SPEdicao.ParamByName('UCOM').Value           := EdicaoNFE_UCOM.AsString;
         SPEdicao.ParamByName('QCOM').Value           := EdicaoNFE_QCOM.AsCurrency;
@@ -3472,25 +3822,25 @@ begin
     SPEdicao.ParamByName('ESTO').Value         := IFThen((LeftStr(IECFOP.Text,1) = '3') and (RECParametros.EST_QTRL),'1','0');
     SPEdicao.ExecProc;
 
-    { Estoque de Importados }
-    //RICARDOACTCAD_PRO_EST_LAN.Execute;
-    ACTCAD_PRO_EST_LAN.Execute;
+    { Cadastro de Produtos Importados }
+    oCTransact(TEdicao);
 
-    oCTransact(TEdicao);
     if Pos(SBRodape.Panels[5].Text,'110') > 0 then
     oAviso(handle,'Nota Fiscal Denegada !' + #13 +
                   'Possíveis problemas fiscais desse destinatário na receita federal.' + #13 + #13 +
                   'Favor entrar em contato com o cliente e/ou representante.')
                   ;
 
-    if RECRomaneio.FIN_CSPD then
-    bBAI_FINANCEIRO(IFThen(FIS_NFE_DUPId.AsInteger > 0,Trunc(CECDNF.Value),0),IFThen(FIS_NFE_DUPId.AsInteger > 0,0,RECRomaneio.IDFK)) else
+    if (LeftStr(IECFOP.Text,1) <> '3') and (CECDRO.Value > 0) then
+    begin
+      if RECRomaneio.FIN_CSPD then
+      bBAI_FINANCEIRO(IFThen(FIS_NFE_DUPId.AsInteger > 0,Trunc(CECDNF.Value),0),IFThen(FIS_NFE_DUPId.AsInteger > 0,0,RECRomaneio.IDFK)) else
 
-    if (RECRomaneio.FAPD) and (FIS_NFE_DUPId.AsInteger > 0) then
-    bBAI_FINANCEIRO(Trunc(CECDNF.Value),0);
+      if (RECRomaneio.FAPD) and (FIS_NFE_DUPId.AsInteger > 0) then
+      bBAI_FINANCEIRO(Trunc(CECDNF.Value),0);
+    end;
 
     ACTEveExecute.Execute;
-    //RICARDO Enviado := True;
   except
     on E: Exception do
     begin
@@ -3502,15 +3852,18 @@ begin
                          'Erro: '+E.Message);
     end;
   end;
+
+  ACTEDI_CAD_PRO.Execute;
 end;
 
 procedure TFrmVEN_NFE.ACTMPValidateExecute(Sender: TObject);
 begin
-  if oYesNo(handle,'Validar Edição ?') = mrNo then
-  Abort;
-
-  ACTCheckErrors.Execute;
-  ACTCheckConstraints.Execute;
+  if oYesNo(handle,'Salvar sem transmitir ?' + #13 + #13 +
+                   'Lembre-se que esse recurso é permitido apenas para duplicidades') = mrYes then
+  begin
+    ACTMPPost.Execute;
+    oAviso(Handle,'Nota Fiscal salva com sucesso !');
+  end;  
 end;
 
 procedure TFrmVEN_NFE.ACTMPCancelExecute(Sender: TObject);
@@ -4592,7 +4945,7 @@ begin
     TAB_CFOP.Open;
   end;
 
-  if ACTNFeCalculate.Tag = 0 then
+  if ACTXMLImporta.Tag = 0 then
   begin
     ACTNFeICMS.Execute;
     ACTNFeCST.Execute;
@@ -4601,7 +4954,7 @@ end;
 
 procedure TFrmVEN_NFE.EdicaoNFE_ORIGValidate(Sender: TField);
 begin
-  if ACTNFeCalculate.Tag = 1 then
+  if ACTXMLImporta.Tag = 1 then
   Exit;
 
   ACTNFeICMS.Execute;
@@ -4609,7 +4962,7 @@ end;
 
 procedure TFrmVEN_NFE.EdicaoNFE_CSTValidate(Sender: TField);
 begin
-  if ACTNFeCalculate.Tag = 1 then
+  if ACTXMLImporta.Tag = 1 then
   Exit;
 
   EdicaoNFE_PREDBC.Value := IFThen(EdicaoNFE_CST.AsString = '20',33.33,0);
@@ -4617,7 +4970,7 @@ end;
 
 procedure TFrmVEN_NFE.EdicaoNFE_UCOMValidate(Sender: TField);
 begin
-  if ACTNFeCalculate.Tag = 1 then
+  if ACTXMLImporta.Tag = 1 then
   Exit;
 
   if IEFinNFe.Text <> '2' then
@@ -4630,15 +4983,13 @@ end;
 
 procedure TFrmVEN_NFE.EdicaoNFE_QCOMValidate(Sender: TField);
 begin
-  if ACTNFeCalculate.Tag = 1 then
-  Exit;
-
+  if ACTXMLImporta.Tag = 0 then
   EdicaoNFE_VPROD.Value := EdicaoNFE_QCOM.AsCurrency * EdicaoNFE_VUNCOM.AsFloat;
 end;
 
 procedure TFrmVEN_NFE.EdicaoNFE_VPRODValidate(Sender: TField);
 begin
-  if ACTNFeCalculate.Tag = 1 then
+  if ACTXMLImporta.Tag = 1 then
   Exit;
 
   if (EdicaoNFE_QTRIB.AsCurrency > 0) and (EdicaoNFE_VPROD.AsFloat > 0) then
@@ -4647,7 +4998,7 @@ end;
 
 procedure TFrmVEN_NFE.EdicaoNFE_CSTIPIValidate(Sender: TField);
 begin
-  if ACTNFeCalculate.Tag = 1 then
+  if ACTXMLImporta.Tag = 1 then
   Exit;
 
   { *** CORRETO VIR PRONTO DA TABELA DE CFOP *** }
@@ -4672,7 +5023,7 @@ end;
 
 procedure TFrmVEN_NFE.EdicaoNFE_PIPIValidate(Sender: TField);
 begin
-  if ACTNFeCalculate.Tag = 1 then
+  if ACTXMLImporta.Tag = 1 then
   Exit;
 
   if (IEFinNFe.Text <> '2') and (EDISUF.Text = EmptyStr) then
@@ -4682,7 +5033,6 @@ end;
 procedure TFrmVEN_NFE.DBGEdicaoNFE_CFOPValidate(Sender: TObject;
   var ErrorText: String; var Accept: Boolean);
 begin
-  if ACTXMLImporta.Tag = 0 then
   ACTNFeCalculate.Tag := 0;
 end;
 
@@ -5416,7 +5766,10 @@ procedure TFrmVEN_NFE.IEUFChange(Sender: TObject);
 begin
   if IEUF.Text = EmptyStr then
   Exit;
-  
+
+  if IEUF.Text  = 'EX' then
+  IEXPAIS.Text := '1600';
+
   with TAB_ALQ do
   begin
     Close;
@@ -5572,6 +5925,7 @@ begin
 
   ACTNFeTriangular.Execute;
   ACTNFeCalculate.Execute;
+  ACTNFeINFADCAD.Execute;
 end;
 
 procedure TFrmVEN_NFE.CEIDCTValidate(Sender: TObject;
@@ -5592,6 +5946,8 @@ begin
   ACTPSQ_TAB_CFOP.Caption     := 'NFE_CFOP';  { Field }
   ACTPSQ_TAB_CFOP.HelpKeyWord := IECFOP.Text; { Value }
   ACTPSQ_TAB_CFOP.Execute;
+
+  ACTNFeINFADCAD.Execute;
 end;
 
 procedure TFrmVEN_NFE.DBGEdicaoNFE_NCMValidate(Sender: TObject;
@@ -5941,23 +6297,35 @@ begin
               { IBS CBS }
               EdicaoNFE_IBSCBS_CSTIS.Value        := TAB_CFOPCSTCBS.AsString;
               EdicaoNFE_IBSCBS_CCLASSTRIBIS.Value := TAB_CFOPCCLASSTRIBCBS.AsString;
-              EdicaoNFE_IBSCBS_VBCIBSCBS.Value    :=
 
-              EdicaoNFE_VPROD.AsFloat      + EdicaoNFE_VSERV.AsFloat     + EdicaoNFE_VFRETE.AsFloat       + EdicaoNFE_VSEG.AsFloat  + EdicaoNFE_VOUTRO.AsFloat      + EdicaoNFE_VII.AsFloat  -
-              EdicaoNFE_VDESC.AsFloat      - EdicaoNFE_VPIS.AsFloat      - EdicaoNFE_VCOFINS.AsFloat      - EdicaoNFE_VICMS.AsFloat - EdicaoNFE_VICMSUFDEST.AsFloat - EdicaoNFE_VFCP.AsFloat -
-              EdicaoNFE_VFCPUFDEST.AsFloat - EdicaoNFE_VICMSMONO.AsFloat - EdicaoNFE_ISSQN_VISSQN.AsFloat +
-              EdicaoNFE_IS_VIS.AsFloat;
+              if EdicaoNFE_IBSCBS_CSTIS.AsString = '000' then
+              begin
+                EdicaoNFE_IBSCBS_VBCIBSCBS.Value    :=
 
-              { CBS }
-              EdicaoNFE_CBS_VBCCBS.Value := EdicaoNFE_IBSCBS_VBCIBSCBS.AsFloat;
-              EdicaoNFE_CBS_PCBS.Value   := TAB_CFOPPCBS.AsFloat;
-              EdicaoNFE_CBS_VCBS.Value   := RoundTO((EdicaoNFE_CBS_PCBS.AsFloat / 100) * EdicaoNFE_CBS_VBCCBS.AsFloat,-2);
+                EdicaoNFE_VPROD.AsFloat      + EdicaoNFE_VSERV.AsFloat     + EdicaoNFE_VFRETE.AsFloat       + EdicaoNFE_VSEG.AsFloat  + EdicaoNFE_VOUTRO.AsFloat      + EdicaoNFE_VII.AsFloat  -
+                EdicaoNFE_VDESC.AsFloat      - EdicaoNFE_VPIS.AsFloat      - EdicaoNFE_VCOFINS.AsFloat      - EdicaoNFE_VICMS.AsFloat - EdicaoNFE_VICMSUFDEST.AsFloat - EdicaoNFE_VFCP.AsFloat -
+                EdicaoNFE_VFCPUFDEST.AsFloat - EdicaoNFE_VICMSMONO.AsFloat - EdicaoNFE_ISSQN_VISSQN.AsFloat +
+                EdicaoNFE_IS_VIS.AsFloat;
 
-              { IBS }
-              EdicaoNFE_IBSUF_VBCIBSUF.Value := EdicaoNFE_IBSCBS_VBCIBSCBS.AsFloat;
-              EdicaoNFE_IBSUF_PIBSUF.Value   := TAB_CFOPPIS.AsCurrency;
-              EdicaoNFE_IBSUF_VIBSUF.Value   := RoundTo((EdicaoNFE_IBSUF_PIBSUF.AsFloat / 100) * EdicaoNFE_IBSCBS_VBCIBSCBS.AsFloat,-2);
+                { CBS }
+                EdicaoNFE_CBS_VBCCBS.Value := EdicaoNFE_IBSCBS_VBCIBSCBS.AsFloat;
+                EdicaoNFE_CBS_PCBS.Value   := TAB_CFOPPCBS.AsFloat;
+                EdicaoNFE_CBS_VCBS.Value   := RoundTO((EdicaoNFE_CBS_PCBS.AsFloat / 100) * EdicaoNFE_CBS_VBCCBS.AsFloat,-2);
 
+                { IBS }
+                EdicaoNFE_IBSUF_VBCIBSUF.Value := EdicaoNFE_IBSCBS_VBCIBSCBS.AsFloat;
+                EdicaoNFE_IBSUF_PIBSUF.Value   := TAB_CFOPPIS.AsCurrency;
+                EdicaoNFE_IBSUF_VIBSUF.Value   := RoundTo((EdicaoNFE_IBSUF_PIBSUF.AsFloat / 100) * EdicaoNFE_IBSCBS_VBCIBSCBS.AsFloat,-2);
+              end else
+              begin
+                EdicaoNFE_IBSCBS_VBCIBSCBS.Value := 0;
+                EdicaoNFE_CBS_VBCCBS.Value       := 0;
+                EdicaoNFE_CBS_VCBS.Value         := 0;
+                EdicaoNFE_IBSUF_VBCIBSUF.Value   := 0;
+                EdicaoNFE_IBSUF_VIBSUF.Value     := 0;
+                EdicaoNFE_VNFTOT.Value           := 0;
+              end;
+              
               { Ricardo - Como a planilha do renato, já está embutido o valor do frete, tive q isolar o VNF para importações }
               if LeftStr(EdicaoNFE_CFOP.AsString,1) <> '3' then
                  EdicaoNFE_VNF.Value := (EdicaoNFE_VPROD.AsFloat  - EdicaoNFE_VDESC.AsFloat  - EdicaoNFE_VICMSDeson.AsFloat) +
@@ -6305,9 +6673,9 @@ begin
 
     if RECNFTriangular.Selected then
     begin
-      EDINFADNF.Lines.Add('Mercadoria a ser entregue através da nota fiscal ' + CER_CDNF.Text + ' para: ' + EDR_DECD.Text + ' CNPJ: ' + oCNPJ_Mask(EDR_CNPJ.Text) + ' IE: ' + PER_IE.Text );
-      EDINFADNF.Lines.Add(PER_TXLGR.Text + ' ' + EDR_XLGR.Text    + ', '      + EDR_NRO.Text  + ' '       + EDR_XCPL.Text + ' CEP: '  + EDR_CEP.Text + ' ' +
-                                                 EDR_XBAIRRO.Text + ' '       + EDR_XMUN.Text + ' '       + PER_UF.Text);
+      EDINFADNF.Lines.Add('Mercadoria a ser entregue através da nota fiscal '   + CER_CDNF.Text + ' para: ' + EDR_DECD.Text + ' CNPJ: ' + oCNPJ_Mask(EDR_CNPJ.Text));
+      EDINFADNF.Lines.Add( ' IE: ' + PER_IE.Text + ' ' + PER_TXLGR.Text + ' '   + EDR_XLGR.Text + ', '      + EDR_NRO.Text  + ' '       + EDR_XCPL.Text + ' CEP: '  + EDR_CEP.Text + ' ' +
+                                                         EDR_XBAIRRO.Text + ' ' + EDR_XMUN.Text + ' '       + PER_UF.Text);
     end;
   end;
 
@@ -6675,6 +7043,15 @@ var
   tProd : ANFe;
   x: word;
 begin
+  { ROMANEIO }
+  if CECDRO.Value = 0 then
+  begin
+    RECRomaneio.IDCV := RECUsuarios.ID;
+    RECRomaneio.DECV := RECUsuarios.Login;
+    RECRomaneio.IDCR := RECParametros.CR_ID;
+    RECRomaneio.DECR := RECParametros.CR_NO;
+  end;
+
   { CHECK }
   ACTCheckConstraints.Execute;
   ACTCheckErrors.Execute;
@@ -7253,51 +7630,78 @@ begin
       tProd[x,246] := ''; // <uTrib> Unidade de Medida Tributável
       tProd[x,247] := ''; // <qTrib> Quantidade Tributável
       tProd[x,248] := ''; // <vIS> Valor do Imposto Seletivo
+      tProd[x,249] := '';        // IBSCBS <CST> Código de Situação Tributária do IBS e CBS
+      tProd[x,250] := ''; // IBSCBS <cClassTrib> Código de Classificação Tributária do IBS e CBS
+      tProd[x,251] := ''; //gIBSCBS <vBC> Base de Cálculo do IBS e da CBS
+      tProd[x,252] := ''; // <pIBSUF> Alíquota vigente do IBS da UF
+      tProd[x,253] := ''; // <pDif> Percentual do Diferimento
+      tProd[x,254] := ''; // <vDif> Valor do Diferimento
+      tProd[x,255] := ''; //<vDevTrib> Valor do tributo devolvido
+      tProd[x,256] := ''; // <pRedAliq> Percentual de redução da alíquota do cClassTrib
+      tProd[x,257] := ''; // <pAliqEfet> Alíquota Efetiva do IBS de competência da UF que será aplicada a Base de Cálculo
+      tProd[x,258] := ''; // <vIBSUF> gIBSUF Valor do IBS de competência da UF
+      tProd[x,259] := ''; // <pIBSMun> gIBSMun Alíquota do IBS de competência do Município
+      tProd[x,260] := ''; // <pDif> Percentual do Diferimento
+      tProd[x,261] := ''; // <vDif> Valor do Diferimento
+      tProd[x,262] := ''; // <vDevTrib> Valor do tributo devolvido
+      tProd[x,263] := ''; // <pRedAliq> Percentual de redução da alíquota do cClassTrib
+      tProd[x,264] := ''; // <pAliqEfet> Alíquota Efetiva do IBS de competência do Município que será aplicada a Base de Cálculo
+      tProd[x,266] := ''; //gIBSCBS <vIBS> Valor do IBS
+      tProd[x,267] := ''; // <pCBS> gCBS Alíquota da CBS
+      tProd[x,268] := ''; // <pDif> Percentual do Diferimento
+      tProd[x,269] := ''; // <vDif> Valor do Diferimento
+      tProd[x,270] := ''; // <vDevTrib> Valor do tributo devolvido
+      tProd[x,271] := ''; // <pRedAliq> Percentual de redução da alíquota do cClassTrib
+      tProd[x,272] := ''; // <pAliqEfet> Alíquota Efetiva da CBS que será aplicada a Base de Cálculo
+      tProd[x,273] := ''; // <vCBS> Valor da CBS
 
       //tag IBSCBS
       tProd[x,249] := EdicaoNFE_IBSCBS_CSTIS.AsString;        // IBSCBS <CST> Código de Situação Tributária do IBS e CBS
       tProd[x,250] := EdicaoNFE_IBSCBS_CCLASSTRIBIS.AsString; // IBSCBS <cClassTrib> Código de Classificação Tributária do IBS e CBS
 
-      {Grupo de Informações do IBS e da CBS <gIBSCBS>}
-      {Indexes obrigatórios: 251, 252, 258, 259, 265, 266, 267, 273}
-      tProd[x,251] := oTextToValor(EdicaoNFE_IBSCBS_VBCIBSCBS.AsFloat,2,True); //gIBSCBS <vBC> Base de Cálculo do IBS e da CBS
+      if EdicaoNFE_IBSCBS_CSTIS.AsString = '000' then
+      begin
+        {Grupo de Informações do IBS e da CBS <gIBSCBS>}
+        {Indexes obrigatórios: 251, 252, 258, 259, 265, 266, 267, 273}
+        tProd[x,251] := oTextToValor(EdicaoNFE_IBSCBS_VBCIBSCBS.AsFloat,2,True); //gIBSCBS <vBC> Base de Cálculo do IBS e da CBS
 
-      {Grupo de Informações do IBS para a UF <gIBSCBS/gIBSUF>}
-      tProd[x,252] := oTextToValor(EdicaoNFE_IBSUF_PIBSUF.ASFloat,4,True); // <pIBSUF> Alíquota vigente do IBS da UF
-      tProd[x,258] := oTextToValor(EdicaoNFE_IBSUF_VIBSUF.ASFloat,2,True); // <vIBSUF> gIBSUF Valor do IBS de competência da UF
+        {Grupo de Informações do IBS para a UF <gIBSCBS/gIBSUF>}
+        tProd[x,252] := oTextToValor(EdicaoNFE_IBSUF_PIBSUF.ASFloat,4,True); // <pIBSUF> Alíquota vigente do IBS da UF
+        tProd[x,258] := oTextToValor(EdicaoNFE_IBSUF_VIBSUF.ASFloat,2,True); // <vIBSUF> gIBSUF Valor do IBS de competência da UF
 
-      {Grupo de Informações do Diferimento <gIBSCBS/gIBSUF/gDif>}
-      tProd[x,253] := ''; // <pDif> Percentual do Diferimento
-      tProd[x,254] := ''; // <vDif> Valor do Diferimento
+        {Grupo de Informações do Diferimento <gIBSCBS/gIBSUF/gDif>}
+        tProd[x,253] := ''; // <pDif> Percentual do Diferimento
+        tProd[x,254] := ''; // <vDif> Valor do Diferimento
 
-      {Grupo de Informações da devolução de tributos <gIBSCBS/gIBSUF/gDevTrib>}
-      tProd[x,255] := ''; //<vDevTrib> Valor do tributo devolvido
+        {Grupo de Informações da devolução de tributos <gIBSCBS/gIBSUF/gDevTrib>}
+        tProd[x,255] := ''; //<vDevTrib> Valor do tributo devolvido
 
-      {Grupo de informações da redução da alíquota <gIBSCBS/gIBSUF/gRed>}
-      tProd[x,256] := ''; // <pRedAliq> Percentual de redução da alíquota do cClassTrib
-      tProd[x,257] := ''; // <pAliqEfet> Alíquota Efetiva do IBS de competência da UF que será aplicada a Base de Cálculo
+        {Grupo de informações da redução da alíquota <gIBSCBS/gIBSUF/gRed>}
+        tProd[x,256] := ''; // <pRedAliq> Percentual de redução da alíquota do cClassTrib
+        tProd[x,257] := ''; // <pAliqEfet> Alíquota Efetiva do IBS de competência da UF que será aplicada a Base de Cálculo
 
-      {Grupo de Informações do IBS para o município <gIBSCBS/gIBSMun>}
-      tProd[x,259] := '0.0000'; // <pIBSMun> gIBSMun Alíquota do IBS de competência do Município
-      tProd[x,265] := '0.00';   // <vIBSMun> gIBSMun Valor do IBS de competência do Município
+        {Grupo de Informações do IBS para o município <gIBSCBS/gIBSMun>}
+        tProd[x,259] := '0.0000'; // <pIBSMun> gIBSMun Alíquota do IBS de competência do Município
+        tProd[x,265] := '0.00';   // <vIBSMun> gIBSMun Valor do IBS de competência do Município
 
-      {Grupo de Informações do Diferimento <gIBSCBS/gIBSMun/gDif>}
-      tProd[x,260] := ''; // <pDif> Percentual do Diferimento
-      tProd[x,261] := ''; // <vDif> Valor do Diferimento
+        {Grupo de Informações do Diferimento <gIBSCBS/gIBSMun/gDif>}
+        tProd[x,260] := ''; // <pDif> Percentual do Diferimento
+        tProd[x,261] := ''; // <vDif> Valor do Diferimento
 
-      {Grupo de Informações da devolução de tributos <gIBSCBS/gIBSMun/gDevTrib>}
-      tProd[x,262] := ''; // <vDevTrib> Valor do tributo devolvido
+        {Grupo de Informações da devolução de tributos <gIBSCBS/gIBSMun/gDevTrib>}
+        tProd[x,262] := ''; // <vDevTrib> Valor do tributo devolvido
 
-      {Grupo de informações da redução da alíquota <gIBSCBS/gIBSMun/gRed>}
-      tProd[x,263] := ''; // <pRedAliq> Percentual de redução da alíquota do cClassTrib
-      tProd[x,264] := ''; // <pAliqEfet> Alíquota Efetiva do IBS de competência do Município que será aplicada a Base de Cálculo
+        {Grupo de informações da redução da alíquota <gIBSCBS/gIBSMun/gRed>}
+        tProd[x,263] := ''; // <pRedAliq> Percentual de redução da alíquota do cClassTrib
+        tProd[x,264] := ''; // <pAliqEfet> Alíquota Efetiva do IBS de competência do Município que será aplicada a Base de Cálculo
 
-      tProd[x,266] := oTextToValor(EdicaoNFE_IBSUF_VIBSUF.ASFloat,2,True); //gIBSCBS <vIBS> Valor do IBS
+        tProd[x,266] := oTextToValor(EdicaoNFE_IBSUF_VIBSUF.ASFloat,2,True); //gIBSCBS <vIBS> Valor do IBS
 
-      {Grupo de informações da CBS}
-      tProd[x,267] := oTextToValor(EdicaoNFE_CBS_PCBS.AsFloat,4,True); // <pCBS> gCBS Alíquota da CBS
-      tProd[x,273] := oTextToValor(EdicaoNFE_CBS_VCBS.AsFloat,2,True); // <vCBS> Valor da CBS
-
+        {Grupo de informações da CBS}
+        tProd[x,267] := oTextToValor(EdicaoNFE_CBS_PCBS.AsFloat,4,True); // <pCBS> gCBS Alíquota da CBS
+        tProd[x,273] := oTextToValor(EdicaoNFE_CBS_VCBS.AsFloat,2,True); // <vCBS> Valor da CBS
+      end;
+      
       {Grupo de Informações do Diferimento <gIBSCBS/gCBS/gDif>}
       tProd[x,268] := ''; // <pDif> Percentual do Diferimento
       tProd[x,269] := ''; // <vDif> Valor do Diferimento
@@ -7647,50 +8051,53 @@ begin
     tTotal[47] := ''; //vICMSMonoRet
 
     { NRT - NOVA REFORMA TRIBUTÁRIA }
-    //<ISTot> Grupo total do imposto seletivo
-    tTotal[48] := ''; //<vIS> Total do Imposto Seletivo
+ //   if EdicaoNFE_IBSCBS_CSTIS.AsString = '000' then
+    begin
+      //<ISTot> Grupo total do imposto seletivo
+      tTotal[48] := ''; //<vIS> Total do Imposto Seletivo
 
-    //<IBSCBSTot> Totais da NF-e com IBS e CBS
-    tTotal[49] := oTextToValor(FIS_NFE_SUMNFE_IBSCBS_VBCIBSCBS.AsFloat,2,True); //<vBCIBSCBS> Valor total da BC do IBS e da CBS
+      //<IBSCBSTot> Totais da NF-e com IBS e CBS
+      tTotal[49] := oTextToValor(FIS_NFE_SUMNFE_IBSCBS_VBCIBSCBS.AsFloat,2,True); //<vBCIBSCBS> Valor total da BC do IBS e da CBS
 
-    {<gIBS> Grupo Total do IBS}
-    {Para gerar este grupo todas tags abaixo devem ser informadas}
+      {<gIBS> Grupo Total do IBS}
+      {Para gerar este grupo todas tags abaixo devem ser informadas}
 
-    {<gIBSUF> Grupo Total do IBS da UF}
-    tTotal[50] := '0.00'; //<vDif> Valor total do diferimento
-    tTotal[51] := '0.00'; //<vDevTrib> Valor total de devolução de tributos
-    tTotal[52] := oTextToValor(FIS_NFE_SUMNFE_IBSUF_VIBSUF.ASFloat,2,True); //<vIBSUF> Valor total do IBS da UF
+      {<gIBSUF> Grupo Total do IBS da UF}
+      tTotal[50] := '0.00'; //<vDif> Valor total do diferimento
+      tTotal[51] := '0.00'; //<vDevTrib> Valor total de devolução de tributos
+      tTotal[52] := oTextToValor(FIS_NFE_SUMNFE_IBSUF_VIBSUF.ASFloat,2,True); //<vIBSUF> Valor total do IBS da UF
 
-    {<gIBSMun> Grupo Total do IBS do Município}
-    tTotal[53] := '0.00'; //<vDif> Valor total do diferimento
-    tTotal[54] := '0.00'; //<vDevTrib> Valor total de devolução de tributos
-    tTotal[55] := '0.00'; //<vIBSMun> Valor total do IBS da UF
+      {<gIBSMun> Grupo Total do IBS do Município}
+      tTotal[53] := '0.00'; //<vDif> Valor total do diferimento
+      tTotal[54] := '0.00'; //<vDevTrib> Valor total de devolução de tributos
+      tTotal[55] := '0.00'; //<vIBSMun> Valor total do IBS da UF
 
-    tTotal[56] := oTextToValor(FIS_NFE_SUMNFE_IBSUF_VIBSUF.ASFloat,2,True); //<vIBS> Valor total do IBS
-    tTotal[57] := '0.00'; //<vCredPres> Valor total do crédito presumido
-    tTotal[58] := '0.00'; //<vCredPresCondSus> Valor total do crédito presumido em condição suspensiva
+      tTotal[56] := oTextToValor(FIS_NFE_SUMNFE_IBSUF_VIBSUF.ASFloat,2,True); //<vIBS> Valor total do IBS
+      tTotal[57] := '0.00'; //<vCredPres> Valor total do crédito presumido
+      tTotal[58] := '0.00'; //<vCredPresCondSus> Valor total do crédito presumido em condição suspensiva
 
-    {<gCBS> Grupo Total da CBS}
-    {Para gerar este grupo todas tags abaixo devem ser informadas}
-    tTotal[59] := '0.00'; //<vDif> Valor total do diferimento
-    tTotal[60] := '0.00'; //<vDevTrib> Valor total de devolução de tributos
-    tTotal[61] := oTextToValor(FIS_NFE_SUMNFE_CBS_VCBS.AsFloat,2,True); //<vCBS> Valor total da CBS
-    tTotal[62] := '0.00'; //<vCredPres> Valor total do crédito presumido
-    tTotal[63] := '0.00'; //<vCredPresCondSus> Valor total do crédito presumido em condição suspensiva
+      {<gCBS> Grupo Total da CBS}
+      {Para gerar este grupo todas tags abaixo devem ser informadas}
+      tTotal[59] := '0.00'; //<vDif> Valor total do diferimento
+      tTotal[60] := '0.00'; //<vDevTrib> Valor total de devolução de tributos
+      tTotal[61] := oTextToValor(FIS_NFE_SUMNFE_CBS_VCBS.AsFloat,2,True); //<vCBS> Valor total da CBS
+      tTotal[62] := '0.00'; //<vCredPres> Valor total do crédito presumido
+      tTotal[63] := '0.00'; //<vCredPresCondSus> Valor total do crédito presumido em condição suspensiva
 
-    {<gMono> Grupo Total da Monofasia}
-    {Para gerar este grupo todas tags abaixo devem ser informadas}
-    tTotal[64] := ''; //<vIBSMono> Valor total do IBS Monofásico
-    tTotal[65] := ''; //<vCBSMono> Valor total da CBS Monofásica
-    tTotal[66] := ''; //<vIBSMonoReten> Valor total do IBS Monofásico sujeito a retenção
-    tTotal[67] := ''; //<vCBSMonoReten> Valor total da CBS Monofásica sujeito a retenção
-    tTotal[68] := ''; //<vIBSMonoRet> Valor total do IBS Monofásico retido anteriormente
-    tTotal[69] := ''; //<vCBSMonoRet> Valor total da CBS Monofásica retida anteriormente
+      {<gMono> Grupo Total da Monofasia}
+      {Para gerar este grupo todas tags abaixo devem ser informadas}
+      tTotal[64] := ''; //<vIBSMono> Valor total do IBS Monofásico
+      tTotal[65] := ''; //<vCBSMono> Valor total da CBS Monofásica
+      tTotal[66] := ''; //<vIBSMonoReten> Valor total do IBS Monofásico sujeito a retenção
+      tTotal[67] := ''; //<vCBSMonoReten> Valor total da CBS Monofásica sujeito a retenção
+      tTotal[68] := ''; //<vIBSMonoRet> Valor total do IBS Monofásico retido anteriormente
+      tTotal[69] := ''; //<vCBSMonoRet> Valor total da CBS Monofásica retida anteriormente
 
-    tTotal[70] := ''; //<vNFTot> Valor total da NF-e com IBS / CBS / IS
+      tTotal[70] := ''; //<vNFTot> Valor total da NF-e com IBS / CBS / IS
 
-    if FIS_NFE_SUMNFE_VNFTOT.AsFloat > 0 then
-    tTotal[70] := oTextToValor(FIS_NFE_SUMNFE_VNFTOT.AsFloat,2,True);
+      if FIS_NFE_SUMNFE_VNFTOT.AsFloat > 0 then
+      tTotal[70] := oTextToValor(FIS_NFE_SUMNFE_VNFTOT.AsFloat,2,True);
+    end;
     
     if (Pos(EDMARCA.Text,EDINFADNF.Text) = 0) and (EDMARCA.Text <> EmptyStr) then
     begin
@@ -8094,45 +8501,6 @@ begin
     ANodeSec := ANodePai;
     ANodeSec.ChildNodes.First;
 
-    with SQLConsulta do
-    begin
-      Close;
-      SQL.Clear;
-
-      if LAIDCD.Tag = 0 then
-      begin
-        SQL.Add('SELECT ID FROM CAD_CLI');
-
-        if Trim(ANodeSec.ChildNodes['CNPJ'].Text) <> '' then
-           SQL.Add('WHERE CLI_CNPJ = '''+trim(ANodeSec.ChildNodes['CNPJ'].Text)+'''') else
-           SQL.Add('WHERE CLI_RAZA LIKE ''%'+copy(trim(ANodeSec.ChildNodes['xNome'].Text),1,10)+'%''');
-      end else
-      begin
-        SQL.Clear;
-        SQL.Add('SELECT ID FROM CAD_FOR');
-
-        if Trim(ANodeSec.ChildNodes['CNPJ'].Text) <> '' then
-           SQL.Add('WHERE FOR_CNPJ = '''+trim(ANodeSec.ChildNodes['CNPJ'].Text)+'''') else
-           SQL.Add('WHERE FOR_RAZA LIKE ''%'+copy(trim(ANodeSec.ChildNodes['xNome'].Text),1,10)+'%''');
-      end;
-
-      Prepare;
-      ExecQuery;
-
-      if Eof then
-      begin
-        MessageBox(Application.Handle,PChar(IFThen(LAIDCD.Tag = 0,'Cliente','Fornecedor') + ' não Encontrado !'),'Importação de XML',MB_ICONWARNING+MB_OK);
-        Abort;
-        //CADASTRA_FAVORECIDO(ANodeSec,ANodeEnd);
-      end else
-      begin
-        { DESTINATÁRIO }
-        CEIDCD.Value    := Current.ByName('ID').AsInteger;
-        CEIDCD.Modified := True;
-        CEIDCD.ValidateEdit;
-      end;
-    end;
-
     // Aqui eu peço para encontrar a primeira ocorrencia da Tag <det>>
     ANodePai := AXMLDOC.DocumentElement.childNodes.First.ChildNodes.FindNode('ide');
     if ANodePai = nil then
@@ -8198,34 +8566,40 @@ begin
       repeat
         if ANodeTmp.ChildNodes['cProd'].text <> '' then
         begin
+          Application.ProcessMessages;
+          
           Edicao.Append;
           EdicaoID.Value            := 0;
           EdicaoNFE_CFOP.Value      := Trim(ANodeTmp.ChildNodes['CFOP'].Text);
           EdicaoNFE_INDTOT.AsString := Trim(ANodeTmp.ChildNodes['indTot'].Text);
-          EdicaoNFE_CPROD.Value     := Trim(ANodeTmp.ChildNodes['cProd'].Text);
-          EdicaoNFE_CEAN.Value      := Trim(ANodeTmp.ChildNodes['cEAN'].Text);
-          EdicaoNFE_XPROD.Value     := Trim(ANodeTmp.ChildNodes['xProd'].Text);
-          EdicaoNFE_NCM.Value       := Trim(ANodeTmp.ChildNodes['NCM'].Text);
 
-          EdicaoNFE_UCOM.Value      := Trim(ANodeTmp.ChildNodes['uCom'].Text);
-          EdicaoNFE_QCOM.Value      := oTextToValor(Trim(ANodeTmp.ChildNodes['qCom'].Text));
+          if Pos(IECFOP.Text,Trim(ANodeTmp.ChildNodes['cProd'].Text)) > 0 then
+          EdicaoNFE_CPROD.Value   := CECDNF.Text + '_' + oStrZero(EdicaoNFE_NITEMPED.AsInteger,3) else
+          EdicaoNFE_CPROD.Value   := Trim(ANodeTmp.ChildNodes['cProd'].Text) + '-' + IntToStr(EdicaoNFE_NITEMPED.AsInteger);
+          EdicaoNFE_CEAN.Value    := Trim(ANodeTmp.ChildNodes['cEAN'].Text);
+          EdicaoNFE_XPROD.Value   := Trim(ANodeTmp.ChildNodes['xProd'].Text);
+          EdicaoNFE_NCM.Value     := Trim(ANodeTmp.ChildNodes['NCM'].Text);
 
-          EdicaoNFE_UTRIB.Value     := Trim(ANodeTmp.ChildNodes['uTrib'].Text);
-          EdicaoNFE_QTRIB.Value     := oTextToValor(Trim(ANodeTmp.ChildNodes['qTrib'].Text));
+          EdicaoNFE_UCOM.Value    := Trim(ANodeTmp.ChildNodes['uCom'].Text);
+          EdicaoNFE_QCOM.Value    := oTextToValor(Trim(ANodeTmp.ChildNodes['qCom'].Text));
 
-          EdicaoNFE_VUNPAD.AsFloat  := oTextToValor(Trim(ANodeTmp.ChildNodes['vUnCom'].Text));
-          EdicaoNFE_VUNCOM.AsFloat  := oTextToValor(Trim(ANodeTmp.ChildNodes['vUnCom'].Text));
-          EdicaoNFE_VUNTRIB.AsFloat := oTextToValor(Trim(ANodeTmp.ChildNodes['vUnTrib'].Text));
+          EdicaoNFE_UTRIB.Value   := Trim(ANodeTmp.ChildNodes['uTrib'].Text);
+          EdicaoNFE_QTRIB.Value   := oTextToValor(Trim(ANodeTmp.ChildNodes['qTrib'].Text));
 
-          EdicaoNFE_VPROD.Value     := oTextToValor(Trim(ANodeTmp.ChildNodes['vProd'].Text));
-          EdicaoNFE_VDESC.Value     := oTextToValor(Trim(ANodeTmp.ChildNodes['vDesc'].Text));
+          EdicaoNFE_VPROD.Value   := oTextToValor(Trim(ANodeTmp.ChildNodes['vProd'].Text));
+          EdicaoNFE_VUNCOM.Value  := EdicaoNFE_VPROD.Value / EdicaoNFE_QCOM.Value;
+          EdicaoNFE_VUNPAD.Value  := oTextToValor(Trim(ANodeTmp.ChildNodes['vUnCom'].Text));
 
-          EdicaoNFE_VFRETE.Value    := oTextToValor(Trim(ANodeTmp.ChildNodes['vFrete'].Text));
-          EdicaoNFE_VSEG.Value      := oTextToValor(Trim(ANodeTmp.ChildNodes['vSeg'].Text));
-          EdicaoNFE_VOUTRO.Value    := oTextToValor(Trim(ANodeTmp.ChildNodes['vOutro'].Text));
+          if EdicaoNFE_QTRIB.AsFloat > 0 then
+          EdicaoNFE_VUNTRIB.Value := EdicaoNFE_VPROD.Value / EdicaoNFE_QCOM.Value;
 
-          EdicaoNFE_XPED.Value      := Trim(ANodeTmp.ChildNodes['xPed'].Text);
-          EdicaoNFE_NFCI.Value      := Trim(ANodeTmp.ChildNodes['nFCI'].Text);
+          EdicaoNFE_VDESC.Value   := oTextToValor(Trim(ANodeTmp.ChildNodes['vDesc'].Text));
+          EdicaoNFE_VFRETE.Value  := oTextToValor(Trim(ANodeTmp.ChildNodes['vFrete'].Text));
+          EdicaoNFE_VSEG.Value    := oTextToValor(Trim(ANodeTmp.ChildNodes['vSeg'].Text));
+          EdicaoNFE_VOUTRO.Value  := oTextToValor(Trim(ANodeTmp.ChildNodes['vOutro'].Text));
+
+          EdicaoNFE_XPED.Value    := Trim(ANodeTmp.ChildNodes['xPed'].Text);
+          EdicaoNFE_NFCI.Value    := Trim(ANodeTmp.ChildNodes['nFCI'].Text);
 
           if  Trim(ANodeTmp.ChildNodes['nItemPed'].Text) <> '' then
           EdicaoNFE_NITEMPED.Value   := StrToInt(Trim(ANodeTmp.ChildNodes['nItemPed'].Text));
@@ -9011,6 +9385,49 @@ begin
         EDInfAdNF.Tag  := 1;
       end;
     end;
+
+    { DESTINATÁRIO }
+    with SQLConsulta do
+    begin
+      Close;
+      SQL.Clear;
+
+      if LAIDCD.Tag = 0 then
+      begin
+        SQL.Add('SELECT ID FROM CAD_CLI');
+
+        if Trim(ANodeSec.ChildNodes['CNPJ'].Text) <> '' then
+        SQL.Add('WHERE CLI_CNPJ = '''+trim(ANodeSec.ChildNodes['CNPJ'].Text)+'''') else
+        SQL.Add('WHERE CLI_RAZA LIKE ''%'+copy(trim(ANodeSec.ChildNodes['xNome'].Text),1,10)+'%''');
+      end else
+      begin
+        SQL.Add('SELECT ID FROM CAD_FOR');
+
+        if Trim(ANodeSec.ChildNodes['CNPJ'].Text) <> '' then
+        SQL.Add('WHERE FOR_CNPJ = '''+trim(ANodeSec.ChildNodes['CNPJ'].Text)+'''') else
+        SQL.Add('WHERE FOR_RAZA LIKE ''%'+copy(trim(ANodeSec.ChildNodes['xNome'].Text),1,10)+'%''');
+      end;
+
+      if LeftStr(IECFOP.Text,1) = '3' then
+      begin
+        Close;
+        SQL.Clear;
+        SQL.Add('SELECT   FIRST 1 PK.IDCD,PK.DECD FROM  ' + oREPZero('NFE_CAB','_',RECParametros.EP_ID,3) + ' AS PK');
+        SQL.Add('WHERE    PK.CFOP = ''3102''');
+        SQL.Add('ORDER BY PK.ID DESC');
+      end;
+
+      Prepare;
+      ExecQuery;
+    end;
+
+    if SQLConsulta.Eof then
+    oErro(Application.Handle,'Destinatário não Encontrado !') else    //CADASTRA_FAVORECIDO(ANodeSec,ANodeEnd);
+    begin
+      CEIDCD.Value    := SQLConsulta.Current.Vars[0].AsInteger;
+      CEIDCD.Modified := True;
+      CEIDCD.ValidateEdit;
+    end;
   finally
     Screen.Cursor := crHourGlass; { Cursor }
 
@@ -9109,163 +9526,8 @@ begin
   FIS_NFE_ADMNFE_CDNF.Value := Trunc(CECDNF.Value);
 end;
 
-procedure TFrmVEN_NFE.ACTCAD_PRO_EST_LANExecute(Sender: TObject);
-var
-  REC_SHE_DEF: TREC_SHE_DEF;
-begin
-  if LeftStr(IECFOP.Text,1) = '3' then
-     try
-            REC_SHE_DEF.FB_SQL := SQLEdicao;
-       with REC_SHE_DEF.FB_SQL do
-       begin
-         Close;
-         SQL.Clear;
-         SQL.Add('DELETE FROM CAD_PRO');
-         SQL.Add('WHERE  ARTIGO = '''+CECDNF.Text+'''');
-         ExecQuery;
-       end;
-
-       Edicao.First;
-       while not Edicao.Eof do
-       begin
-         REC_SHE_DEF.ID     := '0';
-         REC_SHE_DEF.CODIGO := EdicaoNFE_CPROD.AsString;
-
-         SPEdicao.Close;
-         SPEdicao.StoredProcName := 'SP_CAD_PRO';
-         SPEdicao.Prepare;
-
-         SPEdicao.ParamByName('ID').Value   := 0;
-         SPEdicao.ParamByName('IDEP').Value := RECParametros.EP_ID;
-
-         SPEdicao.ParamByName('IDCA').Value := RECUsuarios.Id;
-         SPEdicao.ParamByName('CDST').Value := 30;
-
-         SPEdicao.ParamByName('ARTIGO').Value := CECDNF.Value;
-         SPEdicao.ParamByName('NCM').Value    := EdicaoNFE_NCM.AsString;
-         SPEdicao.ParamByName('PIPI').Value   := EdicaoNFE_PIPI.AsFloat;
-
-         SPEdicao.ParamByName('SKU' ).Value := EdicaoNFE_CPROD.AsString;
-         SPEdicao.ParamByName('CEAN').Value := oBarCode(REC_SHE_DEF);
-
-         SPEdicao.ParamByName('DESCRICAO').Value := EdicaoNFE_XPROD.AsString;
-         SPEdicao.ParamByName('TITULO').Value    := NULL;
-         SPEdicao.ParamByName('CMP_PAD').Value   := NULL;
-
-         SPEdicao.ParamByName('IDCOR').Value := 0;
-         SPEdicao.ParamByName('DECOR').Value := NULL;
-
-         SPEdicao.ParamByName('CDGRD').Value := NULL;
-         SPEdicao.ParamByName('REGRD').Value := NULL;
-         SPEdicao.ParamByName('DEGRD').Value := NULL;
-
-         SPEdicao.ParamByName('IDCF').Value   := RECParametros.EP_ID;
-         SPEdicao.ParamByName('CDCF').Value   := NULL;
-         SPEdicao.ParamByName('CEANCF').Value := NULL;
-
-         SPEdicao.ParamByName('UCOM').Value  := EdicaoNFE_UCOM.AsString;
-         SPEdicao.ParamByName('UQVOL').Value := NULL;
-         SPEdicao.ParamByName('UESP').Value  := NULL;
-         SPEdicao.ParamByName('UCON' ).Value := NULL;
-         SPEdicao.ParamByName('UCDBE').Value := 'QT';
-         SPEdicao.ParamByName('UQTDE').Value := 1;
-
-         SPEdicao.ParamByName('UQTDE_VEN_MUL').Value := 1;
-         SPEdicao.ParamByName('UQTDE_VEN_MIN').Value := 1;
-         SPEdicao.ParamByName('UQTDE_EST_MIN').Value := 0;
-
-         SPEdicao.ParamByName('PESO').Value := NULL;
-         SPEdicao.ParamByName('PSCN').Value := NULL;
-
-         SPEdicao.ParamByName('METRO').Value      := NULL;
-         SPEdicao.ParamByName('RENDIMENTO').Value := NULL;
-
-         SPEdicao.ParamByName('GRAMATURA').Value := NULL;
-         SPEdicao.ParamByName('GRAT_T'   ).Value := NULL;
-
-         SPEdicao.ParamByName('LARG_U').Value := NULL;
-         SPEdicao.ParamByName('LARG_T').Value := NULL;
-
-         SPEdicao.ParamByName('ELAS_L').Value := NULL;
-         SPEdicao.ParamByName('ELAS_C').Value := NULL;
-
-         SPEdicao.ParamByName('ENCO_L').Value := NULL;
-         SPEdicao.ParamByName('ENCO_C').Value := NULL;
-         SPEdicao.ParamByName('ENCO_T').Value := NULL;
-
-         SPEdicao.ParamByName('ESPESSURA'     ).Value := NULL;
-         SPEdicao.ParamByName('ESPESSURA_TIPO').Value := NULL;
-
-         SPEdicao.ParamByName('VPRC_COMPRA').Value     := NULL;
-         SPEdicao.ParamByName('VPRC_COMPRA_IMP').Value := EdicaoNFE_VUNCOM.AsFloat;
-
-         SPEdicao.ParamByName('VPRC_PAD'    ).Value := EdicaoNFE_VUNCOM.AsFloat;
-         SPEdicao.ParamByName('VPRC_PAD_PRZ').Value := NULL;
-         SPEdicao.ParamByName('VPRC_PAD_PRO').Value := NULL;
-         SPEdicao.ParamByName('PPRC_PAD_DSC').Value := NULL;
-         SPEdicao.ParamByName('PPRC_PAD_AJU').Value := NULL;
-
-         SPEdicao.ParamByName('VPRC_ATV'    ).Value := NULL;
-         SPEdicao.ParamByName('VPRC_ATV_PRZ').Value := NULL;
-         SPEdicao.ParamByName('VPRC_ATV_PRO').Value := NULL;
-         SPEdicao.ParamByName('PPRC_ATV_DSC').Value := NULL;
-         SPEdicao.ParamByName('PPRC_ATV_AJU').Value := NULL;
-
-         SPEdicao.ParamByName('VPRC_VAR'    ).Value := NULL;
-         SPEdicao.ParamByName('VPRC_VAR_PRZ').Value := NULL;
-         SPEdicao.ParamByName('VPRC_VAR_PRO').Value := NULL;
-
-         SPEdicao.ParamByName('VPRC_REP'    ).Value := NULL;
-         SPEdicao.ParamByName('VPRC_REP_PRZ').Value := NULL;
-         SPEdicao.ParamByName('VPRC_REP_PRO').Value := NULL;
-
-         SPEdicao.ParamByName('VPRC_SITE').Value := NULL;
-         SPEdicao.ParamByName('PMKP_SITE').Value := NULL;
-
-         SPEdicao.ParamByName('IDCOL').Value := 0;
-         SPEdicao.ParamByName('IDSEG').Value := NULL;
-         SPEdicao.ParamByName('IDGRP').Value := NULL;
-         SPEdicao.ParamByName('IDSGP').Value := NULL;
-         SPEdicao.ParamByName('IDCAT').Value := NULL;
-         SPEdicao.ParamByName('IDSCT').Value := NULL;
-
-         SPEdicao.ParamByName('MKP_IDML').Value := NULL;
-         SPEdicao.ParamByName('MKP_IDSP').Value := NULL;
-         SPEdicao.ParamByName('MKP_IDAM').Value := NULL;
-
-         SPEdicao.ParamByName('IDFIN').Value := RECParametros.PRO_IDFIN_CAD;
-         SPEdicao.ParamByName('IDTPV').Value := RECParametros.PRO_IDFIN_EST;
-
-         SPEdicao.ParamByName('IDTPA').Value := NULL;
-         SPEdicao.ParamByName('IDTPD').Value := NULL;
-         SPEdicao.ParamByName('IDTPF').Value := NULL;
-         SPEdicao.ParamByName('IDTPL').Value := NULL;
-
-         SPEdicao.ParamByName('ORIG' ).Value := EdicaoNFE_ORIG.AsString;
-         SPEdicao.ParamByName('CPAIS').Value := IExPais.Text;
-
-         SPEdicao.ParamByName('INFADCAD').Value := NULL;
-         SPEdicao.ParamByName('INFADTEC').Value := EdicaoNFE_INFADCAD.AsString;
-
-         SPEdicao.ParamByName('IP').Value   := RECParametros.IP;
-         SPEdicao.ParamByName('HOST').Value := RECParametros.Host;
-         SPEdicao.ExecProc;
-         
-         Edicao.Next;
-       end;
-     except
-       on E: Exception do
-       begin
-        oCTransact(TEdicao,ltRollback);
-        oException(Nil    ,'Falha ao tentar atualizar estoque !'                    +#13+
-                           'Favor entrar em contato com o administrador do sistema.'+#13+#13+
-                           'Erro: '+E.Message);
-       end;
-     end;
-end;
-
 procedure TFrmVEN_NFE.DEdhSaiEntChange(Sender: TObject);
-begin
+begin
   DecodeDate(DEdhSaiEnt.Date,RECParametros.SHE_DATA_ANO, RECParametros.SHE_DATA_MES, RECParametros.SHE_DATA_DIA);
  { with REC_SHE_FIS do
   begin

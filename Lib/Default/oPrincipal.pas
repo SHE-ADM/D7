@@ -203,9 +203,8 @@ Type TREC_SHE_DEF = record
      FB_PSQ_LB : String[30];  { Label  }
      FB_PSQ_CPL: String[120]; { Complemento }
      FB_PSQ_SBQ,              { Sub Query }
-     FB_PSQ_INI,              { Inicial   }
-     FB_PSQ_OK : Boolean;     { Validação }
-     
+     FB_PSQ_INI: Boolean;     { Inicial   }
+
      FB_PSQ_GET_SQL: String; { SQL }
 
      { FIREBIRD PESQUISA PRIMÁRIA }

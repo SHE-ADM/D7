@@ -957,7 +957,7 @@ begin
 
     try
       oCTransact(TEdicao);
-      oAviso(handle,'Romaneio Gerado com Sucesso !');
+      //oAviso(handle,'Romaneio Gerado com Sucesso !');
     except
       on E: Exception do
       begin

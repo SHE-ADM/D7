@@ -1490,7 +1490,7 @@ begin
   REC_SHE_DEF.GDescricao := 'Produtos'; REC_SHE_DEF.GReferencia := 'Estoque'; REC_SHE_DEF.GRegra := IECDOP.Descriptions[IECDOP.Values.IndexOf(IECDOP.Text)];
   oUSER(REC_SHE_DEF);
 
-  if not (REC_SHE_DEF.FB_PSQ_OK) and (IECDOP.Text <> '237') and (IECDOP.Text <> '238') then
+  if not (REC_SHE_DEF.PSQ_OK) and (IECDOP.Text <> '237') and (IECDOP.Text <> '238') then
   begin
     IECDTP.Enabled := False;
     IECDTP.Text    := '99';
@@ -2282,7 +2282,7 @@ begin
 
   try uPSQ_CAD_PRO(AREC_CAD_PRO_PSQ);
   finally
-    if   AREC_CAD_PRO_PSQ.FB_PSQ_OK then
+    if   AREC_CAD_PRO_PSQ.PSQ_OK then
     with AREC_CAD_PRO_PSQ.FB_SQL do
     begin
       if (IECampo.Text <> 'Zerar') and (Current.ByName('REST').AsString = 'I') then
@@ -2571,7 +2571,7 @@ begin
 
        try uPSQ_CAD_PRO(AREC_CAD_PRO_PSQ);
        finally
-         if   not AREC_CAD_PRO_PSQ.FB_PSQ_OK then
+         if   not AREC_CAD_PRO_PSQ.PSQ_OK then
          begin
            PostMessage(TWinControl(PETexto).Handle, WM_SETFOCUS, 0, 0);
            TWinControl(PETexto).SetFocus;

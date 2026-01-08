@@ -1,7 +1,7 @@
 object FrmVEN_NFE: TFrmVEN_NFE
   Tag = 1
-  Left = -4
-  Top = 0
+  Left = -375
+  Top = 114
   HelpType = htKeyword
   HelpKeyword = '3'
   ActiveControl = EDDECD
@@ -629,7 +629,6 @@ object FrmVEN_NFE: TFrmVEN_NFE
             ParentColor = False
             ParentFont = False
             Transparent = True
-            Visible = False
           end
           object LACDPV: TLabel
             Left = 5
@@ -694,6 +693,7 @@ object FrmVEN_NFE: TFrmVEN_NFE
             Top = 88
             Width = 55
             Color = 16644596
+            Enabled = False
             Font.Charset = DEFAULT_CHARSET
             Font.Color = clBlack
             Font.Height = -12
@@ -707,7 +707,6 @@ object FrmVEN_NFE: TFrmVEN_NFE
             Style.Shadow = False
             TabOrder = 5
             Text = '0'
-            Visible = False
             AutoSize = False
             Descriptions.Strings = (
               'N'#195'O'
@@ -789,7 +788,7 @@ object FrmVEN_NFE: TFrmVEN_NFE
             Style.Shadow = False
             TabOrder = 0
             Alignment = taLeftJustify
-            ReadOnly = False
+            ReadOnly = True
             DecimalPlaces = 0
             DisplayFormat = '0'
             UseThousandSeparator = True
@@ -19848,7 +19847,7 @@ object FrmVEN_NFE: TFrmVEN_NFE
                 Left = 0
                 Top = 0
                 Width = 1613
-                Height = 573
+                Height = 568
                 Align = alClient
               end
               object Label76: TLabel
@@ -24562,7 +24561,7 @@ object FrmVEN_NFE: TFrmVEN_NFE
     end
     object SIXMLImporta: TSpeedItem
       Action = ACTXMLImporta
-      BtnCaption = 'Importa XML'
+      BtnCaption = 'Copiar'
       Hint = 'Importa'#231#227'o de arquivos XML'
       ImageIndex = 10
       Spacing = 1
@@ -24574,10 +24573,10 @@ object FrmVEN_NFE: TFrmVEN_NFE
     end
     object SIImporta: TSpeedItem
       Action = ACTImporta
-      BtnCaption = 'Importar Reg'
+      BtnCaption = 'Importar'
       Caption = 'SIImporta'
       Cursor = crHandPoint
-      Hint = 'Importa'#231#227'o de registros'
+      Hint = 'Importa'#231#227'o de registros de registros diversos'
       ImageIndex = 11
       Spacing = 2
       Left = 485
@@ -27762,13 +27761,11 @@ object FrmVEN_NFE: TFrmVEN_NFE
       Category = 'Menu Principal'
       Caption = 'Salvar'
       Hint = 'Salva Edi'#231#227'o'
-      ShortCut = 16467
       OnExecute = ACTMPPostExecute
     end
     object ACTMPValidate: TAction
       Category = 'Menu Principal'
       Caption = 'Validar'
-      Enabled = False
       Hint = 'Valida Edi'#231#245'es'
       ShortCut = 16467
       Visible = False
@@ -27832,8 +27829,9 @@ object FrmVEN_NFE: TFrmVEN_NFE
     end
     object ACTImporta: TAction
       Category = 'Sistema'
-      Caption = 'Importar Reg'
-      Hint = 'Importa'#231#227'o de registros'
+      Caption = 'Importar'
+      Enabled = False
+      Hint = 'Importa'#231#227'o de registros de registros diversos'
       OnExecute = ACTImportaExecute
     end
     object ACTEDI_CAD_PAD: TAction
@@ -27855,14 +27853,19 @@ object FrmVEN_NFE: TFrmVEN_NFE
     end
     object ACTXMLImporta: TAction
       Category = 'Sefaz'
-      Caption = 'Importa XML'
+      Caption = 'Copiar'
       Hint = 'Importa'#231#227'o de arquivos XML'
       OnExecute = ACTXMLImportaExecute
     end
-    object ACTCAD_PRO_EST_LAN: TAction
-      Category = 'Sistema'
-      Caption = 'ACTCAD_PRO_EST_LAN'
-      OnExecute = ACTCAD_PRO_EST_LANExecute
+    object ACTEDI_CAD_PRO: TAction
+      Category = 'Edi'#231#245'es'
+      Caption = 'ACTEDI_CAD_PRO'
+      OnExecute = ACTEDI_CAD_PROExecute
+    end
+    object ACTEDI_CAD_PRO_EST: TAction
+      Category = 'Edi'#231#245'es'
+      Caption = 'ACTEDI_CAD_PRO_EST'
+      OnExecute = ACTEDI_CAD_PRO_ESTExecute
     end
   end
   object SQLPKConsulta: TIBSQL
