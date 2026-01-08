@@ -1,7 +1,7 @@
 object FrmVEN_NFE: TFrmVEN_NFE
   Tag = 1
-  Left = -178
-  Top = 146
+  Left = 37
+  Top = 0
   HelpType = htKeyword
   HelpKeyword = '3'
   ActiveControl = EDDECD
@@ -2014,6 +2014,7 @@ object FrmVEN_NFE: TFrmVEN_NFE
               Style.Shadow = False
               TabOrder = 0
               OnValidate = IECFOPValidate
+              DropDownRows = 20
               Descriptions.Strings = (
                 '')
               ImageIndexes.Strings = (

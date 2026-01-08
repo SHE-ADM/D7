@@ -68,7 +68,6 @@ type
     cadastroCLI_CIDC: TIBStringField;
     cadastroCLI_ESTC: TIBStringField;
     cadastroNFE_LOGR: TStringField;
-    siDUP: TSpeedItem;
     cadastroNFE_CHAV: TIBStringField;
     cadastroTLOG: TStringField;
     cadastroLOGR: TStringField;
@@ -81,14 +80,16 @@ type
     cadastroCNPJ: TStringField;
     cadastroNFE_IDBX: TIBStringField;
     dbgConsultaNFE_IDBX: TdxDBGridMaskColumn;
+    SIFIN_DUP_EDI: TSpeedItem;
+    ACTFIN_DUP_EDI: TAction;
     procedure FormCreate(Sender: TObject);
-    procedure siPSQClick(Sender: TObject);
-    procedure siRELClick(Sender: TObject);
     procedure cadastroCalcFields(DataSet: TDataSet);
-    procedure siDUPClick(Sender: TObject);
-    procedure siDELClick(Sender: TObject);
     procedure cadastroBeforeEdit(DataSet: TDataSet);
     procedure FormDestroy(Sender: TObject);
+    procedure ACTFIN_DUP_EDIExecute(Sender: TObject);
+    procedure ACTPesquisaExecute(Sender: TObject);
+    procedure ACTRelatoriosExecute(Sender: TObject);
+    procedure ACTMEDeleteExecute(Sender: TObject);
   private
     { Private declarations }
   public
@@ -186,7 +187,72 @@ begin
   frmfin_dup := Nil;
 end;
 
-procedure Tfrmfin_dup.siPSQClick(Sender: TObject);
+procedure Tfrmfin_dup.cadastroBeforeEdit(DataSet: TDataSet);
+begin
+{}
+end;
+
+procedure Tfrmfin_dup.cadastroCalcFields(DataSet: TDataSet);
+begin
+  inherited;
+  cadastroTLOG.Value := cadastroCLI_TLOG.AsString;
+  cadastroLOGR.Value := cadastroCLI_LOGR.AsString;
+  cadastroNUME.Value := cadastroCLI_NUME.AsString;
+  cadastroCEP.Value  := cadastroCLI_CEP.AsString;
+  cadastroCOMP.Value := cadastroCLI_COMP.AsString;
+  cadastroBAI.Value  := cadastroCLI_BAI.AsString;
+  cadastroCID.Value  := cadastroCLI_CID.AsString;
+  cadastroESTA.Value := cadastroCLI_ESTA.AsString;
+
+  if (cadastroCLI_LOGC.AsString <> '') and (cadastroCLI_NUMC.AsString <> '') then
+  begin
+    cadastroTLOG.Value := cadastroCLI_TLOC.AsString;
+    cadastroLOGR.Value := cadastroCLI_LOGC.AsString;
+    cadastroNUME.Value := cadastroCLI_NUMC.AsString;
+    cadastroCEP.Value  := cadastroCLI_CEPC.AsString;
+    cadastroCOMP.Value := cadastroCLI_COMC.AsString;
+    cadastroBAI.Value  := cadastroCLI_BAIC.AsString;
+    cadastroCID.Value  := cadastroCLI_CIDC.AsString;
+    cadastroESTA.Value := cadastroCLI_ESTC.AsString;
+  end;
+
+  cadastroNFE_LOGR.Value := frmfin_dup.cadastroTLOG.AsString+' '+frmfin_dup.cadastroLOGR.AsString+', '+frmfin_dup.cadastroNUME.AsString+' '+frmfin_dup.cadastroCOMP.AsString;
+  cadastroCNPJ.Value     := copy(frmfin_dup.cadastroCLI_CNPJ.AsString,1,2)+'.'+copy(frmfin_dup.cadastroCLI_CNPJ.AsString,3,3)+'.'+
+                            copy(frmfin_dup.cadastroCLI_CNPJ.AsString,6,3)+'/'+copy(frmfin_dup.cadastroCLI_CNPJ.AsString,9,4)+'-'+
+                            copy(frmfin_dup.cadastroCLI_CNPJ.AsString,13,2);
+end;
+
+procedure Tfrmfin_dup.ACTFIN_DUP_EDIExecute(Sender: TObject);
+begin
+  frmfin_dup_edi := tfrmfin_dup_edi.create(Nil);
+  try
+    frmfin_dup_edi.ShowModal;
+    if frmfin_dup_edi.Editado then
+    begin
+      with cadastro do
+      begin
+        SelectSQL.Clear;
+        SelectSQL.Add('SELECT   NFE_DUP.*,NFE_CAB.NFE_VNF,NFE_CAB.NFE_CHAV,');
+        SelectSQL.Add('         CAD_CLI.CLI_FANT,CAD_CLI.CLI_RAZA,CAD_CLI.CLI_DDD,CAD_CLI.CLI_TEL1,CAD_CLI.CLI_CNPJ,CAD_CLI.CLI_INSC,');
+        SelectSQL.Add('         CAD_CLI.CLI_TLOG,CAD_CLI.CLI_LOGR,CAD_CLI.CLI_CEP ,CAD_CLI.CLI_NUME,CAD_CLI.CLI_COMP,CAD_CLI.CLI_BAI ,CAD_CLI.CLI_CID ,CAD_CLI.CLI_ESTA,');
+        SelectSQL.Add('         CAD_CLI.CLI_TLOC,CAD_CLI.CLI_LOGC,CAD_CLI.CLI_CEPC,CAD_CLI.CLI_NUMC,CAD_CLI.CLI_COMC,CAD_CLI.CLI_BAIC,CAD_CLI.CLI_CIDC,CAD_CLI.CLI_ESTC');
+        SelectSQL.Add('FROM     CAD_CLI,'+SLPrincipal.Values['nfe_dup']+' "NFE_DUP" ,'+SLPrincipal.Values['nfe_cab']+' "NFE_CAB"');
+        SelectSQL.Add('WHERE    CAD_CLI.ID = NFE_DUP.NFE_CFAV');
+        SelectSQL.Add('AND      NFE_DUP.NFE_CCAB = NFE_CAB.ID');
+        SelectSQL.Add('AND      NFE_DUP.NFE_CDNF = '''+FloatToStr(frmfin_dup_edi.CECDNF.Value)+'''');
+        SelectSQL.Add('AND      NFE_CAB.NFE_CHAV <> '' ''');
+        SelectSQL.Add('ORDER BY NFE_DUP.NFE_CDNF');
+        Prepare;
+      end;
+      ACTExecEvent.Execute;
+      Close;
+    end;
+  finally
+    FreeAndNil(frmfin_dup_edi);
+  end;
+end;
+
+procedure Tfrmfin_dup.ACTPesquisaExecute(Sender: TObject);
 begin
   inherited;
   frmPesquisa := TfrmPesquisa.Create(Nil);
@@ -243,38 +309,7 @@ begin
   end;
 end;
 
-procedure Tfrmfin_dup.siDUPClick(Sender: TObject);
-begin
-  inherited;
-  frmfin_dup_edi := tfrmfin_dup_edi.create(Nil);
-  try
-    frmfin_dup_edi.ShowModal;
-    if frmfin_dup_edi.Editado then
-    begin
-      with cadastro do
-      begin
-        SelectSQL.Clear;
-        SelectSQL.Add('SELECT   NFE_DUP.*,NFE_CAB.NFE_VNF,NFE_CAB.NFE_CHAV,');
-        SelectSQL.Add('         CAD_CLI.CLI_FANT,CAD_CLI.CLI_RAZA,CAD_CLI.CLI_DDD,CAD_CLI.CLI_TEL1,CAD_CLI.CLI_CNPJ,CAD_CLI.CLI_INSC,');
-        SelectSQL.Add('         CAD_CLI.CLI_TLOG,CAD_CLI.CLI_LOGR,CAD_CLI.CLI_CEP ,CAD_CLI.CLI_NUME,CAD_CLI.CLI_COMP,CAD_CLI.CLI_BAI ,CAD_CLI.CLI_CID ,CAD_CLI.CLI_ESTA,');
-        SelectSQL.Add('         CAD_CLI.CLI_TLOC,CAD_CLI.CLI_LOGC,CAD_CLI.CLI_CEPC,CAD_CLI.CLI_NUMC,CAD_CLI.CLI_COMC,CAD_CLI.CLI_BAIC,CAD_CLI.CLI_CIDC,CAD_CLI.CLI_ESTC');
-        SelectSQL.Add('FROM     CAD_CLI,'+SLPrincipal.Values['nfe_dup']+' "NFE_DUP" ,'+SLPrincipal.Values['nfe_cab']+' "NFE_CAB"');
-        SelectSQL.Add('WHERE    CAD_CLI.ID = NFE_DUP.NFE_CFAV');
-        SelectSQL.Add('AND      NFE_DUP.NFE_CCAB = NFE_CAB.ID');
-        SelectSQL.Add('AND      NFE_DUP.NFE_CDNF = '''+FloatToStr(frmfin_dup_edi.CECDNF.Value)+'''');
-        SelectSQL.Add('AND      NFE_CAB.NFE_CHAV <> '' ''');
-        SelectSQL.Add('ORDER BY NFE_DUP.NFE_CDNF');
-        Prepare;
-      end;
-      ACTExecEvent.Execute;
-      Close;
-    end;
-  finally
-    FreeAndNil(frmfin_dup_edi);
-  end;
-end;
-
-procedure Tfrmfin_dup.siRELClick(Sender: TObject);
+procedure Tfrmfin_dup.ACTRelatoriosExecute(Sender: TObject);
 begin
   inherited;
   frmrelatorio_geral := TFrmrelatorio_geral.Create(Nil);
@@ -317,7 +352,7 @@ begin
   end;
 end;
 
-procedure Tfrmfin_dup.siDELClick(Sender: TObject);
+procedure Tfrmfin_dup.ACTMEDeleteExecute(Sender: TObject);
 begin
   inherited;
   if oYesNo(handle,'Confirma exclusão da duplicata selecionada ?'+#13+'Título: '+cadastroNFE_TITU.AsString+'.') = mrno then
@@ -330,41 +365,6 @@ begin
     SQL.Add('WHERE  ID = '''+cadastroID.AsString+'''');
     ExecSQL;
   end;
-end;
-
-procedure Tfrmfin_dup.cadastroBeforeEdit(DataSet: TDataSet);
-begin
-{}
-end;
-
-procedure Tfrmfin_dup.cadastroCalcFields(DataSet: TDataSet);
-begin
-  inherited;
-  cadastroTLOG.Value := cadastroCLI_TLOG.AsString;
-  cadastroLOGR.Value := cadastroCLI_LOGR.AsString;
-  cadastroNUME.Value := cadastroCLI_NUME.AsString;
-  cadastroCEP.Value  := cadastroCLI_CEP.AsString;
-  cadastroCOMP.Value := cadastroCLI_COMP.AsString;
-  cadastroBAI.Value  := cadastroCLI_BAI.AsString;
-  cadastroCID.Value  := cadastroCLI_CID.AsString;
-  cadastroESTA.Value := cadastroCLI_ESTA.AsString;
-
-  if (cadastroCLI_LOGC.AsString <> '') and (cadastroCLI_NUMC.AsString <> '') then
-  begin
-    cadastroTLOG.Value := cadastroCLI_TLOC.AsString;
-    cadastroLOGR.Value := cadastroCLI_LOGC.AsString;
-    cadastroNUME.Value := cadastroCLI_NUMC.AsString;
-    cadastroCEP.Value  := cadastroCLI_CEPC.AsString;
-    cadastroCOMP.Value := cadastroCLI_COMC.AsString;
-    cadastroBAI.Value  := cadastroCLI_BAIC.AsString;
-    cadastroCID.Value  := cadastroCLI_CIDC.AsString;
-    cadastroESTA.Value := cadastroCLI_ESTC.AsString;
-  end;
-
-  cadastroNFE_LOGR.Value := frmfin_dup.cadastroTLOG.AsString+' '+frmfin_dup.cadastroLOGR.AsString+', '+frmfin_dup.cadastroNUME.AsString+' '+frmfin_dup.cadastroCOMP.AsString;
-  cadastroCNPJ.Value     := copy(frmfin_dup.cadastroCLI_CNPJ.AsString,1,2)+'.'+copy(frmfin_dup.cadastroCLI_CNPJ.AsString,3,3)+'.'+
-                            copy(frmfin_dup.cadastroCLI_CNPJ.AsString,6,3)+'/'+copy(frmfin_dup.cadastroCLI_CNPJ.AsString,9,4)+'-'+
-                            copy(frmfin_dup.cadastroCLI_CNPJ.AsString,13,2);
 end;
 
 end.

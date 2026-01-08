@@ -71,10 +71,7 @@ type
     CadastroIDED: TSmallintField;
     procedure FormCreate(Sender: TObject);
     procedure cadastroBeforePost(DataSet: TDataSet);
-    procedure siDELClick(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
-    procedure DBGConsultaKeyDown(Sender: TObject; var Key: Word;
-      Shift: TShiftState);
     procedure DBGConsultaCustomDrawCell(Sender: TObject; ACanvas: TCanvas;
       ARect: TRect; ANode: TdxTreeListNode; AColumn: TdxTreeListColumn;
       ASelected, AFocused, ANewItemRow: Boolean; var AText: String;
@@ -82,6 +79,7 @@ type
       var ADone: Boolean);
     procedure CadastroNewRecord(DataSet: TDataSet);
     procedure DTSCadastroDataChange(Sender: TObject; Field: TField);
+    procedure ACTMEDeleteExecute(Sender: TObject);
   private
     { Private declarations }
     procedure VERIFICA_CONDICAO;
@@ -123,17 +121,6 @@ procedure Tfrmtab_pag.FormDestroy(Sender: TObject);
 begin
   inherited;
   frmtab_pag := nil;
-end;
-
-procedure Tfrmtab_pag.siDELClick(Sender: TObject);
-begin
-  inherited;
-
-  VERIFICA_CONDICAO;
-
-  if oYesNo(handle,'Confirma a exclusão da condição de pagamento '+cadastroPAG_DPAG.AsString+' ?') = mrno then
-  abort;
-  cadastro.Delete;
 end;
 
 procedure Tfrmtab_pag.cadastroBeforePost(DataSet: TDataSet);
@@ -251,27 +238,6 @@ begin
   end;
 end;
 
-procedure Tfrmtab_pag.DBGConsultaKeyDown(Sender: TObject; var Key: Word;
-  Shift: TShiftState);
-begin
-  case key of
-       vk_insert: SIINC.Click;
-       vk_return: if Cadastro.State = dsBrowse then SIALT.Click else
-                  begin
-                    DBGConsulta.FocusedColumn := DBGConsulta.FocusedColumn + 1;
-                    if DBGConsulta.FocusedColumn > DBGConsultaPAG_D020.ColIndex then
-                    begin
-                      Cadastro.Next;
-                      if Cadastro.Eof then
-                         Cadastro.Append else
-                      DBGConsulta.FocusedColumn := DBGConsulta.FocusedColumn - 1;
-                    end;
-                  end;
-       vk_escape: if Cadastro.State in [dsInsert,dsEdit] then Cadastro.Cancel else SICAN.Click;           
-       vk_delete: SIDEL.Click;
-  end;
-end;
-
 procedure Tfrmtab_pag.DBGConsultaCustomDrawCell(Sender: TObject;
   ACanvas: TCanvas; ARect: TRect; ANode: TdxTreeListNode;
   AColumn: TdxTreeListColumn; ASelected, AFocused, ANewItemRow: Boolean;
@@ -362,6 +328,15 @@ begin
     DBGConsulta.ApplyBestFit(DBGConsultaDEED);
     DBGConsulta.ApplyBestFit(DBGConsultaHOST);
   end;  
+end;
+
+procedure Tfrmtab_pag.ACTMEDeleteExecute(Sender: TObject);
+begin
+  VERIFICA_CONDICAO;
+
+  if oYesNo(handle,'Confirma a exclusão da condição de pagamento '+cadastroPAG_DPAG.AsString+' ?') = mrno then
+  abort;
+  cadastro.Delete;
 end;
 
 end.

@@ -335,7 +335,6 @@ object FrmPadr2: TFrmPadr2
       Left = 165
       Top = 5
       Visible = True
-      OnClick = ACTRelatoriosExecute
       SectionName = 'Movimento'
     end
     object siSAIR: TSpeedItem
@@ -4426,7 +4425,6 @@ object FrmPadr2: TFrmPadr2
       Hint = 'Emiss'#227'o de Relat'#243'rios'
       ImageIndex = 7
       ShortCut = 16464
-      OnExecute = ACTRelatoriosExecute
     end
     object ACTMEAppend: TAction
       Category = 'Menu Edi'#231#245'es'

@@ -90,7 +90,6 @@ type
     procedure ACTEveExecuteExecute(Sender: TObject);
     procedure ACTConsultaExecute(Sender: TObject);
     procedure ACTPesquisaExecute(Sender: TObject);
-    procedure ACTRelatoriosExecute(Sender: TObject);
     procedure ACTMEAppendExecute(Sender: TObject);
     procedure ACTMEEditExecute(Sender: TObject);
     procedure ACTMEDeleteExecute(Sender: TObject);
@@ -891,11 +890,6 @@ begin
 end;
 
 procedure TFrmPadr2.ACTCheckErrorsExecute(Sender: TObject);
-begin
-  { nothing }
-end;
-
-procedure TFrmPadr2.ACTRelatoriosExecute(Sender: TObject);
 begin
   { nothing }
 end;

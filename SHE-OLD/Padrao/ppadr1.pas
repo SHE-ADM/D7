@@ -16,36 +16,13 @@ type
     Consulta: TIBQuery;
     Cadastro: TIBDataSet;
     DTSCadastro: TDataSource;
-    SpeedBar2: TSpeedBar;
-    SpeedbarSection5: TSpeedbarSection;
-    SpeedbarSection6: TSpeedbarSection;
-    SpeedbarSection7: TSpeedbarSection;
-    SpeedbarSection8: TSpeedbarSection;
-    siPSQ: TSpeedItem;
-    siREF: TSpeedItem;
-    siSAIR: TSpeedItem;
-    siLIXO: TSpeedItem;
-    siREL: TSpeedItem;
     IBTra: TIBTransaction;
     ibSP: TIBStoredProc;
     pnldir: TPanel;
     pnldbg: TPanel;
     pnlbot: TPanel;
-    imageITEM: TImageList;
-    imageOPC: TImageList;
-    siEVE: TSpeedItem;
     gbDET: TGroupBox;
     DBGConsulta: TdxDBGrid;
-    SpeedBar1: TSpeedBar;
-    SpeedbarSection1: TSpeedbarSection;
-    SpeedbarSection2: TSpeedbarSection;
-    SpeedbarSection3: TSpeedbarSection;
-    SpeedbarSection4: TSpeedbarSection;
-    siINC: TSpeedItem;
-    siALT: TSpeedItem;
-    siDEL: TSpeedItem;
-    siSAV: TSpeedItem;
-    siCAN: TSpeedItem;
     ConsultaAux: TIBQuery;
     TEvent: TIBTransaction;
     SPEvent: TIBStoredProc;
@@ -56,11 +33,11 @@ type
     ACTExecEvent: TAction;
     ACTPesquisa: TAction;
     ACTRelatorios: TAction;
-    ACTEAppend: TAction;
-    ACTEEdit: TAction;
-    ACTEDelete: TAction;
-    ACTEPost: TAction;
-    ACTECancel: TAction;
+    ACTMEAppend: TAction;
+    ACTMEEdit: TAction;
+    ACTMEDelete: TAction;
+    ACTMEPost: TAction;
+    ACTMECancel: TAction;
     ACTMAppend: TAction;
     ACTMEdit: TAction;
     ACTMDelete: TAction;
@@ -70,33 +47,39 @@ type
     ACTPSQ_OK: TAction;
     ACTPSQ_FOCUS: TAction;
     EEventAdmin: TIBEvents;
+    ILMenuPrincipal: TImageList;
+    SBMenuPrincipal: TSpeedBar;
+    SSMenuPrincipal: TSpeedbarSection;
+    siREF: TSpeedItem;
+    siPSQ: TSpeedItem;
+    siREL: TSpeedItem;
+    siSAIR: TSpeedItem;
+    ILMenuEdicao: TImageList;
+    GBMenuEdicao: TGroupBox;
+    SBMenuEdicao: TSpeedBar;
+    SSMenuEdicao: TSpeedbarSection;
+    SIMEAppend: TSpeedItem;
+    SIMEEdit: TSpeedItem;
+    SIMEDelete: TSpeedItem;
+    SIMEPost: TSpeedItem;
+    SIMECancel: TSpeedItem;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure FormCreate(Sender: TObject);
-    procedure siREFClick(Sender: TObject);
     procedure CadastroAfterDelete(DataSet: TDataSet);
     procedure DBGConsultaBackgroundDrawEvent(Sender: TObject;
       ACanvas: TCanvas; ARect: TRect);
     procedure CadastroAfterPost(DataSet: TDataSet);
-    procedure siINCClick(Sender: TObject);
-    procedure siALTClick(Sender: TObject);
-    procedure siSAVClick(Sender: TObject);
-    procedure siCANClick(Sender: TObject);
-    procedure siSAIRClick(Sender: TObject);
     procedure DBGConsultaKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
-    procedure siDELClick(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
-    procedure DBGConsultaDblClick(Sender: TObject);
     procedure FormKeyPress(Sender: TObject; var Key: Char);
     procedure FormDestroy(Sender: TObject);
     procedure CadastroNewRecord(DataSet: TDataSet);
     procedure FormPaint(Sender: TObject);
     procedure FormResize(Sender: TObject);
     procedure DTSCadastroStateChange(Sender: TObject);
-    procedure siPSQClick(Sender: TObject);
-    procedure siRELClick(Sender: TObject);
     procedure FormActivate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure CadastroPostError(DataSet: TDataSet; E: EDatabaseError;
@@ -106,10 +89,19 @@ type
     procedure EEventEventAlert(Sender: TObject; EventName: String;
       EventCount: Integer; var CancelAlerts: Boolean);
     procedure CadastroBeforeCancel(DataSet: TDataSet);
-    procedure CadastroAfterCancel(DataSet: TDataSet);
     procedure ACTExecEventExecute(Sender: TObject);
     procedure EEventAdminEventAlert(Sender: TObject; EventName: String;
       EventCount: Integer; var CancelAlerts: Boolean);
+    procedure ACTRefreshExecute(Sender: TObject);
+    procedure ACTPesquisaExecute(Sender: TObject);
+    procedure ACTRelatoriosExecute(Sender: TObject);
+    procedure ACTSaidaExecute(Sender: TObject);
+    procedure ACTMEAppendExecute(Sender: TObject);
+    procedure ACTMEEditExecute(Sender: TObject);
+    procedure ACTMEDeleteExecute(Sender: TObject);
+    procedure ACTMEPostExecute(Sender: TObject);
+    procedure ACTMECancelExecute(Sender: TObject);
+    procedure CadastroBeforeInsert(DataSet: TDataSet);
   private
     { Private declarations }
     FCurrentEvent: String;
@@ -538,72 +530,6 @@ begin
     end;
 end;
 
-procedure TFrmPadr1.siPSQClick(Sender: TObject);
-begin
-  if (not SpeedBar2.Enabled) or (not SpeedBar2.Visible) or (not SIPsq.Enabled) or (not SIPsq.Visible) then
-  Abort;
-
-  DBGConsulta.SetFocus;
-end;
-
-procedure TFrmPadr1.siREFClick(Sender: TObject);
-begin
-  oRefresh(Cadastro);
-end;
-
-procedure TFrmPadr1.siRELClick(Sender: TObject);
-begin
-  if (not SpeedBar2.Enabled) or (not SpeedBar2.Visible) or (not SIRel.Enabled) or (not SIRel.Visible) then
-  Abort;
-
-  DBGConsulta.SetFocus;
-end;
-
-procedure TFrmPadr1.siSAIRClick(Sender: TObject);
-begin
-  Close;
-end;
-
-procedure TFrmPadr1.siINCClick(Sender: TObject);
-begin
-  DBGConsulta.SetFocus;
-  if ((SpeedBar1.Visible) and (SpeedBar1.Enabled) and
-      (siINC.Visible)     and (siINC.Enabled) and
-      (Cadastro.State = dsBrowse)) then
-  Cadastro.Append;
-end;
-
-procedure TFrmPadr1.siALTClick(Sender: TObject);
-begin
-  DBGConsulta.SetFocus;
-  if ((SpeedBar1.Visible)             and (SpeedBar1.Enabled) and
-      (siALT.Visible)                 and (siALT.Enabled) and
-      (not Cadastro.Fields[0].IsNull) and (Cadastro.State = dsBrowse)) then
-  Cadastro.Edit;
-end;
-
-procedure TFrmPadr1.siDELClick(Sender: TObject);
-begin
-  DBGConsulta.SetFocus;
-  if ((not SpeedBar1.Visible)     or (not SpeedBar1.Enabled) or
-      (not siDEL.Visible)         or (not siDEL.Enabled) or
-      (Cadastro.Fields[0].IsNull) or (Cadastro.State in [dsInsert,dsEdit])) then
-  Abort;
-end;
-
-procedure TFrmPadr1.siSAVClick(Sender: TObject);
-begin
-  DBGConsulta.SetFocus;
-  if cadastro.State in [dsEdit,dsInsert] then
-  cadastro.Post;
-end;
-
-procedure TFrmPadr1.siCANClick(Sender: TObject);
-begin
-  if cadastro.State in [dsEdit,dsInsert] then
-     cadastro.Cancel else SISAIR.Click;
-end;
-
 procedure TFrmPadr1.CadastroAfterDelete(DataSet: TDataSet);
 begin
   oRefresh(Cadastro);
@@ -623,10 +549,12 @@ procedure TFrmPadr1.DBGConsultaKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   case key of
-       vk_return   : siALT.Click;
-       VK_escape   : SICAN.Click;
-       VK_delete   : if not siSAV.Enabled then siDEL.Click;
-       VK_insert   : if not siSAV.Enabled then siINC.Click;
+       VK_insert: ACTMEAppend.Execute;
+       vk_return: if Cadastro.State = dsBrowse then
+                  ACTMEEdit.Execute else
+                  DBGConsulta.FocusedColumn := DBGConsulta.FocusedColumn + 1;
+       VK_delete: ACTMEDelete.Execute;
+       vk_escape: ACTMECancel.Execute;
   end;
 end;
 
@@ -649,14 +577,9 @@ begin
   end;
 end;
 
-procedure TFrmPadr1.DBGConsultaDblClick(Sender: TObject);
-begin
-  siALT.Click;
-end;
-
 procedure TFrmPadr1.DTSCadastroStateChange(Sender: TObject);
 begin
-  oState(Cadastro,SpeedBar1);
+  oState(Cadastro,SBMenuEdicao);
   if Cadastro.State = dsBrowse then
   begin
     DBGConsulta.OptionsBehavior := ([edgoAutoSearch,edgoAutoSort,edgoCaseInsensitive,edgoCollapsedReload,edgoDragCollapse,edgoDragExpand,edgoDragScroll,edgoEnterShowEditor,edgoImmediateEditor,edgoSeekDetail,edgoShowHourGlass,edgoTabThrough,edgoVertThrough]);
@@ -685,28 +608,14 @@ end;
 
 procedure TFrmPadr1.CadastroBeforeCancel(DataSet: TDataSet);
 begin
-  siINC.Enabled := true;
-  siALT.Enabled := true;
-  siDEL.Enabled := true;
-  siSAV.Enabled := false;
-  siCAN.Enabled := false;
-
-  DBGConsulta.SetFocus;
-  if Cadastro.Eof then
+  if Cadastro.Fields[0].Tag = 0 then
   begin
     Cadastro.Close;
     Cadastro.Open;
-    Abort;
-  end;
-end;
+    Cadastro.Last;
 
-procedure TFrmPadr1.CadastroAfterCancel(DataSet: TDataSet);
-begin
-  siINC.Enabled := true;
-  siALT.Enabled := true;
-  siDEL.Enabled := true;
-  siSAV.Enabled := false;
-  siCAN.Enabled := false;
+    ABORT;
+  end;
 end;
 
 procedure TFrmPadr1.EEventEventAlert(Sender: TObject; EventName: String;
@@ -762,6 +671,127 @@ begin
                                    E.Message              + '.');
        end;
      end;
+end;
+
+procedure TFrmPadr1.ACTRefreshExecute(Sender: TObject);
+begin
+  oRefresh(Cadastro);
+end;
+
+procedure TFrmPadr1.ACTPesquisaExecute(Sender: TObject);
+begin
+  { INICIALIZA PARÂMETROS DA PESQUISA }
+  with REC_SHE_DEF do
+  begin
+    { FIREBIRD PESQUISA PRIMÁRIA }
+    { PADRÃO }
+    FB_PSQ_ID  := '0';      { Identificador }
+    FB_PSQ_CPL := EmptyStr; { Complemento }
+    FB_PSQ_SBQ := False;    { Sub Query }
+    PSQ_OK  := False;    { Validação }
+
+    { TEXTO }
+    FB_PSQ_FD_NO_PK := EmptyStr; { Campo  }
+    FB_PSQ_FD_VD_PK := EmptyStr; { Valor  }
+
+    { DATAS }
+    FB_PSQ_DT_NO_PK := EmptyStr; { Campo  }
+    FB_PSQ_DT_VD_PK := 0;        { Valor  }
+
+    { FIREBIRD PESQUISA SECUNDÁRIA }
+    { TEXTO }
+    FB_PSQ_FD_NO_FK := EmptyStr; { Campo  }
+    FB_PSQ_FD_VD_FK := EmptyStr; { Valor  }
+
+    { DATAS }
+    FB_PSQ_DT_NO_FK := EmptyStr; { Campo  }
+    FB_PSQ_DT_VD_FK := 0;        { Valor  }
+
+    { ÂNCORAS PRINCIPAIS }
+    { Empresas }
+    EP_NO := EmptyStr; { Empresa }
+    CF_NO := EmptyStr; { Fabricante }
+
+    { Situações }
+    DEST := EmptyStr; { Descrição }
+    STFI := EmptyStr; { Descrição Abreviada }
+
+    { Produtos }
+    ARTIGO     := EmptyStr; { Artigo }
+    SKU        := EmptyStr; { SKU }
+    NCM        := EmptyStr; { NCM }
+    GRADE      := EmptyStr; { Grade }
+    DESCRICAO  := EmptyStr; { Nome / Descrição }
+    COMPOSICAO := EmptyStr; { Composição }
+
+    { Lista Digitada }
+    if LISTA = Nil then
+    LISTA := TStringList.Create else
+    LISTA.Clear;
+  end;
+end;
+
+procedure TFrmPadr1.ACTRelatoriosExecute(Sender: TObject);
+begin
+  { nothing }
+end;
+
+procedure TFrmPadr1.ACTSaidaExecute(Sender: TObject);
+begin
+  if Cadastro.State in [dsInsert,dsEdit] then
+  ACTMECancel.Execute else
+  Close;
+end;
+
+procedure TFrmPadr1.ACTMEAppendExecute(Sender: TObject);
+begin
+  if (not (GBMenuEdicao.Enabled)) or { Habilitado }
+     (ALockWindowUpdate) then { SQL Injection }
+  Exit;
+
+  oAppend(Cadastro,REC_SHE_DEF.GAppend);
+end;
+
+procedure TFrmPadr1.ACTMEEditExecute(Sender: TObject);
+begin
+  if (not (GBMenuEdicao.Enabled)) or { Habilitado }
+     (ALockWindowUpdate) then { SQL Injection }
+  Exit;
+
+  oEdit(Cadastro,REC_SHE_DEF.GEdit);
+end;
+
+procedure TFrmPadr1.ACTMEDeleteExecute(Sender: TObject);
+begin
+  if (not (ActiveControl is TdxDBGrid)) or { Focado no Grid }
+     (not (GBMenuEdicao.Enabled)) or { Habilitado }
+     (ALockWindowUpdate) then { SQL Injection }
+  Exit;
+
+  oDelete(Cadastro,REC_SHE_DEF.GDelete);
+end;
+
+procedure TFrmPadr1.ACTMEPostExecute(Sender: TObject);
+begin
+  if (not (GBMenuEdicao.Enabled)) or { Habilitado }
+     (ALockWindowUpdate) then { SQL Injection }
+  Exit;
+
+  oPost(Cadastro,REC_SHE_DEF.GPost);
+end;
+
+procedure TFrmPadr1.ACTMECancelExecute(Sender: TObject);
+begin
+  if (not (GBMenuEdicao.Enabled)) or { Habilitado }
+     (ALockWindowUpdate) then { SQL Injection }
+  Exit;
+
+  oCancel(Cadastro,REC_SHE_DEF.GCancel);
+end;
+
+procedure TFrmPadr1.CadastroBeforeInsert(DataSet: TDataSet);
+begin
+  Cadastro.Fields[0].Tag := Cadastro.RecNo;
 end;
 
 end.
