@@ -247,7 +247,6 @@ type
     ACTTAB_PRZ: TAction;
     ACTTAB_CFOP: TAction;
     ACTFIS_NFE_EDI_TER: TAction;
-    RSBTAB_PRZ: TRxSpeedButton;
     RSBTAB_CFOP: TRxSpeedButton;
     ACTCAD_CTNR_ADM: TAction;
     MPProdutos: TMenuItem;
@@ -273,6 +272,10 @@ type
     MIPED_PDV_CLT: TMenuItem;
     ACTFIN_PAG_ADM: TAction;
     N8: TMenuItem;
+    RSBCAD_PRO_GRD_COR: TRxSpeedButton;
+    RSBCAD_PRO_EST_LCT: TRxSpeedButton;
+    RSBFIS_NFE_LCT: TRxSpeedButton;
+    ACTFIS_NFE_LCT: TAction;
 
     procedure _DoneEvent(Sender: TObject);
 
@@ -354,6 +357,7 @@ type
     procedure ACTFIN_REC_CRTExecute(Sender: TObject);
     procedure ACTFIN_REC_DUPExecute(Sender: TObject);
     procedure ACTFIN_PAG_CMVExecute(Sender: TObject);
+    procedure ACTFIS_NFE_LCTExecute(Sender: TObject);
 
   private
     { Private declarations }
@@ -458,7 +462,7 @@ uses bPrincipal, pSobre, pLogin, psenha, pImpressoras, pProduto, pPSQEND,
   pEstoque, pent_pro, peti_pro, pEstoqueDefeitos, pEXP_SEP_COL,
   pEXP_SEP_MAN, pctr_prc, pctr_prg, ptab_nat, ptab_pag, pctr_nfe, pven_nfd,
   pcad_con, pProduto_Custo_Importado, pfin_rec_con, pfin_dup, ppag_com,
-  pProduto_Segmento, pCAD_PRO_PSQ;
+  pProduto_Segmento, pCAD_PRO_PSQ, pven_nfe;
 
 {$R *.dfm}
 
@@ -4140,6 +4144,27 @@ end;
 procedure TFrmPrincipal.ACTFIS_NFE_ADMExecute(Sender: TObject);
 begin
   TFrmCTR_NFE._ExecForm(Application,FrmCTR_NFE);
+end;
+
+procedure TFrmPrincipal.ACTFIS_NFE_LCTExecute(Sender: TObject);
+begin
+  TFrmVEN_NFE._ExecForm(
+
+  Application, { Owner    }
+  FrmVEN_NFE,  { Form     }
+  False,       { Pesquisa }
+  fsMDIChild,  { Tipo     }
+
+  0,  { Código Principal }
+  '', { Descrição Principal }
+
+  0, { Evento Principal }
+  2, { Tipo   Evento - 0: Copiado    1: Vazio  2: Romaneado }
+  1, { Código Evento - 0: Triangular 1: Normal 2: Complementar 3: Ajustes 4:Devolução }
+
+  '', { Tabela }
+  ''  { Get }
+  );
 end;
 
 procedure TFrmPrincipal.ACTFIS_NFE_EDI_TERExecute(Sender: TObject);

@@ -1,7 +1,7 @@
 object FrmVEN_NFE: TFrmVEN_NFE
   Tag = 1
-  Left = -375
-  Top = 114
+  Left = -178
+  Top = 146
   HelpType = htKeyword
   HelpKeyword = '3'
   ActiveControl = EDDECD
@@ -267,9 +267,9 @@ object FrmVEN_NFE: TFrmVEN_NFE
   TextHeight = 14
   object PNLPrincipal: TPanel
     Left = 0
-    Top = 70
+    Top = 65
     Width = 1912
-    Height = 896
+    Height = 901
     Align = alClient
     BevelOuter = bvNone
     Color = 15788249
@@ -278,7 +278,7 @@ object FrmVEN_NFE: TFrmVEN_NFE
       Left = 0
       Top = 0
       Width = 295
-      Height = 896
+      Height = 901
       Align = alLeft
       BevelOuter = bvNone
       TabOrder = 0
@@ -895,12 +895,12 @@ object FrmVEN_NFE: TFrmVEN_NFE
         Left = 0
         Top = 235
         Width = 295
-        Height = 661
+        Height = 666
         Align = alClient
         TabOrder = 1
         object GBFKSumario: TGroupBox
           Left = 1
-          Top = 575
+          Top = 580
           Width = 293
           Height = 85
           Align = alBottom
@@ -1056,7 +1056,7 @@ object FrmVEN_NFE: TFrmVEN_NFE
         end
         object PNLFKSumario: TPanel
           Left = 1
-          Top = 565
+          Top = 570
           Width = 293
           Height = 10
           Align = alBottom
@@ -1066,7 +1066,7 @@ object FrmVEN_NFE: TFrmVEN_NFE
           Left = 1
           Top = 1
           Width = 293
-          Height = 564
+          Height = 569
           Align = alClient
           Caption = '  Sum'#225'rio de Produtos e Servi'#231'os  '
           Color = clBtnFace
@@ -1084,7 +1084,7 @@ object FrmVEN_NFE: TFrmVEN_NFE
             Left = 2
             Top = 19
             Width = 289
-            Height = 543
+            Height = 548
             Bands = <
               item
                 Alignment = taLeftJustify
@@ -1740,7 +1740,7 @@ object FrmVEN_NFE: TFrmVEN_NFE
       Left = 295
       Top = 0
       Width = 1617
-      Height = 896
+      Height = 901
       Align = alClient
       BevelOuter = bvNone
       Color = 15788249
@@ -2658,7 +2658,7 @@ object FrmVEN_NFE: TFrmVEN_NFE
         Left = 0
         Top = 280
         Width = 1617
-        Height = 616
+        Height = 621
         Align = alClient
         BevelOuter = bvNone
         Color = 15788249
@@ -2667,7 +2667,7 @@ object FrmVEN_NFE: TFrmVEN_NFE
           Left = 0
           Top = 0
           Width = 1617
-          Height = 616
+          Height = 621
           Align = alClient
           Caption = '  Edi'#231#227'o  '
           Color = clBtnFace
@@ -2683,7 +2683,7 @@ object FrmVEN_NFE: TFrmVEN_NFE
             Left = 2
             Top = 19
             Width = 1613
-            Height = 595
+            Height = 600
             ActivePage = TSProduto
             Align = alClient
             Font.Charset = ANSI_CHARSET
@@ -2708,7 +2708,7 @@ object FrmVEN_NFE: TFrmVEN_NFE
                 Left = 0
                 Top = 0
                 Width = 54
-                Height = 508
+                Height = 513
                 Align = alLeft
                 Caption = ' Edi'#231#227'o '
                 Font.Charset = ANSI_CHARSET
@@ -2722,7 +2722,7 @@ object FrmVEN_NFE: TFrmVEN_NFE
                   Left = 2
                   Top = 19
                   Width = 50
-                  Height = 487
+                  Height = 492
                   Cursor = crHandPoint
                   Font.Charset = ANSI_CHARSET
                   Font.Color = clBlack
@@ -2815,7 +2815,7 @@ object FrmVEN_NFE: TFrmVEN_NFE
                 Left = 54
                 Top = 0
                 Width = 1559
-                Height = 508
+                Height = 513
                 Align = alClient
                 Caption = '  Consulta  '
                 Font.Charset = ANSI_CHARSET
@@ -2829,7 +2829,7 @@ object FrmVEN_NFE: TFrmVEN_NFE
                   Left = 2
                   Top = 19
                   Width = 1555
-                  Height = 487
+                  Height = 492
                   Bands = <
                     item
                       Alignment = taLeftJustify
@@ -3683,7 +3683,7 @@ object FrmVEN_NFE: TFrmVEN_NFE
               end
               object PNLConsultaBOT: TPanel
                 Left = 0
-                Top = 508
+                Top = 513
                 Width = 1613
                 Height = 60
                 Align = alBottom
@@ -4301,7 +4301,7 @@ object FrmVEN_NFE: TFrmVEN_NFE
                 Left = 0
                 Top = 0
                 Width = 1613
-                Height = 568
+                Height = 573
                 Align = alClient
                 BevelOuter = bvNone
                 Color = 15788249
@@ -4310,7 +4310,7 @@ object FrmVEN_NFE: TFrmVEN_NFE
                   Left = 449
                   Top = 0
                   Width = 1164
-                  Height = 568
+                  Height = 573
                   Align = alClient
                   Caption = '  Endere'#231'os  '
                   Color = clBtnFace
@@ -4326,7 +4326,7 @@ object FrmVEN_NFE: TFrmVEN_NFE
                     Left = 2
                     Top = 19
                     Width = 1160
-                    Height = 547
+                    Height = 552
                     ActivePage = TSEC
                     Align = alClient
                     Font.Charset = ANSI_CHARSET
@@ -18964,7 +18964,7 @@ object FrmVEN_NFE: TFrmVEN_NFE
                   Left = 0
                   Top = 0
                   Width = 449
-                  Height = 568
+                  Height = 573
                   Align = alLeft
                   BevelOuter = bvNone
                   Color = 15788249
@@ -24422,7 +24422,7 @@ object FrmVEN_NFE: TFrmVEN_NFE
     Left = 0
     Top = 0
     Width = 1912
-    Height = 70
+    Height = 65
     Cursor = crHandPoint
     Font.Charset = ANSI_CHARSET
     Font.Color = clWindowText
@@ -24435,7 +24435,7 @@ object FrmVEN_NFE: TFrmVEN_NFE
     BtnOffsetHorz = 5
     BtnOffsetVert = 5
     BtnWidth = 80
-    BtnHeight = 60
+    BtnHeight = 55
     Images = ILMenuPrincipal
     BevelOuter = bvNone
     Ctl3D = True
