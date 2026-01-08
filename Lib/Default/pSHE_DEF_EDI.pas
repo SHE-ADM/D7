@@ -625,7 +625,7 @@ end;
 
 procedure TFrmSHE_DEF_EDI.ACTSaidaExecute(Sender: TObject);
 begin
-  REC_SHE_DEF.FB_PSQ_OK := False;
+  REC_SHE_DEF.PSQ_OK := False;
   Close;
 end;
 

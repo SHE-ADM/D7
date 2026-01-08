@@ -571,8 +571,8 @@ begin
           for i := 0 to SPFBEdicao.ParamCount - 1 do
           SPFBEdicao.Params[i].Value := Null;
 
-          SPFBEdicao.ParamByName('AIDEP').Value := SQLFBConsulta.Current.ByName('IDEP').AsInteger;
-          SPFBEdicao.ParamByName('AIDCP').Value := SQLFBConsulta.Current.ByName('IDCP').AsInteger;
+          SPFBEdicao.ParamByName('AEP_ID').Value := SQLFBConsulta.Current.ByName('IDEP').AsInteger;
+          SPFBEdicao.ParamByName('ACP_ID').Value := SQLFBConsulta.Current.ByName('IDCP').AsInteger;
           SPFBEdicao.ExecProc;
 
           oCTransact(TFBEdicao);
@@ -976,7 +976,7 @@ end;
 
 procedure uPSQ_CAD_PRO(var AREC_SHE_DEF: TREC_SHE_DEF); STDCALL;
 begin
-  AREC_SHE_DEF.FB_PSQ_OK := False;
+  AREC_SHE_DEF.PSQ_OK := False;
 
   if AREC_SHE_DEF.FWinControl <> Nil then
   begin
@@ -1182,7 +1182,7 @@ begin
 //         FrmCAD_PRO_PSQ.ShowModal;
 //       end;
 //    finally
-//      if FrmCAD_PRO_PSQ.REC_SHE_DEF.FB_PSQ_OK then
+//      if FrmCAD_PRO_PSQ.REC_SHE_DEF.PSQ_OK then
 //      begin
 //        AREC_SHE_DEF.FWinControl := Nil;
 //        AREC_SHE_DEF.FB_FD_ED_PK   := 'PK.CP_ID';
@@ -1191,12 +1191,12 @@ begin
 //        uPSQ_CAD_PRO(AREC_SHE_DEF);
 //      end;
 //    end else
-//    AREC_SHE_DEF.FB_PSQ_OK := True;
+//    AREC_SHE_DEF.PSQ_OK := True;
   end;
 
   if AREC_SHE_DEF.FWinControl <> Nil then
   begin
-    if not AREC_SHE_DEF.FB_PSQ_OK then
+    if not AREC_SHE_DEF.PSQ_OK then
     begin
       if AREC_SHE_DEF.FWinControl.ClassType = TdxEdit then
       TdxEdit(AREC_SHE_DEF.FWinControl).Reset else

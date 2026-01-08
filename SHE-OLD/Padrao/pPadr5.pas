@@ -787,7 +787,7 @@ begin
     FB_PSQ_ID  := '0';      { Identificador }
     FB_PSQ_CPL := EmptyStr; { Complemento }
     FB_PSQ_SBQ := False;    { Sub Query }
-    FB_PSQ_OK  := False;    { Validação }
+    PSQ_OK  := False;    { Validação }
 
     { TEXTO }
     FB_PSQ_FD_NO_PK := EmptyStr; { Campo  }
