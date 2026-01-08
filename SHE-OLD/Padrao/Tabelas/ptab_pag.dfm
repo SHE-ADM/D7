@@ -14,41 +14,23 @@ inherited frmtab_pag: Tfrmtab_pag
     Top = 703
     Width = 1314
   end
-  inherited SpeedBar2: TSpeedBar
-    Width = 1314
-    inherited siREF: TSpeedItem [4]
-    end
-    inherited siSAIR: TSpeedItem [5]
-    end
-    inherited siEVE: TSpeedItem [6]
-    end
-    inherited siPSQ: TSpeedItem [7]
-      Tag = 1
-    end
-    inherited siREL: TSpeedItem
-      Left = 332
-    end
-    inherited siLIXO: TSpeedItem [9]
-      Left = 222
-    end
-  end
   inherited pnldir: TPanel
     Left = 1314
-    Height = 606
+    Height = 638
   end
   inherited pnldbg: TPanel
     Width = 1314
-    Height = 606
+    Height = 638
     inherited pnlbot: TPanel
-      Top = 604
+      Top = 636
       Width = 1314
     end
     inherited gbDET: TGroupBox
-      Width = 1314
-      Height = 604
+      Width = 1260
+      Height = 636
       inherited DBGConsulta: TdxDBGrid
-        Width = 1255
-        Height = 583
+        Width = 1256
+        Height = 615
         Bands = <
           item
             Caption = 'Cadastro'
@@ -328,9 +310,24 @@ inherited frmtab_pag: Tfrmtab_pag
           FieldName = 'HOST'
         end
       end
-      inherited SpeedBar1: TSpeedBar
-        Height = 583
+    end
+    inherited GBMenuEdicao: TGroupBox
+      Height = 636
+      inherited SBMenuEdicao: TSpeedBar
+        Height = 615
       end
+    end
+  end
+  inherited SBMenuPrincipal: TSpeedBar
+    Width = 1314
+    inherited siPSQ: TSpeedItem
+      Visible = False
+    end
+    inherited siREL: TSpeedItem
+      Visible = False
+    end
+    inherited siSAIR: TSpeedItem
+      Left = 85
     end
   end
   inherited Cadastro: TIBDataSet
@@ -622,7 +619,13 @@ inherited frmtab_pag: Tfrmtab_pag
     OnDataChange = DTSCadastroDataChange
   end
   inherited ALPrincipal: TActionList
-    Left = 344
-    Top = 192
+    inherited ACTPesquisa: TAction
+      Enabled = False
+      Visible = False
+    end
+    inherited ACTRelatorios: TAction
+      Enabled = False
+      Visible = False
+    end
   end
 end
