@@ -43,73 +43,47 @@ inherited frmcai_sar: Tfrmcai_sar
   end
   inherited PNLForm: TPanel
     Width = 834
-    Height = 584
+    Height = 519
     inherited PNLPrincipal: TPanel
       Width = 834
-      Height = 584
+      Height = 519
       inherited PNLPrincipalRodape: TPanel
-        Top = 584
+        Top = 519
         Width = 834
       end
       inherited PNLPrincipalME: TPanel
-        Height = 584
+        Height = 519
       end
       inherited PNLPrincipalMD: TPanel
         Left = 834
-        Height = 584
+        Height = 519
       end
       inherited PNLCadastro: TPanel
         Width = 834
-        Height = 584
+        Height = 519
         inherited PNLCadastroCabecalho: TPanel
           Width = 834
         end
-        inherited PNLCadastroMenu: TPanel
-          Width = 834
-          inherited GBMenu: TGroupBox
-            Width = 834
-            inherited SBMenu: TSpeedBar
-              Width = 830
-              inherited SIMRelatorios: TSpeedItem [2]
-              end
-              inherited SIMPesquisa: TSpeedItem [3]
-                Visible = True
-              end
-              inherited SIMSaida: TSpeedItem
-                Left = 214
-              end
-            end
-          end
-        end
         inherited PNLCustomize: TPanel
           Width = 834
-          Height = 482
-          inherited PNLCustomizeEdicao: TPanel
-            Height = 482
-            inherited GBEdicao: TGroupBox
-              Height = 482
-              inherited SBEdicao: TSpeedBar
-                Height = 461
-              end
-            end
-          end
+          Height = 519
           inherited PNLCustomizeSumario: TPanel
-            Top = 482
+            Top = 519
             Width = 834
           end
           inherited PNLCustomizeConsulta: TPanel
-            Width = 774
-            Height = 482
+            Width = 834
+            Height = 519
             inherited GBCadastro: TGroupBox
-              Width = 774
-              Height = 482
+              Width = 780
+              Height = 519
               inherited PCConsulta: TdxPageControl
-                Width = 770
-                Height = 461
+                Width = 776
+                Height = 498
                 inherited TSConsulta: TdxTabSheet
                   inherited DBGConsulta: TdxDBGrid
-                    Width = 770
-                    Height = 461
+                    Width = 776
+                    Height = 498
                     KeyField = 'ID'
                     ShowSummaryFooter = True
                     Filter.Criteria = {00000000}
@@ -165,18 +139,24 @@ inherited frmcai_sar: Tfrmcai_sar
               end
             end
             inherited PNLCustomizeCabecalho: TPanel
-              Width = 774
+              Width = 834
             end
             inherited PNLCustomizeRodape: TPanel
-              Top = 482
-              Width = 774
+              Top = 519
+              Width = 834
+            end
+            inherited GBMenuEdicao: TGroupBox
+              Height = 519
+              inherited SBMenuEdicao: TSpeedBar
+                Height = 498
+              end
             end
           end
         end
       end
     end
     inherited PNLFormRodape: TPanel
-      Top = 584
+      Top = 519
       Width = 834
       inherited PNLFormRodapeME: TPanel
         TabOrder = 1
@@ -186,6 +166,9 @@ inherited frmcai_sar: Tfrmcai_sar
         TabOrder = 0
       end
     end
+  end
+  inherited SBMenuPrincipal: TSpeedBar
+    Width = 834
   end
   inherited Cadastro: TIBQuery
     AutoCalcFields = False

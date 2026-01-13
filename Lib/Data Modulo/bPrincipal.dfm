@@ -7,7 +7,6 @@ object FBird: TFBird
   Height = 588
   Width = 1117
   object DBERP: TIBDatabase
-    Connected = True
     DatabaseName = 'C:\Sheild\FBird\Otimotex.FDB'
     Params.Strings = (
       'user_name=sysdba'
@@ -20,7 +19,6 @@ object FBird: TFBird
     Top = 8
   end
   object DBEDI: TIBDatabase
-    Connected = True
     DatabaseName = 'C:\Sheild\FBird\SheildEdicao.FDB'
     Params.Strings = (
       'user_name=sysdba'
@@ -2073,6 +2071,7 @@ object FBird: TFBird
     Top = 368
   end
   object DB_EDI: TIBDatabase
+    Connected = True
     DatabaseName = 'C:\Sheild\FBird\SHE-EDI.FDB'
     Params.Strings = (
       'user_name=sysdba'

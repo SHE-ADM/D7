@@ -72,20 +72,22 @@ type
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure ACTExecEventExecute(Sender: TObject);
   private
-    { Private declarations }
-    FCurrentEvent: String;
+    FCurrentEvent,
+    FCurrentAlert: String;
     FForceClose  : Boolean;
 
     { método para atribuição\validação de valor }
     procedure _SetCurrentEvent(const AValue: String);
+    procedure _SetCurrentAlert(const AValue: String);
     procedure _SetForceClose  (const AValue: Boolean);
   public
     { Public declarations }
-    REC_SHE_DEF : TREC_SHE_DEF;
+    REC_SHE_DEF: TREC_SHE_DEF;
     Editado     : Boolean;
 
-    property CurrentEvent: String  read FCurrentEvent write _SetCurrentEvent;
-    property ForceClose  : Boolean read FForceClose   write _SetForceClose;
+    property _GetCurrentAlert: String  read FCurrentAlert write _SetCurrentAlert;
+    property _GetCurrentEvent: String  read FCurrentEvent write _SetCurrentEvent;
+    property _GetForceClose  : Boolean read FForceClose   write _SetForceClose;
 
     Constructor Create(AOwner: TComponent;
                  const AIDPK : LongInt = 0;
@@ -104,6 +106,11 @@ uses uPrincipal, bPrincipal;
 procedure TFrmPadr3._SetCurrentEvent(const AValue: String);
 begin
   FCurrentEvent := AValue;
+end;
+
+procedure TFrmPadr3._SetCurrentAlert(const AValue: String);
+begin
+  FCurrentAlert := AValue;
 end;
 
 procedure TFrmPadr3._SetForceClose(const AValue: Boolean);
@@ -128,15 +135,6 @@ begin
   { INICIALIZAÇÃO }
   oOTransact(IBTRA); { Transação }
 
-  { FORM MANAGER }
-  REC_SHE_DEF.FPosition := Self.Position; { Página }
-  SetCursorPos(500,Self.Top); { Cursor }
-
-  { ACCESS MANAGER }
-  REC_SHE_DEF.FForceClose := ForceClose;
-  REC_SHE_DEF.FAlert      := 'Usuário não Autorizado.' + #13 +
-                             'Favor entrar em contato com o administrador do sistema.';
-
   { VALIDATE GRANT USER }
   REC_SHE_DEF.GAppend   := (RECUsuarios.Grupo = 'DEV') or (REC_SHE_DEF.GAdmin);
   REC_SHE_DEF.GEdit     := (RECUsuarios.Grupo = 'DEV') or (REC_SHE_DEF.GAdmin);
@@ -157,30 +155,41 @@ begin
     { SET GRANT USERT }
     oUSER(REC_SHE_DEF);
   end;
+  
+  if not REC_SHE_DEF.GView then
+  _GetForceClose := True else
+
+  if (FForceClose) and (RECParametros.STCX = 'Caixa Aberto') then
+  _GetForceClose := False;
 
   { ACCESS DENIED }
-  if (not REC_SHE_DEF.FForceClose) and (REC_SHE_DEF.FForceCaixa) and (REC_SHE_DEF.IDEV = 0) and
-     (RECParametros.STCX <> 'Caixa Aberto') then
+  if (FForceClose) and (RECParametros.STCX <> 'Caixa Aberto') then
   begin
-    ForceClose := True;
+    _GetCurrentAlert := FCurrentEvent    + #13 + #13 +
+                       'ACESSO NEGADO !' + #13 +
+                        RECParametros.STCX ;
+  end else
 
-    REC_SHE_DEF.FForceClose := ForceClose;
-    REC_SHE_DEF.FAlert      := 'Caixa não Aberto.' + #13 +
-                               'Favor entrar em contato com o administrador do sistema.';
+  if (FForceClose) and (RECParametros.STCX = 'Caixa Aberto') then
+  begin
+    _GetCurrentAlert := FCurrentEvent    + #13 + #13 +
+                       'ACESSO NEGADO !' + #13 +
+                       'Usuário não Autorizado';
   end;
 
   { ACCESS ABORT }
-  if (REC_SHE_DEF.FForceClose) or (not REC_SHE_DEF.GView) then
+  if FForceClose then
   begin
-    oErro(Application.Handle,'ACESSO NEGADO !' + #13 + #13 +
-                              REC_SHE_DEF.FAlert);
+    oErro(Application.Handle,FCurrentAlert);
 
     Self.Visible := False;
     Self.Height  := 0;
     Self.Width   := 0;
 
     PostMessage(Handle, WM_CLOSE, 0, 0);
-  end;
+    Exit;
+  end else
+  PostMessage( Handle, WM_AFTER_CREATE, 0, 0);
 end;
 
 procedure TFrmPadr3.FormShow(Sender: TObject);

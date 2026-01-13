@@ -1,10 +1,10 @@
 object FrmPadr3: TFrmPadr3
-  Left = 662
-  Top = 91
+  Left = 461
+  Top = 173
   BorderIcons = []
   BorderStyle = bsSingle
-  ClientHeight = 430
-  ClientWidth = 752
+  ClientHeight = 438
+  ClientWidth = 753
   Color = clBtnFace
   Font.Charset = ANSI_CHARSET
   Font.Color = clWindowText
@@ -261,8 +261,8 @@ object FrmPadr3: TFrmPadr3
   object PNLCadastro: TPanel
     Left = 0
     Top = 97
-    Width = 752
-    Height = 314
+    Width = 753
+    Height = 322
     Align = alClient
     BevelOuter = bvNone
     Font.Charset = DEFAULT_CHARSET
@@ -275,8 +275,8 @@ object FrmPadr3: TFrmPadr3
     object PaintBox: TPaintBox
       Left = 0
       Top = 0
-      Width = 752
-      Height = 314
+      Width = 753
+      Height = 322
       Align = alClient
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
@@ -288,8 +288,8 @@ object FrmPadr3: TFrmPadr3
   end
   object sbMSG: TStatusBar
     Left = 0
-    Top = 411
-    Width = 752
+    Top = 419
+    Width = 753
     Height = 19
     Panels = <
       item
@@ -303,7 +303,7 @@ object FrmPadr3: TFrmPadr3
   object PNLMenu: TPanel
     Left = 0
     Top = 0
-    Width = 752
+    Width = 753
     Height = 97
     Align = alTop
     BevelOuter = bvNone
@@ -311,7 +311,7 @@ object FrmPadr3: TFrmPadr3
     object SpeedBar2: TSpeedBar
       Left = 0
       Top = 0
-      Width = 752
+      Width = 753
       Height = 97
       Cursor = crHandPoint
       Font.Charset = ANSI_CHARSET

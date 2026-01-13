@@ -77,6 +77,8 @@ type
     edvdump: TdxEdit;
     edvcusto: TdxEdit;
     Label31: TLabel;
+    PKConsulta: TIBQuery;
+    SQLConsulta: TIBSQL;
     procedure edpsbrValidate(Sender: TObject; var ErrorText: String;
       var Accept: Boolean);
     procedure edpslqValidate(Sender: TObject; var ErrorText: String;
@@ -140,9 +142,6 @@ uses uPrincipal, pcad_con;
 
 procedure Tfrmcad_con_edi.FormCreate(Sender: TObject);
 begin
-  { ADMIN MANAGER }
-  //DBGConsultaIDPK.Visible := (RECUsuarios.ID = 0); { Código Pedido }
-
   { FORM SCREEN }
   REC_SHE_DEF.FPosition := Self.Position; { Posição }
 
@@ -179,9 +178,8 @@ end;
 procedure Tfrmcad_con_edi.FormShow(Sender: TObject);
 begin
   inherited;
-  if tag = 1 then
-  ALTERA_LANCAMENTO else
   NOVO_LANCAMENTO;
+  ALTERA_LANCAMENTO;
 end;
 
 
@@ -193,47 +191,58 @@ end;
 
 procedure Tfrmcad_con_edi.ALTERA_LANCAMENTO;
 begin
-  with frmcad_con do
+  if REC_SHE_DEF.IDPK > 0 then
   begin
-    edid.Text       := CadastroID.AsString;
-    edctnr.Text     := CadastroCON_CTNR.AsString;
-    eddcad.Date     := CadastroCON_DCAD.AsDateTime;
-    eddtnr.Text     := CadastroCON_DTNR.AsString;
-    edpsbr.Text     := formatfloat('#,0.00',CadastroCON_PSBR.AsFloat);
-    edpslq.Text     := formatfloat('#,0.00',CadastroCON_PSLQ.AsFloat);
-    if CadastroCON_DCOL.AsDateTime > 0 then
-    eddcol.Date     := CadastroCON_DCOL.AsDateTime;
-    edvcol.Text     := formatfloat('#,0.00',CadastroCON_VCOL.AsFloat);
-    if CadastroCON_DCOP.AsDateTime > 0 then
-    eddcop.Date     := CadastroCON_DCOP.AsDateTime;
-    edvcop.Text     := formatfloat('#,0.00',CadastroCON_VCOP.AsFloat);
-    edvicms.Text    := formatfloat('#,0.00',CadastroCON_VICMS.AsFloat);
-    edvipi.Text     := formatfloat('#,0.00',CadastroCON_VIPI.AsFloat);
-    edvpis.Text     := formatfloat('#,0.00',CadastroCON_VPIS.AsFloat);
-    edvcofins.Text  := formatfloat('#,0.00',CadastroCON_VCOFINS.AsFloat);
-    edvdump.Text    := formatfloat('#,0.00',CadastroCON_VDUMP.AsFloat);
-    edvII.Text      := formatfloat('#,0.00',CadastroCON_VII.AsFloat);
-    edvLI.Text      := formatfloat('#,0.00',CadastroCON_VLI.AsFloat);
-    edvMULTALI.Text := formatfloat('#,0.00',CadastroCON_VMULTALI.AsFloat);
-    edvfrete.Text   := formatfloat('#,0.00',CadastroCON_VFRETE.AsFloat);
-    edvdesp.Text    := formatfloat('#,0.00',CadastroCON_VDESP.AsFloat);
-    edvextra.Text   := formatfloat('#,0.00',CadastroCON_VEXTRA.AsFloat);
-    edvtransp.Text  := formatfloat('#,0.00',CadastroCON_VTRANSP.AsFloat);
-    edvarmazen.Text := formatfloat('#,0.00',CadastroCON_VARMAZEN.AsFloat);
-    edvhono.Text    := formatfloat('#,0.00',CadastroCON_VHONO.AsFloat);
-    edvoutro.Text   := formatfloat('#,0.00',CadastroCON_VOUTRO.AsFloat);
-    edvcusto.Text   := formatfloat('#,0.00',CadastroCON_VCUSTO.AsFloat);
-    edobse.Text     := CadastroCON_OBSE.AsString;
-  end;
+    with SQLConsulta do
+    begin
+      Close;
+      SQL.Clear;
+      SQL.Add('SELECT * FROM CAD_CON');
+      SQL.Add('WHERE  ID = ''' + REC_SHE_DEF.IDPK + '''');
+      ExecQuery;
 
-  with consulta do
-  begin
-    SQL.Clear;
-    SQL.Add('SELECT FANTASIA FROM TAB_PAR_SIS');
-    SQL.Add('WHERE  ID = '''+frmcad_con.CadastroCON_CEMP.AsString+'''');
-    Open;
-    cbdemp.Text := fields[0].AsString;
-  end;
+      edid.Text       := Current.ByName('ID').AsString;
+      edctnr.Text     := Current.ByName('CON_CTNR').AsString;
+      eddcad.Date     := Current.ByName('CON_DCAD').AsDateTime;
+      eddtnr.Text     := Current.ByName('CON_DTNR').AsString;
+      edpsbr.Text     := formatfloat('#,0.00',Current.ByName('CON_PSBR').AsFloat);
+      edpslq.Text     := formatfloat('#,0.00',Current.ByName('CON_PSLQ').AsFloat);
+
+      if Current.ByName('CON_DCOL').AsDateTime > 0 then
+      eddcol.Date     := Current.ByName('CON_DCOL').AsDateTime;
+      edvcol.Text     := formatfloat('#,0.00',Current.ByName('CON_VCOL').AsFloat);
+      if Current.ByName('CON_DCOP').AsDateTime > 0 then
+      eddcop.Date     := Current.ByName('CON_DCOP').AsDateTime;
+
+      edvcop.Text     := formatfloat('#,0.00',Current.ByName('CON_VCOP'    ).AsFloat);
+      edvicms.Text    := formatfloat('#,0.00',Current.ByName('CON_VICMS'   ).AsFloat);
+      edvipi.Text     := formatfloat('#,0.00',Current.ByName('CON_VIPI'    ).AsFloat);
+      edvpis.Text     := formatfloat('#,0.00',Current.ByName('CON_VPIS'    ).AsFloat);
+      edvcofins.Text  := formatfloat('#,0.00',Current.ByName('CON_VCOFINS' ).AsFloat);
+      edvdump.Text    := formatfloat('#,0.00',Current.ByName('CON_VDUMP'   ) .AsFloat);
+      edvII.Text      := formatfloat('#,0.00',Current.ByName('CON_VII'     ).AsFloat);
+      edvLI.Text      := formatfloat('#,0.00',Current.ByName('CON_VLI'     ).AsFloat);
+      edvMULTALI.Text := formatfloat('#,0.00',Current.ByName('CON_VMULTALI').AsFloat);
+      edvfrete.Text   := formatfloat('#,0.00',Current.ByName('CON_VFRETE'  ).AsFloat);
+      edvdesp.Text    := formatfloat('#,0.00',Current.ByName('CON_VDESP'   ).AsFloat);
+      edvextra.Text   := formatfloat('#,0.00',Current.ByName('CON_VEXTRA'  ).AsFloat);
+      edvtransp.Text  := formatfloat('#,0.00',Current.ByName('CON_VTRANSP' ).AsFloat);
+      edvarmazen.Text := formatfloat('#,0.00',Current.ByName('CON_VARMAZEN').AsFloat);
+      edvhono.Text    := formatfloat('#,0.00',Current.ByName('CON_VHONO'   ).AsFloat);
+      edvoutro.Text   := formatfloat('#,0.00',Current.ByName('CON_VOUTRO'  ).AsFloat);
+      edvcusto.Text   := formatfloat('#,0.00',Current.ByName('CON_VCUSTO'  ).AsFloat);
+      edobse.Text     := Current.ByName('CON_OBSE').AsString;
+    end;
+
+    with consulta do
+    begin
+      SQL.Clear;
+      SQL.Add('SELECT FANTASIA FROM TAB_PAR_SIS');
+      SQL.Add('WHERE  ID = ''' + SQLConsulta.Current.ByName('CON_CEMP').AsString+'''');
+      Open;
+      cbdemp.Text := fields[0].AsString;
+    end;
+  end;  
 end;
 
 procedure Tfrmcad_con_edi.NOVO_LANCAMENTO;
@@ -475,11 +484,7 @@ begin
 
     ibSP.ParamByName('con').Value := 'CAD_CON';
 
-    case frmcad_con_edi.Tag of
-      0: ibSP.Params[1].Value := '0';
-      1: ibSP.Params[1].Value := edid.Text;
-    end;
-
+    ibSP.ParamByName('ID'  ).Value      := REC_SHE_DEF.IDPK;
     ibSP.ParamByName('CTNR').Value      := edctnr.Text;
     ibSP.ParamByName('DTNR').Value      := eddtnr.Text;
     ibSP.ParamByName('CEMP').Value      := cemp;

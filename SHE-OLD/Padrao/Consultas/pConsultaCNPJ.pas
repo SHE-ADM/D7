@@ -12,7 +12,10 @@ uses
 
 {$DEFINE SUPPORT_PNG}  // Remova o Ponto, se seu Delphi suporta PNG
 
-type
+Const
+  dllNFe = 'C:\Sheild\NotaFiscal\NFe.dll';
+
+  type
   TFrmConsultaCNPJ = class(TForm)
     ACBrConsultaCNPJ: TACBrConsultaCNPJ;
     GBConsulta: TGroupBox;

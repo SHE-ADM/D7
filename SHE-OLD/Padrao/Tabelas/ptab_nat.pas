@@ -59,11 +59,10 @@ type
     CadastroNAT_PIPP_REAL: TIBBCDField;
     CadastroNAT_PIPC_REAL: TIBBCDField;
     procedure FormCreate(Sender: TObject);
-    procedure SIEIncluiClick(Sender: TObject);
-    procedure SIEAlteraClick(Sender: TObject);
+    procedure ACTMEAppendExecute(Sender: TObject);
+    procedure ACTMEEditExecute(Sender: TObject);
   private
     { Private declarations }
-    procedure _Edicao(AEdicao: Word);
   public
     { Public declarations }
   end;
@@ -79,8 +78,20 @@ uses uPrincipal, ptab_nat_edi;
 
 procedure Tfrmtab_nat.FormCreate(Sender: TObject);
 begin
+  { FORM SCREEN }
+  REC_SHE_DEF.FPosition := Self.Position; { Posição }
+
+  REC_SHE_DEF.FMainArea := False; { Aplicativo }
+  REC_SHE_DEF.FWorkArea := False; { Windows    }
+
+  { ACCESS MANAGER }
   REC_SHE_DEF.FB_Event := 'FIS_CFOP'; { Eventos }
-  REC_SHE_DEF.GAdmin   := True;       { Grant   }
+
+  { GRANT USER }
+  REC_SHE_DEF.GDescricao  := 'Fiscal';
+  REC_SHE_DEF.GReferencia := 'CFOP';
+  REC_SHE_DEF.GRegra      := 'Permissões Gerais';
+  REC_SHE_DEF.GAdmin      := False;
   inherited;
 
   with cadastro do
@@ -95,21 +106,21 @@ begin
   end;
 end;
 
-procedure Tfrmtab_nat.SIEIncluiClick(Sender: TObject);
-begin
-  _Edicao(0);
-end;
-
-procedure Tfrmtab_nat.SIEAlteraClick(Sender: TObject);
+procedure Tfrmtab_nat.ACTMEAppendExecute(Sender: TObject);
 begin
   inherited;
-  _Edicao(1);
+
+  frmtab_nat_edi := TFrmtab_nat_edi.Create(Self,0);
+  try frmtab_nat_edi.ShowModal;
+  finally FreeAndNil(frmtab_nat_edi);
+  end;
 end;
 
-procedure Tfrmtab_nat._Edicao(AEdicao: Word);
+procedure Tfrmtab_nat.ACTMEEditExecute(Sender: TObject);
 begin
-  frmtab_nat_edi     := TFrmtab_nat_edi.Create(Self);
-  frmtab_nat_edi.Tag := AEdicao;
+  inherited;
+
+  frmtab_nat_edi := TFrmtab_nat_edi.Create(Self,CadastroID.AsInteger);
   try frmtab_nat_edi.ShowModal;
   finally FreeAndNil(frmtab_nat_edi);
   end;

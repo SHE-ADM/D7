@@ -40,17 +40,9 @@ uses
   qProduto_Estoque in '..\..\Padrao\Relatorios\qProduto_Estoque.pas' {qrpProduto_Estoque: TQuickRep},
   qProduto_Estoque_Etiqueta in '..\..\Padrao\Relatorios\qProduto_Estoque_Etiqueta.pas' {qrpProduto_Estoque_Etiqueta: TQuickRep},
   pConsulta in '..\..\Padrao\Default\pConsulta.pas' {FrmConsulta},
-  pcad_cli in '..\..\Padrao\Cadastros\pcad_cli.pas' {frmcad_cli},
-  pcad_cli_edi in '..\..\Padrao\Cadastros\pcad_cli_edi.pas' {frmcad_cli_edi},
   pcad_cli_inf in '..\..\Padrao\Cadastros\pcad_cli_inf.pas' {frmcad_cli_inf},
   pcad_con in '..\..\Padrao\Cadastros\pcad_con.pas' {frmcad_con},
   pcad_con_edi in '..\..\Padrao\Cadastros\pcad_con_edi.pas' {frmcad_con_edi},
-  pcad_for in '..\..\Padrao\Cadastros\pcad_for.pas' {frmcad_for},
-  pcad_for_edi in '..\..\Padrao\Cadastros\pcad_for_edi.pas' {frmcad_for_edi},
-  pCAD_REP in '..\..\Padrao\Cadastros\pCAD_REP.pas' {FrmCAD_REP},
-  pcad_rep_edi in '..\..\Padrao\Cadastros\pcad_rep_edi.pas' {frmcad_rep_edi},
-  pCAD_TRA in '..\..\Padrao\Cadastros\pCAD_TRA.pas' {FrmCAD_TRA},
-  pcad_tra_edi in '..\..\Padrao\Cadastros\pcad_tra_edi.pas' {frmcad_tra_edi},
   pPesquisaCodigoMunicipal in '..\..\Padrao\Consultas\pPesquisaCodigoMunicipal.pas' {FrmPesquisaCodigoMunicipal},
   pPesquisaLogradouros in '..\..\Padrao\Consultas\pPesquisaLogradouros.pas' {FrmPesquisaLogradouros},
   pPSQCAD in '..\..\Padrao\Consultas\pPSQCAD.pas' {FrmPSQCAD},
@@ -143,7 +135,15 @@ uses
   qGER_VEN_FAT_CRD in '..\..\..\Lib\Relatórios\Gerenciais\Vendas\QGER_VEN_FAT_CRD.pas' {QRPGER_VEN_FAT_CRD: TQuickRep},
   pSHE_DEF_PSQ in '..\..\..\Lib\Default\pSHE_DEF_PSQ.pas' {FrmSHE_DEF_PSQ},
   pCAD_PRO_PSQ in '..\..\..\Lib\Produtos\pCAD_PRO_PSQ.pas' {FrmCAD_PRO_PSQ},
-  pctr_nfe in '..\..\..\Lib\Fiscal\pctr_nfe.pas' {frmctr_nfe};
+  pctr_nfe in '..\..\..\Lib\Fiscal\pctr_nfe.pas' {frmctr_nfe},
+  pcad_cli_edi in '..\..\Padrao\Cadastros\pcad_cli_edi.pas' {frmcad_cli_edi},
+  pcad_cli in '..\..\Padrao\Cadastros\pcad_cli.pas' {frmcad_cli},
+  pcad_for in '..\..\Padrao\Cadastros\pcad_for.pas' {frmcad_for},
+  pcad_for_edi in '..\..\Padrao\Cadastros\pcad_for_edi.pas' {frmcad_for_edi},
+  pcad_rep in '..\..\Padrao\Cadastros\pCAD_REP.pas' {frmcad_rep},
+  pcad_rep_edi in '..\..\Padrao\Cadastros\pcad_rep_edi.pas' {frmcad_rep_edi},
+  pcad_tra in '..\..\Padrao\Cadastros\pCAD_TRA.pas' {frmcad_tra},
+  pcad_tra_edi in '..\..\Padrao\Cadastros\pcad_tra_edi.pas' {frmcad_tra_edi};
 
 {$R *.res}
 

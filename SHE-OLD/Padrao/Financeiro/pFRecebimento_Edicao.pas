@@ -96,9 +96,6 @@ implementation
 
 procedure TFrmFRecebimento_Edicao.FormCreate(Sender: TObject);
 begin
-  { ADMIN MANAGER }
-  //DBGConsultaIDPK.Visible := (RECUsuarios.ID = 0); { Código Pedido }
-
   { FORM SCREEN }
   REC_SHE_DEF.FPosition := Self.Position; { Posição }
 
@@ -108,10 +105,11 @@ begin
   { ACCESS MANAGER }
   REC_SHE_DEF.FB_Event := 'FIN_REC_ADM'; { Eventos }
 
-  { Grant }
+  { GRANT USER }
   REC_SHE_DEF.GDescricao  := 'Financeiro';
   REC_SHE_DEF.GReferencia := 'Recebimentos';
   REC_SHE_DEF.GRegra      := 'Permissões Gerais';
+  REC_SHE_DEF.GAdmin      := False;
   inherited;
 
   oOTransact(TConsulta);

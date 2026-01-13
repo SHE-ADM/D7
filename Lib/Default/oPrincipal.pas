@@ -18,9 +18,7 @@ uses
   IDGlobal, Clipbrd;
   //ShlObj;
 
-Type
-   ANFe = Array of Array of ShortString;
-
+type
    TDirection          = (lNone  ,lVertical,lHorizontal,lUndefined);
    TReturning          = (lrNone ,lrVariant,lrString,lrInteger,lrFloat);
    TWarning            = (lwNone ,lwShowWarning);
@@ -2690,8 +2688,6 @@ Const
   KEY_WOW64_64KEY = $0100;
   KEY_WOW64_32KEY = $00200;
 
-  dllNFe = 'C:\Sheild\NotaFiscal\NFe.dll';
-
   aDup : array [1..24] of string = ('A','B','C','D','E','F','G',
                                     'H','I','J','K','L','M','N',
                                     'O','P','Q','R','S','T','U',
@@ -2827,6 +2823,10 @@ aAlfabeto: Array[00..35,00..01] of String = (('A','0'),
 	aMilhar  : Array[00..05] of String = ('','Mil','Milhao'  ,'Bilhao'   ,'Trilhao'     ,'Quatrilhao' );
 	aMilhares: Array[00..05] of String = ('','Mil','Milhoes' ,'Bilhoes'  ,'Trilhoes'    ,'Quatrilhoes');
 
+  { Cria diretório de forma recursiva - 13/01/2026 09:34 }
+  function oEnsureDirRecursive(const ADirectory: string): Boolean;
+  function oNormalizeUNC(const ADirectory: string): string;
+  function oCopyFileToDir(const SourceFile, DestDir: string; Overwrite: Boolean): Boolean;
 
   { NULL PROCEDURE - 02/01/2025 10:13 }
   procedure oSP_INI(ASPNome: String;var ASPEdicao: TIBStoredProc); STDCall;
@@ -3097,86 +3097,6 @@ aAlfabeto: Array[00..35,00..01] of String = (('A','0'),
   procedure oIRECDefault(var ARECDefault: TRECDefault); STDCall;
   procedure oFRECDefault(var ARECDefault: TRECDefault); STDCall;
 
-
-{ nfedlldel-v7.1.3-Rev1 - 21/11/2025 }
-function GeraNFe(ide, emit, dest : Array of shortstring; detProd : ANFe;
-                 total, transp, cobr, pag, infAdic, autXML : array of shortstring; assinar : boolean = false) : shortstring; StdCall; External dllNfe; far;
-
-function AssinaArquivoXML(pathArquivo,tagURI : shortstring) : shortstring; stdcall; External dllNfe; far;
-
-function GerarLote(idLote : integer; pathNFe : shortstring; listarArquivos : boolean = true) : integer; stdcall; External dllNfe; far;
-
-function GeraDPEC(pathNFe : ShortString) : Integer;  stdcall; External dllNfe; far;
-
-function GeraEPEC(pathNFe : ShortString) : Integer;  stdcall; External dllNfe; far;
-
-function ImprimeDanfe(pathXML,pathPDF: shortstring; tipoImp : integer; formSeguranca : boolean) : boolean; stdcall; External dllNfe; far;
-
-function ImprimeDanfeEscolheImp(pathXML,pathPDF,nomeImp: shortstring; tipoImp : integer; formSeguranca : boolean) : boolean; stdcall; External dllNfe; far;
-
-function ImprimeDPEC(pathXML, pathPDF: ShortString; tipoImp : integer; nProtDpec: shortstring) : boolean; stdcall; External dllNfe; far;
-
-function ImprimeEPEC(pathXML, pathPDF: ShortString; tipoImp : integer; nProtDpec: shortstring) : boolean; stdcall; External dllNfe; far;
-
-function ImprimeCCe(pathCCe, pathPDF : shortstring; tipoImp : integer) : boolean; stdcall; External dllNfe; far;
-
-function ValidarArquivoXML(pathArquivo : shortstring; schema : shortstring; exbForm : boolean = true) : ShortString; stdcall; External dllNfe; far;
-
-function NfeStatusServico : shortstring; stdcall; External dllNfe; far;
-
-function NFeRecepcao(pathLoteXML : shortstring) : shortstring; stdcall; External dllNfe; far
-
-function NFeAutorizacao(pathLoteXML : shortstring) : WideString; stdcall; External dllNfe; far
-
-function NfeRetAutorizacao(nRec : shortstring) : WideString; stdcall; External dllNfe; far
-
-function RecepcaoDPEC(pathDPECXML : shortstring) : shortstring; stdcall; External dllNfe; far
-
-function RecepcaoEPEC(pathDPECXML : shortstring) : shortstring; stdcall; External dllNfe; far
-
-function NFeConsulta(chNFe : WideString) : WideString; stdcall; External dllNfe; far;
-
-Function DPECConsulta(ChaveRegDPEC:ShortString):ShortString;stdcall external dllNfe; far;
-
-function EPECConsulta(chaveRegEPEC : ShortString) : ShortString; stdcall; external dllNfe; far;
-
-function NfeInutilizacao(ano, nNFIni, nNFFin, xJust : shortstring; serie : shortstring = '') : shortstring; stdcall; External dllNfe; far;
-
-function NFeCancelamento(chNFe, nProt, xJust : shortstring) : shortstring; stdcall; External dllNfe; far;
-
-function NFeCancelamentoEvento(chNFe, nProt, idLote, nSeqEvento,  xJust : shortstring) : shortstring; stdcall; External dllNfe; far;
-
-function NfeRetRecepcao(nRec : shortstring) : boolean; stdcall; External dllNfe; far;
-
-function ArquivoDistribuicaoNFe(chNFe : shortstring) : shortstring; stdcall; External dllNfe; far;
-
-function EnviaEmail(emailDest, assunto, msg, pathFile : IString) : boolean; stdcall; External dllNfe; far; overload; //v6.3.2
-
-function NFeCadastro(UF, CNPJ : shortstring) : IString; stdcall; External dllNfe; far; //v6.4.1
-
-function GeraCCe(chnfe, seq, tpEvento, dhEvento : shortstring; xCorrecao : array of shortstring) : shortstring; stdcall; External dllNfe; far; //v6.4.1
-
-function GeraManifestacao(chnfe, seq, tpEvento, dhEvento, xJust : ShortString) : ShortString; stdcall; External dllNfe; far; //v6.6.5
-
-function NFeDistribuicaoDFe(DFechNFe, DFeNSU : ShortString; DFeultNSU : boolean)  : ShortString; stdcall; External dllNfe; far;
-
-function ConsultaDest(indNFe, indEmi, ultNSU : ShortString) : ShortString; stdcall; External dllNfe; far; //v6.6.5
-
-function DonwloadNFe(chNFe, pathNFe : ShortString) : ShortString; stdcall; External dllNfe; far; //v6.6.5
-
-function CarregaFCI(pathXml, pathFile : shortstring) : boolean; stdcall; External dllNfe; far; //v6.6.5
-
-function ConsultaVersao : ShortString; stdcall; external dllNfe; far;
-
-function EventoEntrega(idLote, chNfe, seqEvento, dhEntrega, nDoc, xNome, latlongGps : shortstring) : shortstring; stdcall;  external dllNfe; far;
-
-function EventoEntregaInsucesso(idLote, chNfe, seqEvento, dhEntregaTentativa, nTentativa, tpMotivo, xMotivo, latlongGps : shortstring) : shortstring; stdcall;  external dllNfe; far;
-
-function VersaoDLL () : WideString; stdcall; external dllNfe; far;
-
-function ImprimeDanfeSimplificado(pathXML : ShortString; tipoImp : integer; formSeguranca : boolean) : boolean;  stdcall;  external dllNfe; far;
-
-function ConsultaGtin(chave : shortstring) : shortstring; stdcall; External dllNfe; far;
 
 var
   RECUsuarios      : TRECUsuarios;
@@ -9584,7 +9504,7 @@ begin
     if LeftStr(RECParametros.NFE_API_SEFAZ,3) <> '107' then { Serviço em Operação }
        try
          Screen.Cursor := crAppStart;
-         RECParametros.NFE_API_SEFAZ := NfeStatusServico;
+//         RECParametros.NFE_API_SEFAZ := NfeStatusServico;
 
          if LeftStr(RECParametros.NFE_API_SEFAZ,3) = '107' then
          RECParametros.NFE_API_SEFAZ := '107 - SEFAZ ON LINE';
@@ -9593,7 +9513,7 @@ begin
        end;
   finally
     result := RECParametros.NFE_API_SEFAZ;
-  end;  
+  end;
 end;
 
 { RETORNA ÁREA DE TRABALHO }
@@ -9907,6 +9827,134 @@ begin
              end;
            end;
      end;
+end;
+
+{ Verifica Diretório Informado }
+(*******************************************************)
+function oNormalizeUNC(const ADirectory: string): string;
+(*******************************************************)
+begin
+  Result := Trim(ADirectory);
+  // Remove barras no fim (exceto se for raiz tipo \\server\share)
+  while (Length(Result) > 0) and (Result[Length(Result)] = '\') do
+    Delete(Result, Length(Result), 1);
+end;
+
+
+{ Criar Diretório de forma recursiva }
+(**************************************************************)
+function oEnsureDirRecursive(const ADirectory: string): Boolean;
+(**************************************************************)
+var
+  Path, Part: string;
+  I, StartPos: Integer;
+begin
+  Result := False;
+  Path   := oNormalizeUNC(ADirectory);
+  if Path = '' then
+  Exit;
+
+  // Já existe?
+  if DirectoryExists(Path) then
+  begin
+    Result := True;
+    Exit;
+  end;  
+
+  // Se for UNC (\\server\share\...), precisamos preservar \\server\share como base
+  if (Length(Path) >= 2) and (Path[1] = '\') and (Path[2] = '\') then
+  begin
+    // Formato: \\server\share\resto...
+    // Encontrar o 3º "\" após \\ (fim do share)
+    StartPos := 3; // após "\\"
+    // 1) fim do "server"
+    I := Pos('\', Copy(Path, StartPos, MaxInt));
+    if I = 0 then Exit;
+    StartPos := StartPos + I; // agora aponta para "\" após server
+
+    // 2) fim do "share"
+    I := Pos('\', Copy(Path, StartPos + 1, MaxInt));
+    if I = 0 then
+    begin
+      // só \\server\share (sem subpastas)
+      if DirectoryExists(Path) or CreateDir(Path) then
+      exit;
+    end;
+
+    // Base UNC: \\server\share
+    Part := Copy(Path, 1, StartPos + I - 1);
+    // Resto: \sub1\sub2...
+    I := StartPos + I; // posição do "\" que inicia o resto
+  end
+  else
+  begin
+    // Caminho local (C:\...)
+    Part := ExtractFileDrive(Path);
+    if Part <> '' then
+      I := Length(Part) + 2 // "C:\" => começa após isso
+    else
+      I := 1;
+
+    Part := IncludeTrailingPathDelimiter(Part);
+  end;
+
+  // Cria recursivamente do começo até o fim
+  while I <= Length(Path) do
+  begin
+    // Avança até próxima barra ou fim
+    StartPos := I;
+    while (I <= Length(Path)) and (Path[I] <> '\') do
+      Inc(I);
+
+    // Adiciona segmento
+    Part := Part + Copy(Path, StartPos, I - StartPos);
+
+    if (Part <> '') and (not DirectoryExists(Part)) then
+    begin
+      if not CreateDir(Part) then
+        Exit;
+    end;
+
+    // Pula "\"
+    if (I <= Length(Path)) and (Path[I] = '\') then
+    begin
+      Part := Part + '\';
+      Inc(I);
+    end;
+  end;
+
+  Result := DirectoryExists(Path);
+end;
+
+{ Criar Diretório de forma recursiva }
+(**************************************************************************************)
+function oCopyFileToDir(const SourceFile, DestDir: string; Overwrite: Boolean): Boolean;
+(**************************************************************************************)
+var
+  DstDir, DestFile: string;
+  FailIfExists: BOOL;
+begin
+  Result := False;
+
+  if not FileExists(SourceFile) then
+  raise Exception.Create('Arquivo de origem não existe: ' + SourceFile);
+
+  DstDir := ExcludeTrailingPathDelimiter(DestDir);
+
+  // garante a pasta (recursivo)
+  if not oEnsureDirRecursive(DstDir) then
+  RaiseLastOSError;
+
+  // monta o destino: \\server\share\...\arquivo.xml
+  DestFile := IncludeTrailingPathDelimiter(DstDir) + ExtractFileName(SourceFile);
+
+  // CopyFile: se FailIfExists=True, NÃO sobrescreve
+  FailIfExists := not Overwrite;
+
+  if not Windows.CopyFile(PChar(SourceFile), PChar(DestFile), FailIfExists) then
+  RaiseLastOSError;
+
+  Result := True;
 end;
 
 end.

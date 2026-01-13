@@ -369,15 +369,12 @@ var
 implementation
 
 uses uPrincipal,
-     pcad_for,bPrincipal;
+     bPrincipal;
 
 {$R *.dfm}
 
 procedure Tfrmcad_for_edi.FormCreate(Sender: TObject);
 begin
-  { ADMIN MANAGER }
-  //DBGConsultaIDPK.Visible := (RECUsuarios.ID = 0); { Código Pedido }
-
   { FORM SCREEN }
   REC_SHE_DEF.FPosition := Self.Position; { Posição }
 
@@ -441,136 +438,135 @@ end;
 procedure Tfrmcad_for_edi.FormShow(Sender: TObject);
 begin
   inherited;
-  if tag = 1 then
-  begin
-    with cad_for do
-    begin
-      Close;
-      SelectSQL.Clear;
-      SelectSQL.Add('SELECT * FROM CAD_FOR');
-      SelectSQL.Add('WHERE ID = '''+frmcad_for.CadastroID.AsString+'''');
-      Open;
-
-      edcfor.Text := oStrZero(FieldByName('ID').AsInteger,5);
-      edfant.Text := FieldByName('FOR_FANT').AsString;
-      eddcad.Date := FieldByName('FOR_DCAD').AsDateTime;
-      eddalt.Date := RECParametros.SHE_DATA;
-      eddfun.Date := FieldByName('FOR_DFUN').AsDateTime;
-      edraza.Text := FieldByName('FOR_RAZA').AsString;
-      edsite.Text := FieldByName('FOR_SITE').AsString;
-      cbreve.Text := FieldByName('FOR_REVE').AsString;
-      cbramo.Text := FieldByName('FOR_RAMO').AsString;
-      edcont.Text := FieldByName('FOR_CONT').AsString;
-      edfcon.Text := FieldByName('FOR_FCON').AsString;
-      edccon.Text := FieldByName('FOR_CCON').AsString;
-      edmail.Text := FieldByName('FOR_MAIL').AsString;
-      edfmai.Text := FieldByName('FOR_FMAI').AsString;
-      edcmai.Text := FieldByName('FOR_CMAI').AsString;
-      edddd.Text  := FieldByName('FOR_DDD').AsString;
-      eddd2.Text  := FieldByName('FOR_DD2').AsString;
-      eddd3.Text  := FieldByName('FOR_DD3').AsString;
-      eddd4.Text  := FieldByName('FOR_DD4').AsString;
-      eddd5.Text  := FieldByName('FOR_DD5').AsString;
-      eddd6.Text  := FieldByName('FOR_DD6').AsString;
-      edfddd.Text := FieldByName('FOR_FDDD').AsString;
-      edfdd2.Text := FieldByName('FOR_FDD2').AsString;
-      edfdd3.Text := FieldByName('FOR_FDD3').AsString;
-      edfdd4.Text := FieldByName('FOR_FDD4').AsString;
-      edfdd5.Text := FieldByName('FOR_FDD5').AsString;
-      edfdd6.Text := FieldByName('FOR_FDD6').AsString;
-      edcddd.Text := FieldByName('FOR_CDDD').AsString;
-      edcdd2.Text := FieldByName('FOR_CDD2').AsString;
-      edcdd3.Text := FieldByName('FOR_CDD3').AsString;
-      edcdd4.Text := FieldByName('FOR_CDD4').AsString;
-      edcdd5.Text := FieldByName('FOR_CDD5').AsString;
-      edcdd6.Text := FieldByName('FOR_CDD6').AsString;
-      edtel1.Text := oRETNumero(FieldByName('FOR_TEL1').AsString);
-      edtel2.Text := oRETNumero(FieldByName('FOR_TEL2').AsString);
-      edtel3.Text := FieldByName('FOR_TEL3').AsString;
-      edfax.Text  := FieldByName('FOR_FAX').AsString;
-      edffax.Text := FieldByName('FOR_FFAX').AsString;
-      edcfax.Text := FieldByName('FOR_CFAX').AsString;
-      edfte1.Text := FieldByName('FOR_FTE1').AsString;
-      edfte2.Text := FieldByName('FOR_FTE2').AsString;
-      edfte3.Text := FieldByName('FOR_FTE3').AsString;
-      edcte1.Text := FieldByName('FOR_CTE1').AsString;
-      edcte2.Text := FieldByName('FOR_CTE2').AsString;
-      edcte3.Text := FieldByName('FOR_CTE3').AsString;
-      edcel.Text  := oRETNumero(FieldByName('FOR_CEL').AsString);
-      edfcel.Text := FieldByName('FOR_FCEL').AsString;
-      edccel.Text := FieldByName('FOR_CCEL').AsString;
-      edneid.Text := FieldByName('FOR_NEID').AsString;
-      edfnid.Text := FieldByName('FOR_FNID').AsString;
-      edcnid.Text := FieldByName('FOR_CNID').AsString;
-      edncel.Text := FieldByName('FOR_NCEL').AsString;
-      edfnce.Text := FieldByName('FOR_FNCE').AsString;
-      edcnce.Text := FieldByName('FOR_CNCE').AsString;
-      cbtce1.Text := FieldByName('FOR_TCE1').AsString;
-      cbtce2.Text := FieldByName('FOR_TCE2').AsString;
-      cbftc1.Text := FieldByName('FOR_FTC1').AsString;
-      cbftc2.Text := FieldByName('FOR_FTC2').AsString;
-      cbctc1.Text := FieldByName('FOR_CTC1').AsString;
-      cbctc2.Text := FieldByName('FOR_CTC2').AsString;
-      edccm.Text  := FieldByName('FOR_CCM').AsString;
-      edimun.Text := FieldByName('FOR_IMUN').AsString;
-
-      if FieldByName('FOR_CNPJ').AsString <> '' then
-      begin
-        edcnpj.Text   := FieldByName('FOR_CNPJ').AsString;
-        edinsc.Text   := FieldByName('FOR_INSC').AsString;
-        edcpf.Enabled := false;
-        edrg.Enabled  := false;
-      end;
-
-      if FieldByName('FOR_CPF').AsString <> '' then
-      begin
-        edcpf.Text     := FieldByName('FOR_CPF').AsString;
-        edrg.Text      := FieldByName('FOR_RG').AsString;
-        edcnpj.Enabled := false;
-        edinsc.Enabled := false;
-      end;
-
-    EDCOM_TLO_TX.Text := FieldByName('FOR_TLOG').AsString;
-    EDCOM_LOG_NO.Text := FieldByName('FOR_LOGR').AsString;
-    EDCOM_NRO.Text    := FieldByName('FOR_NUME').AsString;
-    BECOM_CEP.Text    := FieldByName('FOR_CEP').AsString;
-    EDCOM_XCPL.Text   := FieldByName('FOR_COMP').AsString;
-    BECOM_CMUN.Text   := FieldByName('FOR_CMUN').AsString;
-    EDCOM_BAI_NO.Text := FieldByName('FOR_BAI').AsString;
-    EDCOM_LOC_NO.Text := FieldByName('FOR_CID').AsString;
-    EDCOM_UF.Text     := FieldByName('FOR_ESTA').AsString;
-
-    EDCOB_TLO_TX.Text := FieldByName('FOR_TLOC').AsString;
-    EDCOB_LOG_NO.Text := FieldByName('FOR_LOGC').AsString;
-    EDCOB_NRO.Text    := FieldByName('FOR_NUMC').AsString;
-    BECOB_CEP.Text    := FieldByName('FOR_CEPC').AsString;
-    EDCOB_XCPL.Text   := FieldByName('FOR_COMC').AsString;
-    BECOB_CMUN.Text   := FieldByName('FOR_CMUC').AsString;
-    EDCOB_BAI_NO.Text := FieldByName('FOR_BAIC').AsString;
-    EDCOB_LOC_NO.Text := FieldByName('FOR_CIDC').AsString;
-    EDCOB_UF.Text     := FieldByName('FOR_ESTC').AsString;
-
-    EDENT_TLO_TX.Text := FieldByName('FOR_TLOV').AsString;
-    EDENT_LOG_NO.Text := FieldByName('FOR_LOGV').AsString;
-    EDENT_NRO.Text    := FieldByName('FOR_NUMV').AsString;
-    BEENT_CEP.Text    := FieldByName('FOR_CEPV').AsString;
-    EDENT_XCPL.Text   := FieldByName('FOR_COMV').AsString;
-    BEENT_CMUN.Text   := FieldByName('FOR_CMUV').AsString;
-    EDENT_BAI_NO.Text := FieldByName('FOR_BAIV').AsString;
-    EDENT_LOC_NO.Text := FieldByName('FOR_CIDV').AsString;
-    EDENT_UF.Text     := FieldByName('FOR_ESTV').AsString;
-
-      cbdtra.Text := FieldByName('FOR_DTRA').AsString;
-      edobse.Text := FieldByName('FOR_OBSE').Value;
-      edobso.Text := FieldByName('FOR_OBSO').Value;
-      cbdpag.Text := FieldByName('FOR_DPAG').AsString;
-      cbricm.Text := FieldByName('FOR_RICM').AsString;
-      cbcicm.Text := FieldByName('FOR_CICM').AsString;
-      cbstav.Text := FieldByName('FOR_STAV').AsString;
-      cbcdep.Text := FieldByName('FOR_CDEP').AsString;
-    end
-  end else
   NOVO_FORNECEDOR;
+
+  if REC_SHE_DEF.IDPK > 0 then
+  with cad_for do
+  begin
+    Close;
+    SelectSQL.Clear;
+    SelectSQL.Add('SELECT * FROM CAD_FOR');
+    SelectSQL.Add('WHERE ID = '''+ REC_SHE_DEF.IDPK +'''');
+    Open;
+
+    edcfor.Text := oStrZero(FieldByName('ID').AsInteger,5);
+    edfant.Text := FieldByName('FOR_FANT').AsString;
+    eddcad.Date := FieldByName('FOR_DCAD').AsDateTime;
+    eddalt.Date := RECParametros.SHE_DATA;
+    eddfun.Date := FieldByName('FOR_DFUN').AsDateTime;
+    edraza.Text := FieldByName('FOR_RAZA').AsString;
+    edsite.Text := FieldByName('FOR_SITE').AsString;
+    cbreve.Text := FieldByName('FOR_REVE').AsString;
+    cbramo.Text := FieldByName('FOR_RAMO').AsString;
+    edcont.Text := FieldByName('FOR_CONT').AsString;
+    edfcon.Text := FieldByName('FOR_FCON').AsString;
+    edccon.Text := FieldByName('FOR_CCON').AsString;
+    edmail.Text := FieldByName('FOR_MAIL').AsString;
+    edfmai.Text := FieldByName('FOR_FMAI').AsString;
+    edcmai.Text := FieldByName('FOR_CMAI').AsString;
+    edddd.Text  := FieldByName('FOR_DDD').AsString;
+    eddd2.Text  := FieldByName('FOR_DD2').AsString;
+    eddd3.Text  := FieldByName('FOR_DD3').AsString;
+    eddd4.Text  := FieldByName('FOR_DD4').AsString;
+    eddd5.Text  := FieldByName('FOR_DD5').AsString;
+    eddd6.Text  := FieldByName('FOR_DD6').AsString;
+    edfddd.Text := FieldByName('FOR_FDDD').AsString;
+    edfdd2.Text := FieldByName('FOR_FDD2').AsString;
+    edfdd3.Text := FieldByName('FOR_FDD3').AsString;
+    edfdd4.Text := FieldByName('FOR_FDD4').AsString;
+    edfdd5.Text := FieldByName('FOR_FDD5').AsString;
+    edfdd6.Text := FieldByName('FOR_FDD6').AsString;
+    edcddd.Text := FieldByName('FOR_CDDD').AsString;
+    edcdd2.Text := FieldByName('FOR_CDD2').AsString;
+    edcdd3.Text := FieldByName('FOR_CDD3').AsString;
+    edcdd4.Text := FieldByName('FOR_CDD4').AsString;
+    edcdd5.Text := FieldByName('FOR_CDD5').AsString;
+    edcdd6.Text := FieldByName('FOR_CDD6').AsString;
+    edtel1.Text := oRETNumero(FieldByName('FOR_TEL1').AsString);
+    edtel2.Text := oRETNumero(FieldByName('FOR_TEL2').AsString);
+    edtel3.Text := FieldByName('FOR_TEL3').AsString;
+    edfax.Text  := FieldByName('FOR_FAX').AsString;
+    edffax.Text := FieldByName('FOR_FFAX').AsString;
+    edcfax.Text := FieldByName('FOR_CFAX').AsString;
+    edfte1.Text := FieldByName('FOR_FTE1').AsString;
+    edfte2.Text := FieldByName('FOR_FTE2').AsString;
+    edfte3.Text := FieldByName('FOR_FTE3').AsString;
+    edcte1.Text := FieldByName('FOR_CTE1').AsString;
+    edcte2.Text := FieldByName('FOR_CTE2').AsString;
+    edcte3.Text := FieldByName('FOR_CTE3').AsString;
+    edcel.Text  := oRETNumero(FieldByName('FOR_CEL').AsString);
+    edfcel.Text := FieldByName('FOR_FCEL').AsString;
+    edccel.Text := FieldByName('FOR_CCEL').AsString;
+    edneid.Text := FieldByName('FOR_NEID').AsString;
+    edfnid.Text := FieldByName('FOR_FNID').AsString;
+    edcnid.Text := FieldByName('FOR_CNID').AsString;
+    edncel.Text := FieldByName('FOR_NCEL').AsString;
+    edfnce.Text := FieldByName('FOR_FNCE').AsString;
+    edcnce.Text := FieldByName('FOR_CNCE').AsString;
+    cbtce1.Text := FieldByName('FOR_TCE1').AsString;
+    cbtce2.Text := FieldByName('FOR_TCE2').AsString;
+    cbftc1.Text := FieldByName('FOR_FTC1').AsString;
+    cbftc2.Text := FieldByName('FOR_FTC2').AsString;
+    cbctc1.Text := FieldByName('FOR_CTC1').AsString;
+    cbctc2.Text := FieldByName('FOR_CTC2').AsString;
+    edccm.Text  := FieldByName('FOR_CCM').AsString;
+    edimun.Text := FieldByName('FOR_IMUN').AsString;
+
+    if FieldByName('FOR_CNPJ').AsString <> '' then
+    begin
+      edcnpj.Text   := FieldByName('FOR_CNPJ').AsString;
+      edinsc.Text   := FieldByName('FOR_INSC').AsString;
+      edcpf.Enabled := false;
+      edrg.Enabled  := false;
+    end;
+
+    if FieldByName('FOR_CPF').AsString <> '' then
+    begin
+      edcpf.Text     := FieldByName('FOR_CPF').AsString;
+      edrg.Text      := FieldByName('FOR_RG').AsString;
+      edcnpj.Enabled := false;
+      edinsc.Enabled := false;
+    end;
+
+  EDCOM_TLO_TX.Text := FieldByName('FOR_TLOG').AsString;
+  EDCOM_LOG_NO.Text := FieldByName('FOR_LOGR').AsString;
+  EDCOM_NRO.Text    := FieldByName('FOR_NUME').AsString;
+  BECOM_CEP.Text    := FieldByName('FOR_CEP').AsString;
+  EDCOM_XCPL.Text   := FieldByName('FOR_COMP').AsString;
+  BECOM_CMUN.Text   := FieldByName('FOR_CMUN').AsString;
+  EDCOM_BAI_NO.Text := FieldByName('FOR_BAI').AsString;
+  EDCOM_LOC_NO.Text := FieldByName('FOR_CID').AsString;
+  EDCOM_UF.Text     := FieldByName('FOR_ESTA').AsString;
+
+  EDCOB_TLO_TX.Text := FieldByName('FOR_TLOC').AsString;
+  EDCOB_LOG_NO.Text := FieldByName('FOR_LOGC').AsString;
+  EDCOB_NRO.Text    := FieldByName('FOR_NUMC').AsString;
+  BECOB_CEP.Text    := FieldByName('FOR_CEPC').AsString;
+  EDCOB_XCPL.Text   := FieldByName('FOR_COMC').AsString;
+  BECOB_CMUN.Text   := FieldByName('FOR_CMUC').AsString;
+  EDCOB_BAI_NO.Text := FieldByName('FOR_BAIC').AsString;
+  EDCOB_LOC_NO.Text := FieldByName('FOR_CIDC').AsString;
+  EDCOB_UF.Text     := FieldByName('FOR_ESTC').AsString;
+
+  EDENT_TLO_TX.Text := FieldByName('FOR_TLOV').AsString;
+  EDENT_LOG_NO.Text := FieldByName('FOR_LOGV').AsString;
+  EDENT_NRO.Text    := FieldByName('FOR_NUMV').AsString;
+  BEENT_CEP.Text    := FieldByName('FOR_CEPV').AsString;
+  EDENT_XCPL.Text   := FieldByName('FOR_COMV').AsString;
+  BEENT_CMUN.Text   := FieldByName('FOR_CMUV').AsString;
+  EDENT_BAI_NO.Text := FieldByName('FOR_BAIV').AsString;
+  EDENT_LOC_NO.Text := FieldByName('FOR_CIDV').AsString;
+  EDENT_UF.Text     := FieldByName('FOR_ESTV').AsString;
+
+    cbdtra.Text := FieldByName('FOR_DTRA').AsString;
+    edobse.Text := FieldByName('FOR_OBSE').Value;
+    edobso.Text := FieldByName('FOR_OBSO').Value;
+    cbdpag.Text := FieldByName('FOR_DPAG').AsString;
+    cbricm.Text := FieldByName('FOR_RICM').AsString;
+    cbcicm.Text := FieldByName('FOR_CICM').AsString;
+    cbstav.Text := FieldByName('FOR_STAV').AsString;
+    cbcdep.Text := FieldByName('FOR_CDEP').AsString;
+  end;
 end;
 
 procedure Tfrmcad_for_edi.FormDestroy(Sender: TObject);
@@ -944,7 +940,7 @@ begin
     ibSP.Prepare;
 
     { Cadastro }
-    ibSP.ParamByName('ID'  ).Value := EDCFOR.Text;
+    ibSP.ParamByName('ID'  ).Value := REC_SHE_DEF.IDPK;
     ibSP.ParamByName('IDEP').Value := RECParametros.EP_ID;
     ibSP.ParamByName('IDCA').Value := RECUsuarios.Id;
 

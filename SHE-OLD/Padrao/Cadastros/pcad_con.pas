@@ -51,12 +51,10 @@ type
     CadastroFANTASIA: TIBStringField;
     DBGConsultaFANTASIA: TdxDBGridMaskColumn;
     procedure FormCreate(Sender: TObject);
-    procedure SIEIncluiClick(Sender: TObject);
-    procedure SIEAlteraClick(Sender: TObject);
-    procedure CadastroAfterOpen(DataSet: TDataSet);
+    procedure ACTMEAppendExecute(Sender: TObject);
+    procedure ACTMEEditExecute(Sender: TObject);
   private
     { Private declarations }
-    procedure _Edicao(AEdicao: Word);
   public
     { Public declarations }
   end;
@@ -72,9 +70,6 @@ uses uPrincipal, pcad_con_edi;
 
 procedure Tfrmcad_con.FormCreate(Sender: TObject);
 begin
-  { ADMIN MANAGER }
-  //DBGConsultaIDPK.Visible := (RECUsuarios.ID = 0); { Código Pedido }
-
   { FORM SCREEN }
   REC_SHE_DEF.FPosition := Self.Position; { Posição }
 
@@ -104,31 +99,24 @@ begin
   end;
 end;
 
-procedure Tfrmcad_con.SIEIncluiClick(Sender: TObject);
+procedure Tfrmcad_con.ACTMEAppendExecute(Sender: TObject);
 begin
   inherited;
-  _Edicao(0);
-end;
 
-procedure Tfrmcad_con.SIEAlteraClick(Sender: TObject);
-begin
-  inherited;
-  _Edicao(1);
-end;
-
-procedure Tfrmcad_con._Edicao(AEdicao: Word);
-begin
-  frmcad_con_edi     := TFrmcad_con_edi.Create(Self);
-  frmcad_con_edi.Tag := AEdicao;
+  frmcad_con_edi := TFrmcad_con_edi.Create(Self,0);
   try frmcad_con_edi.ShowModal;
   finally FreeAndNil(frmcad_con_edi);
   end;
 end;
 
-procedure Tfrmcad_con.CadastroAfterOpen(DataSet: TDataSet);
+procedure Tfrmcad_con.ACTMEEditExecute(Sender: TObject);
 begin
   inherited;
-  DBGConsultaCON_CTNR.Field.FocusControl;
+
+  frmcad_con_edi := TFrmcad_con_edi.Create(Self,CadastroID.AsInteger);
+  try frmcad_con_edi.ShowModal;
+  finally FreeAndNil(frmcad_con_edi);
+  end;
 end;
 
 end.

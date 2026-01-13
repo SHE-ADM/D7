@@ -522,16 +522,12 @@ var
 
 implementation
 
-uses uPrincipal,
-     pcad_rep,bPrincipal;
+uses uPrincipal, bPrincipal;
 
 {$R *.dfm}
 
 procedure Tfrmcad_rep_edi.FormCreate(Sender: TObject);
 begin
-  { ADMIN MANAGER }
-  //DBGConsultaIDPK.Visible := (RECUsuarios.ID = 0); { Código Pedido }
-
   { FORM SCREEN }
   REC_SHE_DEF.FPosition := Self.Position; { Posição }
 
@@ -568,88 +564,89 @@ end;
 procedure Tfrmcad_rep_edi.FormShow(Sender: TObject);
 begin
   inherited;
-  if tag = 1 then
+  NOVO_REPRESENTANTE;
+
+  if REC_SHE_DEF.IDPK > 0 then
+  with cad_rep do
   begin
-    with cad_rep do
+    Close;
+    SelectSQL.Clear;
+    SelectSQL.Add('SELECT * FROM CAD_REP');
+    SelectSQL.Add('WHERE ID = ''' + REC_SHE_DEF.IDPK + '''');
+    Open;
+
+    edcrep.Text := oStrZero(FieldByName('ID').AsInteger,5);
+    edfant.Text := FieldByName('REP_FANT').AsString;
+    eddcad.Date := FieldByName('REP_DCAD').AsDateTime;
+    eddalt.Date := RECParametros.SHE_DATA;
+    edraza.Text := FieldByName('REP_RAZA').AsString;
+    IEIDCV.Text := IntToStr(FieldByName('IDCV').AsInteger);
+    edcont.Text := FieldByName('REP_CONT').AsString;
+    edfcon.Text := FieldByName('REP_FCON').AsString;
+    edccon.Text := FieldByName('REP_CCON').AsString;
+    edmail.Text := FieldByName('REP_MAIL').AsString;
+    edfmai.Text := FieldByName('REP_FMAI').AsString;
+    edcmai.Text := FieldByName('REP_CMAI').AsString;
+    edddd.Text  := FieldByName('REP_DDD').AsString;
+    eddd2.Text  := FieldByName('REP_DD2').AsString;
+    eddd3.Text  := FieldByName('REP_DD3').AsString;
+    eddd4.Text  := FieldByName('REP_DD4').AsString;
+    eddd5.Text  := FieldByName('REP_DD5').AsString;
+    eddd6.Text  := FieldByName('REP_DD6').AsString;
+    edfddd.Text := FieldByName('REP_FDDD').AsString;
+    edfdd2.Text := FieldByName('REP_FDD2').AsString;
+    edfdd3.Text := FieldByName('REP_FDD3').AsString;
+    edfdd4.Text := FieldByName('REP_FDD4').AsString;
+    edfdd5.Text := FieldByName('REP_FDD5').AsString;
+    edfdd6.Text := FieldByName('REP_FDD6').AsString;
+    edcddd.Text := FieldByName('REP_CDDD').AsString;
+    edcdd2.Text := FieldByName('REP_CDD2').AsString;
+    edcdd3.Text := FieldByName('REP_CDD3').AsString;
+    edcdd4.Text := FieldByName('REP_CDD4').AsString;
+    edcdd5.Text := FieldByName('REP_CDD5').AsString;
+    edcdd6.Text := FieldByName('REP_CDD6').AsString;
+    edtel1.Text := FieldByName('REP_TEL1').AsString;
+    edtel2.Text := FieldByName('REP_TEL2').AsString;
+    edtel3.Text := FieldByName('REP_TEL3').AsString;
+    edfax.Text  := FieldByName('REP_FAX').AsString;
+    edffax.Text := FieldByName('REP_FFAX').AsString;
+    edcfax.Text := FieldByName('REP_CFAX').AsString;
+    edfte1.Text := FieldByName('REP_FTE1').AsString;
+    edfte2.Text := FieldByName('REP_FTE2').AsString;
+    edfte3.Text := FieldByName('REP_FTE3').AsString;
+    edcte1.Text := FieldByName('REP_CTE1').AsString;
+    edcte2.Text := FieldByName('REP_CTE2').AsString;
+    edcte3.Text := FieldByName('REP_CTE3').AsString;
+    edcel.Text  := FieldByName('REP_CEL').AsString;
+    edfcel.Text := FieldByName('REP_FCEL').AsString;
+    edccel.Text := FieldByName('REP_CCEL').AsString;
+    edneid.Text := FieldByName('REP_NEID').AsString;
+    edfnid.Text := FieldByName('REP_FNID').AsString;
+    edcnid.Text := FieldByName('REP_CNID').AsString;
+    edncel.Text := FieldByName('REP_NCEL').AsString;
+    edfnce.Text := FieldByName('REP_FNCE').AsString;
+    edcnce.Text := FieldByName('REP_CNCE').AsString;
+    cbtce1.Text := FieldByName('REP_TCE1').AsString;
+    cbtce2.Text := FieldByName('REP_TCE2').AsString;
+    cbftc1.Text := FieldByName('REP_FTC1').AsString;
+    cbftc2.Text := FieldByName('REP_FTC2').AsString;
+    cbctc1.Text := FieldByName('REP_CTC1').AsString;
+    cbctc2.Text := FieldByName('REP_CTC2').AsString;
+    edccm.Text  := FieldByName('REP_CCM').AsString;
+    edimun.Text := FieldByName('REP_IMUN').AsString;
+    edcomi.Text := formatfloat('0.00',FieldByName('REP_COMI').AsFloat);
+
+    if FieldByName('REP_CNPJ').AsString <> '' then
     begin
-      Close;
-      SelectSQL.Clear;
-      SelectSQL.Add('SELECT * FROM CAD_REP');
-      SelectSQL.Add('WHERE ID = '''+frmcad_rep.cadastroID.AsString+'''');
-      Open;
+      edcnpj.Text   := FieldByName('REP_CNPJ').AsString;
+      edinsc.Text   := FieldByName('REP_INSC').AsString;
+    end;
 
-      edcrep.Text := oStrZero(FieldByName('ID').AsInteger,5);
-      edfant.Text := FieldByName('REP_FANT').AsString;
-      eddcad.Date := FieldByName('REP_DCAD').AsDateTime;
-      eddalt.Date := RECParametros.SHE_DATA;
-      edraza.Text := FieldByName('REP_RAZA').AsString;
-      IEIDCV.Text := IntToStr(FieldByName('IDCV').AsInteger);
-      edcont.Text := FieldByName('REP_CONT').AsString;
-      edfcon.Text := FieldByName('REP_FCON').AsString;
-      edccon.Text := FieldByName('REP_CCON').AsString;
-      edmail.Text := FieldByName('REP_MAIL').AsString;
-      edfmai.Text := FieldByName('REP_FMAI').AsString;
-      edcmai.Text := FieldByName('REP_CMAI').AsString;
-      edddd.Text  := FieldByName('REP_DDD').AsString;
-      eddd2.Text  := FieldByName('REP_DD2').AsString;
-      eddd3.Text  := FieldByName('REP_DD3').AsString;
-      eddd4.Text  := FieldByName('REP_DD4').AsString;
-      eddd5.Text  := FieldByName('REP_DD5').AsString;
-      eddd6.Text  := FieldByName('REP_DD6').AsString;
-      edfddd.Text := FieldByName('REP_FDDD').AsString;
-      edfdd2.Text := FieldByName('REP_FDD2').AsString;
-      edfdd3.Text := FieldByName('REP_FDD3').AsString;
-      edfdd4.Text := FieldByName('REP_FDD4').AsString;
-      edfdd5.Text := FieldByName('REP_FDD5').AsString;
-      edfdd6.Text := FieldByName('REP_FDD6').AsString;
-      edcddd.Text := FieldByName('REP_CDDD').AsString;
-      edcdd2.Text := FieldByName('REP_CDD2').AsString;
-      edcdd3.Text := FieldByName('REP_CDD3').AsString;
-      edcdd4.Text := FieldByName('REP_CDD4').AsString;
-      edcdd5.Text := FieldByName('REP_CDD5').AsString;
-      edcdd6.Text := FieldByName('REP_CDD6').AsString;
-      edtel1.Text := FieldByName('REP_TEL1').AsString;
-      edtel2.Text := FieldByName('REP_TEL2').AsString;
-      edtel3.Text := FieldByName('REP_TEL3').AsString;
-      edfax.Text  := FieldByName('REP_FAX').AsString;
-      edffax.Text := FieldByName('REP_FFAX').AsString;
-      edcfax.Text := FieldByName('REP_CFAX').AsString;
-      edfte1.Text := FieldByName('REP_FTE1').AsString;
-      edfte2.Text := FieldByName('REP_FTE2').AsString;
-      edfte3.Text := FieldByName('REP_FTE3').AsString;
-      edcte1.Text := FieldByName('REP_CTE1').AsString;
-      edcte2.Text := FieldByName('REP_CTE2').AsString;
-      edcte3.Text := FieldByName('REP_CTE3').AsString;
-      edcel.Text  := FieldByName('REP_CEL').AsString;
-      edfcel.Text := FieldByName('REP_FCEL').AsString;
-      edccel.Text := FieldByName('REP_CCEL').AsString;
-      edneid.Text := FieldByName('REP_NEID').AsString;
-      edfnid.Text := FieldByName('REP_FNID').AsString;
-      edcnid.Text := FieldByName('REP_CNID').AsString;
-      edncel.Text := FieldByName('REP_NCEL').AsString;
-      edfnce.Text := FieldByName('REP_FNCE').AsString;
-      edcnce.Text := FieldByName('REP_CNCE').AsString;
-      cbtce1.Text := FieldByName('REP_TCE1').AsString;
-      cbtce2.Text := FieldByName('REP_TCE2').AsString;
-      cbftc1.Text := FieldByName('REP_FTC1').AsString;
-      cbftc2.Text := FieldByName('REP_FTC2').AsString;
-      cbctc1.Text := FieldByName('REP_CTC1').AsString;
-      cbctc2.Text := FieldByName('REP_CTC2').AsString;
-      edccm.Text  := FieldByName('REP_CCM').AsString;
-      edimun.Text := FieldByName('REP_IMUN').AsString;
-      edcomi.Text := formatfloat('0.00',FieldByName('REP_COMI').AsFloat);
-
-      if FieldByName('REP_CNPJ').AsString <> '' then
-      begin
-        edcnpj.Text   := FieldByName('REP_CNPJ').AsString;
-        edinsc.Text   := FieldByName('REP_INSC').AsString;
-      end;
-
-      if FieldByName('REP_CPF').AsString <> '' then
-      begin
-        edcpf.Text     := FieldByName('REP_CPF').AsString;
-        edrg.Text      := FieldByName('REP_RG').AsString;
-      end;
+    if FieldByName('REP_CPF').AsString <> '' then
+    begin
+      edcpf.Text     := FieldByName('REP_CPF').AsString;
+      edrg.Text      := FieldByName('REP_RG').AsString;
+    end;
 
     EDCOM_TLO_TX.Text := FieldByName('REP_TLOG').AsString;
     EDCOM_LOG_NO.Text := FieldByName('REP_LOGR').AsString;
@@ -681,12 +678,10 @@ begin
     EDENT_LOC_NO.Text := FieldByName('REP_CIDV').AsString;
     EDENT_UF.Text     := FieldByName('REP_ESTV').AsString;
 
-      edobse.Text := FieldByName('REP_OBSE').Value;
-      edobso.Text := FieldByName('REP_OBSO').Value;
-      cbstav.Text := FieldByName('REP_STAV').AsString;
-    end
-  end else
-  NOVO_REPRESENTANTE;
+    edobse.Text := FieldByName('REP_OBSE').Value;
+    edobso.Text := FieldByName('REP_OBSO').Value;
+    cbstav.Text := FieldByName('REP_STAV').AsString;
+  end;
 end;
 
 procedure Tfrmcad_rep_edi.FormDestroy(Sender: TObject);
@@ -1042,12 +1037,8 @@ begin
     ibSP.StoredProcName := 'SP_CAD_REP';
     ibSP.Prepare;
 
-    case frmcad_rep_edi.Tag of
-      0: ibSP.Params[0].Value := null;
-      1: ibSP.Params[0].Value := edcrep.Text;
-    end;
-
     { Cadastro }
+    ibSP.ParamByName('ID'  ).Value := REC_SHE_DEF.IDPK;
     ibSP.ParamByName('IDEP').Value := RECParametros.EP_ID;
     ibSP.ParamByName('IDCA').Value := RECUsuarios.Id;
 

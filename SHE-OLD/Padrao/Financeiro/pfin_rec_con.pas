@@ -14,15 +14,8 @@ uses
 
 type
   Tfrmfin_rec_con = class(TFrmConsulta)
-    SIMAltera: TSpeedItem;
-    SIMPendente: TSpeedItem;
-    SIMCancela: TSpeedItem;
     PMPrincipal: TPopupMenu;
     ExpXLS: TMenuItem;
-    SIMNovo: TSpeedItem;
-    SIMRECEBE: TSpeedItem;
-    SIMCAD_CLI: TSpeedItem;
-    SIMCAD_CLI_INF: TSpeedItem;
     CadastroIDEP: TSmallintField;
     CadastroTITULO: TIBStringField;
     CadastroCTNR: TIBStringField;
@@ -102,6 +95,12 @@ type
     CadastroINFADCAD: TIBStringField;
     CadastroID: TLargeintField;
     CadastroAPI_INFADCAD: TMemoField;
+    ACTCAD_CLI_INF: TAction;
+    ACTCAD_CLI_EDI: TAction;
+    ACTFIN_REC_INS: TAction;
+    ACTFIN_REC_EDI: TAction;
+    ACTFIN_REC_DEL: TAction;
+    ACTFIN_REC_BXD: TAction;
     procedure dbgConsultaCustomDrawCell(Sender: TObject; ACanvas: TCanvas;
       ARect: TRect; ANode: TdxTreeListNode; AColumn: TdxTreeListColumn;
       ASelected, AFocused, ANewItemRow: Boolean; var AText: String;
@@ -109,21 +108,18 @@ type
       var ADone: Boolean);
     procedure FormCreate(Sender: TObject);
     procedure FormActivate(Sender: TObject);
-    procedure SIMAlteraClick(Sender: TObject);
-    procedure SIMPendenteClick(Sender: TObject);
-    procedure SIMPesquisaClick(Sender: TObject);
-    procedure SIMCancelaClick(Sender: TObject);
-    procedure ExpXLSClick(Sender: TObject);
     procedure CadastroCalcFields(DataSet: TDataSet);
     procedure CadastroAfterOpen(DataSet: TDataSet);
-    procedure SIMNovoClick(Sender: TObject);
-    procedure SIMRelatoriosClick(Sender: TObject);
-    procedure SIMRECEBEClick(Sender: TObject);
-    procedure SIMCAD_CLIClick(Sender: TObject);
-    procedure SIMCAD_CLI_INFClick(Sender: TObject);
     procedure CadastroAfterScroll(DataSet: TDataSet);
     procedure DTSCadastroDataChange(Sender: TObject; Field: TField);
     procedure CadastroBeforeOpen(DataSet: TDataSet);
+    procedure ACTCAD_CLI_INFExecute(Sender: TObject);
+    procedure ACTCAD_CLI_EDIExecute(Sender: TObject);
+    procedure ACTFIN_REC_INSExecute(Sender: TObject);
+    procedure ACTFIN_REC_EDIExecute(Sender: TObject);
+    procedure ACTFIN_REC_DELExecute(Sender: TObject);
+    procedure ACTFIN_REC_BXDExecute(Sender: TObject);
+    procedure ACTRelatoriosExecute(Sender: TObject);
   private
     { Private declarations }
     fin_baixa: String;
@@ -144,9 +140,6 @@ uses uPrincipal, bPrincipal,
 
 procedure Tfrmfin_rec_con.FormCreate(Sender: TObject);
 begin
-  { ADMIN MANAGER }
-  //DBGConsultaIDPK.Visible := (RECUsuarios.ID = 0); { Código Pedido }
-
   { FORM SCREEN }
   REC_SHE_DEF.FPosition := Self.Position; { Posição }
 
@@ -156,10 +149,11 @@ begin
   { ACCESS MANAGER }
   REC_SHE_DEF.FB_Event := 'FIN_REC_ADM'; { Eventos }
 
-  { Grant }
+  { GRANT USER }
   REC_SHE_DEF.GDescricao  := 'Financeiro';
   REC_SHE_DEF.GReferencia := 'Recebimentos';
   REC_SHE_DEF.GRegra      := 'Permissões Gerais';
+  REC_SHE_DEF.GAdmin      := False;
   inherited;
 
   fin_baixa := SLPrincipal.Values['fin_baixa'];
@@ -168,7 +162,7 @@ begin
 
   GBCadastro.Caption   := IFThen(Pos('fin_rec_ban',fin_baixa) > 0,'Bancário','Carteira');
   GBCadastro.Tag       := IFThen(Pos('fin_rec_ban',fin_baixa) > 0,0,1);
-  SIMRECEBE.ImageIndex := IFThen(Pos('fin_rec_ban',fin_baixa) > 0,8,9);
+  //RICARDOSIMRECEBE.ImageIndex := IFThen(Pos('fin_rec_ban',fin_baixa) > 0,8,9);
 
   with Cadastro do
   begin
@@ -206,247 +200,6 @@ procedure Tfrmfin_rec_con.FormActivate(Sender: TObject);
 begin
   inherited;
   DBGConsultaTitulo.Field.FocusControl;
-end;
-
-procedure Tfrmfin_rec_con.SIMPesquisaClick(Sender: TObject);
-begin
-  inherited;
-
-  if SIMPesquisa.Tag = 1 then
-     SIMPesquisa.Tag := 0
-  else
-  begin
-    oCTransact(TConsulta);
-    oOTransact(TConsulta);
-  end;
-
-  with Cadastro do
-  begin
-    Close;
-    SQL.Clear;
-    SQL.Add('SELECT CAST(PK.ID AS BIGINT) AS ID ,PK.IDEP,EP.FANTASIA AS DEEP,');
-    SQL.Add('       PK.DOCUMENTO,PK.DTFA,PK.CTNR,PK.STPD,PK.TPCO,PK.RECO,PK.CDCX,');
-    SQL.Add('       PK.TITULO,PK.DTVC,PK.VDUP,');
-    SQL.Add('       PK.IDCD,IIF(POSITION(LEFT(CD.FANTASIA,10) IN CD.RAZAO) > 0,CD.FANTASIA,CD.FANTASIA||'' ''||CD.RAZAO) AS DECD,CD.GRUPO,COALESCE(CRD.VCRD,0) AS VCRD,COALESCE(CRD.NAFA,0) AS NAFA,');
-    SQL.Add('       PK.IDCV,CV.LOGIN AS DECV,PK.IDCR,CR.FANTASIA AS DECR,');
-    SQL.Add('       PK.VJUR,PK.VMUL,PK.VDSC,');
-    SQL.Add('       PK.DTPG,PK.VPAG,PK.VPEN,PK.DEST,');
-    SQL.Add('       PK.CDBX,PK.DTBX,');
-    SQL.Add('       PK.CDDP,PK.DTDP,');
-    SQL.Add('       PK.API_ID,PK.API_CA,PK.API_DTCA,PK.API_DTED,PK.API_NN,PK.API_ST,PK.API_MT,PK.API_INFADCAD,');
-    SQL.Add('       NULLIF(TRIM(CAST(SUBSTRING(PK.INFADCAD FROM 1 FOR 1064) AS VARCHAR(1064))),'''') AS INFADCAD');
-
-    SQL.Add('FROM ' + fin_baixa + ' AS PK');
-
-    SQL.Add('JOIN  TAB_PAR_SIS      AS EP  ON (EP.ID = PK.IDEP)');
-    SQL.Add('JOIN  CAD_CLI          AS CD  ON (CD.ID = PK.IDCD)');
-    SQL.Add('JOIN  TAB_USER         AS CV  ON (CV.ID = PK.IDCV)');
-    SQL.Add('JOIN  CAD_REP          AS CR  ON (CAST(CR.ID AS SMALLINT) = PK.IDCR)');
-    SQL.Add('LEFT  JOIN CAD_CLI_CRD AS CRD ON (CRD.IDEP = PK.IDEP AND CRD.IDCD = PK.IDCD)');
-
-    if Length(RECPrincipal.PSQTexto) >= 1 then
-       SQL.Add('WHERE '+RECPrincipal.PSQTextoField+' '+RECPrincipal.PSQWhere+' '''+Trim(RECPrincipal.PSQLike1+RECPrincipal.PSQTexto+RECPrincipal.PSQLike2)+'''');
-
-    if RECPrincipal.PSQComplemento <> 'TODOS' then
-    begin
-      if RECPrincipal.PSQComplemento = 'PENDENTE' then
-      begin
-        SQL.Add(IFThen(Length(RECPrincipal.PSQTexto) >= 1,'AND ','WHERE ') + 'PK.DEST NOT LIKE ''PAGO%''');
-        SQL.Add('AND PK.DEST <> ''BAIXADO''');
-      end else
-      if RECPrincipal.PSQComplemento = 'VENCIDO'  then SQL.Add(IFThen(Length(RECPrincipal.PSQTexto) >= 1,'AND ','WHERE ') + 'PK.DEST = ''PENDENTE''') else
-      if RECPrincipal.PSQComplemento = 'A VENCER' then SQL.Add(IFThen(Length(RECPrincipal.PSQTexto) >= 1,'AND ','WHERE ') + 'PK.DEST = ''PENDENTE''') else
-         SQL.Add(IFThen(Length(RECPrincipal.PSQTexto) >= 1,'AND ','WHERE ') + 'PK.DEST LIKE '''+RECPrincipal.PSQComplemento+'%''');
-    end;
-
-    if not oEmpty(RECPrincipal.PSQData) then
-       SQL.Add(IFThen(Length(RECPrincipal.PSQTexto) >= 1,'AND ','WHERE ')+RECPrincipal.PSQData+' BETWEEN '''+formatDateTime('mm/dd/yy',RECPrincipal.PSQDT1)+''' AND '''+formatDateTime('mm/dd/yy',RECPrincipal.PSQDT2)+'''');
-
-    SQL.Add('ORDER BY TITULO');
-    Open;
-
-    if fields[0].IsNull then
-       oErro(Self.Handle,'Registro(s) não Encontrado(s) !');
-  end;
-end;
-
-procedure Tfrmfin_rec_con.SIMCAD_CLI_INFClick(Sender: TObject);
-begin
-  uPSQSCORE(self,CadastroIDCD.AsString,EmptyStr);
-end;
-
-procedure Tfrmfin_rec_con.SIMCAD_CLIClick(Sender: TObject);
-begin
-  frmcad_cli_edi     := TFrmcad_cli_edi.Create(Self);
-  frmcad_cli_edi.Tag := 1;
-  frmcad_cli_edi.IDCliente := IntToStr(CadastroIDCD.AsInteger);
-  try frmcad_cli_edi.ShowModal;
-  finally
-    if frmcad_cli_edi.Editado then
-       oRefresh(Cadastro);
-
-    FreeAndNil(frmcad_cli_edi);
-  end;
-end;
-
-procedure Tfrmfin_rec_con.SIMNovoClick(Sender: TObject);
-begin
-  TFrmFRecebimento_Edicao._ExecForm(
-              Nil, { Owner }
-              FrmFRecebimento_Edicao, { Form }
-              False, { inicia pela pesquisa }
-              fsStayOnTop, { Style }
-              RECParametros.EP_ID, { Empresa }
-              0, { Código Principal }
-              0, { Código Evento }
-              0, { Tipo Evento }
-              FIN_BAIXA); { Tabela }
-end;
-
-procedure Tfrmfin_rec_con.SIMAlteraClick(Sender: TObject);
-begin
-  TFrmFRecebimento_Edicao._ExecForm(
-              Nil, { Owner }
-              FrmFRecebimento_Edicao, { Form }
-              False, { inicia pela pesquisa }
-              fsStayOnTop, { Style }
-              RECParametros.EP_ID, { Empresa }
-              CadastroID.AsInteger, { Código Principal }
-              0, { Código Evento }
-              0, { Tipo Evento }
-              FIN_BAIXA); { Tabela }
-end;
-
-procedure Tfrmfin_rec_con.SIMPendenteClick(Sender: TObject);
-begin
-{  if oYesNo(Handle,'Alterar Status ?') = mrNo then
-  Abort;
-
-  if not oEmpty(CadastroIDIntegracao.AsString) then
-     oException(DBGConsulta,'Título possui boleto registrado !');
-
-  try
-    oOTransact(TEdicao);
-    with SQLEdicao do
-    begin
-      Close;
-      SQL.Clear;
-      SQL.Add('UPDATE '+fin_baixa);
-      SQL.Add('SET   FIN_STFI = ''PENDENTE'',');
-      SQL.Add('      FIN_DBAI = '''+FormatDateTime('mm/dd/yy',RECParametros.SHE_DATA)+''',');
-      SQL.Add('      FIN_DPAG = NULL,');
-      SQL.Add('      FIN_VPAG = 0,');
-      SQL.Add('      FIN_VPEN = ((FIN_VALO-FIN_VDES) + (FIN_VJUR+FIN_VMUL))');
-      SQL.Add('WHERE ID = '''+cadastroID.AsString+'''');
-      Prepare;
-      ExecQuery;
-    end;
-    TEdicao.Commit;
-    _ExecEvent;
-
-    oAviso(handle,'Status da conta alterado com sucesso !'+#13+
-                   IFThen(SIMPendente.Tag = 0,'Pedido de venda liberado.',''));
-  except
-    on E: Exception do
-    begin
-      TEdicao.Rollback;
-      raise exception.Create('Falha ao tentar alterar status !'+#13+
-                             'Favor entrar em contato com o administrador do sistema.'+#13+#13+
-                             'Erro: '+E.Message);
-    end;
-  end; }
-end;
-
-procedure Tfrmfin_rec_con.SIMCancelaClick(Sender: TObject);
-var
-  AEscolha: Word;
-  AWhere  : String;
-begin
-     AEscolha := oEscolha('Confirma Cancelamento ?','Aviso','Documento','Título');
-  if AEscolha  = MRCANCEL then
-     Abort;
-
-  if AEscolha = MRYES then
-     AWhere  := IFThen(CadastroCDBX.AsInteger > 0,'FIN_CDBX = '''+CadastroCDBX.AsString+'''','FIN_DOCT = '''+CadastroDOCUMENTO.AsString+'''') else
-     AWhere  := 'ID = '+CadastroID.AsString;
-
-  if CadastroId.AsInteger = 0 then
-     oException(DBGConsulta,'Conta não Selecionada !');
-
-  if Pos(LeftStr(CadastroAPI_ST.AsString,3),'LIQ') > 0 then
-     oException(DBGConsulta,'Cancelamento não Permitido !'+#13+#13+
-                            'Conta possui boleto bancário liquidado.');
-
-  if Pos(LeftStr(CadastroAPI_ST.AsString,3),'REGSALEMI') > 0 then
-     oException(DBGConsulta,'Cancelamento não Permitido !'+#13+#13+
-                            'Conta possui boleto bancário registrado.');
-
-  try
-    oOTransact(TEdicao);
-    with SQLEdicao do
-    begin
-      Close;
-      SQL.Clear;
-      SQL.Add('DELETE FROM '+FIN_BAIXA);
-      SQL.Add('WHERE '+AWhere);
-      ExecQuery;
-
-      if CadastroCDBX.AsInteger > 0 then
-      begin
-        Close;
-        SQL.Clear;
-        SQL.Add('SELECT MAX(ID) AS ID');
-        SQL.Add('FROM (');
-        SQL.Add('SELECT MAX(ID) AS ID FROM FIN_REC_BAN_BAI');
-        SQL.Add('WHERE  FIN_CDBX = :CDBX');
-        SQL.Add('UNION');
-        SQL.Add('SELECT MAX(ID) AS ID FROM FIN_REC_CAR_BAI');
-        SQL.Add('WHERE  FIN_CDBX = :CDBX');
-        SQL.Add(')');
-        Prepare;
-
-        Params[0].Value := CadastroCDBX.AsString;
-        ExecQuery;
-
-        if Current.Vars[0].AsInteger = 0 then
-        begin
-          Close;
-          SQL.Clear;
-          SQL.Add('UPDATE '+SLPrincipal.Values['ped_ven_cab']);
-          SQL.Add('SET    ROM_CDBX = NULL');
-          SQL.Add('WHERE  ROM_CDBX = '''+CadastroCDBX.AsString+'''');
-          ExecQuery;
-        end;
-      end;  
-    end;
-
-    oCTransact(TEdicao);
-    oAviso(Handle,'Cancelamento concluído com sucesso !');
-    ACTExecEvent.Execute;
-  except
-    on E: Exception do
-    begin
-      oCTransact(TEdicao,ltRollback);
-      oException(Nil,'Falha ao tentar cancelar recebimento !'+#13+
-                     'Favor entrar em contato com o administrador do sistema.'+#13+#13+
-                     'Erro: '+E.Message);
-    end;
-  end;
-end;
-
-procedure Tfrmfin_rec_con.SIMRECEBEClick(Sender: TObject);
-begin
-  uFrmCreate(Nil,TFrmfin_rec_bai,Frmfin_rec_bai);
-end;
-
-procedure Tfrmfin_rec_con.ExpXLSClick(Sender: TObject);
-begin
-  try
-    DBGConsulta.SaveToXLS('C:\Sheild\Documentos\Consulta.XLS',False);
-    oAviso(Handle,'Planilha gerada com sucesso !');
-  except
-    raise exception.Create('Erro !');
-  end;
 end;
 
 procedure Tfrmfin_rec_con.CadastroCalcFields(DataSet: TDataSet);
@@ -568,9 +321,9 @@ var
   PosCount: Word;
 begin
   { Botões }
-  SIMAltera.Enabled   := (not CadastroID.IsNull) and (CadastroDEST.AsString <> 'CANCELADO');
-  SIMCancela.Enabled  := (not CadastroID.IsNull) and (CadastroDEST.AsString <> 'CANCELADO');
-  SIMPendente.Enabled := (not CadastroID.IsNull) and (CadastroDEST.AsString <> 'CANCELADO') and (CadastroDEST.AsString <> 'PENDENTE');
+//RICARDO  SIMAltera.Enabled   := (not CadastroID.IsNull) and (CadastroDEST.AsString <> 'CANCELADO');
+//  SIMCancela.Enabled  := (not CadastroID.IsNull) and (CadastroDEST.AsString <> 'CANCELADO');
+//  SIMPendente.Enabled := (not CadastroID.IsNull) and (CadastroDEST.AsString <> 'CANCELADO') and (CadastroDEST.AsString <> 'PENDENTE');
 
   { Colunas }
   DBGConsulta.ApplyBestFit(DBGConsultaDOCUMENTO);
@@ -738,7 +491,131 @@ begin
   end;
 end;
 
-procedure Tfrmfin_rec_con.SIMRelatoriosClick(Sender: TObject);
+procedure Tfrmfin_rec_con.ACTCAD_CLI_INFExecute(Sender: TObject);
+begin
+  uPSQSCORE(self,CadastroIDCD.AsString,EmptyStr);
+end;
+
+procedure Tfrmfin_rec_con.ACTCAD_CLI_EDIExecute(Sender: TObject);
+begin
+  frmcad_cli_edi := TFrmcad_cli_edi.Create(Self,CadastroIDCD.AsInteger);
+  try frmcad_cli_edi.ShowModal;
+  finally
+    FreeAndNil(frmcad_cli_edi);
+  end;
+end;
+
+procedure Tfrmfin_rec_con.ACTFIN_REC_INSExecute(Sender: TObject);
+begin
+  TFrmFRecebimento_Edicao._ExecForm(
+              Nil, { Owner }
+              FrmFRecebimento_Edicao, { Form }
+              False, { inicia pela pesquisa }
+              fsStayOnTop, { Style }
+              RECParametros.EP_ID, { Empresa }
+              0, { Código Principal }
+              0, { Código Evento }
+              0, { Tipo Evento }
+              FIN_BAIXA); { Tabela }
+end;
+
+procedure Tfrmfin_rec_con.ACTFIN_REC_EDIExecute(Sender: TObject);
+begin
+  TFrmFRecebimento_Edicao._ExecForm(
+              Nil, { Owner }
+              FrmFRecebimento_Edicao, { Form }
+              False, { inicia pela pesquisa }
+              fsStayOnTop, { Style }
+              RECParametros.EP_ID, { Empresa }
+              CadastroID.AsInteger, { Código Principal }
+              0, { Código Evento }
+              0, { Tipo Evento }
+              FIN_BAIXA); { Tabela }
+end;
+
+procedure Tfrmfin_rec_con.ACTFIN_REC_DELExecute(Sender: TObject);
+var
+  AEscolha: Word;
+  AWhere  : String;
+begin
+     AEscolha := oEscolha('Confirma Cancelamento ?','Aviso','Documento','Título');
+  if AEscolha  = MRCANCEL then
+     Abort;
+
+  if AEscolha = MRYES then
+     AWhere  := IFThen(CadastroCDBX.AsInteger > 0,'FIN_CDBX = '''+CadastroCDBX.AsString+'''','FIN_DOCT = '''+CadastroDOCUMENTO.AsString+'''') else
+     AWhere  := 'ID = '+CadastroID.AsString;
+
+  if CadastroId.AsInteger = 0 then
+     oException(DBGConsulta,'Conta não Selecionada !');
+
+  if Pos(LeftStr(CadastroAPI_ST.AsString,3),'LIQ') > 0 then
+     oException(DBGConsulta,'Cancelamento não Permitido !'+#13+#13+
+                            'Conta possui boleto bancário liquidado.');
+
+  if Pos(LeftStr(CadastroAPI_ST.AsString,3),'REGSALEMI') > 0 then
+     oException(DBGConsulta,'Cancelamento não Permitido !'+#13+#13+
+                            'Conta possui boleto bancário registrado.');
+
+  try
+    oOTransact(TEdicao);
+    with SQLEdicao do
+    begin
+      Close;
+      SQL.Clear;
+      SQL.Add('DELETE FROM '+FIN_BAIXA);
+      SQL.Add('WHERE '+AWhere);
+      ExecQuery;
+
+      if CadastroCDBX.AsInteger > 0 then
+      begin
+        Close;
+        SQL.Clear;
+        SQL.Add('SELECT MAX(ID) AS ID');
+        SQL.Add('FROM (');
+        SQL.Add('SELECT MAX(ID) AS ID FROM FIN_REC_BAN_BAI');
+        SQL.Add('WHERE  FIN_CDBX = :CDBX');
+        SQL.Add('UNION');
+        SQL.Add('SELECT MAX(ID) AS ID FROM FIN_REC_CAR_BAI');
+        SQL.Add('WHERE  FIN_CDBX = :CDBX');
+        SQL.Add(')');
+        Prepare;
+
+        Params[0].Value := CadastroCDBX.AsString;
+        ExecQuery;
+
+        if Current.Vars[0].AsInteger = 0 then
+        begin
+          Close;
+          SQL.Clear;
+          SQL.Add('UPDATE '+SLPrincipal.Values['ped_ven_cab']);
+          SQL.Add('SET    ROM_CDBX = NULL');
+          SQL.Add('WHERE  ROM_CDBX = '''+CadastroCDBX.AsString+'''');
+          ExecQuery;
+        end;
+      end;  
+    end;
+
+    oCTransact(TEdicao);
+    oAviso(Handle,'Cancelamento concluído com sucesso !');
+    ACTExecEvent.Execute;
+  except
+    on E: Exception do
+    begin
+      oCTransact(TEdicao,ltRollback);
+      oException(Nil,'Falha ao tentar cancelar recebimento !'+#13+
+                     'Favor entrar em contato com o administrador do sistema.'+#13+#13+
+                     'Erro: '+E.Message);
+    end;
+  end;
+end;
+
+procedure Tfrmfin_rec_con.ACTFIN_REC_BXDExecute(Sender: TObject);
+begin
+  uFrmCreate(Nil,TFrmfin_rec_bai,Frmfin_rec_bai);
+end;
+
+procedure Tfrmfin_rec_con.ACTRelatoriosExecute(Sender: TObject);
 begin
   inherited;
   frmrelatorio_geral := TFrmrelatorio_geral.Create(Nil);

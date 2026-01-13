@@ -14,26 +14,11 @@ uses
 
 type
   Tfrmcad_cli = class(TFrmConsulta)
-    SIMInfoComercial: TSpeedItem;
-    DBGConsultaCNPJ_MASK: TdxDBGridColumn;
-    DBGConsultaCD_NO: TdxDBGridMaskColumn;
-    DBGConsultaCD_RZ_NO: TdxDBGridMaskColumn;
-    DBGConsultaUF: TdxDBGridMaskColumn;
-    DBGConsultaDECV: TdxDBGridMaskColumn;
-    DBGConsultaDECR: TdxDBGridMaskColumn;
-    DBGConsultaDECT: TdxDBGridMaskColumn;
-    DBGConsultaCD_ID: TdxDBGridMaskColumn;
-    DBGConsultaTEL_MASK: TdxDBGridColumn;
-    PNLINFADCAD: TPanel;
-    DBINFADCAD: TdxDBMemo;
-    DBGConsultaEmail: TdxDBGridMaskColumn;
-    DBGConsultaDEST: TdxDBGridMaskColumn;
-    DBGConsultaCRD_DEST: TdxDBGridMaskColumn;
-    DBGConsultaCD_GP_NO: TdxDBGridMaskColumn;
-    DBGConsultaCEL_TEL_MASK: TdxDBGridMaskColumn;
-    DBGConsultaZAP_TEL_MASK: TdxDBGridMaskColumn;
+    ACTCAD_CLI_INF: TAction;
     CadastroID: TLargeintField;
     CadastroEP_ID: TSmallintField;
+    CadastroDTEV: TDateTimeField;
+    CadastroDTCA: TDateTimeField;
     CadastroCDST: TSmallintField;
     CadastroREST: TIBStringField;
     CadastroDEST: TIBStringField;
@@ -49,21 +34,20 @@ type
     CadastroCPF: TIBStringField;
     CadastroCPF_MASK: TIBStringField;
     CadastroIDESTRANGEIRO: TIBStringField;
-    CadastroCV_NO: TIBStringField;
+    CadastroCR_ID: TSmallintField;
     CadastroCR_NO: TIBStringField;
+    CadastroCV_ID: TSmallintField;
+    CadastroCV_NO: TIBStringField;
+    CadastroCT_ID: TSmallintField;
     CadastroCT_NO: TIBStringField;
     CadastroTEL_MASK: TIBStringField;
     CadastroCEL_TEL_MASK: TIBStringField;
     CadastroZAP_TEL_MASK: TIBStringField;
     CadastroEMAIL: TIBStringField;
+    CadastroLOG_NO_ABREV: TIBStringField;
     CadastroBAI_NO_ABREV: TIBStringField;
     CadastroLOC_NO_ABREV: TIBStringField;
     CadastroUF: TIBStringField;
-    CadastroDTPP: TDateField;
-    CadastroDTPV: TDateField;
-    CadastroDTNF: TDateField;
-    CadastroDTSA: TDateField;
-    CadastroDTBX: TDateField;
     CadastroCRD_VPAD: TIBBCDField;
     CadastroCRD_VTAP: TIBBCDField;
     CadastroCRD_VTSD: TIBBCDField;
@@ -72,28 +56,45 @@ type
     CadastroFIS_DTFU: TDateField;
     CadastroFIS_CRT_NO: TIBStringField;
     CadastroINFADCAD: TIBStringField;
-    CadastroLOG_NO_ABREV: TIBStringField;
+    DBGConsultaDTCA: TdxDBGridDateColumn;
+    DBGConsultaDEST: TdxDBGridMaskColumn;
+    DBGConsultaCD_ID: TdxDBGridMaskColumn;
+    DBGConsultaCD_NO: TdxDBGridMaskColumn;
+    DBGConsultaCD_RZ_NO: TdxDBGridMaskColumn;
+    DBGConsultaCD_GP_NO: TdxDBGridMaskColumn;
+    DBGConsultaCNPJ_MASK: TdxDBGridMaskColumn;
+    DBGConsultaIE: TdxDBGridMaskColumn;
+    DBGConsultaISUF: TdxDBGridMaskColumn;
+    DBGConsultaCPF_MASK: TdxDBGridMaskColumn;
+    DBGConsultaCR_NO: TdxDBGridMaskColumn;
+    DBGConsultaCV_NO: TdxDBGridMaskColumn;
+    DBGConsultaTEL_MASK: TdxDBGridMaskColumn;
+    DBGConsultaCEL_TEL_MASK: TdxDBGridMaskColumn;
+    DBGConsultaZAP_TEL_MASK: TdxDBGridMaskColumn;
+    DBGConsultaEMAIL: TdxDBGridMaskColumn;
     DBGConsultaLOG_NO_ABREV: TdxDBGridMaskColumn;
     DBGConsultaBAI_NO_ABREV: TdxDBGridMaskColumn;
     DBGConsultaLOC_NO_ABREV: TdxDBGridMaskColumn;
+    DBGConsultaUF: TdxDBGridMaskColumn;
+    PNLINFADCAD: TPanel;
+    DBINFADAD: TdxDBMemo;
+    CadastroPED_DT: TDateField;
+    CadastroNFE_DT: TDateField;
+    CadastroNFS_DT: TDateField;
     procedure FormCreate(Sender: TObject);
     procedure dbgConsultaCustomDrawCell(Sender: TObject; ACanvas: TCanvas;
       ARect: TRect; ANode: TdxTreeListNode; AColumn: TdxTreeListColumn;
       ASelected, AFocused, ANewItemRow: Boolean; var AText: String;
       var AColor: TColor; AFont: TFont; var AAlignment: TAlignment;
       var ADone: Boolean);
-    procedure dbgConsultaDblClick(Sender: TObject);
-    procedure SIMInfoComercialClick(Sender: TObject);
-    procedure SIEIncluiClick(Sender: TObject);
     procedure DTSCadastroDataChange(Sender: TObject; Field: TField);
-    procedure DBGConsultaKeyDown(Sender: TObject; var Key: Word;
-      Shift: TShiftState);
-    procedure SIEAlteraClick(Sender: TObject);
     procedure ACTPesquisaExecute(Sender: TObject);
     procedure CadastroAfterClose(DataSet: TDataSet);
+    procedure ACTCAD_CLI_INFExecute(Sender: TObject);
+    procedure ACTMEAppendExecute(Sender: TObject);
+    procedure ACTMEEditExecute(Sender: TObject);
   private
     { Private declarations }
-    procedure _Edicao(AEdicao: Word);
   public
     { Public declarations }
   end;
@@ -104,15 +105,12 @@ var
 implementation
 
 uses uPrincipal, bPrincipal,
-  {$IFDEF DEF_COMPRAS} pcad_cli_edi {$ELSE} pcad_cli_edi, pPesquisa {$ENDIF};
+  pPesquisa, pcad_cli_edi;
 
 {$R *.dfm}
 
 procedure Tfrmcad_cli.FormCreate(Sender: TObject);
 begin
-  { ADMIN MANAGER }
-  //DBGConsultaIDPK.Visible := (RECUsuarios.ID = 0); { Código Pedido }
-
   { FORM SCREEN }
   REC_SHE_DEF.FPosition := Self.Position; { Posição }
 
@@ -132,36 +130,6 @@ begin
   ACTPesquisa.Execute;
 end;
 
-procedure Tfrmcad_cli.SIMInfoComercialClick(Sender: TObject);
-begin
-  uPSQSCORE(self,CadastroID.AsString,EmptyStr);
-end;
-
-procedure Tfrmcad_cli.SIEIncluiClick(Sender: TObject);
-begin
-  inherited;
-  _Edicao(0);
-end;
-
-procedure Tfrmcad_cli.SIEAlteraClick(Sender: TObject);
-begin
-  inherited;
-  _Edicao(CadastroID.AsInteger);
-end;
-
-procedure Tfrmcad_cli._Edicao(AEdicao: Word);
-begin
-  frmcad_cli_edi           := TFrmcad_cli_edi.Create(Self);
-  frmcad_cli_edi.Tag       := AEdicao;
-  frmcad_cli_edi.IDCliente := IntToStr(AEdicao);
-
-  try frmcad_cli_edi.ShowModal;
-  finally
-    FreeAndNil(frmcad_cli_edi);
-    oRefresh(Cadastro);
-  end;
-end;
-
 procedure Tfrmcad_cli.DTSCadastroDataChange(Sender: TObject;
   Field: TField);
 var
@@ -170,27 +138,14 @@ begin
   inherited;
   { Informações Adicionais }
             PosCount := oPosCount(''#$D'',CadastroINFADCAD.AsString);
-  PNLINFADCAD.Height := IFThen(Length(CadastroINFADCAD.AsString) <= 2,0,
-                        IFThen((PosCount = 00) and (CadastroINFADCAD.AsString =  EmptyStr) ,00,
+  PNLINFADCAD.Height := IFThen((PosCount = 00) and (CadastroINFADCAD.AsString =  EmptyStr) ,00,
                         IFThen((PosCount = 00) and (CadastroINFADCAD.AsString <> EmptyStr) ,30,
                         IFThen((PosCount = 01),040,
                         IFThen((PosCount = 02),055,
-                        IFThen((PosCount = 03),070,
-                        IFThen((PosCount = 04),080,
-                        IFThen((PosCount = 05),090,
-                        IFThen((PosCount = 06),100,
-                        IFThen((PosCount = 07),110,
-                        IFThen((PosCount = 08),120,
-                        IFThen((PosCount = 09),130,
-                        IFThen((PosCount = 10),140,
-                        IFThen((PosCount = 11),150,
-                        IFThen((PosCount = 12),160,
-                        IFThen((PosCount = 13),170,
-                        IFThen((PosCount = 14),180,
-                        IFThen((PosCount = 15),190,200))))))))))))))))));
-
-  DBGConsulta.ApplyBestFit(DBGConsultaTEL_MASK);
-  DBGConsulta.ApplyBestFit(DBGConsultaEMAIL   ); DBGConsultaEMAIL.Width := IFThen(DBGConsultaEMAIL.Width > 200,200,DBGConsultaEMAIL.Width);
+                        IFThen((PosCount = 02),070,
+                        IFThen((PosCount = 02),085,
+                        IFThen((PosCount = 02),100,
+                        IFThen((PosCount = 02),115,130))))))));
 end;
 
 procedure Tfrmcad_cli.dbgConsultaCustomDrawCell(Sender: TObject;
@@ -213,37 +168,20 @@ begin
       AFont.Color := clWhite;
       AColor      := $000024B3;
     end;
-
-    if ANode.Values[DBGConsultaCRD_DEST.Index] <> Null then
-    if Pos('AGU',ANode.Values[DBGConsultaCRD_DEST.Index]) > 0 then
-    begin
-      AFont.Color := clWhite;
-      AColor      := $000024B3;
-    end;
   end;
-end;
-
-procedure Tfrmcad_cli.DBGConsultaKeyDown(Sender: TObject; var Key: Word;
-  Shift: TShiftState);
-begin
-  case key of
-       vk_escape: SIMSaida.Click;
-       vk_insert: SIEInclui.Click;
-       vk_return: DBGConsultaDblClick(Self);
-       vk_delete: SIEExclui.Click;
-  end;
-end;
-
-procedure Tfrmcad_cli.dbgConsultaDblClick(Sender: TObject);
-begin
-  SIEAltera.Click;
 end;
 
 procedure Tfrmcad_cli.ACTPesquisaExecute(Sender: TObject);
 begin
   inherited;
 
-  if not REC_SHE_DEF.FInitialize then
+  if REC_SHE_DEF.FInitialize then
+  begin
+    if RECUsuarios.Grupo = 'VEN' then
+    Cadastro.SQL.Add('WHERE    PK.CV_ID = ''' + RECUsuarios.ID + '''');
+    Cadastro.SQL.Add('ORDER BY PK.DTEV DESC');
+  end else
+
   try
     FrmPesquisa := TFrmPesquisa.Create(Self);
     FrmPesquisa.Tag := 1;
@@ -263,12 +201,13 @@ begin
       SQL.Add('AS (');
 
       SQL.Add('SELECT PK.ID   ,PK.EP_ID,');
-      SQL.Add('       PK.CDST ,PK.REST ,PK.DEST ,CRD.CRD_DEST AS CRD_DEST,');
+      SQL.Add('       PK.DTEV ,PK.DTCA ,CAST(PK.PED_DT AS DATE) AS PED_DT,CAST(PK.NFE_DT AS DATE) AS NFE_DT,CAST(PK.NFS_DT AS DATE) AS NFS_DT,');
+      SQL.Add('       PK.CDST ,PK.REST ,PK.DEST,CRD.CRD_DEST AS CRD_DEST,');
       SQL.Add('       PK.CD_ID,PK.CD_NO,PK.CD_RZ_NO,PK.CD_GP_NO ,');
       SQL.Add('       PK.CNPJ ,FCNPJ(PK.CNPJ) AS CNPJ_MASK,PK.IE,PK.ISUF,');
       SQL.Add('       PK.CPF  ,FCPF(PK.CPF)   AS CPF_MASK ,PK.IDESTRANGEIRO,');
 
-      SQL.Add('       PK.CR_NO,PK.CV_NO,PK.CT_NO,');
+      SQL.Add('       PK.CR_ID,PK.CR_NO,PK.CV_ID,PK.CV_NO,PK.CT_ID,PK.CT_NO,');
 
       SQL.Add('       TRIM(CAST(FTEL(PK.DDD_NU,PK.TEL_NU) || '' '' || LEFT(PK.CONTATO_NO,10) AS VARCHAR(30))) TEL_MASK,');
       SQL.Add('       FTEL(PK.CEL_DDD_NU,PK.CEL_TEL_NU) AS CEL_TEL_MASK,');
@@ -277,7 +216,6 @@ begin
 
       SQL.Add('       PK.LOG_NO_ABREV,PK.BAI_NO_ABREV,PK.LOC_NO_ABREV,PK.UF,');
 
-      SQL.Add('       PK.DTPP,PK.DTPV,PK.DTNF,PK.DTSA,PK.DTBX,');
       SQL.Add('       CRD.CRD_VPAD,CRD.CRD_VTAP,CRD.CRD_VTSD,CRD.CRD_VTKT,CRD.CRD_BQST,');
       SQL.Add('       PK.FIS_DTFU,PK.FIS_CRT_NO,');
       SQL.Add('       PK.INFADCAD');
@@ -349,16 +287,16 @@ begin
         end;
       end;
 
-      SQL.Add('ORDER BY ' + IFThen(LeftStr(FrmPesquisa.CField,2) = 'PK',FrmPesquisa.CField,'PK.CD_NO'));
+      SQL.Add('ORDER BY ' + IFThen(LeftStr(FrmPesquisa.CField,2) = 'PK',FrmPesquisa.CField,'PK.DTEV DESC'));
     end;
 
     if FrmPesquisa.EDTXT.Text <> EmptyStr then
     begin
-      APSQ_CAD_CLI := FrmPesquisa.cbCAMPO.Text;
+      APSQ_CAD := FrmPesquisa.cbCAMPO.Text;
       SBRodape.Panels[1].Text := SBRodape.Panels[1].Text + ' Pesquisado ' + FrmPesquisa.cbCampo.Text + ' ' + FrmPesquisa.EDTXT.Text;
     end;
 
-    FreeAndNil(FrmPesquisa  );
+    FreeAndNil(FrmPesquisa);
   end;
 
   if Cadastro.State = dsInactive then
@@ -370,12 +308,35 @@ begin
 
   DBGConsultaCD_NO.Field.FocusControl;
   if Showing then
-     DBGConsulta.SetFocus;
+  DBGConsulta.SetFocus;
 end;
 
 procedure Tfrmcad_cli.CadastroAfterClose(DataSet: TDataSet);
 begin
   SBRodape.Panels[1].Text := EmptyStr;
+end;
+
+procedure Tfrmcad_cli.ACTCAD_CLI_INFExecute(Sender: TObject);
+begin
+  uPSQSCORE(self,CadastroID.AsString,EmptyStr);
+end;
+
+procedure Tfrmcad_cli.ACTMEAppendExecute(Sender: TObject);
+begin
+  frmcad_cli_edi := TFrmcad_cli_edi.Create(Self,0);
+  try frmcad_cli_edi.ShowModal;
+  finally
+    FreeAndNil(frmcad_cli_edi);
+  end;
+end;
+
+procedure Tfrmcad_cli.ACTMEEditExecute(Sender: TObject);
+begin
+  frmcad_cli_edi := TFrmcad_cli_edi.Create(Self,CadastroID.AsInteger);
+  try frmcad_cli_edi.ShowModal;
+  finally
+    FreeAndNil(frmcad_cli_edi);
+  end;
 end;
 
 end.

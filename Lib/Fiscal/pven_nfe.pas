@@ -14,7 +14,13 @@ uses
   IDGlobal, IBSQL, ActnList, cxGraphics, cxControls, dxStatusBar,
   Clipbrd, rxAnimate, rxGIFCtrl {Unit do componente Indy para usar Fetch() };
 
-type
+Const
+  dllNFe = 'C:\Sheild\NotaFiscal\NFe.dll';
+
+Type
+   ANFe = Array of Array of ShortString;
+
+   type
   TFrmVEN_NFE = class(TForm)
     PNLPrincipal: TPanel;
     TSEdicao: TIBTransaction;
@@ -480,13 +486,13 @@ type
     DBGPKSumarioNFE_VFCPUFDEST: TdxDBGridCurrencyColumn;
     ILMenuEdicao: TImageList;
     GBMEFIS_NFE_DUP: TGroupBox;
-    SBMEFIS_NFE_DUP: TSpeedBar;
-    SSMEFIS_NFE_DUP: TSpeedbarSection;
-    SIMEDAppend: TSpeedItem;
-    SIMEDEdit: TSpeedItem;
-    SIMEDDelete: TSpeedItem;
-    SIMEDPost: TSpeedItem;
-    SIMEDCancel: TSpeedItem;
+    SBFIS_NFE_DUP: TSpeedBar;
+    SSFIS_NFE_DUP: TSpeedbarSection;
+    SIMDAppend: TSpeedItem;
+    SIMDEdit: TSpeedItem;
+    SIMDDelete: TSpeedItem;
+    SIMDPost: TSpeedItem;
+    SIMDCancel: TSpeedItem;
     GBFIS_NFE_DUP: TGroupBox;
     GBMEFIS_NFE_MAO: TGroupBox;
     SBMEFIS_NFE_MAO: TSpeedBar;
@@ -902,7 +908,6 @@ type
     EdicaoIP: TIBStringField;
     EdicaoHOST: TIBStringField;
     EdicaoFLAG: TSmallintField;
-    EdicaoFLAG_CTRL: TIntegerField;
     EdicaoC_ID: TLargeintField;
 
 
@@ -1152,20 +1157,23 @@ type
     FIS_NFE_SUMNFE_VNF: TIBBCDField;
     EDXML: TdxMaskEdit;
     EDPDF: TdxMaskEdit;
-    DBGFIS_NFE_DUPID: TdxDBGridColumn;
-    DBGFIS_NFE_DUPIDEV: TdxDBGridColumn;
     DBGFIS_NFE_DUPNFE_NITEMPED: TdxDBGridMaskColumn;
-    DBGFIS_NFE_DUPNFE_CDNF: TdxDBGridColumn;
     DBGFIS_NFE_DUPNFE_DTNF: TdxDBGridDateColumn;
-    DBGFIS_NFE_DUPNFE_VNF: TdxDBGridCurrencyColumn;
     DBGFIS_NFE_DUPNFE_NDUP: TdxDBGridMaskColumn;
     DBGFIS_NFE_DUPNFE_DTVC: TdxDBGridDateColumn;
-    DBGFIS_NFE_DUPNFE_VLIQ: TdxDBGridCurrencyColumn;
-    DBGFIS_NFE_DUPNFE_VDUP: TdxDBGridCurrencyColumn;
-    DBGFIS_NFE_DUPNFE_VDSC: TdxDBGridCurrencyColumn;
-    DBGFIS_NFE_DUPFLAG: TdxDBGridMaskColumn;
     FIS_NFE_SUMLBL_VNFTOT: TIBStringField;
     FIS_NFE_SUMNFE_VNFTOT: TIBBCDField;
+    EdicaoFLAG_SEQ: TIntegerField;
+    EdicaoFLAG_CTRL: TSmallintField;
+    DBGFIS_NFE_DUPNFE_VDUP: TdxDBGridMaskColumn;
+    DBGFIS_NFE_DUPNFE_VDSC: TdxDBGridMaskColumn;
+    ACTMDAppend: TAction;
+    ACTMDEdit: TAction;
+    ACTMDDelete: TAction;
+    ACTMDPost: TAction;
+    ACTMDCancel: TAction;
+    DBGEdicaoNFE_PSBR: TdxDBGridCurrencyColumn;
+    DBGEdicaoNFE_PSLQ: TdxDBGridCurrencyColumn;
 
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -1357,9 +1365,20 @@ type
       var ErrorText: String; var Accept: Boolean);
     procedure FIS_NFE_ADMNewRecord(DataSet: TDataSet);
     procedure DEdhSaiEntChange(Sender: TObject);
-    procedure SIMEDPostClick(Sender: TObject);
-    procedure SIMEDEditClick(Sender: TObject);
+    procedure ACTMDAppendExecute(Sender: TObject);
+    procedure ACTMDEditExecute(Sender: TObject);
+    procedure ACTMDDeleteExecute(Sender: TObject);
+    procedure ACTMDPostExecute(Sender: TObject);
+    procedure ACTMDCancelExecute(Sender: TObject);
+    procedure FIS_NFE_DUPBeforeInsert(DataSet: TDataSet);
+    procedure FIS_NFE_DUPAfterInsert(DataSet: TDataSet);
+    procedure FIS_NFE_DUPBeforeEdit(DataSet: TDataSet);
+    procedure FIS_NFE_DUPBeforeDelete(DataSet: TDataSet);
     procedure FIS_NFE_DUPAfterDelete(DataSet: TDataSet);
+    procedure FIS_NFE_DUPAfterPost(DataSet: TDataSet);
+    procedure FIS_NFE_DUPBeforeCancel(DataSet: TDataSet);
+    procedure DTSFIS_NFE_DUPStateChange(Sender: TObject);
+    procedure EDInfAdNFChange(Sender: TObject);
   private
     { Private declarations }
     FCurrentEvent,
@@ -1439,6 +1458,86 @@ type
 
     Destructor  Destroy; override;
   end;
+
+{ nfedlldel-v7.1.3-Rev1 - 21/11/2025 }
+function GeraNFe(ide, emit, dest : Array of shortstring; detProd : ANFe;
+                 total, transp, cobr, pag, infAdic, autXML : array of shortstring; assinar : boolean = false) : shortstring; StdCall; External dllNfe; far;
+
+function AssinaArquivoXML(pathArquivo,tagURI : shortstring) : shortstring; stdcall; External dllNfe; far;
+
+function GerarLote(idLote : integer; pathNFe : shortstring; listarArquivos : boolean = true) : integer; stdcall; External dllNfe; far;
+
+function GeraDPEC(pathNFe : ShortString) : Integer;  stdcall; External dllNfe; far;
+
+function GeraEPEC(pathNFe : ShortString) : Integer;  stdcall; External dllNfe; far;
+
+function ImprimeDanfe(pathXML,pathPDF: shortstring; tipoImp : integer; formSeguranca : boolean) : boolean; stdcall; External dllNfe; far;
+
+function ImprimeDanfeEscolheImp(pathXML,pathPDF,nomeImp: shortstring; tipoImp : integer; formSeguranca : boolean) : boolean; stdcall; External dllNfe; far;
+
+function ImprimeDPEC(pathXML, pathPDF: ShortString; tipoImp : integer; nProtDpec: shortstring) : boolean; stdcall; External dllNfe; far;
+
+function ImprimeEPEC(pathXML, pathPDF: ShortString; tipoImp : integer; nProtDpec: shortstring) : boolean; stdcall; External dllNfe; far;
+
+function ImprimeCCe(pathCCe, pathPDF : shortstring; tipoImp : integer) : boolean; stdcall; External dllNfe; far;
+
+function ValidarArquivoXML(pathArquivo : shortstring; schema : shortstring; exbForm : boolean = true) : ShortString; stdcall; External dllNfe; far;
+
+function NfeStatusServico : shortstring; stdcall; External dllNfe; far;
+
+function NFeRecepcao(pathLoteXML : shortstring) : shortstring; stdcall; External dllNfe; far
+
+function NFeAutorizacao(pathLoteXML : shortstring) : WideString; stdcall; External dllNfe; far
+
+function NfeRetAutorizacao(nRec : shortstring) : WideString; stdcall; External dllNfe; far
+
+function RecepcaoDPEC(pathDPECXML : shortstring) : shortstring; stdcall; External dllNfe; far
+
+function RecepcaoEPEC(pathDPECXML : shortstring) : shortstring; stdcall; External dllNfe; far
+
+function NFeConsulta(chNFe : WideString) : WideString; stdcall; External dllNfe; far;
+
+Function DPECConsulta(ChaveRegDPEC:ShortString):ShortString;stdcall external dllNfe; far;
+
+function EPECConsulta(chaveRegEPEC : ShortString) : ShortString; stdcall; external dllNfe; far;
+
+function NfeInutilizacao(ano, nNFIni, nNFFin, xJust : shortstring; serie : shortstring = '') : shortstring; stdcall; External dllNfe; far;
+
+function NFeCancelamento(chNFe, nProt, xJust : shortstring) : shortstring; stdcall; External dllNfe; far;
+
+function NFeCancelamentoEvento(chNFe, nProt, idLote, nSeqEvento,  xJust : shortstring) : shortstring; stdcall; External dllNfe; far;
+
+function NfeRetRecepcao(nRec : shortstring) : boolean; stdcall; External dllNfe; far;
+
+function ArquivoDistribuicaoNFe(chNFe : shortstring) : shortstring; stdcall; External dllNfe; far;
+
+function EnviaEmail(emailDest, assunto, msg, pathFile : IString) : boolean; stdcall; External dllNfe; far; overload; //v6.3.2
+
+function NFeCadastro(UF, CNPJ : shortstring) : IString; stdcall; External dllNfe; far; //v6.4.1
+
+function GeraCCe(chnfe, seq, tpEvento, dhEvento : shortstring; xCorrecao : array of shortstring) : shortstring; stdcall; External dllNfe; far; //v6.4.1
+
+function GeraManifestacao(chnfe, seq, tpEvento, dhEvento, xJust : ShortString) : ShortString; stdcall; External dllNfe; far; //v6.6.5
+
+function NFeDistribuicaoDFe(DFechNFe, DFeNSU : ShortString; DFeultNSU : boolean)  : ShortString; stdcall; External dllNfe; far;
+
+function ConsultaDest(indNFe, indEmi, ultNSU : ShortString) : ShortString; stdcall; External dllNfe; far; //v6.6.5
+
+function DonwloadNFe(chNFe, pathNFe : ShortString) : ShortString; stdcall; External dllNfe; far; //v6.6.5
+
+function CarregaFCI(pathXml, pathFile : shortstring) : boolean; stdcall; External dllNfe; far; //v6.6.5
+
+function ConsultaVersao : ShortString; stdcall; external dllNfe; far;
+
+function EventoEntrega(idLote, chNfe, seqEvento, dhEntrega, nDoc, xNome, latlongGps : shortstring) : shortstring; stdcall;  external dllNfe; far;
+
+function EventoEntregaInsucesso(idLote, chNfe, seqEvento, dhEntregaTentativa, nTentativa, tpMotivo, xMotivo, latlongGps : shortstring) : shortstring; stdcall;  external dllNfe; far;
+
+function VersaoDLL () : WideString; stdcall; external dllNfe; far;
+
+function ImprimeDanfeSimplificado(pathXML : ShortString; tipoImp : integer; formSeguranca : boolean) : boolean;  stdcall;  external dllNfe; far;
+
+function ConsultaGtin(chave : shortstring) : shortstring; stdcall; External dllNfe; far;
 
 var
   FrmVEN_NFE: TFrmVEN_NFE;
@@ -1867,15 +1966,17 @@ procedure TFrmVEN_NFE.FormCloseQuery(Sender: TObject;
   var CanClose: Boolean);
 begin
   { VER ANTES DE SAIR }
-  if REC_SHE_DEF.Edited then
-  begin
-    if Edicao.State in [dsInsert,dsEdit] then
-       Edicao.Post;
+  if Edicao.State in [dsInsert,dsEdit] then
+     Edicao.Post;
 
-    if (Edicao.RecNo > 0) and (CECDRO.Value = 0) then
-    if (oYesNo(Application.Handle,'Existem Alterações Pendentes !' + #13 +
-                                  'Fechar mesmo assim ?')) = mrNo then
-    Abort;
+  if ((Edicao.RecNo > 0) and (CECDRO.Value = 0)) or (REC_SHE_DEF.Editing) then
+
+  Case messageBox(handle,'Existem Alterações Pendentes !'+#13+
+                         'Sair mesmo assim ?',
+                          PChar(Caption)  ,
+                          MB_ICONQUESTION + MB_YESNOCANCEL) of
+       mrCancel,
+       mrNo: Abort;
   end;
 end;
 
@@ -2182,10 +2283,12 @@ begin
 
     if (REC_SHE_DEF.IDPK > 0) then
     if (REC_SHE_DEF.CDEV = 0) and (REC_SHE_DEF.TPEV = 0) then  { Triangular }
-
     ACTPSQ_NFE_ADM.Execute else
-    ACTPSQ_PED_RDV.Execute;
 
+    if (REC_SHE_DEF.CDEV = 1) and (REC_SHE_DEF.TPEV = 0) then  { Normal Copiado }
+    ACTPSQ_NFE_ADM.Execute else
+
+    ACTPSQ_PED_RDV.Execute;
     if ((REC_SHE_DEF.IDPK = 0)) or (SQLPKConsulta.Eof) then
     Exit;
     
@@ -2255,6 +2358,8 @@ begin
     ACTPSQ_CAD_TRA.Execute;
 
     { FRETE }
+    if (Pos('CLIENTE RETIRA',PEDECT.Text) > 0) or (Pos('O PRÓPRIO',PEDECT.Text) > 0) then
+    IEModFrete.Text := '4' else
     IEModFrete.Text := SQLPKConsulta.Current.ByName('FRT_MODELO').AsString;
     IEModFrete.Modified := True;
     IEModFrete.ValidateEdit;
@@ -2540,9 +2645,6 @@ begin
 
   if not SQLPKConsulta.Eof then
   begin
-    //LAIDCD.Caption  := Trim(SQLPKConsulta.Current.ByName('CLFO_NO').AsString);
-    //LAIDCD.Tag      := SQLPKConsulta.Current.ByName('CLFO_NU').AsInteger;
-
     { TRIANGULAR }
     if (Pos(SQLPKConsulta.Current.ByName('CFOP').AsString,'5102610251236123') > 0) and (REC_SHE_DEF.CDEV = 0) then
     begin
@@ -2746,19 +2848,19 @@ begin
       end;
 
       if Pos('SEM FRETE',PEDECT.Text) > 0 then
-         IEModFrete.Text := '9' else
+      IEModFrete.Text := '9' else
 
       if (Pos('CLIENTE RETIRA',PEDECT.Text) > 0) or (Pos('O PRÓPRIO',PEDECT.Text) > 0) then
-         IEModFrete.Text := '4' else
+      IEModFrete.Text := '4' else
 
       if Pos('NOSSO CARRO (' ,PEDECT.Text) > 0 then
-         IEModFrete.Text := '3' else
+      IEModFrete.Text := '3' else
 
       if Pos('CARRETOS'    ,PEDECT.Text) > 0 then
-         IEModFrete.Text := '2' else
+      IEModFrete.Text := '2' else
 
       if Pos(IEModFrete.Text,'01') = 0 then
-         IEModFrete.Text := '0';
+      IEModFrete.Text := '0';
     end;
   end;
 end;
@@ -3824,12 +3926,12 @@ begin
 
     { Cadastro de Produtos Importados }
     oCTransact(TEdicao);
+    REC_SHE_DEF.Editing := False;
 
     if Pos(SBRodape.Panels[5].Text,'110') > 0 then
     oAviso(handle,'Nota Fiscal Denegada !' + #13 +
                   'Possíveis problemas fiscais desse destinatário na receita federal.' + #13 + #13 +
-                  'Favor entrar em contato com o cliente e/ou representante.')
-                  ;
+                  'Favor entrar em contato com o cliente e/ou representante.');
 
     if (LeftStr(IECFOP.Text,1) <> '3') and (CECDRO.Value > 0) then
     begin
@@ -4086,11 +4188,51 @@ begin
 end;
 
 procedure TFrmVEN_NFE.ACTMECancelExecute(Sender: TObject);
-begin
+begin
   if ALockWindowUpdate then { SQL INJECTION }
   Exit;
 
   oCancel(Edicao,REC_SHE_DEF.GCancel);
+end;
+
+procedure TFrmVEN_NFE.ACTMDAppendExecute(Sender: TObject);
+begin
+  if ALockWindowUpdate then { SQL INJECTION }
+  Exit;
+
+  oAppend(FIS_NFE_DUP);
+end;
+
+procedure TFrmVEN_NFE.ACTMDEditExecute(Sender: TObject);
+begin
+  if ALockWindowUpdate then { SQL INJECTION }
+  Exit;
+
+  oEdit(FIS_NFE_DUP);
+end;
+
+procedure TFrmVEN_NFE.ACTMDDeleteExecute(Sender: TObject);
+begin
+  if ALockWindowUpdate then { SQL INJECTION }
+  Exit;
+
+  oDelete(FIS_NFE_DUP);
+end;
+
+procedure TFrmVEN_NFE.ACTMDPostExecute(Sender: TObject);
+begin
+  if ALockWindowUpdate then { SQL INJECTION }
+  Exit;
+
+  oPost(FIS_NFE_DUP);
+end;
+
+procedure TFrmVEN_NFE.ACTMDCancelExecute(Sender: TObject);
+begin
+  if ALockWindowUpdate then { SQL INJECTION }
+  Exit;
+
+  oCancel(FIS_NFE_DUP);
 end;
 
 procedure TFrmVEN_NFE.ACTCheckConstraintsExecute(Sender: TObject);
@@ -5054,28 +5196,6 @@ begin
       EdicaoNFE_VICMS.Value := RoundTO((EdicaoNFE_VBC.AsFloat * EdicaoNFE_PICMS.AsFloat)/100,-2);
     end;
   end;
-end;
-
-procedure TFrmVEN_NFE.FIS_NFE_DUPNewRecord(DataSet: TDataSet);
-begin
-  FIS_NFE_DUPID.Value   := 0;
-  FIS_NFE_DUPIDEV.Value := REC_SHE_DEF.IDEV;
-
-  with SQLPKSEdicao do
-  begin
-    Close;
-    SQL.Clear;
-    SQL.Add('SELECT COALESCE(MAX(PK.NFE_NITEMPED),0) FROM FIS_NFE_DUP AS PK');
-    SQL.Add('WHERE  PK.IDEV = ''' + REC_SHE_DEF.IDEV + '''');
-    ExecQuery;
-    FIS_NFE_DUPNFE_NITEMPED.Value := Current.Vars[0].AsInteger + 1;
-  end;
-
-  FIS_NFE_DUPNFE_CDNF.Value := Trunc(CECDNF.Value);
-  FIS_NFE_DUPNFE_VNF.Value  := 0;
-  FIS_NFE_DUPNFE_VLIQ.Value := 0;
-  FIS_NFE_DUPNFE_VDUP.Value := 0;
-  FIS_NFE_DUPNFE_VDSC.Value := 0;
 end;
 
 procedure TFrmVEN_NFE.FIS_NFE_DUPNFE_VORIGValidate(Sender: TField);
@@ -6711,6 +6831,7 @@ begin
 
   try { Duplicatas }
     Screen.Cursor := crHourGlass;
+    ALockWindowUpdate := True;
 
     try { Sincronismo }
       if REC_SHE_DEF.FInitialize then
@@ -7006,9 +7127,10 @@ begin
   ACTXMLValidate.Enabled := False;
   ACTXMLSend.Enabled     := False;
 
+  ACTXMLImporta.Enabled := True;
   ACTImporta.Enabled := True;
 
-  Application.ProcessMessages;
+  SBMEnuPrincipal.Refresh;
 end;
 
 procedure TFrmVEN_NFE.ACTNFeValidateExecute(Sender: TObject);
@@ -7023,9 +7145,10 @@ begin
   ACTXMLValidate.Enabled := True;
   ACTXMLSend.Enabled     := False;
 
+  ACTXMLImporta.Enabled := False;
   ACTImporta.Enabled := False;
 
-  Application.ProcessMessages;
+  SBMEnuPrincipal.Refresh;
 end;
 
 procedure TFrmVEN_NFE.ACTXMLCreateExecute(Sender: TObject);
@@ -7055,6 +7178,7 @@ begin
   { CHECK }
   ACTCheckConstraints.Execute;
   ACTCheckErrors.Execute;
+  ACTNFeINFADCAD.Execute;
 
   SBRodape.Panels[0].Text := EmptyStr; { SEFAZ       }
   SBRodape.Panels[1].Text := EmptyStr; { Processos   }
@@ -7090,8 +7214,21 @@ begin
   SBRodape.Refresh;
 
   Application.ProcessMessages;
-  SBRodape.Panels[0].Text := oNFE_API_SEFAZ;
-  SBRodape.Refresh;
+  try
+    if LeftStr(RECParametros.NFE_API_SEFAZ,3) <> '107' then { Serviço em Operação }
+       try
+         Screen.Cursor := crAppStart;
+         RECParametros.NFE_API_SEFAZ := NfeStatusServico;
+
+         if LeftStr(RECParametros.NFE_API_SEFAZ,3) = '107' then
+         RECParametros.NFE_API_SEFAZ := '107 - SEFAZ ON LINE';
+       finally
+         Screen.Cursor := crDefault;
+       end;
+  finally
+    SBRodape.Panels[0].Text := RECParametros.NFE_API_SEFAZ;
+    SBRodape.Refresh;
+  end;
 
   if LeftStr(RECParametros.NFE_API_SEFAZ,3) <> '107' then
   oException(Nil,'Falha ao tentar conectar com o sefaz !' + #13 +
@@ -9515,6 +9652,10 @@ begin
     Screen.cursor := crDefault;
     Application.ProcessMessages;
   end;
+
+  if FileExists(EDXML.Text) then
+  oCopyFileToDir(EDXML.TExt,PAnsiChar(RECParametros.SHE_PATH_LAN + '\' + RECParametros.NFE_PATH_XML + '\' + oStrZero(RECParametros.SHE_DATA_ANO,4) + oStrZero(RECParametros.SHE_DATA_MES,2)), True);
+
 end;
 
 procedure TFrmVEN_NFE.FIS_NFE_ADMNewRecord(DataSet: TDataSet);
@@ -9564,23 +9705,108 @@ begin
   end;}
 end;
 
-procedure TFrmVEN_NFE.SIMEDPostClick(Sender: TObject);
+procedure TFrmVEN_NFE.FIS_NFE_DUPBeforeInsert(DataSet: TDataSet);
 begin
-  FIS_NFE_DUP.Post;
-  TSEdicao.CommitRetaining;
-  FIS_NFE_DUP.Open;
+  Edicao.Fields[0].Tag := Edicao.RecNo;
 end;
 
-procedure TFrmVEN_NFE.SIMEDEditClick(Sender: TObject);
+procedure TFrmVEN_NFE.FIS_NFE_DUPAfterInsert(DataSet: TDataSet);
 begin
-  FIS_NFE_DUP.Edit;
+  DBGEdicaoNFE_CPROD.Field.FocusControl;
+end;
+
+procedure TFrmVEN_NFE.FIS_NFE_DUPNewRecord(DataSet: TDataSet);
+begin
+  FIS_NFE_DUPID.Value   := 0;
+  FIS_NFE_DUPIDEV.Value := REC_SHE_DEF.IDEV;
+
+  with SQLPKSEdicao do
+  begin
+    Close;
+    SQL.Clear;
+    SQL.Add('SELECT COALESCE(MAX(PK.NFE_NITEMPED),0) FROM FIS_NFE_DUP AS PK');
+    SQL.Add('WHERE  PK.IDEV = ''' + REC_SHE_DEF.IDEV + '''');
+    ExecQuery;
+    FIS_NFE_DUPNFE_NITEMPED.Value := Current.Vars[0].AsInteger + 1;
+  end;
+
+  FIS_NFE_DUPNFE_CDNF.Value := Trunc(CECDNF.Value);
+  FIS_NFE_DUPNFE_VNF.Value  := 0;
+  FIS_NFE_DUPNFE_VLIQ.Value := 0;
+  FIS_NFE_DUPNFE_VDUP.Value := 0;
+  FIS_NFE_DUPNFE_VDSC.Value := 0;
+end;
+
+procedure TFrmVEN_NFE.FIS_NFE_DUPBeforeEdit(DataSet: TDataSet);
+begin
+  FIS_NFE_DUPId.Tag := FIS_NFE_DUPId.AsInteger;
+end;
+
+procedure TFrmVEN_NFE.FIS_NFE_DUPBeforeDelete(DataSet: TDataSet);
+begin
+  if oYesNo(Handle,'Confirma Exclusão ?') = mrNo then
+  Abort;
 end;
 
 procedure TFrmVEN_NFE.FIS_NFE_DUPAfterDelete(DataSet: TDataSet);
 begin
-  showmessage('del');
+  TSEdicao.CommitRetaining;
+  FIS_NFE_DUP.Close;
+  FIS_NFE_DUP.Open;
 end;
 
+procedure TFrmVEN_NFE.FIS_NFE_DUPAfterPost(DataSet: TDataSet);
+var
+  ABMRecord: TBookMark;
+begin
+  if ALockWindowUpdate then { SQL INJECTION }
+  Exit;
+
+  try
+    if FIS_NFE_DUPID.AsInteger > 0 then
+    ABMRecord := FIS_NFE_DUP.GetBookmark else
+    ABMRecord := Nil;
+
+    TSEdicao.CommitRetaining;
+    FIS_NFE_DUP.Close;
+    FIS_NFE_DUP.Open;
+  finally
+    if ABMRecord <> Nil then
+    begin
+      FIS_NFE_DUP.GotoBookmark(ABMRecord);
+      FIS_NFE_DUP.FreeBookmark(ABMRecord);
+    end else
+    FIS_NFE_DUP.Last;
+
+    REC_SHE_DEF.Editing := True;
+  end;
+end;
+
+procedure TFrmVEN_NFE.FIS_NFE_DUPBeforeCancel(DataSet: TDataSet);
+begin
+  if FIS_NFE_DUP.Fields[0].Tag = 0 then
+  begin
+    FIS_NFE_DUP.Close;
+    FIS_NFE_DUP.Open;
+    FIS_NFE_DUP.Last;
+
+    ABORT;
+  end;
+end;
+
+procedure TFrmVEN_NFE.DTSFIS_NFE_DUPStateChange(Sender: TObject);
+begin
+  oState(FIS_NFE_DUP,SBFIS_NFE_DUP);
+end;
+
+procedure TFrmVEN_NFE.EDInfAdNFChange(Sender: TObject);
+begin
+  if not ALockWindowUpdate then { SQL INJECTION }
+  REC_SHE_DEF.Editing := True;
+end;
+
+
 end.
+
 
-
+
