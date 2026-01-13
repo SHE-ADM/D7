@@ -1028,9 +1028,7 @@ end;
 
 procedure Tfrmctr_prg.SIClientesClick(Sender: TObject);
 begin
-  frmcad_cli_edi     := TFrmcad_cli_edi.Create(Self);
-  frmcad_cli_edi.Tag := 1;
-  frmcad_cli_edi.IDCliente := IntToStr(CadastroCD_ID.AsInteger);
+  frmcad_cli_edi     := TFrmcad_cli_edi.Create(Self,CadastroCD_ID.AsInteger);
   try frmcad_cli_edi.ShowModal;
   finally
     if frmcad_cli_edi.Editado then

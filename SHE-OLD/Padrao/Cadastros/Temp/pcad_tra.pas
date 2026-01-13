@@ -1,4 +1,4 @@
-unit pcad_for;
+unit pcad_cli;
 
 interface
 
@@ -13,7 +13,8 @@ uses
   pConsulta, ActnList;
 
 type
-  Tfrmcad_for = class(TFrmConsulta)
+  Tfrmcad_cli = class(TFrmConsulta)
+    ACTCAD_CLI_INF: TAction;
     CadastroID: TLargeintField;
     CadastroEP_ID: TSmallintField;
     CadastroDTEV: TDateTimeField;
@@ -47,6 +48,15 @@ type
     CadastroBAI_NO_ABREV: TIBStringField;
     CadastroLOC_NO_ABREV: TIBStringField;
     CadastroUF: TIBStringField;
+    CadastroDSPD: TDateTimeField;
+    CadastroDSNF: TDateTimeField;
+    CadastroDSSA: TDateTimeField;
+    CadastroDSFT: TDateTimeField;
+    CadastroDSLQ: TDateTimeField;
+    CadastroDSBX: TDateTimeField;
+    CadastroDSDV: TDateTimeField;
+    CadastroDSAB: TDateTimeField;
+    CadastroDSFP: TDateTimeField;
     CadastroCRD_VPAD: TIBBCDField;
     CadastroCRD_VTAP: TIBBCDField;
     CadastroCRD_VTSD: TIBBCDField;
@@ -77,9 +87,6 @@ type
     DBGConsultaUF: TdxDBGridMaskColumn;
     PNLINFADCAD: TPanel;
     DBINFADAD: TdxDBMemo;
-    CadastroPED_DT: TDateField;
-    CadastroNFE_DT: TDateField;
-    CadastroNFS_DT: TDateField;
     procedure FormCreate(Sender: TObject);
     procedure dbgConsultaCustomDrawCell(Sender: TObject; ACanvas: TCanvas;
       ARect: TRect; ANode: TdxTreeListNode; AColumn: TdxTreeListColumn;
@@ -89,6 +96,7 @@ type
     procedure DTSCadastroDataChange(Sender: TObject; Field: TField);
     procedure ACTPesquisaExecute(Sender: TObject);
     procedure CadastroAfterClose(DataSet: TDataSet);
+    procedure ACTCAD_CLI_INFExecute(Sender: TObject);
     procedure ACTMEAppendExecute(Sender: TObject);
     procedure ACTMEEditExecute(Sender: TObject);
   private
@@ -98,17 +106,20 @@ type
   end;
 
 var
-  frmcad_for: Tfrmcad_for;
+  frmcad_cli: Tfrmcad_cli;
 
 implementation
 
 uses uPrincipal, bPrincipal,
-  pPesquisa, pcad_for_edi;
-  
+  {$IFDEF DEF_COMPRAS} pcad_cli_edi {$ELSE} pcad_cli_edi, pPesquisa {$ENDIF};
+
 {$R *.dfm}
 
-procedure Tfrmcad_for.FormCreate(Sender: TObject);
+procedure Tfrmcad_cli.FormCreate(Sender: TObject);
 begin
+  { ADMIN MANAGER }
+  //DBGConsultaIDPK.Visible := (RECUsuarios.ID = 0); { Código Pedido }
+
   { FORM SCREEN }
   REC_SHE_DEF.FPosition := Self.Position; { Posição }
 
@@ -116,11 +127,11 @@ begin
   REC_SHE_DEF.FWorkArea := False; { Windows    }
 
   { ACCESS MANAGER }
-  REC_SHE_DEF.FB_Event := 'CAD_FOR_ADM'; { Eventos }
+  REC_SHE_DEF.FB_Event := 'CAD_CLI_ADM'; { Eventos }
 
   { GRANT USER }
   REC_SHE_DEF.GDescricao  := 'Cadastro';
-  REC_SHE_DEF.GReferencia := 'Fornecedores';
+  REC_SHE_DEF.GReferencia := 'Clientes';
   REC_SHE_DEF.GRegra      := 'Permissões Gerais';
   REC_SHE_DEF.GAdmin      := False;
   inherited;
@@ -128,7 +139,7 @@ begin
   ACTPesquisa.Execute;
 end;
 
-procedure Tfrmcad_for.DTSCadastroDataChange(Sender: TObject;
+procedure Tfrmcad_cli.DTSCadastroDataChange(Sender: TObject;
   Field: TField);
 var
   PosCount: Word;
@@ -146,7 +157,7 @@ begin
                         IFThen((PosCount = 02),115,130))))))));
 end;
 
-procedure Tfrmcad_for.dbgConsultaCustomDrawCell(Sender: TObject;
+procedure Tfrmcad_cli.dbgConsultaCustomDrawCell(Sender: TObject;
   ACanvas: TCanvas; ARect: TRect; ANode: TdxTreeListNode;
   AColumn: TdxTreeListColumn; ASelected, AFocused, ANewItemRow: Boolean;
   var AText: String; var AColor: TColor; AFont: TFont;
@@ -169,9 +180,16 @@ begin
   end;
 end;
 
-procedure Tfrmcad_for.ACTPesquisaExecute(Sender: TObject);
+procedure Tfrmcad_cli.ACTPesquisaExecute(Sender: TObject);
 begin
   inherited;
+
+  if REC_SHE_DEF.FInitialize then
+  begin
+    if RECUsuarios.Grupo = 'VEN' then
+    Cadastro.SQL.Add('WHERE    PK.CV_ID = ''' + RECUsuarios.ID + '''');
+    Cadastro.SQL.Add('ORDER BY PK.DTEV DESC');
+  end else
 
   try
     FrmPesquisa := TFrmPesquisa.Create(Self);
@@ -192,7 +210,7 @@ begin
       SQL.Add('AS (');
 
       SQL.Add('SELECT PK.ID   ,PK.EP_ID,');
-      SQL.Add('       PK.DTEV ,PK.DTCA ,CAST(PK.PED_DT AS DATE) AS PED_DT,CAST(PK.NFE_DT AS DATE) AS NFE_DT,CAST(PK.NFS_DT AS DATE) AS NFS_DT,');
+      SQL.Add('       PK.DTEV ,PK.DTCA ,');
       SQL.Add('       PK.CDST ,PK.REST ,PK.DEST,CRD.CRD_DEST AS CRD_DEST,');
       SQL.Add('       PK.CD_ID,PK.CD_NO,PK.CD_RZ_NO,PK.CD_GP_NO ,');
       SQL.Add('       PK.CNPJ ,FCNPJ(PK.CNPJ) AS CNPJ_MASK,PK.IE,PK.ISUF,');
@@ -207,11 +225,12 @@ begin
 
       SQL.Add('       PK.LOG_NO_ABREV,PK.BAI_NO_ABREV,PK.LOC_NO_ABREV,PK.UF,');
 
+      SQL.Add('       PK.DSPD,PK.DSNF,PK.DSSA,PK.DSFT,PK.DSLQ,PK.DSBX,PK.DSDV,PK.DSAB,PK.DSFP,');
       SQL.Add('       CRD.CRD_VPAD,CRD.CRD_VTAP,CRD.CRD_VTSD,CRD.CRD_VTKT,CRD.CRD_BQST,');
       SQL.Add('       PK.FIS_DTFU,PK.FIS_CRT_NO,');
       SQL.Add('       PK.INFADCAD');
 
-      SQL.Add('FROM      VW_PSQ_CAD_FOR  AS PK');
+      SQL.Add('FROM      VW_PSQ_CAD_CLI  AS PK');
       SQL.Add('LEFT JOIN CAD_CLI_CRD_FIN AS CRD ON (CRD.EP_ID = :EP_ID AND CRD.CD_ID = PK.CD_ID)');
 
       { PESQUISA DATA }
@@ -302,26 +321,33 @@ begin
   DBGConsulta.SetFocus;
 end;
 
-procedure Tfrmcad_for.CadastroAfterClose(DataSet: TDataSet);
+procedure Tfrmcad_cli.CadastroAfterClose(DataSet: TDataSet);
 begin
   SBRodape.Panels[1].Text := EmptyStr;
 end;
 
-procedure Tfrmcad_for.ACTMEAppendExecute(Sender: TObject);
+procedure Tfrmcad_cli.ACTCAD_CLI_INFExecute(Sender: TObject);
 begin
-  frmcad_for_edi := TFrmcad_for_edi.Create(Self,0);
-  try frmcad_for_edi.ShowModal;
+  uPSQSCORE(self,CadastroID.AsString,EmptyStr);
+end;
+
+procedure Tfrmcad_cli.ACTMEAppendExecute(Sender: TObject);
+begin
+  frmcad_cli_edi := TFrmcad_cli_edi.Create(Self,0);
+  try frmcad_cli_edi.ShowModal;
   finally
-    FreeAndNil(frmcad_for_edi);
+    FreeAndNil(frmcad_cli_edi);
+    oRefresh(Cadastro);
   end;
 end;
 
-procedure Tfrmcad_for.ACTMEEditExecute(Sender: TObject);
+procedure Tfrmcad_cli.ACTMEEditExecute(Sender: TObject);
 begin
-  frmcad_for_edi := TFrmcad_for_edi.Create(Self,CadastroID.AsInteger);
-  try frmcad_for_edi.ShowModal;
+  frmcad_cli_edi := TFrmcad_cli_edi.Create(Self,CadastroID.AsInteger);
+  try frmcad_cli_edi.ShowModal;
   finally
-    FreeAndNil(frmcad_for_edi);
+    FreeAndNil(frmcad_cli_edi);
+    oRefresh(Cadastro);
   end;
 end;
 

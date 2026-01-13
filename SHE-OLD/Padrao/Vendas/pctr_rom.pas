@@ -403,7 +403,7 @@ begin
   REC_SHE_DEF.FWorkArea := False; { Windows    }
 
   { EVENTOS }
-  REC_SHE_DEF.FB_Event   := 'PED_RDV_ADM'; { Evento Principal }
+  REC_SHE_DEF.FB_Event   := 'PED_PDV_ADM'; { Evento Principal }
   REC_SHE_DEF.FB_EVE_EDT := 'FIS_NFE_ADM'; { Evento Edição }
 
   { GRANT USER }
@@ -433,472 +433,468 @@ end;
 procedure Tfrmctr_rom.siCROClick(Sender: TObject);
 begin
   if oYesNo(handle,'Cancelar Romaneio No '+CadastroIDPK.AsString+' ?') = mrno then
-     Abort;
+  Abort;
 
   if oEmpty(CadastroIDPK.AsInteger) then
-     oException(DBGConsulta,'Romaneio não Selecionado !');
+  oException(DBGConsulta,'Romaneio não Selecionado !');
 
-     { Pedido }
-     with SQLConsulta do
-     begin
-       Close;
-       SQL.Clear;
-       SQL.Add('SELECT PK.ID   AS IDPK,PK.DEPV AS DEPK,PK.DTCA AS DTPK,PK.CTNR,');
-       SQL.Add('       PK.IDCL AS IDCD,CD.CLI_FANT AS DECD,PK.IDCV,CV.LOGIN AS DECV,PK.IDCR,CR.REP_FANT AS DECR,');
-       SQL.Add('       PK.TPCO,PK.RECO,PK.CDPG,');
-       SQL.Add('       PK.INFADPED');
+  { Pedido }
+  with SQLConsulta do
+  begin
+    Close;
+    SQL.Clear;
+    SQL.Add('SELECT PK.ID   AS IDPK,PK.DEPV AS DEPK,PK.DTCA AS DTPK,PK.CTNR,');
+    SQL.Add('       PK.IDCL AS IDCD,CD.CLI_FANT AS DECD,PK.IDCV,CV.LOGIN AS DECV,PK.IDCR,CR.REP_FANT AS DECR,');
+    SQL.Add('       PK.TPCO,PK.RECO,PK.CDPG,');
+    SQL.Add('       PK.INFADPED');
 
-       SQL.Add('FROM ' + oREPZero('PED_VEN_CAB','_',RECParametros.EP_ID,3) + ' AS PK');
+    SQL.Add('FROM ' + oREPZero('PED_VEN_CAB','_',RECParametros.EP_ID,3) + ' AS PK');
 
-       SQL.Add('JOIN CAD_CLI  AS CD ON (CD.ID = PK.IDCD)');
-       SQL.Add('JOIN TAB_USER AS CV ON (CV.ID = PK.IDCV)');
-       SQL.Add('JOIN CAD_REP  AS CR ON (CAST(CR.ID AS SMALLINT) = PK.IDCR)');
+    SQL.Add('JOIN CAD_CLI  AS CD ON (CD.ID = PK.IDCD)');
+    SQL.Add('JOIN TAB_USER AS CV ON (CV.ID = PK.IDCV)');
+    SQL.Add('JOIN CAD_REP  AS CR ON (CAST(CR.ID AS SMALLINT) = PK.IDCR)');
 
-       SQL.Add('WHERE PK.CDRO = ''' + CadastroIDPK.AsString + '''');
-       ExecQuery;
-     end;
+    SQL.Add('WHERE PK.CDRO = ''' + CadastroIDPK.AsString + '''');
+    ExecQuery;
+  end;
 
-     try
-       if SQLConsulta.Current.ByName('IDPK').AsInteger > 0 then
-       begin
-         { CAD_PRO_SEP }
-         if (CadastroVEN_BEST.AsString = '1') and (CadastroVEN_QTSP.AsString = '1') then
-         begin
-           try
-             rom_ite.DisableControls;
-             rom_ite.First;
-             while not rom_ite.Eof do
-             begin
-               { Itens }
-               with SQLFKConsulta do
-               begin
-                 Close;
-                 SQL.Clear;
-                 SQL.Add('SELECT   PK.IDPK,PK.ID AS IDFK,PK.ITEM,');
-                 SQL.Add('         PK.IDCP,PK.CP_IDEP,');
-                 SQL.Add('         PK.CEAN,PK.DECP,PK.DGCP,');
-                 SQL.Add('         PK.UCOM,PK.UCON,');
-                 SQL.Add('         PK.QTDE,PK.QTRL,PK.PSBR,PK.PSLQ,');
-                 SQL.Add('         PK.VPRC_PAD_INI,PK.VPRC_PAD_FIM,');
-                 SQL.Add('         PK.VPRC_PAD,PK.VPRC_COM,');
-                 SQL.Add('         PK.PDSC,PK.VDSC,');
-                 SQL.Add('         PK.TSDE,PK.TCDE,');
-                 SQL.Add('         PK.ORIG,PK.NCM ,PK.PIPI,PK.VIPI');
+  try
+    oOTransact(TEdicao);
+    if SQLConsulta.Current.ByName('IDPK').AsInteger > 0 then
+    begin
+      { CAD_PRO_SEP }
+      if (CadastroVEN_BEST.AsString = '1') and (CadastroVEN_QTSP.AsString = '1') then
+      begin
+        try
+          rom_ite.DisableControls;
+          rom_ite.First;
+          while not rom_ite.Eof do
+          begin
+            { Itens }
+            with SQLFKConsulta do
+            begin
+              Close;
+              SQL.Clear;
+              SQL.Add('SELECT   PK.IDPK,PK.ID AS IDFK,PK.ITEM,');
+              SQL.Add('         PK.IDCP,PK.CP_IDEP,');
+              SQL.Add('         PK.CEAN,PK.DECP,PK.DGCP,');
+              SQL.Add('         PK.UCOM,PK.UCON,');
+              SQL.Add('         PK.QTDE,PK.QTRL,PK.PSBR,PK.PSLQ,');
+              SQL.Add('         PK.VPRC_PAD_INI,PK.VPRC_PAD_FIM,');
+              SQL.Add('         PK.VPRC_PAD,PK.VPRC_COM,');
+              SQL.Add('         PK.PDSC,PK.VDSC,');
+              SQL.Add('         PK.TSDE,PK.TCDE,');
+              SQL.Add('         PK.ORIG,PK.NCM ,PK.PIPI,PK.VIPI');
 
-                 SQL.Add('FROM ' + oREPZero('PED_VEN_ITE','_',RECParametros.EP_ID,3) + ' AS PK');
+              SQL.Add('FROM ' + oREPZero('PED_VEN_ITE','_',RECParametros.EP_ID,3) + ' AS PK');
 
-                 SQL.Add('WHERE    PK.IDPK = ''' + SQLConsulta.Current.ByName('IDPK').AsString + '''');
-                 SQL.Add('AND      PK.IDCP = ''' + rom_iteIDCP.AsString + '''');
-                 SQL.Add('AND      PK.ITEM = ''' + rom_iteITEM.AsString + '''');
-                 SQL.Add('ORDER BY PK.ITEM');
-                 ExecQuery;
-               end;
+              SQL.Add('WHERE    PK.IDPK = ''' + SQLConsulta.Current.ByName('IDPK').AsString + '''');
+              SQL.Add('AND      PK.IDCP = ''' + rom_iteIDCP.AsString + '''');
+              SQL.Add('AND      PK.ITEM = ''' + rom_iteITEM.AsString + '''');
+              SQL.Add('ORDER BY PK.ITEM');
+              ExecQuery;
+            end;
 
-               if SQLFKConsulta.Current.Vars[0].AsInteger > 0 then
-               begin
-                 SPEdicao.Close;
-                 SPEdicao.StoredProcName := 'SP_CAD_PRO_SEP';
-                 SPEdicao.Prepare;
+            if SQLFKConsulta.Current.Vars[0].AsInteger > 0 then
+            begin
+              SPEdicao.Close;
+              SPEdicao.StoredProcName := 'SP_CAD_PRO_SEP';
+              SPEdicao.Prepare;
 
-                 SPEdicao.ParamByName('AIDEP').Value := RECParametros.EP_ID;
-                 SPEdicao.ParamByName('AIDCA').Value := RECUsuarios.Id;
+              SPEdicao.ParamByName('AIDEP').Value := RECParametros.EP_ID;
+              SPEdicao.ParamByName('AIDCA').Value := RECUsuarios.Id;
 
-                 SPEdicao.ParamByName('ACDPK').Value := SQLConsulta.Current.ByName('IDPK').AsString;
-                 SPEdicao.ParamByName('ADEPK').Value := SQLConsulta.Current.ByName('DEPK').AsString;
-                 SPEdicao.ParamByName('ADTPK').Value := SQLConsulta.Current.ByName('DTPK').AsDateTime;
+              SPEdicao.ParamByName('ACDPK').Value := SQLConsulta.Current.ByName('IDPK').AsString;
+              SPEdicao.ParamByName('ADEPK').Value := SQLConsulta.Current.ByName('DEPK').AsString;
+              SPEdicao.ParamByName('ADTPK').Value := SQLConsulta.Current.ByName('DTPK').AsDateTime;
 
-                 SPEdicao.ParamByName('AIDCL').Value := SQLConsulta.Current.ByName('IDCD').AsInteger;
-                 SPEdicao.ParamByName('ADECL').Value := SQLConsulta.Current.ByName('DECD').AsString;
-                 SPEdicao.ParamByName('AIDCV').Value := SQLConsulta.Current.ByName('IDCV').AsInteger;
-                 SPEdicao.ParamByName('ADECV').Value := SQLConsulta.Current.ByName('DECV').AsString;
-                 SPEdicao.ParamByName('AIDCR').Value := SQLConsulta.Current.ByName('IDCR').AsInteger;
-                 SPEdicao.ParamByName('ADECR').Value := SQLConsulta.Current.ByName('DECR').AsString;
+              SPEdicao.ParamByName('AIDCL').Value := SQLConsulta.Current.ByName('IDCD').AsInteger;
+              SPEdicao.ParamByName('ADECL').Value := SQLConsulta.Current.ByName('DECD').AsString;
+              SPEdicao.ParamByName('AIDCV').Value := SQLConsulta.Current.ByName('IDCV').AsInteger;
+              SPEdicao.ParamByName('ADECV').Value := SQLConsulta.Current.ByName('DECV').AsString;
+              SPEdicao.ParamByName('AIDCR').Value := SQLConsulta.Current.ByName('IDCR').AsInteger;
+              SPEdicao.ParamByName('ADECR').Value := SQLConsulta.Current.ByName('DECR').AsString;
 
-                 SPEdicao.ParamByName('ACDET').Value := oStrZero(rom_iteROM_CDET.AsInteger,10);
-                 SPEdicao.ParamByName('ACTNR').Value := rom_iteROM_CTNR.AsString;
-                 SPEdicao.ParamByName('ALOTE').Value := rom_iteLOTE.AsString;
-                 SPEdicao.ParamByName('ANFCI').Value := rom_iteROM_NFCI.AsString;
+              SPEdicao.ParamByName('ACDET').Value := oStrZero(rom_iteROM_CDET.AsInteger,10);
+              SPEdicao.ParamByName('ACTNR').Value := rom_iteROM_CTNR.AsString;
+              SPEdicao.ParamByName('ALOTE').Value := rom_iteLOTE.AsString;
+              SPEdicao.ParamByName('ANFCI').Value := rom_iteROM_NFCI.AsString;
 
-                 SPEdicao.ParamByName('AIDSP').Value := RECUsuarios.Id;
-                 SPEdicao.ParamByName('ADESP').Value := RECUsuarios.Login;
+              SPEdicao.ParamByName('AIDSP').Value := RECUsuarios.Id;
+              SPEdicao.ParamByName('ADESP').Value := RECUsuarios.Login;
 
-                 SPEdicao.ParamByName('AIDFK').Value := SQLFKConsulta.Current.ByName('IDFK').AsInteger;
-                 SPEdicao.ParamByName('AITEM').Value := SQLFKConsulta.Current.ByName('ITEM').AsInteger;
+              SPEdicao.ParamByName('AIDFK').Value := SQLFKConsulta.Current.ByName('IDFK').AsInteger;
+              SPEdicao.ParamByName('AITEM').Value := SQLFKConsulta.Current.ByName('ITEM').AsInteger;
 
-                 SPEdicao.ParamByName('AIDCP').Value := SQLFKConsulta.Current.ByName('IDCP').AsInteger;
-                 SPEdicao.ParamByName('ADECP').Value := SQLFKConsulta.Current.ByName('DECP').AsString;
-                 SPEdicao.ParamByName('ADGCP').Value := SQLFKConsulta.Current.ByName('DGCP').AsString;
+              SPEdicao.ParamByName('AIDCP').Value := SQLFKConsulta.Current.ByName('IDCP').AsInteger;
+              SPEdicao.ParamByName('ADECP').Value := SQLFKConsulta.Current.ByName('DECP').AsString;
+              SPEdicao.ParamByName('ADGCP').Value := SQLFKConsulta.Current.ByName('DGCP').AsString;
 
-                 SPEdicao.ParamByName('AUCOM').Value := SQLFKConsulta.Current.ByName('UCOM').AsString;
-                 SPEdicao.ParamByName('AUCON').Value := SQLFKConsulta.Current.ByName('UCON').AsString;
+              SPEdicao.ParamByName('AUCOM').Value := SQLFKConsulta.Current.ByName('UCOM').AsString;
+              SPEdicao.ParamByName('AUCON').Value := SQLFKConsulta.Current.ByName('UCON').AsString;
 
-                 SPEdicao.ParamByName('AQTDE').Value := rom_iteROM_QTDE.AsFloat;
-                 SPEdicao.ParamByName('AQTRL').Value := rom_iteROM_QTRL.AsInteger;
+              SPEdicao.ParamByName('AQTDE').Value := rom_iteROM_QTDE.AsFloat;
+              SPEdicao.ParamByName('AQTRL').Value := rom_iteROM_QTRL.AsInteger;
 
-                 SPEdicao.ParamByName('APSBR').Value := SQLFKConsulta.Current.ByName('PSBR').AsFloat;
-                 SPEdicao.ParamByName('APSLQ').Value := SQLFKConsulta.Current.ByName('PSLQ').AsFloat;
+              SPEdicao.ParamByName('APSBR').Value := SQLFKConsulta.Current.ByName('PSBR').AsFloat;
+              SPEdicao.ParamByName('APSLQ').Value := SQLFKConsulta.Current.ByName('PSLQ').AsFloat;
 
-                 SPEdicao.ParamByName('AVPRC_PAD_INI').Value := SQLFKConsulta.Current.ByName('VPRC_PAD_INI').AsCurrency;
-                 SPEdicao.ParamByName('AVPRC_PAD_FIM').Value := SQLFKConsulta.Current.ByName('VPRC_PAD_FIM').AsCurrency;
-                 SPEdicao.ParamByName('AVPRC').Value := SQLFKConsulta.Current.ByName('VPRC_COM').AsFloat;
+              SPEdicao.ParamByName('AVPRC_PAD_INI').Value := SQLFKConsulta.Current.ByName('VPRC_PAD_INI').AsCurrency;
+              SPEdicao.ParamByName('AVPRC_PAD_FIM').Value := SQLFKConsulta.Current.ByName('VPRC_PAD_FIM').AsCurrency;
+              SPEdicao.ParamByName('AVPRC').Value := SQLFKConsulta.Current.ByName('VPRC_COM').AsFloat;
 
-                 SPEdicao.ParamByName('ANCM').Value  := SQLFKConsulta.Current.ByName('NCM' ).AsString;
-                 SPEdicao.ParamByName('APIPI').Value := SQLFKConsulta.Current.ByName('PIPI').AsFloat;
-                 SPEdicao.ExecProc;
-               end;
+              SPEdicao.ParamByName('ANCM').Value  := SQLFKConsulta.Current.ByName('NCM' ).AsString;
+              SPEdicao.ParamByName('APIPI').Value := SQLFKConsulta.Current.ByName('PIPI').AsFloat;
+              SPEdicao.ExecProc;
+            end;
 
-               rom_ite.Next;
-             end;
-           finally
-             rom_ite.DisableControls;
-           end;
-         end;
+            rom_ite.Next;
+          end;
+        finally
+          rom_ite.DisableControls;
+        end;
+      end;
 
-         { Itens }
-         with SQLFKConsulta do
-         begin
-           Close;
-           SQL.Clear;
-           SQL.Add('SELECT   PK.IDPK,PK.ID AS IDFK,PK.ITEM,');
-           SQL.Add('         PK.IDCP,PK.CP_IDEP,');
-           SQL.Add('         PK.CEAN,PK.DECP,PK.DGCP,');
-           SQL.Add('         PK.UCOM,PK.UCON,');
-           SQL.Add('         PK.QTDE,PK.QTRL,PK.PSBR,PK.PSLQ,');
-           SQL.Add('         PK.VPRC_PAD_INI,PK.VPRC_PAD_FIM,');
-           SQL.Add('         PK.VPRC_PAD,PK.VPRC_COM,');
-           SQL.Add('         PK.PDSC,PK.VDSC,');
-           SQL.Add('         PK.TSDE,PK.TCDE,');
-           SQL.Add('         PK.ORIG,PK.NCM ,PK.PIPI,PK.VIPI');
+      { Itens }
+      with SQLFKConsulta do
+      begin
+        Close;
+        SQL.Clear;
+        SQL.Add('SELECT   PK.IDPK,PK.ID AS IDFK,PK.ITEM,');
+        SQL.Add('         PK.IDCP,PK.CP_IDEP,');
+        SQL.Add('         PK.CEAN,PK.DECP,PK.DGCP,');
+        SQL.Add('         PK.UCOM,PK.UCON,');
+        SQL.Add('         PK.QTDE,PK.QTRL,PK.PSBR,PK.PSLQ,');
+        SQL.Add('         PK.VPRC_PAD_INI,PK.VPRC_PAD_FIM,');
+        SQL.Add('         PK.VPRC_PAD,PK.VPRC_COM,');
+        SQL.Add('         PK.PDSC,PK.VDSC,');
+        SQL.Add('         PK.TSDE,PK.TCDE,');
+        SQL.Add('         PK.ORIG,PK.NCM ,PK.PIPI,PK.VIPI');
 
-           SQL.Add('FROM ' + oREPZero('PED_VEN_ITE','_',RECParametros.EP_ID,3) + ' AS PK');
+        SQL.Add('FROM ' + oREPZero('PED_VEN_ITE','_',RECParametros.EP_ID,3) + ' AS PK');
 
-           SQL.Add('WHERE    PK.IDPK = ''' + SQLConsulta.Current.ByName('IDPK').AsString + '''');
-           SQL.Add('ORDER BY PK.ITEM');
-           ExecQuery;
-         end;
+        SQL.Add('WHERE    PK.IDPK = ''' + SQLConsulta.Current.ByName('IDPK').AsString + '''');
+        SQL.Add('ORDER BY PK.ITEM');
+        ExecQuery;
+      end;
 
-         { CAD_PRO_RES }
-         if (CadastroVEN_BEST.AsString = '1') and (CadastroVEN_QTSP.AsString = '0') and (CadastroROM_STPD.AsString <> 'DEVOLUÇÃO') then
-         begin
-           while not SQLFKConsulta.Eof do
-           begin
-             with RECEstoque do
-             begin
-               IDEP := RECParametros.EP_ID;
-               IDCA := RECUsuarios.Id;
+      { CAD_PRO_RES }
+      if (CadastroVEN_BEST.AsString = '1') and (CadastroVEN_QTSP.AsString = '0') and (CadastroROM_STPD.AsString <> 'DEVOLUÇÃO') then
+      begin
+        while not SQLFKConsulta.Eof do
+        begin
+          with RECEstoque do
+          begin
+            IDEP := RECParametros.EP_ID;
+            IDCA := RECUsuarios.Id;
 
-               IDPK := SQLConsulta.Current.ByName('IDPK').AsString;
-               DEPK := SQLConsulta.Current.ByName('DEPK').AsString;
-               DTPK := SQLConsulta.Current.ByName('DTPK').AsDateTime;
-               CTNR := SQLConsulta.Current.ByName('CTNR').AsString;
+            IDPK := SQLConsulta.Current.ByName('IDPK').AsString;
+            DEPK := SQLConsulta.Current.ByName('DEPK').AsString;
+            DTPK := SQLConsulta.Current.ByName('DTPK').AsDateTime;
+            CTNR := SQLConsulta.Current.ByName('CTNR').AsString;
 
-               IDCD := SQLConsulta.Current.ByName('IDCD').AsString;
-               IDCV := SQLConsulta.Current.ByName('IDCV').AsString;
-               IDCR := SQLConsulta.Current.ByName('IDCR').AsString;
+            IDCD := SQLConsulta.Current.ByName('IDCD').AsString;
+            IDCV := SQLConsulta.Current.ByName('IDCV').AsString;
+            IDCR := SQLConsulta.Current.ByName('IDCR').AsString;
 
-               TPCO := SQLConsulta.Current.ByName('TPCO').AsInteger;
-               RECO := SQLConsulta.Current.ByName('RECO').AsString;
-               CDPG := SQLConsulta.Current.ByName('CDPG').AsString;
+            TPCO := SQLConsulta.Current.ByName('TPCO').AsInteger;
+            RECO := SQLConsulta.Current.ByName('RECO').AsString;
+            CDPG := SQLConsulta.Current.ByName('CDPG').AsString;
 
-               IDFK := SQLFKConsulta.Current.ByName('IDFK').AsInteger;
-               ITEM := SQLFKConsulta.Current.ByName('ITEM').AsInteger;
+            IDFK := SQLFKConsulta.Current.ByName('IDFK').AsInteger;
+            ITEM := SQLFKConsulta.Current.ByName('ITEM').AsInteger;
 
-               IDCP := SQLFKConsulta.Current.ByName('IDCP').AsInteger;
-               CEAN := SQLFKConsulta.Current.ByName('CEAN').AsString;
-               DECP := SQLFKConsulta.Current.ByName('DECP').AsString;
-               DGCP := SQLFKConsulta.Current.ByName('DGCP').AsString;
+            IDCP := SQLFKConsulta.Current.ByName('IDCP').AsInteger;
+            CEAN := SQLFKConsulta.Current.ByName('CEAN').AsString;
+            DECP := SQLFKConsulta.Current.ByName('DECP').AsString;
+            DGCP := SQLFKConsulta.Current.ByName('DGCP').AsString;
 
-               UCOM := SQLFKConsulta.Current.ByName('UCOM').AsString;
-               UCON := SQLFKConsulta.Current.ByName('UCON').AsString;
+            UCOM := SQLFKConsulta.Current.ByName('UCOM').AsString;
+            UCON := SQLFKConsulta.Current.ByName('UCON').AsString;
 
-               QTDE := SQLFKConsulta.Current.ByName('QTDE').AsFloat;
-               QTRL := SQLFKConsulta.Current.ByName('QTRL').AsInteger;
-               PSBR := SQLFKConsulta.Current.ByName('PSBR').AsFloat;
-               PSLQ := SQLFKConsulta.Current.ByName('PSLQ').AsFloat;
+            QTDE := SQLFKConsulta.Current.ByName('QTDE').AsFloat;
+            QTRL := SQLFKConsulta.Current.ByName('QTRL').AsInteger;
+            PSBR := SQLFKConsulta.Current.ByName('PSBR').AsFloat;
+            PSLQ := SQLFKConsulta.Current.ByName('PSLQ').AsFloat;
 
-               VPRC_PAD_INI := SQLFKConsulta.Current.ByName('VPRC_PAD_INI').AsCurrency;
-               VPRC_PAD_FIM := SQLFKConsulta.Current.ByName('VPRC_PAD_FIM').AsCurrency;
-               VPRC_PAD := SQLFKConsulta.Current.ByName('VPRC_PAD').AsFloat;
-               VPRC_COM := SQLFKConsulta.Current.ByName('VPRC_COM').AsFloat;
+            VPRC_PAD_INI := SQLFKConsulta.Current.ByName('VPRC_PAD_INI').AsCurrency;
+            VPRC_PAD_FIM := SQLFKConsulta.Current.ByName('VPRC_PAD_FIM').AsCurrency;
+            VPRC_PAD := SQLFKConsulta.Current.ByName('VPRC_PAD').AsFloat;
+            VPRC_COM := SQLFKConsulta.Current.ByName('VPRC_COM').AsFloat;
 
-               PDSC := SQLFKConsulta.Current.ByName('PDSC').AsFloat;
-               VDSC := SQLFKConsulta.Current.ByName('VDSC').AsFloat;
+            PDSC := SQLFKConsulta.Current.ByName('PDSC').AsFloat;
+            VDSC := SQLFKConsulta.Current.ByName('VDSC').AsFloat;
 
-               TSDE := SQLFKConsulta.Current.ByName('TSDE').AsFloat;
-               TCDE := SQLFKConsulta.Current.ByName('TCDE').AsFloat;
+            TSDE := SQLFKConsulta.Current.ByName('TSDE').AsFloat;
+            TCDE := SQLFKConsulta.Current.ByName('TCDE').AsFloat;
 
-               NCM  := SQLFKConsulta.Current.ByName('NCM' ).AsString;
-               PIPI := SQLFKConsulta.Current.ByName('PIPI').AsFloat;
-               VIPI := SQLFKConsulta.Current.ByName('VIPI').AsFloat;
+            NCM  := SQLFKConsulta.Current.ByName('NCM' ).AsString;
+            PIPI := SQLFKConsulta.Current.ByName('PIPI').AsFloat;
+            VIPI := SQLFKConsulta.Current.ByName('VIPI').AsFloat;
 
-               INFADCAD := SQLConsulta.Current.ByName('INFADPED').AsString;
+            INFADCAD := SQLConsulta.Current.ByName('INFADPED').AsString;
 
-               IDEV := 0;
-               FLAG := 0;
-               oSP_CAD_PRO_EST_RES(RECEstoque);
-             end;
-             SQLFKConsulta.Next;
-           end;
-         end;
+            IDEV := 0;
+            FLAG := 0;
+            oSP_CAD_PRO_EST_RES(RECEstoque);
+          end;
+          SQLFKConsulta.Next;
+        end;
+      end;
 
-         { Separa Preços }
-         with SQLEdicao do
-         begin
-           Close;
-           SQL.Clear;
-           SQL.Add('SELECT PK.IDPK,PK.IDCP,PK.ITEM,PK.QTDE,PK.VPRC_COM');
-           SQL.Add('FROM (');
-           SQL.Add('SELECT   PK.IDPK,PK.IDCP,MIN(PK.VPRC_COM) AS VPRC_COM');
-           SQL.Add('FROM '  +oREPZero('PED_VEN_ITE','_',RECParametros.EP_ID,3)+' AS PK');
-           SQL.Add('JOIN     CAD_PRO AS CP ON (CP.ID = PK.IDCP)');
-           SQL.Add('WHERE    PK.IDPK = ''' + SQLConsulta.Current.ByName('IDPK').AsString + '''');
-           SQL.Add('AND      EXISTS (SELECT SP.ID FROM CAD_PRO_SEP AS SP WHERE SP.IDPK = PK.IDPK AND SP.IDCP = PK.IDCP)');
-           SQL.Add('GROUP BY 1,2');
-           SQL.Add('HAVING COUNT(*) > 1)  AS FK');
-           SQL.Add('JOIN ' + oREPZero('PED_VEN_ITE','_',RECParametros.EP_ID,3)+' AS PK ON (PK.IDPK = FK.IDPK AND PK.IDCP = FK.IDCP AND PK.VPRC_COM = FK.VPRC_COM)');
-           ExecQuery;
-         end;
+      { Separa Preços }
+      with SQLEdicao do
+      begin
+        Close;
+        SQL.Clear;
+        SQL.Add('SELECT PK.IDPK,PK.IDCP,PK.ITEM,PK.QTDE,PK.VPRC_COM');
+        SQL.Add('FROM (');
+        SQL.Add('SELECT   PK.IDPK,PK.IDCP,MIN(PK.VPRC_COM) AS VPRC_COM');
+        SQL.Add('FROM '  +oREPZero('PED_VEN_ITE','_',RECParametros.EP_ID,3)+' AS PK');
+        SQL.Add('JOIN     CAD_PRO AS CP ON (CP.ID = PK.IDCP)');
+        SQL.Add('WHERE    PK.IDPK = ''' + SQLConsulta.Current.ByName('IDPK').AsString + '''');
+        SQL.Add('AND      EXISTS (SELECT SP.ID FROM CAD_PRO_SEP AS SP WHERE SP.IDPK = PK.IDPK AND SP.IDCP = PK.IDCP)');
+        SQL.Add('GROUP BY 1,2');
+        SQL.Add('HAVING COUNT(*) > 1)  AS FK');
+        SQL.Add('JOIN ' + oREPZero('PED_VEN_ITE','_',RECParametros.EP_ID,3)+' AS PK ON (PK.IDPK = FK.IDPK AND PK.IDCP = FK.IDCP AND PK.VPRC_COM = FK.VPRC_COM)');
+        ExecQuery;
+      end;
 
-         while not SQLEdicao.Eof do
-         begin
-           while true do
-           begin
-             with SQLFKEdicao do
-             begin
-               Close;
-               SQL.Clear;
-               SQL.Add('SELECT SUM(QTDE) AS QTDE FROM CAD_PRO_SEP');
-               SQL.Add('WHERE  IDPK     = ''' + SQLEdicao.Current.ByName('IDPK').AsString + '''');
-               SQL.Add('AND    IDCP     = ''' + SQLEdicao.Current.ByName('IDCP').AsString + '''');
-               SQL.Add('AND    VPRC_COM = ''' + oStrTran(SQLEdicao.Current.ByName('VPRC_COM').AsString,',','.') + '''');
-               ExecQuery;
+      while not SQLEdicao.Eof do
+      begin
+        while true do
+        begin
+          with SQLFKEdicao do
+          begin
+            Close;
+            SQL.Clear;
+            SQL.Add('SELECT SUM(QTDE) AS QTDE FROM CAD_PRO_SEP');
+            SQL.Add('WHERE  IDPK     = ''' + SQLEdicao.Current.ByName('IDPK').AsString + '''');
+            SQL.Add('AND    IDCP     = ''' + SQLEdicao.Current.ByName('IDCP').AsString + '''');
+            SQL.Add('AND    VPRC_COM = ''' + oStrTran(SQLEdicao.Current.ByName('VPRC_COM').AsString,',','.') + '''');
+            ExecQuery;
 
-               if SQLFKEdicao.Current.ByName('QTDE').AsFloat < SQLEdicao.Current.ByName('QTDE').AsFloat then
-               begin
-                 { Busca pela maior etiqueta com mesma quantidade }
-                 Close;
-                 SQL.Clear;
-                 SQL.Add('SELECT MAX(CDET) FROM CAD_PRO_SEP');
-                 SQL.Add('WHERE  IDPK      = ''' + SQLEdicao.Current.ByName('IDPK').AsString + '''' );
-                 SQL.Add('AND    IDCP      = ''' + SQLEdicao.Current.ByName('IDCP').AsString + '''' );
-                 SQL.Add('AND    QTDE      = ''' + oStrTran(SQLEdicao.Current.ByName('QTDE').AsString    ,',','.') + '''');
-                 SQL.Add('AND    VPRC_COM <> ''' + oStrTran(SQLEdicao.Current.ByName('VPRC_COM').AsString,',','.') + '''');
-                 ExecQuery;
+            if SQLFKEdicao.Current.ByName('QTDE').AsFloat < SQLEdicao.Current.ByName('QTDE').AsFloat then
+            begin
+              { Busca pela maior etiqueta com mesma quantidade }
+              Close;
+              SQL.Clear;
+              SQL.Add('SELECT MAX(CDET) FROM CAD_PRO_SEP');
+              SQL.Add('WHERE  IDPK      = ''' + SQLEdicao.Current.ByName('IDPK').AsString + '''' );
+              SQL.Add('AND    IDCP      = ''' + SQLEdicao.Current.ByName('IDCP').AsString + '''' );
+              SQL.Add('AND    QTDE      = ''' + oStrTran(SQLEdicao.Current.ByName('QTDE').AsString    ,',','.') + '''');
+              SQL.Add('AND    VPRC_COM <> ''' + oStrTran(SQLEdicao.Current.ByName('VPRC_COM').AsString,',','.') + '''');
+              ExecQuery;
 
-                 if SQLFKEdicao.Current.Vars[0].AsInteger = 0 then
-                 begin
-                   { Busca pela maior etiqueta + menor quantidade }
-                   Close;
-                   SQL.Clear;
-                   SQL.Add('SELECT MAX(CDET) FROM CAD_PRO_SEP');
-                   SQL.Add('WHERE  IDPK      = ''' + SQLEdicao.Current.ByName('IDPK').AsString + '''' );
-                   SQL.Add('AND    IDCP      = ''' + SQLEdicao.Current.ByName('IDCP').AsString + '''' );
-                   SQL.Add('AND    QTDE     <= ''' + oStrTran(SQLEdicao.Current.ByName('QTDE').AsString    ,',','.') + '''');
-                   SQL.Add('AND    VPRC_COM <> ''' + oStrTran(SQLEdicao.Current.ByName('VPRC_COM').AsString,',','.') + '''');
-                   ExecQuery;
-                 end;
+              if SQLFKEdicao.Current.Vars[0].AsInteger = 0 then
+              begin
+                { Busca pela maior etiqueta + menor quantidade }
+                Close;
+                SQL.Clear;
+                SQL.Add('SELECT MAX(CDET) FROM CAD_PRO_SEP');
+                SQL.Add('WHERE  IDPK      = ''' + SQLEdicao.Current.ByName('IDPK').AsString + '''' );
+                SQL.Add('AND    IDCP      = ''' + SQLEdicao.Current.ByName('IDCP').AsString + '''' );
+                SQL.Add('AND    QTDE     <= ''' + oStrTran(SQLEdicao.Current.ByName('QTDE').AsString    ,',','.') + '''');
+                SQL.Add('AND    VPRC_COM <> ''' + oStrTran(SQLEdicao.Current.ByName('VPRC_COM').AsString,',','.') + '''');
+                ExecQuery;
+              end;
 
-                 if SQLFKEdicao.Current.Vars[0].AsInteger = 0 then
-                 begin
-                   { Busca Maior Etiqueta }
-                   Close;
-                   SQL.Clear;
-                   SQL.Add('SELECT MAX(CDET) FROM CAD_PRO_SEP');
-                   SQL.Add('WHERE  IDPK      = ''' + SQLEdicao.Current.ByName('IDPK').AsString + '''' );
-                   SQL.Add('AND    IDCP      = ''' + SQLEdicao.Current.ByName('IDCP').AsString + '''' );
-                   SQL.Add('AND    VPRC_COM <> ''' + oStrTran(SQLEdicao.Current.ByName('VPRC_COM').AsString,',','.') + '''');
-                   ExecQuery;
-                 end;
+              if SQLFKEdicao.Current.Vars[0].AsInteger = 0 then
+              begin
+                { Busca Maior Etiqueta }
+                Close;
+                SQL.Clear;
+                SQL.Add('SELECT MAX(CDET) FROM CAD_PRO_SEP');
+                SQL.Add('WHERE  IDPK      = ''' + SQLEdicao.Current.ByName('IDPK').AsString + '''' );
+                SQL.Add('AND    IDCP      = ''' + SQLEdicao.Current.ByName('IDCP').AsString + '''' );
+                SQL.Add('AND    VPRC_COM <> ''' + oStrTran(SQLEdicao.Current.ByName('VPRC_COM').AsString,',','.') + '''');
+                ExecQuery;
+              end;
 
-                    SQLFKEdicao.Tag := SQLFKEdicao.Current.Vars[0].AsInteger;
-                 if SQLFKEdicao.Tag  = 0 then
-                    Break;
+                 SQLFKEdicao.Tag := SQLFKEdicao.Current.Vars[0].AsInteger;
+              if SQLFKEdicao.Tag  = 0 then
+                 Break;
 
-                 Close;
-                 SQL.Clear;
-                 SQL.Add('UPDATE CAD_PRO_SEP');
-                 SQL.Add('SET    ITEM     = ''' + SQLEdicao.Current.ByName('ITEM').AsString + ''',');
-                 SQL.Add('       EST_UNIT = ''' + oStrTran(SQLEdicao.Current.ByName('VPRC_COM').AsString,',','.') + '''');
-                 SQL.Add('WHERE  CDET     = ''' + IntToStr(SQLFKEdicao.Tag) + '''');
-                 ExecQuery;
-               end else
-               Break;
-             end;
-           end;
-           SQLEdicao.Next;
-         end;
+              Close;
+              SQL.Clear;
+              SQL.Add('UPDATE CAD_PRO_SEP');
+              SQL.Add('SET    ITEM     = ''' + SQLEdicao.Current.ByName('ITEM').AsString + ''',');
+              SQL.Add('       EST_UNIT = ''' + oStrTran(SQLEdicao.Current.ByName('VPRC_COM').AsString,',','.') + '''');
+              SQL.Add('WHERE  CDET     = ''' + IntToStr(SQLFKEdicao.Tag) + '''');
+              ExecQuery;
+            end else
+            Break;
+          end;
+        end;
+        SQLEdicao.Next;
+      end;
 
-         { Sumário - Itens}
-         oFirst(SQLFKConsulta);
-         while not SQLFKConsulta.Eof do
-         begin
-           with SQLEdicao do
-           begin
-             Close;
-             SQL.Clear;
-             SQL.Add('SELECT SUM(QTDE),SUM(QTRL) FROM CAD_PRO_SEP');
-             SQL.Add('WHERE  IDEP = '''+RECParametros.EP_ID        +'''');
-             SQL.Add('AND    IDPK = '''+SQLFKConsulta.Current.ByName('IDPK').AsString+'''');
-             SQL.Add('AND    IDCP = '''+SQLFKConsulta.Current.ByName('IDCP').AsString+'''');
-             SQL.Add('AND    ITEM = '''+SQLFKConsulta.Current.ByName('ITEM').AsString+'''');
-             ExecQuery;
-           end;
+      { Sumário - Itens}
+      oFirst(SQLFKConsulta);
+      while not SQLFKConsulta.Eof do
+      begin
+        with SQLEdicao do
+        begin
+          Close;
+          SQL.Clear;
+          SQL.Add('SELECT SUM(QTDE),SUM(QTRL) FROM CAD_PRO_SEP');
+          SQL.Add('WHERE  IDEP = '''+RECParametros.EP_ID        +'''');
+          SQL.Add('AND    IDPK = '''+SQLFKConsulta.Current.ByName('IDPK').AsString+'''');
+          SQL.Add('AND    IDCP = '''+SQLFKConsulta.Current.ByName('IDCP').AsString+'''');
+          SQL.Add('AND    ITEM = '''+SQLFKConsulta.Current.ByName('ITEM').AsString+'''');
+          ExecQuery;
+        end;
 
-           with SQLFKEdicao do
-           begin
-             Close;
-             SQL.Clear;
-             SQL.Add('UPDATE '+oREPZero('PED_VEN_ITE','_',RECParametros.EP_ID,3));
-             SQL.Add('SET   ROM_QTPD = '''+oStrTran(FloatToStr(SQLEdicao.Current.Vars[0].AsFloat  ),',','.')+''',');
-             SQL.Add('      ROM_RLPD = '''+oStrTran(FloatToStr(SQLEdicao.Current.Vars[1].AsInteger),',','.')+''',');
-             SQL.Add('      ROM_IDSP = '''+RECUsuarios.Id   +''',');
-             SQL.Add('      ROM_DSEP = '''+RECUsuarios.Login+''',');
-             SQL.Add('      ROM_DTPD = '''+FormatDateTime('mm/dd/yy hh:mm',Now)+'''' );
+        with SQLFKEdicao do
+        begin
+          Close;
+          SQL.Clear;
+          SQL.Add('UPDATE '+oREPZero('PED_VEN_ITE','_',RECParametros.EP_ID,3));
+          SQL.Add('SET   ROM_QTPD = '''+oStrTran(FloatToStr(SQLEdicao.Current.Vars[0].AsFloat  ),',','.')+''',');
+          SQL.Add('      ROM_RLPD = '''+oStrTran(FloatToStr(SQLEdicao.Current.Vars[1].AsInteger),',','.')+''',');
+          SQL.Add('      ROM_IDSP = '''+RECUsuarios.Id   +''',');
+          SQL.Add('      ROM_DSEP = '''+RECUsuarios.Login+''',');
+          SQL.Add('      ROM_DTPD = '''+FormatDateTime('mm/dd/yy hh:mm',Now)+'''' );
 
-             SQL.Add('WHERE IDEP     = '''+RECParametros.EP_ID +'''');
-             SQL.Add('AND   IDPK     = '''+SQLFKConsulta.Current.ByName('IDPK').AsString+'''');
-             SQL.Add('AND   IDCP     = '''+SQLFKConsulta.Current.ByName('IDCP').AsString+'''');
-             SQL.Add('AND   ITEM     = '''+SQLFKConsulta.Current.ByName('ITEM').AsString+'''');
-             ExecQuery;
+          SQL.Add('WHERE IDEP     = '''+RECParametros.EP_ID +'''');
+          SQL.Add('AND   IDPK     = '''+SQLFKConsulta.Current.ByName('IDPK').AsString+'''');
+          SQL.Add('AND   IDCP     = '''+SQLFKConsulta.Current.ByName('IDCP').AsString+'''');
+          SQL.Add('AND   ITEM     = '''+SQLFKConsulta.Current.ByName('ITEM').AsString+'''');
+          ExecQuery;
 
-             { Reservados }
-             if SQLEdicao.Current.Vars[0].AsFloat > 0 then
-             begin
-               { Excluir da reserva apenas os produtos separados }
-               Close;
-               SQL.Clear;
-               SQL.Add('DELETE FROM CAD_PRO_RES');
-               SQL.Add('WHERE  IDEP = '''+RECParametros.EP_ID        +'''');
-               SQL.Add('AND    IDPK = '''+SQLFKConsulta.Current.ByName('IDPK').AsString+'''');
-               SQL.Add('AND    IDCP = '''+SQLFKConsulta.Current.ByName('IDCP').AsString+'''');
-               ExecQuery;
-             end;
-           end;
-           SQLFKConsulta.Next;
-         end;
+          { Reservados }
+          if SQLEdicao.Current.Vars[0].AsFloat > 0 then
+          begin
+            { Excluir da reserva apenas os produtos separados }
+            Close;
+            SQL.Clear;
+            SQL.Add('DELETE FROM CAD_PRO_RES');
+            SQL.Add('WHERE  IDEP = '''+RECParametros.EP_ID        +'''');
+            SQL.Add('AND    IDPK = '''+SQLFKConsulta.Current.ByName('IDPK').AsString+'''');
+            SQL.Add('AND    IDCP = '''+SQLFKConsulta.Current.ByName('IDCP').AsString+'''');
+            ExecQuery;
+          end;
+        end;
+        SQLFKConsulta.Next;
+      end;
 
-         { Sumário - Cabeçalho }
-         with SQLEdicao do
-         begin
-           Close;
-           SQL.Clear;
-           SQL.Add('SELECT  SUM(QTDE),SUM(QTRL),SUM(QTSP),SUM(RLSP),SUM(VTSP)');
-           SQL.Add('FROM ' +oREPZero('PED_VEN_ITE','_',RECParametros.EP_ID,3));
-           SQL.Add('WHERE   IDEP = '''+RECParametros.EP_ID+'''');
-           SQL.Add('AND     IDPK = '''+SQLConsulta.Current.ByName('IDPK').AsString+'''');
-           ExecQuery;
-         end;
-         with SQLFKEdicao do
-         begin
-           Close;
-           SQL.Clear;
-           SQL.Add('UPDATE '+oREPZero('PED_VEN_CAB','_',RECParametros.EP_ID,3));
-           SQL.Add('SET    ROM_QTVE = '''+oStrTran(FloatToStr(SQLEdicao.Current.Vars[0].AsFloat  ),',','.')+''',');
-           SQL.Add('       ROM_RLVE = '''+oStrTran(FloatToStr(SQLEdicao.Current.Vars[1].AsInteger),',','.')+''',');
-           SQL.Add('       ROM_QTPD = '''+oStrTran(FloatToStr(SQLEdicao.Current.Vars[2].AsFloat  ),',','.')+''',');
-           SQL.Add('       ROM_RLPD = '''+oStrTran(FloatToStr(SQLEdicao.Current.Vars[3].AsInteger),',','.')+''',');
-           SQL.Add('       VTSP     = '''+oStrTran(FloatToStr(SQLEdicao.Current.Vars[4].AsFloat  ),',','.')+'''' );
-           SQL.Add('WHERE  IDEP     = '''+RECParametros.EP_ID+'''');
-           SQL.Add('AND    IDPK     = '''+SQLConsulta.Current.ByName('IDPK').AsString+'''');
-           ExecQuery;
-         end;
-       end;
-       
-       with SQLEdicao do
-       begin
-         Close;
-         SQL.Clear;
-         SQL.Add('DELETE FROM '+oREPZero('ROM_CAB','_',RECParametros.EP_ID,3));
-         SQL.Add('WHERE  CDRO = ''' + CadastroIDPK.AsString + '''');
-         ExecQuery;
+      { Sumário - Cabeçalho }
+      with SQLEdicao do
+      begin
+        Close;
+        SQL.Clear;
+        SQL.Add('SELECT  SUM(QTDE),SUM(QTRL),SUM(QTSP),SUM(RLSP),SUM(VTSP)');
+        SQL.Add('FROM ' +oREPZero('PED_VEN_ITE','_',RECParametros.EP_ID,3));
+        SQL.Add('WHERE   IDEP = '''+RECParametros.EP_ID+'''');
+        SQL.Add('AND     IDPK = '''+SQLConsulta.Current.ByName('IDPK').AsString+'''');
+        ExecQuery;
+      end;
+      with SQLFKEdicao do
+      begin
+        Close;
+        SQL.Clear;
+        SQL.Add('UPDATE '+oREPZero('PED_VEN_CAB','_',RECParametros.EP_ID,3));
+        SQL.Add('SET    ROM_QTVE = '''+oStrTran(FloatToStr(SQLEdicao.Current.Vars[0].AsFloat  ),',','.')+''',');
+        SQL.Add('       ROM_RLVE = '''+oStrTran(FloatToStr(SQLEdicao.Current.Vars[1].AsInteger),',','.')+''',');
+        SQL.Add('       ROM_QTPD = '''+oStrTran(FloatToStr(SQLEdicao.Current.Vars[2].AsFloat  ),',','.')+''',');
+        SQL.Add('       ROM_RLPD = '''+oStrTran(FloatToStr(SQLEdicao.Current.Vars[3].AsInteger),',','.')+''',');
+        SQL.Add('       VTSP     = '''+oStrTran(FloatToStr(SQLEdicao.Current.Vars[4].AsFloat  ),',','.')+'''' );
+        SQL.Add('WHERE  IDEP     = '''+RECParametros.EP_ID+'''');
+        SQL.Add('AND    IDPK     = '''+SQLConsulta.Current.ByName('IDPK').AsString+'''');
+        ExecQuery;
+      end;
+    end;
 
-         Close;
-         SQL.Clear;
-         SQL.Add('DELETE FROM '+oREPZero('ROM_ITE','_',RECParametros.EP_ID,3));
-         SQL.Add('WHERE  CDRO = ''' + CadastroIDPK.AsString + '''');
-         ExecQuery;
+    with SQLEdicao do
+    begin
+      Close;
+      SQL.Clear;
+      SQL.Add('DELETE FROM '+oREPZero('ROM_CAB','_',RECParametros.EP_ID,3));
+      SQL.Add('WHERE  CDRO = ''' + CadastroIDPK.AsString + '''');
+      ExecQuery;
 
-         Close;
-         SQL.Clear;
-         SQL.Add('UPDATE '+oREPZero('PED_VEN_CAB','_',RECParametros.EP_ID,3));
-         SQL.Add('SET   ROM_CDRO = 0');
-         SQL.Add('WHERE CDRO     = ''' + CadastroIDPK.AsString + '''');
-         ExecQuery;
-       end;
+      Close;
+      SQL.Clear;
+      SQL.Add('DELETE FROM '+oREPZero('ROM_ITE','_',RECParametros.EP_ID,3));
+      SQL.Add('WHERE  CDRO = ''' + CadastroIDPK.AsString + '''');
+      ExecQuery;
 
-       TConsulta.CommitRetaining;
-       oAviso(Self.Handle,'Romaneio Cancelado com Sucesso !');
-     except
-       on E: Exception do
-       begin
-         oRTransact(TConsulta,ltRollback);
-         oException(Nil,'Falha ao tentar cancelar romaneio !'+#13+
-                        'Favor entrar em contato com o administrador do sistema.'+#13+#13+
-                        'Erro: '+E.Message);
-       end;
-     end;
+      Close;
+      SQL.Clear;
+      SQL.Add('UPDATE '+oREPZero('PED_VEN_CAB','_',RECParametros.EP_ID,3));
+      SQL.Add('SET   ROM_CDRO = 0');
+      SQL.Add('WHERE CDRO     = ''' + CadastroIDPK.AsString + '''');
+      ExecQuery;
+    end;
+
+    oCTransact(TEdicao);
+    oAviso(Self.Handle,'Romaneio Cancelado com Sucesso !');
+  except
+    on E: Exception do
+    begin
+      oCTransact(TEdicao,ltRollback);
+      oException(Nil,'Falha ao tentar cancelar romaneio !'+#13+
+                     'Favor entrar em contato com o administrador do sistema.'+#13+#13+
+                     'Erro: '+E.Message);
+    end;
+  end;
 
   ACTEveExecute.Execute;
 end;
 
 procedure Tfrmctr_rom.siNFEClick(Sender: TObject);
 begin
-  {$IF DEFINED(DEF_EXP) OR DEFINED(DEF_QLD)}
-     FrmPrincipal.ACTLOG_DENIED.Execute;
+  if Pos('AGUA',CadastroROM_STFI.AsString) > 0 then
+     oException(Nil,'Emissão de Nota Fiscal não Permitida !' +#13+
+                     CadastroROM_STFI.AsString);
 
-  {$ELSE}
-     if Pos('AGUA',CadastroROM_STFI.AsString) > 0 then
-        oException(Nil,'Emissão de Nota Fiscal não Permitida !' +#13+
-                        CadastroROM_STFI.AsString);
+  with SQLConsulta do
+  begin
+    Close;
+    SQL.Clear;
+    SQL.Add('SELECT PK.DEPD FROM ' + oREPZero('PED_VEN_CAB','_',RECParametros.EP_ID,3) + ' AS PK');
+    SQL.Add('WHERE  PK.CDRO  = ''' + CadastroIDPK.AsString + '''');
+    ExecQuery;
 
-     with SQLConsulta do
-     begin
-       Close;
-       SQL.Clear;
-       SQL.Add('SELECT PK.DEPD FROM ' + oREPZero('PED_VEN_CAB','_',RECParametros.EP_ID,3) + ' AS PK');
-       SQL.Add('WHERE  PK.CDRO  = ''' + CadastroIDPK.AsString + '''');
-       ExecQuery;
+    if Eof then
+       oException(Nil,'Pedido não Encontrado !' + #13+
+                      'Favor cancelar e refazer romaneio.');
 
-       if Eof then
-          oException(Nil,'Pedido não Encontrado !' + #13+
-                         'Favor cancelar e refazer romaneio.');
+    Close;
+    SQL.Clear;
+    SQL.Add('SELECT PK.CDET,COUNT(*) FROM ' + oREPZero('ROM_ITE','_',RECParametros.EP_ID,3) + ' AS PK');
+    SQL.Add('WHERE  PK.IDPK = ''' + CadastroIDPK.AsString + '''');
+    SQL.Add('AND    PK.CDET > 0');
+    SQL.Add('GROUP  BY 1');
+    SQL.Add('HAVING COUNT(*) > 1');
+    ExecQuery;
 
-       Close;
-       SQL.Clear;
-       SQL.Add('SELECT PK.CDET,COUNT(*) FROM ' + oREPZero('ROM_ITE','_',RECParametros.EP_ID,3) + ' AS PK');
-       SQL.Add('WHERE  PK.IDPK = ''' + CadastroIDPK.AsString + '''');
-       SQL.Add('AND    PK.CDET > 0');
-       SQL.Add('GROUP  BY 1');
-       SQL.Add('HAVING COUNT(*) > 1');
-       ExecQuery;
+    if Current.Vars[0].AsInteger > 0 then
+       oException(Nil,'Falha ao tentar salvar romaneio !' + #13 +
+                      'Etiqueta Nº ' + Current.Vars[0].AsString + ' em duplicidade.' + #13 + #13 +
+                      'Favor entrar em contato com o responsável pela separação.');
+  end;
 
-       if Current.Vars[0].AsInteger > 0 then
-          oException(Nil,'Falha ao tentar salvar romaneio !' + #13 +
-                         'Etiqueta Nº ' + Current.Vars[0].AsString + ' em duplicidade.' + #13 + #13 +
-                         'Favor entrar em contato com o responsável pela separação.');
-     end;
+  if Assigned(frmven_nfe) then frmven_nfe.BringToFront else
+  begin
+    TFrmVEN_NFE._ExecForm(
 
-     if Assigned(frmven_nfe) then frmven_nfe.BringToFront else
-     begin
-       TFrmVEN_NFE._ExecForm(
-     
-       Self,       { Owner    }
-       FrmVEN_NFE, { Form     }
-       False,      { Pesquisa }
-       fsMDIChild, { Tipo     }
-     
-       CadastroID.AsInteger, { Código Principal }
-       '', { Descrição Principal }
+    Self,       { Owner    }
+    FrmVEN_NFE, { Form     }
+    False,      { Pesquisa }
+    fsMDIChild, { Tipo     }
 
-       0, { Evento Principal }
-       2, { Código Evento - 0: Triangular 1: Normal 2: Complementar 3: Ajustes 4:Devolução }
-       1, { Tipo   Evento - 0: Copiado    1: Vazio  2: Romaneado }
+    CadastroID.AsInteger, { Código Principal }
+    '', { Descrição Principal }
 
-       oREPZero('ROM_CAB','_',RECParametros.EP_ID,3), { Tabela }
-       '' { Get }
-       );
-     end;
-  {$IFEND}
+    0, { Evento Principal }
+    1, { Código Evento - 0: Triangular 1: Normal 2: Complementar 3: Ajustes 4:Devolução }
+    2, { Tipo   Evento - 0: Copiado    1: Vazio  2: Romaneado }
+
+    oREPZero('ROM_CAB','_',RECParametros.EP_ID,3), { Tabela }
+    '' { Get }
+    );
+  end;
 end;
 
 procedure Tfrmctr_rom.dbgConsultaCustomDrawCell(Sender: TObject;

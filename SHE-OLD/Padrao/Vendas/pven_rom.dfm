@@ -1,19 +1,18 @@
 object frmven_rom: Tfrmven_rom
-  Left = 130
-  Top = 137
+  Left = 335
+  Top = 12
   ActiveControl = DBGConsulta
   BorderIcons = []
   BorderStyle = bsSingle
   Caption = 'Romaneios de Vendas'
-  ClientHeight = 703
-  ClientWidth = 1179
+  ClientHeight = 980
+  ClientWidth = 719
   Color = clBtnFace
   Font.Charset = ANSI_CHARSET
   Font.Color = clWindowText
   Font.Height = -12
   Font.Name = 'Tahoma'
   Font.Style = []
-  FormStyle = fsMDIChild
   Icon.Data = {
     000001000300101000000100080068050000360000002020000001000800A808
     00009E0500003030000001000800A80E0000460E000028000000100000002000
@@ -250,7 +249,6 @@ object frmven_rom: Tfrmven_rom
   KeyPreview = True
   OldCreateOrder = False
   Position = poDesktopCenter
-  Visible = True
   OnActivate = FormActivate
   OnClose = FormClose
   OnCreate = FormCreate
@@ -264,16 +262,16 @@ object frmven_rom: Tfrmven_rom
   object PNLConsulta: TPanel
     Left = 0
     Top = 72
-    Width = 1179
-    Height = 610
+    Width = 719
+    Height = 887
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 0
     object GBEtiquetas: TGroupBox
       Left = 0
       Top = 0
-      Width = 1179
-      Height = 610
+      Width = 719
+      Height = 887
       Align = alClient
       Caption = '  Produtos Separados  '
       Font.Charset = ANSI_CHARSET
@@ -286,8 +284,8 @@ object frmven_rom: Tfrmven_rom
       object DBGConsulta: TdxDBGrid
         Left = 2
         Top = 19
-        Width = 1175
-        Height = 589
+        Width = 715
+        Height = 866
         Bands = <
           item
             Alignment = taRightJustify
@@ -340,7 +338,6 @@ object frmven_rom: Tfrmven_rom
         PreviewFont.Name = 'Tahoma'
         PreviewFont.Style = []
         ShowRowFooter = True
-        OnCustomDrawCell = DBGConsultaCustomDrawCell
         object DBGConsultaROM_ITEM: TdxDBGridMaskColumn
           Alignment = taRightJustify
           Color = clWhite
@@ -466,92 +463,12 @@ object frmven_rom: Tfrmven_rom
           SummaryFooterFormat = '0'
           DisableFilter = True
         end
-        object DBGConsultaROM_UNIT: TdxDBGridMaskColumn
-          HeaderAlignment = taRightJustify
-          Width = 75
-          BandIndex = 0
-          RowIndex = 0
-          FieldName = 'ROM_UNIT'
-          DisableFilter = True
-        end
-        object DBGConsultaROM_TSDE: TdxDBGridMaskColumn
-          Font.Charset = ANSI_CHARSET
-          Font.Color = clBlack
-          Font.Height = -12
-          Font.Name = 'Tahoma'
-          Font.Style = []
-          HeaderAlignment = taRightJustify
-          Width = 100
-          BandIndex = 0
-          RowIndex = 0
-          FieldName = 'ROM_TSDE'
-          SummaryFooterType = cstSum
-          SummaryFooterField = 'ROM_TSDE'
-          SummaryFooterFormat = 'R$ ,##,0.00'
-          DisableFilter = True
-        end
-        object DBGConsultaROM_TOTA: TdxDBGridMaskColumn
-          Color = clWhite
-          Font.Charset = ANSI_CHARSET
-          Font.Color = clBlack
-          Font.Height = -12
-          Font.Name = 'Tahoma'
-          Font.Style = [fsBold]
-          HeaderAlignment = taRightJustify
-          Width = 100
-          BandIndex = 0
-          RowIndex = 0
-          FieldName = 'ROM_TOTA'
-          SummaryFooterType = cstSum
-          SummaryFooterField = 'ROM_TOTA'
-          SummaryFooterFormat = 'R$ ,##,0.00'
-          DisableFilter = True
-        end
-        object DBGConsultaROM_VIPI: TdxDBGridMaskColumn
-          Color = 9395
-          Font.Charset = ANSI_CHARSET
-          Font.Color = clWhite
-          Font.Height = -12
-          Font.Name = 'Tahoma'
-          Font.Style = []
-          HeaderAlignment = taRightJustify
-          Width = 100
-          BandIndex = 0
-          RowIndex = 0
-          FieldName = 'ROM_VIPI'
-          SummaryFooterType = cstSum
-          SummaryFooterField = 'ROM_VIPI'
-          SummaryFooterFormat = 'R$ ,##,0.00'
-          DisableFilter = True
-        end
-        object DBGConsultaROM_PSBR: TdxDBGridMaskColumn
-          HeaderAlignment = taRightJustify
-          Width = 85
-          BandIndex = 0
-          RowIndex = 0
-          FieldName = 'ROM_PSBR'
-          SummaryFooterType = cstSum
-          SummaryFooterField = 'ROM_PSBR'
-          SummaryFooterFormat = ',##,0.000;-,##,0.000'
-          DisableFilter = True
-        end
-        object DBGConsultaROM_PSLQ: TdxDBGridMaskColumn
-          HeaderAlignment = taRightJustify
-          Width = 85
-          BandIndex = 0
-          RowIndex = 0
-          FieldName = 'ROM_PSLQ'
-          SummaryFooterType = cstSum
-          SummaryFooterField = 'ROM_PSLQ'
-          SummaryFooterFormat = ',##,0.000;-,##,0.000'
-          DisableFilter = True
-        end
       end
     end
     object PNLDescricao: TPanel
       Left = 0
-      Top = 610
-      Width = 1179
+      Top = 887
+      Width = 719
       Height = 0
       Align = alBottom
       BevelOuter = bvSpace
@@ -568,7 +485,7 @@ object frmven_rom: Tfrmven_rom
   object pnlpri: TPanel
     Left = 0
     Top = 72
-    Width = 1179
+    Width = 719
     Height = 0
     Align = alTop
     BevelOuter = bvNone
@@ -578,7 +495,7 @@ object frmven_rom: Tfrmven_rom
   object SBMenu: TSpeedBar
     Left = 0
     Top = 0
-    Width = 1179
+    Width = 719
     Height = 72
     Cursor = crHandPoint
     Font.Charset = DEFAULT_CHARSET
@@ -640,8 +557,8 @@ object frmven_rom: Tfrmven_rom
   object SBRodape: TdxStatusBar
     Tag = 1
     Left = 0
-    Top = 682
-    Width = 1179
+    Top = 959
+    Width = 719
     Height = 21
     Cursor = crHandPoint
     Panels = <
@@ -654,7 +571,7 @@ object frmven_rom: Tfrmven_rom
       item
         PanelStyleClassName = 'TdxStatusBarTextPanelStyle'
         MinWidth = 0
-        Width = 930
+        Width = 450
       end
       item
         PanelStyleClassName = 'TdxStatusBarKeyboardStatePanelStyle'
@@ -698,9 +615,7 @@ object frmven_rom: Tfrmven_rom
     Tag = 1
     Database = FBird.DBEDI
     Transaction = TSEdicao
-    AfterScroll = EdicaoAfterScroll
     BeforePost = EdicaoBeforePost
-    BeforeScroll = EdicaoBeforeScroll
     OnNewRecord = EdicaoNewRecord
     BufferChunks = 2500
     DeleteSQL.Strings = (
@@ -3644,5 +3559,297 @@ object frmven_rom: Tfrmven_rom
     Transaction = TEvent
     Left = 488
     Top = 184
+  end
+  object ALPrincipal: TActionList
+    Left = 616
+    Top = 184
+    object ACTXMLCreate: TAction
+      Category = 'Sefaz'
+      Caption = 'Gerar'
+      Hint = 'Gera e assina arquivo xml'
+    end
+    object ACTPesquisa: TAction
+      Category = 'Pesquisas'
+      Caption = 'Pesquisar'
+      Hint = 'Pesquisa Registros'
+      ShortCut = 118
+      Visible = False
+    end
+    object ACTXMLValidate: TAction
+      Category = 'Sefaz'
+      Caption = 'Validar'
+      Enabled = False
+      Hint = 'Valida arquivo xml assinado'
+      Visible = False
+    end
+    object ACTConsulta: TAction
+      Category = 'Pesquisas'
+      Caption = 'ACTConsulta'
+      Hint = 'Prepara tabelas padr'#245'es'
+    end
+    object ACTPSQ_NFE_ADM: TAction
+      Category = 'Pesquisas'
+      Caption = 'ACTPSQ_NFE_ADM'
+    end
+    object ACTXMLLoteCreate: TAction
+      Category = 'Sefaz'
+      Caption = 'Lote'
+      Hint = 'Gera lote de envio'
+    end
+    object ACTPSQ_PED_RDV: TAction
+      Category = 'Pesquisas'
+      Caption = 'Pesquisa Produtos'
+    end
+    object ACTPSQ_NFE_NUM: TAction
+      Category = 'Pesquisas'
+      Caption = 'Pesquisa '#250'ltimo n'#250'mero'
+    end
+    object ACTPSQ_NFE_SEQ: TAction
+      Category = 'Pesquisas'
+      Caption = 'ACTPSQ_NFE_SEQ'
+    end
+    object ACTPSQ_TAB_CFOP: TAction
+      Category = 'Pesquisas'
+      Caption = 'ACTPSQ_TAB_CFOP'
+    end
+    object ACTPSQ_CAD_TRA: TAction
+      Category = 'Pesquisas'
+      Caption = 'ACTPSQ_CAD_TRA'
+    end
+    object ACTPSQ_CAD_PRO: TAction
+      Category = 'Pesquisas'
+      Caption = 'ACTPSQ_CAD_PRO'
+    end
+    object ACTXMLLoteRetorno: TAction
+      Category = 'Sefaz'
+      Caption = 'Retorno'
+      Hint = 'Consulta retorno do lote enviado'
+    end
+    object ACTNFeEdicao: TAction
+      Category = 'Fiscal'
+      Caption = 'Edi'#231#227'o Nota Fiscal'
+    end
+    object ACTNFeTriangular: TAction
+      Category = 'Fiscal'
+      Caption = 'Edi'#231#227'o Triangular'
+    end
+    object ACTNFeValidate: TAction
+      Category = 'Fiscal'
+      Caption = 'ACTNFeValidate'
+    end
+    object ACTNFeCalculate: TAction
+      Category = 'Fiscal'
+      Caption = 'Calcula Impostos'
+    end
+    object ACTNFeICMS: TAction
+      Category = 'Fiscal'
+      Caption = 'Calcula ICMS'
+    end
+    object ACTNFeCST: TAction
+      Category = 'Fiscal'
+      Caption = 'Calcula CST'
+    end
+    object ACTRefresh: TAction
+      Category = 'Sistema'
+      Caption = 'Refresh'
+      Hint = 'Atualiza Registros'
+      ShortCut = 116
+    end
+    object ACTNFeDesconto: TAction
+      Category = 'Fiscal'
+      Caption = 'Calcula Desconto'
+    end
+    object ACTEveRegister: TAction
+      Category = 'Eventos'
+      Caption = 'ACTEveRegister'
+      Hint = 'Registro de Eventos'
+      OnExecute = ACTEveRegisterExecute
+    end
+    object ACTNFeCFOP: TAction
+      Category = 'Fiscal'
+      Caption = 'Calcula consumido final'
+    end
+    object ACTNFeFrete: TAction
+      Category = 'Fiscal'
+      Caption = 'Calcula Frete'
+    end
+    object ACTNFeSeguro: TAction
+      Category = 'Fiscal'
+      Caption = 'Calcula Seguro'
+    end
+    object ACTNFeINFADCAD: TAction
+      Category = 'Fiscal'
+      Caption = 'Calcula Mensageria'
+    end
+    object ACTNFeBoleto: TAction
+      Category = 'Fiscal'
+      Caption = 'Calcula Duplicata'
+    end
+    object ACTXMLSend: TAction
+      Category = 'Sefaz'
+      Caption = 'Transmitir'
+      Enabled = False
+      Hint = 'Envia Sefaz'
+    end
+    object ACTEveExecute: TAction
+      Category = 'Eventos'
+      Caption = 'ACTEveExecute'
+      Hint = 'Execu'#231#245'es de Eventos'
+      OnExecute = ACTEveExecuteExecute
+    end
+    object ACTRelatorios: TAction
+      Category = 'Relat'#243'rios'
+      Caption = 'Imprimir'
+      Enabled = False
+      Hint = 'Emiss'#227'o de Relat'#243'rios'
+      ImageIndex = 7
+      ShortCut = 16464
+    end
+    object ACTMEAppend: TAction
+      Category = 'Menu Edi'#231#245'es'
+      Caption = 'ACTMEAppend'
+      Enabled = False
+      Hint = 'Inclus'#227'o de Registros'
+      ImageIndex = 0
+      ShortCut = 45
+    end
+    object ACTMEEdit: TAction
+      Category = 'Menu Edi'#231#245'es'
+      Caption = 'ACTMEEdit'
+      Enabled = False
+      Hint = 'Edi'#231#227'o de Registros'
+      ImageIndex = 1
+    end
+    object ACTMEDelete: TAction
+      Category = 'Menu Edi'#231#245'es'
+      Caption = 'ACTMEDelete'
+      Enabled = False
+      Hint = 'Exclus'#227'o de Registros'
+      ImageIndex = 2
+      ShortCut = 46
+    end
+    object ACTMEPost: TAction
+      Category = 'Menu Edi'#231#245'es'
+      Caption = 'ACTMEPost'
+      Enabled = False
+      Hint = 'Salva Edi'#231#227'o'
+    end
+    object ACTMECancel: TAction
+      Category = 'Menu Edi'#231#245'es'
+      Caption = 'ACTMECancel'
+      Enabled = False
+      Hint = 'Cancela Edi'#231#227'o'
+    end
+    object ACTMPAppend: TAction
+      Category = 'Menu Principal'
+      Caption = 'Incluir'
+      Hint = 'Inclus'#227'o de Registros'
+      ShortCut = 45
+    end
+    object ACTMPEdit: TAction
+      Category = 'Menu Principal'
+      Caption = 'Alterar'
+      Hint = 'Edi'#231#227'o de Registros'
+      ShortCut = 16397
+    end
+    object ACTMPDelete: TAction
+      Category = 'Menu Principal'
+      Caption = 'Excluir'
+      Hint = ' Exclus'#227'o de Registros'
+      ShortCut = 46
+    end
+    object ACTMPPost: TAction
+      Category = 'Menu Principal'
+      Caption = 'Salvar'
+      Hint = 'Salva Edi'#231#227'o'
+    end
+    object ACTMPValidate: TAction
+      Category = 'Menu Principal'
+      Caption = 'Validar'
+      Hint = 'Valida Edi'#231#245'es'
+      ShortCut = 16467
+      Visible = False
+    end
+    object ACTMPCancel: TAction
+      Category = 'Menu Principal'
+      Caption = 'Cancelar'
+      Hint = 'Cancela Edi'#231#227'o'
+    end
+    object ACTEveExpress: TAction
+      Category = 'Eventos'
+      Caption = 'ACTEveExpress'
+      Hint = 'Registros e Execu'#231#245'es de eventos por demanda'
+      OnExecute = ACTEveExpressExecute
+    end
+    object ACTProgressBar: TAction
+      Category = 'Processos'
+      Caption = 'Processando ...'
+      Hint = 'Aguarde, processando registros '
+    end
+    object ACTDashboards: TAction
+      Category = 'Dashboards'
+      Caption = 'Dashboards'
+      Hint = 'Dashboard Principal'
+    end
+    object ACTCheckConstraints: TAction
+      Category = 'Checkout'
+      Caption = 'ACTCheckConstraints'
+      Hint = 'Check Registros'
+    end
+    object ACTCheckErrors: TAction
+      Category = 'Checkout'
+      Caption = 'ACTCheckErrors'
+      Hint = 'Check Erros nos registros'
+    end
+    object ACTSaida: TAction
+      Category = 'Sistema'
+      Caption = 'Sair ...'
+      Hint = 'Fechar P'#225'gina'
+      ShortCut = 27
+    end
+    object ACTEdicao: TAction
+      Category = 'Edi'#231#245'es'
+      Caption = 'ACTEdicao'
+      Hint = 'Prepara edi'#231#227'o padr'#227'o'
+    end
+    object ACTEmail: TAction
+      Category = 'Sistema'
+      Caption = 'Email'
+      Enabled = False
+      Hint = 'Envia Email'
+    end
+    object ACTImporta: TAction
+      Category = 'Sistema'
+      Caption = 'Importar'
+      Enabled = False
+      Hint = 'Importa'#231#227'o de registros de registros diversos'
+    end
+    object ACTEDI_CAD_PAD: TAction
+      Category = 'Edi'#231#245'es'
+      Caption = 'ACTEDI_CAD_PAD'
+    end
+    object ACTVisualiza: TAction
+      Category = 'Relat'#243'rios'
+      Caption = 'Visualizar'
+      Enabled = False
+      Hint = 'Visualizar Relat'#243'rios'
+    end
+    object ACTNFePDF: TAction
+      Category = 'Fiscal'
+      Caption = 'ACTNFePDF'
+    end
+    object ACTXMLImporta: TAction
+      Category = 'Sefaz'
+      Caption = 'Copiar'
+      Hint = 'Importa'#231#227'o de arquivos XML'
+    end
+    object ACTEDI_CAD_PRO: TAction
+      Category = 'Edi'#231#245'es'
+      Caption = 'ACTEDI_CAD_PRO'
+    end
+    object ACTEDI_CAD_PRO_EST: TAction
+      Category = 'Edi'#231#245'es'
+      Caption = 'ACTEDI_CAD_PRO_EST'
+    end
   end
 end

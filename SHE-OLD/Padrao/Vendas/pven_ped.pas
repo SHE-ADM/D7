@@ -1512,9 +1512,7 @@ begin
 
   if CEIDCD.Value > 0 then
   begin
-    frmcad_cli_edi     := TFrmcad_cli_edi.Create(Self);
-    frmcad_cli_edi.Tag := 1;
-    frmcad_cli_edi.IDCliente := FloatToStr(CEIDCD.Value);
+    frmcad_cli_edi := TFrmcad_cli_edi.Create(Self,Trunc(CEIDCD.Value));
     try frmcad_cli_edi.ShowModal;
     finally
       if frmcad_cli_edi.REC_SHE_DEF.Edited then

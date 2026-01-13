@@ -11,6 +11,9 @@ uses
   DBCtrls, Grids, DBGrids, math, StrUtils, dateutils, IBStoredProc, ComCtrls,
   jpeg, rxSpeedbar, IBSQL;
 
+Const
+  dllNFe = 'C:\Sheild\NotaFiscal\NFe.dll';
+
 type
   Tfrmven_nfd = class(TForm)
     imageOPC: TImageList;

@@ -1006,4 +1006,16 @@ inherited frmcad_con_edi: Tfrmcad_con_edi
     Left = 548
     Top = 46
   end
+  object PKConsulta: TIBQuery
+    Database = FBird.DBERP
+    Transaction = IBTra
+    Left = 352
+    Top = 72
+  end
+  object SQLConsulta: TIBSQL
+    Database = FBird.DBERP
+    Transaction = IBTra
+    Left = 448
+    Top = 40
+  end
 end

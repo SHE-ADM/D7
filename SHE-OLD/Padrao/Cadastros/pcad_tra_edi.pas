@@ -345,99 +345,99 @@ var
 
 implementation
 
-uses uPrincipal, bPrincipal,
-     pcad_tra;
+uses uPrincipal, bPrincipal;
 
 {$R *.dfm}
 
 procedure Tfrmcad_tra_edi.FormShow(Sender: TObject);
 begin
   inherited;
-  if tag = 1 then
+  NOVO_TRANSPORTADOR;
+
+  if REC_SHE_DEF.IDPK > 0 then
+  with cad_tra do
   begin
-    with cad_tra do
+    Close;
+    SelectSQL.Clear;
+    SelectSQL.Add('SELECT * FROM CAD_TRA');
+    SelectSQL.Add('WHERE ID = ''' + REC_SHE_DEF.IDPK + '''');
+    Open;
+
+    edctra.Text := oStrZero(FieldByName('ID').AsInteger,5);
+    edfant.Text := FieldByName('TRA_FANT').AsString;
+    eddcad.Date := FieldByName('TRA_DCAD').AsDateTime;
+    eddalt.Date := RECParametros.SHE_DATA;
+    edraza.Text := FieldByName('TRA_RAZA').AsString;
+    edcont.Text := FieldByName('TRA_CONT').AsString;
+    edfcon.Text := FieldByName('TRA_FCON').AsString;
+    edccon.Text := FieldByName('TRA_CCON').AsString;
+    edmail.Text := FieldByName('TRA_MAIL').AsString;
+    edfmai.Text := FieldByName('TRA_FMAI').AsString;
+    edcmai.Text := FieldByName('TRA_CMAI').AsString;
+    edddd.Text  := FieldByName('TRA_DDD').AsString;
+    eddd2.Text  := FieldByName('TRA_DD2').AsString;
+    eddd3.Text  := FieldByName('TRA_DD3').AsString;
+    eddd4.Text  := FieldByName('TRA_DD4').AsString;
+    eddd5.Text  := FieldByName('TRA_DD5').AsString;
+    eddd6.Text  := FieldByName('TRA_DD6').AsString;
+    edfddd.Text := FieldByName('TRA_FDDD').AsString;
+    edfdd2.Text := FieldByName('TRA_FDD2').AsString;
+    edfdd3.Text := FieldByName('TRA_FDD3').AsString;
+    edfdd4.Text := FieldByName('TRA_FDD4').AsString;
+    edfdd5.Text := FieldByName('TRA_FDD5').AsString;
+    edfdd6.Text := FieldByName('TRA_FDD6').AsString;
+    edcddd.Text := FieldByName('TRA_CDDD').AsString;
+    edcdd2.Text := FieldByName('TRA_CDD2').AsString;
+    edcdd3.Text := FieldByName('TRA_CDD3').AsString;
+    edcdd4.Text := FieldByName('TRA_CDD4').AsString;
+    edcdd5.Text := FieldByName('TRA_CDD5').AsString;
+    edcdd6.Text := FieldByName('TRA_CDD6').AsString;
+    edtel1.Text := oRETNumero(FieldByName('TRA_TEL1').AsString);
+    edtel2.Text := oRETNumero(FieldByName('TRA_TEL2').AsString);
+    edtel3.Text := FieldByName('TRA_TEL3').AsString;
+    edfax.Text  := FieldByName('TRA_FAX').AsString;
+    edffax.Text := FieldByName('TRA_FFAX').AsString;
+    edcfax.Text := FieldByName('TRA_CFAX').AsString;
+    edfte1.Text := FieldByName('TRA_FTE1').AsString;
+    edfte2.Text := FieldByName('TRA_FTE2').AsString;
+    edfte3.Text := FieldByName('TRA_FTE3').AsString;
+    edcte1.Text := FieldByName('TRA_CTE1').AsString;
+    edcte2.Text := FieldByName('TRA_CTE2').AsString;
+    edcte3.Text := FieldByName('TRA_CTE3').AsString;
+    edcel.Text  := oRETNumero(FieldByName('TRA_CEL').AsString);
+    edfcel.Text := FieldByName('TRA_FCEL').AsString;
+    edccel.Text := FieldByName('TRA_CCEL').AsString;
+    edneid.Text := FieldByName('TRA_NEID').AsString;
+    edfnid.Text := FieldByName('TRA_FNID').AsString;
+    edcnid.Text := FieldByName('TRA_CNID').AsString;
+    edncel.Text := FieldByName('TRA_NCEL').AsString;
+    edfnce.Text := FieldByName('TRA_FNCE').AsString;
+    edcnce.Text := FieldByName('TRA_CNCE').AsString;
+    cbtce1.Text := FieldByName('TRA_TCE1').AsString;
+    cbtce2.Text := FieldByName('TRA_TCE2').AsString;
+    cbftc1.Text := FieldByName('TRA_FTC1').AsString;
+    cbftc2.Text := FieldByName('TRA_FTC2').AsString;
+    cbctc1.Text := FieldByName('TRA_CTC1').AsString;
+    cbctc2.Text := FieldByName('TRA_CTC2').AsString;
+    edccm.Text  := FieldByName('TRA_CCM').AsString;
+    edimun.Text := FieldByName('TRA_IMUN').AsString;
+    edinsc.Text := FieldByName('TRA_INSC').AsString;
+
+    if FieldByName('TRA_CNPJ').AsString <> '' then
     begin
-      Close;
-      SelectSQL.Clear;
-      SelectSQL.Add('SELECT * FROM CAD_TRA');
-      SelectSQL.Add('WHERE ID = '''+frmcad_tra.CadastroID.AsString+'''');
-      Open;
+      edcnpj.Text   := FieldByName('TRA_CNPJ').AsString;
+      edinsc.Text   := FieldByName('TRA_INSC').AsString;
+      edcpf.Enabled := false;
+      edrg.Enabled  := false;
+    end;
 
-      edctra.Text := oStrZero(FieldByName('ID').AsInteger,5);
-      edfant.Text := FieldByName('TRA_FANT').AsString;
-      eddcad.Date := FieldByName('TRA_DCAD').AsDateTime;
-      eddalt.Date := RECParametros.SHE_DATA;
-      edraza.Text := FieldByName('TRA_RAZA').AsString;
-      edcont.Text := FieldByName('TRA_CONT').AsString;
-      edfcon.Text := FieldByName('TRA_FCON').AsString;
-      edccon.Text := FieldByName('TRA_CCON').AsString;
-      edmail.Text := FieldByName('TRA_MAIL').AsString;
-      edfmai.Text := FieldByName('TRA_FMAI').AsString;
-      edcmai.Text := FieldByName('TRA_CMAI').AsString;
-      edddd.Text  := FieldByName('TRA_DDD').AsString;
-      eddd2.Text  := FieldByName('TRA_DD2').AsString;
-      eddd3.Text  := FieldByName('TRA_DD3').AsString;
-      eddd4.Text  := FieldByName('TRA_DD4').AsString;
-      eddd5.Text  := FieldByName('TRA_DD5').AsString;
-      eddd6.Text  := FieldByName('TRA_DD6').AsString;
-      edfddd.Text := FieldByName('TRA_FDDD').AsString;
-      edfdd2.Text := FieldByName('TRA_FDD2').AsString;
-      edfdd3.Text := FieldByName('TRA_FDD3').AsString;
-      edfdd4.Text := FieldByName('TRA_FDD4').AsString;
-      edfdd5.Text := FieldByName('TRA_FDD5').AsString;
-      edfdd6.Text := FieldByName('TRA_FDD6').AsString;
-      edcddd.Text := FieldByName('TRA_CDDD').AsString;
-      edcdd2.Text := FieldByName('TRA_CDD2').AsString;
-      edcdd3.Text := FieldByName('TRA_CDD3').AsString;
-      edcdd4.Text := FieldByName('TRA_CDD4').AsString;
-      edcdd5.Text := FieldByName('TRA_CDD5').AsString;
-      edcdd6.Text := FieldByName('TRA_CDD6').AsString;
-      edtel1.Text := oRETNumero(FieldByName('TRA_TEL1').AsString);
-      edtel2.Text := oRETNumero(FieldByName('TRA_TEL2').AsString);
-      edtel3.Text := FieldByName('TRA_TEL3').AsString;
-      edfax.Text  := FieldByName('TRA_FAX').AsString;
-      edffax.Text := FieldByName('TRA_FFAX').AsString;
-      edcfax.Text := FieldByName('TRA_CFAX').AsString;
-      edfte1.Text := FieldByName('TRA_FTE1').AsString;
-      edfte2.Text := FieldByName('TRA_FTE2').AsString;
-      edfte3.Text := FieldByName('TRA_FTE3').AsString;
-      edcte1.Text := FieldByName('TRA_CTE1').AsString;
-      edcte2.Text := FieldByName('TRA_CTE2').AsString;
-      edcte3.Text := FieldByName('TRA_CTE3').AsString;
-      edcel.Text  := oRETNumero(FieldByName('TRA_CEL').AsString);
-      edfcel.Text := FieldByName('TRA_FCEL').AsString;
-      edccel.Text := FieldByName('TRA_CCEL').AsString;
-      edneid.Text := FieldByName('TRA_NEID').AsString;
-      edfnid.Text := FieldByName('TRA_FNID').AsString;
-      edcnid.Text := FieldByName('TRA_CNID').AsString;
-      edncel.Text := FieldByName('TRA_NCEL').AsString;
-      edfnce.Text := FieldByName('TRA_FNCE').AsString;
-      edcnce.Text := FieldByName('TRA_CNCE').AsString;
-      cbtce1.Text := FieldByName('TRA_TCE1').AsString;
-      cbtce2.Text := FieldByName('TRA_TCE2').AsString;
-      cbftc1.Text := FieldByName('TRA_FTC1').AsString;
-      cbftc2.Text := FieldByName('TRA_FTC2').AsString;
-      cbctc1.Text := FieldByName('TRA_CTC1').AsString;
-      cbctc2.Text := FieldByName('TRA_CTC2').AsString;
-      edccm.Text  := FieldByName('TRA_CCM').AsString;
-      edimun.Text := FieldByName('TRA_IMUN').AsString;
-      edinsc.Text := FieldByName('TRA_INSC').AsString;
-
-      if FieldByName('TRA_CNPJ').AsString <> '' then
-      begin
-        edcnpj.Text   := FieldByName('TRA_CNPJ').AsString;
-        edinsc.Text   := FieldByName('TRA_INSC').AsString;
-        edcpf.Enabled := false;
-        edrg.Enabled  := false;
-      end;
-
-      if FieldByName('TRA_CPF').AsString <> '' then
-      begin
-        edcpf.Text     := FieldByName('TRA_CPF').AsString;
-        edrg.Text      := FieldByName('TRA_RG').AsString;
-        edcnpj.Enabled := false;
-        edinsc.Enabled := false;
-      end;
+    if FieldByName('TRA_CPF').AsString <> '' then
+    begin
+      edcpf.Text     := FieldByName('TRA_CPF').AsString;
+      edrg.Text      := FieldByName('TRA_RG').AsString;
+      edcnpj.Enabled := false;
+      edinsc.Enabled := false;
+    end;
 
     EDCOM_TLO_TX.Text := FieldByName('TRA_TLOG').AsString;
     EDCOM_LOG_NO.Text := FieldByName('TRA_LOGR').AsString;
@@ -469,12 +469,10 @@ begin
     EDENT_LOC_NO.Text := FieldByName('TRA_CIDV').AsString;
     EDENT_UF.Text     := FieldByName('TRA_ESTV').AsString;
 
-      edobse.Text := FieldByName('TRA_OBSE').Value;
-      edobso.Text := FieldByName('TRA_OBSO').Value;
-      cbstav.Text := FieldByName('TRA_STAV').AsString;
-    end
-  end else
-  NOVO_TRANSPORTADOR;
+    edobse.Text := FieldByName('TRA_OBSE').Value;
+    edobso.Text := FieldByName('TRA_OBSO').Value;
+    cbstav.Text := FieldByName('TRA_STAV').AsString;
+  end;
 end;
 
 procedure Tfrmcad_tra_edi.FormDestroy(Sender: TObject);
@@ -762,9 +760,6 @@ end;
 
 procedure Tfrmcad_tra_edi.FormCreate(Sender: TObject);
 begin
-  { ADMIN MANAGER }
-  //DBGConsultaIDPK.Visible := (RECUsuarios.ID = 0); { Código Pedido }
-
   { FORM SCREEN }
   REC_SHE_DEF.FPosition := Self.Position; { Posição }
 
@@ -793,7 +788,7 @@ begin
     LAPSQCEP.Tag := 0;
     LAPSQCEP.Font.Color := $00D69F30;
   end;
-  Application.ProcessMessages;
+  LAPSQCEP.Refresh;
 end;
 
 procedure Tfrmcad_tra_edi.ACTMPostExecute(Sender: TObject);
@@ -849,12 +844,8 @@ begin
     ibSP.StoredProcName := 'SP_CAD_TRA';
     ibSP.Prepare;
 
-    case frmcad_tra_edi.Tag of
-      0: ibSP.Params[0].Value := null;
-      1: ibSP.Params[0].Value := edctra.Text;
-    end;
-
     { Cadastro }
+    ibSP.ParamByName('ID'  ).Value := REC_SHE_DEF.IDPK;
     ibSP.ParamByName('IDEP').Value := RECParametros.EP_ID;
     ibSP.ParamByName('IDCA').Value := RECUsuarios.Id;
 

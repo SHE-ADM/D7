@@ -9,48 +9,90 @@ uses
   IBCustomDataSet, IBQuery, ImgList, dxCntner,  ComCtrls, ExtCtrls,
   dxExEdtr, dxEdLib, dxEditor, StdCtrls, DateUtils, DBCtrls, dxPageControl,
   dxDBELib, Menus, IBStoredProc, IBDatabase, IBEvents, Shellapi,
-  jpeg, math, rxSpeedbar, cxGraphics, IBSQL, cxControls, dxStatusBar,
+  jpeg, math, StrUtils, rxSpeedbar, cxGraphics, IBSQL, cxControls, dxStatusBar,
   pConsulta, ActnList;
 
 type
   Tfrmcad_rep = class(TFrmConsulta)
-    cadastroID: TIntegerField;
-    cadastroREP_FANT: TIBStringField;
-    cadastroREP_RAZA: TIBStringField;
-    cadastroREP_CNPJ: TIBStringField;
-    cadastroREP_CPF: TIBStringField;
-    cadastroREP_CRED: TIBBCDField;
-    cadastroREP_CID: TIBStringField;
-    cadastroREP_BAI: TIBStringField;
-    cadastroREP_LOGR: TIBStringField;
-    cadastroREP_ESTA: TIBStringField;
-    cadastroREP_STA: TIBStringField;
-    cadastroREP_STAV: TIBStringField;
-    cadastroREP_DPAG: TIBStringField;
-    cadastroREP_OBSO: TMemoField;
-    cadastroREP_VDSC: TIBBCDField;
-    dbgConsultaID: TdxDBGridMaskColumn;
-    dbgConsultaREP_FANT: TdxDBGridMaskColumn;
-    dbgConsultaREP_RAZA: TdxDBGridMaskColumn;
-    dbgConsultaREP_CNPJ: TdxDBGridMaskColumn;
-    dbgConsultaREP_CPF: TdxDBGridMaskColumn;
-    dbgConsultaREP_CID: TdxDBGridMaskColumn;
-    dbgConsultaREP_BAI: TdxDBGridMaskColumn;
-    dbgConsultaREP_LOGR: TdxDBGridMaskColumn;
-    dbgConsultaREP_ESTA: TdxDBGridMaskColumn;
-    dbgConsultaREP_STAV: TdxDBGridMaskColumn;
-    cadastroREP_COMI: TIBBCDField;
+    CadastroID: TLargeintField;
+    CadastroEP_ID: TSmallintField;
+    CadastroDTEV: TDateTimeField;
+    CadastroDTCA: TDateTimeField;
+    CadastroCDST: TSmallintField;
+    CadastroREST: TIBStringField;
+    CadastroDEST: TIBStringField;
+    CadastroCRD_DEST: TIBStringField;
+    CadastroCD_ID: TIntegerField;
+    CadastroCD_NO: TIBStringField;
+    CadastroCD_RZ_NO: TIBStringField;
+    CadastroCD_GP_NO: TIBStringField;
+    CadastroCNPJ: TIBStringField;
+    CadastroCNPJ_MASK: TIBStringField;
+    CadastroIE: TIBStringField;
+    CadastroISUF: TIBStringField;
+    CadastroCPF: TIBStringField;
+    CadastroCPF_MASK: TIBStringField;
+    CadastroIDESTRANGEIRO: TIBStringField;
+    CadastroCR_ID: TSmallintField;
+    CadastroCR_NO: TIBStringField;
+    CadastroCV_ID: TSmallintField;
+    CadastroCV_NO: TIBStringField;
+    CadastroCT_ID: TSmallintField;
+    CadastroCT_NO: TIBStringField;
+    CadastroTEL_MASK: TIBStringField;
+    CadastroCEL_TEL_MASK: TIBStringField;
+    CadastroZAP_TEL_MASK: TIBStringField;
+    CadastroEMAIL: TIBStringField;
+    CadastroLOG_NO_ABREV: TIBStringField;
+    CadastroBAI_NO_ABREV: TIBStringField;
+    CadastroLOC_NO_ABREV: TIBStringField;
+    CadastroUF: TIBStringField;
+    CadastroCRD_VPAD: TIBBCDField;
+    CadastroCRD_VTAP: TIBBCDField;
+    CadastroCRD_VTSD: TIBBCDField;
+    CadastroCRD_VTKT: TIBBCDField;
+    CadastroCRD_BQST: TSmallintField;
+    CadastroFIS_DTFU: TDateField;
+    CadastroFIS_CRT_NO: TIBStringField;
+    CadastroINFADCAD: TIBStringField;
+    DBGConsultaDTCA: TdxDBGridDateColumn;
+    DBGConsultaDEST: TdxDBGridMaskColumn;
+    DBGConsultaCD_ID: TdxDBGridMaskColumn;
+    DBGConsultaCD_NO: TdxDBGridMaskColumn;
+    DBGConsultaCD_RZ_NO: TdxDBGridMaskColumn;
+    DBGConsultaCD_GP_NO: TdxDBGridMaskColumn;
+    DBGConsultaCNPJ_MASK: TdxDBGridMaskColumn;
+    DBGConsultaIE: TdxDBGridMaskColumn;
+    DBGConsultaISUF: TdxDBGridMaskColumn;
+    DBGConsultaCPF_MASK: TdxDBGridMaskColumn;
+    DBGConsultaCR_NO: TdxDBGridMaskColumn;
+    DBGConsultaCV_NO: TdxDBGridMaskColumn;
+    DBGConsultaTEL_MASK: TdxDBGridMaskColumn;
+    DBGConsultaCEL_TEL_MASK: TdxDBGridMaskColumn;
+    DBGConsultaZAP_TEL_MASK: TdxDBGridMaskColumn;
+    DBGConsultaEMAIL: TdxDBGridMaskColumn;
+    DBGConsultaLOG_NO_ABREV: TdxDBGridMaskColumn;
+    DBGConsultaBAI_NO_ABREV: TdxDBGridMaskColumn;
+    DBGConsultaLOC_NO_ABREV: TdxDBGridMaskColumn;
+    DBGConsultaUF: TdxDBGridMaskColumn;
+    PNLINFADCAD: TPanel;
+    DBINFADAD: TdxDBMemo;
+    CadastroPED_DT: TDateField;
+    CadastroNFE_DT: TDateField;
+    CadastroNFS_DT: TDateField;
     procedure FormCreate(Sender: TObject);
     procedure dbgConsultaCustomDrawCell(Sender: TObject; ACanvas: TCanvas;
       ARect: TRect; ANode: TdxTreeListNode; AColumn: TdxTreeListColumn;
       ASelected, AFocused, ANewItemRow: Boolean; var AText: String;
       var AColor: TColor; AFont: TFont; var AAlignment: TAlignment;
       var ADone: Boolean);
-    procedure SIEIncluiClick(Sender: TObject);
-    procedure SIEAlteraClick(Sender: TObject);
+    procedure DTSCadastroDataChange(Sender: TObject; Field: TField);
+    procedure ACTPesquisaExecute(Sender: TObject);
+    procedure CadastroAfterClose(DataSet: TDataSet);
+    procedure ACTMEAppendExecute(Sender: TObject);
+    procedure ACTMEEditExecute(Sender: TObject);
   private
     { Private declarations }
-    procedure _Edicao(AEdicao: Word);
   public
     { Public declarations }
   end;
@@ -60,15 +102,13 @@ var
 
 implementation
 
-uses uPrincipal, pcad_rep_edi, pven_nfe;
+uses uPrincipal, bPrincipal,
+  pPesquisa, pcad_rep_edi;
 
 {$R *.dfm}
 
 procedure Tfrmcad_rep.FormCreate(Sender: TObject);
 begin
-  { ADMIN MANAGER }
-  //DBGConsultaIDPK.Visible := (RECUsuarios.ID = 0); { Código Pedido }
-
   { FORM SCREEN }
   REC_SHE_DEF.FPosition := Self.Position; { Posição }
 
@@ -85,29 +125,25 @@ begin
   REC_SHE_DEF.GAdmin      := False;
   inherited;
 
-  with cadastro do
-  begin
-    SQL.Clear;
-    UnPrepare;
-    SQL.Add('SELECT   ID,REP_FANT,REP_RAZA,REP_CNPJ,REP_CPF,REP_CRED,REP_CID,REP_BAI,REP_LOGR,REP_ESTA,REP_STA,REP_STAV,REP_DPAG,REP_OBSO,REP_VDSC,REP_COMI');
-    SQL.Add('FROM     CAD_REP');
-    SQL.Add('WHERE    ID > 0');
-    SQL.Add('ORDER BY ID');
-    Prepare;
-    Open;
-  end;
+  ACTPesquisa.Execute;
 end;
 
-procedure Tfrmcad_rep.SIEIncluiClick(Sender: TObject);
+procedure Tfrmcad_rep.DTSCadastroDataChange(Sender: TObject;
+  Field: TField);
+var
+  PosCount: Word;
 begin
   inherited;
-  _Edicao(0);
-end;
-
-procedure Tfrmcad_rep.SIEAlteraClick(Sender: TObject);
-begin
-  inherited;
-  _Edicao(1);
+  { Informações Adicionais }
+            PosCount := oPosCount(''#$D'',CadastroINFADCAD.AsString);
+  PNLINFADCAD.Height := IFThen((PosCount = 00) and (CadastroINFADCAD.AsString =  EmptyStr) ,00,
+                        IFThen((PosCount = 00) and (CadastroINFADCAD.AsString <> EmptyStr) ,30,
+                        IFThen((PosCount = 01),040,
+                        IFThen((PosCount = 02),055,
+                        IFThen((PosCount = 02),070,
+                        IFThen((PosCount = 02),085,
+                        IFThen((PosCount = 02),100,
+                        IFThen((PosCount = 02),115,130))))))));
 end;
 
 procedure Tfrmcad_rep.dbgConsultaCustomDrawCell(Sender: TObject;
@@ -115,26 +151,184 @@ procedure Tfrmcad_rep.dbgConsultaCustomDrawCell(Sender: TObject;
   AColumn: TdxTreeListColumn; ASelected, AFocused, ANewItemRow: Boolean;
   var AText: String; var AColor: TColor; AFont: TFont;
   var AAlignment: TAlignment; var ADone: Boolean);
-  var Value: Variant;
 begin
   if not ASelected then
   begin
-    Value := ANode.Values[9];
-    if not VarIsNull(Value) then
-       if Value = 'I' then
-       begin
-         AFont.Color := clwhite;
-         AColor      := clRed;
-      end;
+    if (AColumn = DBGConsultaDEST) and (ANode.Values[DBGConsultaDEST.Index] <> Null) then
+    if (ANode.Values[DBGConsultaDEST.Index] = 'PRÉ-CADASTRO') then
+    begin
+      AFont.Color := clBlack;
+      AColor      := clInfoBk;
+    end else
+    
+    if (ANode.Values[DBGConsultaDEST.Index] = 'INATIVO') then
+    begin
+      AFont.Color := clWhite;
+      AColor      := $000024B3;
+    end;
   end;
 end;
 
-procedure Tfrmcad_rep._Edicao(AEdicao: Word);
+procedure Tfrmcad_rep.ACTPesquisaExecute(Sender: TObject);
 begin
-  frmcad_rep_edi     := TFrmcad_rep_edi.Create(Self);
-  frmcad_rep_edi.Tag := AEdicao;
+  inherited;
+
+  if REC_SHE_DEF.FInitialize then
+  begin
+    if RECUsuarios.Grupo = 'VEN' then
+    Cadastro.SQL.Add('WHERE    PK.CV_ID = ''' + RECUsuarios.ID + '''');
+    Cadastro.SQL.Add('ORDER BY PK.DTEV DESC');
+  end else
+
+  try
+    FrmPesquisa := TFrmPesquisa.Create(Self);
+    FrmPesquisa.Tag := 1;
+    FrmPesquisa.ShowModal;
+  finally
+    if   FrmPesquisa.Editado then
+    with Cadastro do
+    begin
+      oCTransact(TConsulta);
+      oOTransact(TConsulta);
+
+      Close;
+      SQL.Clear;
+
+      { RECURSIVE INI }
+      SQL.Add('WITH RECURSIVE PK');
+      SQL.Add('AS (');
+
+      SQL.Add('SELECT PK.ID   ,PK.EP_ID,');
+      SQL.Add('       PK.DTEV ,PK.DTCA ,CAST(PK.PED_DT AS DATE) AS PED_DT,CAST(PK.NFE_DT AS DATE) AS NFE_DT,CAST(PK.NFS_DT AS DATE) AS NFS_DT,');
+      SQL.Add('       PK.CDST ,PK.REST ,PK.DEST,CRD.CRD_DEST AS CRD_DEST,');
+      SQL.Add('       PK.CD_ID,PK.CD_NO,PK.CD_RZ_NO,PK.CD_GP_NO ,');
+      SQL.Add('       PK.CNPJ ,FCNPJ(PK.CNPJ) AS CNPJ_MASK,PK.IE,PK.ISUF,');
+      SQL.Add('       PK.CPF  ,FCPF(PK.CPF)   AS CPF_MASK ,PK.IDESTRANGEIRO,');
+
+      SQL.Add('       PK.CR_ID,PK.CR_NO,PK.CV_ID,PK.CV_NO,PK.CT_ID,PK.CT_NO,');
+
+      SQL.Add('       TRIM(CAST(FTEL(PK.DDD_NU,PK.TEL_NU) || '' '' || LEFT(PK.CONTATO_NO,10) AS VARCHAR(30))) TEL_MASK,');
+      SQL.Add('       FTEL(PK.CEL_DDD_NU,PK.CEL_TEL_NU) AS CEL_TEL_MASK,');
+      SQL.Add('       FTEL(PK.ZAP_DDD_NU,PK.ZAP_TEL_NU) AS ZAP_TEL_MASK,');
+      SQL.Add('       TRIM(CAST(PK.EMAIL || '' '' || PK.EMAIL2 || '' '' || PK.EMAIL3 AS VARCHAR(200))) AS EMAIL,');
+
+      SQL.Add('       PK.LOG_NO_ABREV,PK.BAI_NO_ABREV,PK.LOC_NO_ABREV,PK.UF,');
+
+      SQL.Add('       CRD.CRD_VPAD,CRD.CRD_VTAP,CRD.CRD_VTSD,CRD.CRD_VTKT,CRD.CRD_BQST,');
+      SQL.Add('       PK.FIS_DTFU,PK.FIS_CRT_NO,');
+      SQL.Add('       PK.INFADCAD');
+
+      SQL.Add('FROM      VW_PSQ_CAD_REP  AS PK');
+      SQL.Add('LEFT JOIN CAD_CLI_CRD_FIN AS CRD ON (CRD.EP_ID = :EP_ID AND CRD.CD_ID = PK.CD_ID)');
+
+      { PESQUISA DATA }
+      if (FrmPesquisa.dxDT1.Date > 0) and (FrmPesquisa.dxDT2.Date > 0) and (FrmPesquisa.dxDT1.Date <= FrmPesquisa.dxDT2.Date) then
+      begin
+        SQL.Add('WHERE ' + FrmPesquisa.cData + ' BETWEEN ''' + FormatDateTime('mm/dd/yy',FrmPesquisa.dxDT1.Date) + ''' AND ''' + FormatDateTime('mm/dd/yy',FrmPesquisa.dxDT2.Date) + '''');
+        SBRodape.Panels[1].Text := 'Pesquisado Data ' + FrmPesquisa.cbData.Text + ' ' + FormatDateTime('mm/dd/yy',FrmPesquisa.dxDT1.Date) + ' até ' + FormatDateTime('mm/dd/yy',FrmPesquisa.dxDT2.Date);
+      end;
+
+      SQL.Add('),'); { RECURSIVE FIM }
+
+      { CTE INI }
+      SQL.Add('CTE_PSQ');
+      SQL.Add('AS (');
+
+      { RECURSIVE SQL }
+      SQL.Add('SELECT PK.* FROM PK');
+
+      { PESQUISA TEXTO PRINCIPAL }
+      if (FrmPesquisa.EDTXT.Text <> EmptyStr) and (LeftStr(FrmPesquisa.CField,2) = 'PK') then
+      SQL.Add('WHERE ' + FrmPesquisa.CField + ' ' + FrmPesquisa.cPesquisaWhere + ' ''' + FrmPesquisa.EDTXT.Text + FrmPesquisa.cPesquisaLike + '''');
+      SQL.Add(')'); { CTE FIM }
+
+      { CTE SELECT }
+      SQL.Add('SELECT DISTINCT PK.* FROM CTE_PSQ AS PK');
+
+      { SUB QUERY }
+      if (FrmPesquisa.EDTXT.Text <> EmptyStr) and (LeftStr(FrmPesquisa.CField,2) <> 'PK') then
+      begin
+        { INÍCIO }
+        SQL.Add('WHERE EXISTS');
+        SQL.Add('(');
+
+        { PEDIDOS }
+        if Pos('PV_PK.',FrmPesquisa.CField) > 0 then
+        begin
+          FrmPesquisa.CField     := oStrTran(FrmPesquisa.CField,'PV_PK.','FK.');
+          SQL.Add('SELECT FIRST 1 FK.ID FROM ' +  oREPZero('PED_VEN_CAB','_',RECParametros.EP_ID,3) + ' AS FK');
+        end;
+
+        { FINANCEIRO BANCÁRIO }
+        if Pos('FN_PK.',FrmPesquisa.CField) > 0 then
+        begin
+          FrmPesquisa.CField     := oStrTran(FrmPesquisa.CField,'FN_PK.','FK.');
+          SQL.Add('SELECT FIRST 1 FK.ID FROM ' +  oREPZero('VW_PSQ_FIN_REC_BAN','_',RECParametros.EP_ID,3) + ' AS FK');
+        end;
+
+        { PESQUISA TEXTO SECUNDÁRIO }
+        SQL.Add('WHERE FK.CD_ID = PK.CD_ID');
+        SQL.Add('AND ' + FrmPesquisa.CField + ' ' + FrmPesquisa.cPesquisaWhere + ' ''' + FrmPesquisa.EDTXT.Text + FrmPesquisa.cPesquisaLike + '''');
+        SQL.Add(')'); { FIM }
+
+        { FINANCEIRO CARTEIRA }
+        if Pos('FIN_REC_BAN',Cadastro.SQL.Text) > 0 then
+        begin
+          SQL.Add('OR EXISTS');
+          SQL.Add('(');
+          SQL.Add('SELECT FIRST 1 FK.ID FROM ' +  oREPZero('VW_PSQ_FIN_REC_CAR','_',RECParametros.EP_ID,3) + ' AS FK');
+
+          { PESQUISA TEXTO SECUNDÁRIO }
+          SQL.Add('WHERE FK.CD_ID = PK.CD_ID');
+          SQL.Add('AND ' + FrmPesquisa.CField + ' ' + FrmPesquisa.cPesquisaWhere + ' ''' + FrmPesquisa.EDTXT.Text + FrmPesquisa.cPesquisaLike + '''');
+          SQL.Add(')'); { FIM }
+        end;
+      end;
+
+      SQL.Add('ORDER BY ' + IFThen(LeftStr(FrmPesquisa.CField,2) = 'PK',FrmPesquisa.CField,'PK.DTEV DESC'));
+    end;
+
+    if FrmPesquisa.EDTXT.Text <> EmptyStr then
+    begin
+      APSQ_CAD := FrmPesquisa.cbCAMPO.Text;
+      SBRodape.Panels[1].Text := SBRodape.Panels[1].Text + ' Pesquisado ' + FrmPesquisa.cbCampo.Text + ' ' + FrmPesquisa.EDTXT.Text;
+    end;
+
+    FreeAndNil(FrmPesquisa);
+  end;
+
+  if Cadastro.State = dsInactive then
+  begin
+    Cadastro.ParamByName('EP_ID').Value := RECParametros.EP_ID;
+    Cadastro.Prepare;
+    Cadastro.Open;
+  end;
+
+  DBGConsultaCD_NO.Field.FocusControl;
+  if Showing then
+  DBGConsulta.SetFocus;
+end;
+
+procedure Tfrmcad_rep.CadastroAfterClose(DataSet: TDataSet);
+begin
+  SBRodape.Panels[1].Text := EmptyStr;
+end;
+
+procedure Tfrmcad_rep.ACTMEAppendExecute(Sender: TObject);
+begin
+  frmcad_rep_edi := TFrmcad_rep_edi.Create(Self,0);
   try frmcad_rep_edi.ShowModal;
-  finally FreeAndNil(frmcad_rep_edi);
+  finally
+    FreeAndNil(frmcad_rep_edi);
+  end;
+end;
+
+procedure Tfrmcad_rep.ACTMEEditExecute(Sender: TObject);
+begin
+  frmcad_rep_edi := TFrmcad_rep_edi.Create(Self,CadastroID.AsInteger);
+  try frmcad_rep_edi.ShowModal;
+  finally
+    FreeAndNil(frmcad_rep_edi);
   end;
 end;
 

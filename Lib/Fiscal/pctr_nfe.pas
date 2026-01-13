@@ -375,9 +375,6 @@ uses uPrincipal, bPrincipal,
 
 procedure Tfrmctr_nfe.FormCreate(Sender: TObject);
 begin
-  { ADMIN MANAGER }
-  //DBGConsultaIDPK.Visible := (RECUsuarios.ID = 0); { Código Pedido }
-
   { FORM SCREEN }
   REC_SHE_DEF.FPosition := Self.Position; { Posição }
 

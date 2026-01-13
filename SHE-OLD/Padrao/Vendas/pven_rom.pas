@@ -9,7 +9,8 @@ uses
   dxEdLib, dxCntner, dxTL, dxDBCtrl, dxDBGrid, dxPageControl, ComCtrls,
   dxDBELib, DBCtrls, Grids, DBGrids, IBQuery, DB, IBCustomDataSet, jpeg,
   IBStoredProc, IBDatabase, dxDBTLCl, dxGrClms, DateUtils, Math, StrUtils, FMTBcd,
-  IBEvents, rxSpeedbar, IBSQL, cxGraphics, cxControls, dxStatusBar;
+  IBEvents, rxSpeedbar, IBSQL, cxGraphics, cxControls, dxStatusBar,
+  ActnList;
 
 type
   Tfrmven_rom = class(TForm)
@@ -107,8 +108,6 @@ type
     SQLSEdicao: TIBSQL;
     FKPedidosID: TIntegerField;
     SQLEtiquetas: TIBSQL;
-    DBGConsultaROM_PSBR: TdxDBGridMaskColumn;
-    DBGConsultaROM_PSLQ: TdxDBGridMaskColumn;
     EdicaoROM_CDTP: TSmallintField;
     EdicaoROM_CDDF: TSmallintField;
     EdicaoROM_DEDF: TIBStringField;
@@ -120,9 +119,6 @@ type
     FKPedidosINFADCAD: TIBStringField;
     FKPedidosIP: TIBStringField;
     SQLEvent: TIBSQL;
-    DBGConsultaROM_TSDE: TdxDBGridMaskColumn;
-    DBGConsultaROM_TOTA: TdxDBGridMaskColumn;
-    DBGConsultaROM_VIPI: TdxDBGridMaskColumn;
     SBRodape: TdxStatusBar;
     EdicaoROM_PTABI: TFloatField;
     EdicaoROM_PTABF: TFloatField;
@@ -165,7 +161,63 @@ type
     PedidosMFRT: TSmallintField;
     PedidosVFRT: TIBBCDField;
     PedidosINFADCAD: TIBStringField;
-    DBGConsultaROM_UNIT: TdxDBGridMaskColumn;
+    ALPrincipal: TActionList;
+    ACTXMLCreate: TAction;
+    ACTPesquisa: TAction;
+    ACTXMLValidate: TAction;
+    ACTConsulta: TAction;
+    ACTPSQ_NFE_ADM: TAction;
+    ACTXMLLoteCreate: TAction;
+    ACTPSQ_PED_RDV: TAction;
+    ACTPSQ_NFE_NUM: TAction;
+    ACTPSQ_NFE_SEQ: TAction;
+    ACTPSQ_TAB_CFOP: TAction;
+    ACTPSQ_CAD_TRA: TAction;
+    ACTPSQ_CAD_PRO: TAction;
+    ACTXMLLoteRetorno: TAction;
+    ACTNFeEdicao: TAction;
+    ACTNFeTriangular: TAction;
+    ACTNFeValidate: TAction;
+    ACTNFeCalculate: TAction;
+    ACTNFeICMS: TAction;
+    ACTNFeCST: TAction;
+    ACTRefresh: TAction;
+    ACTNFeDesconto: TAction;
+    ACTEveRegister: TAction;
+    ACTNFeCFOP: TAction;
+    ACTNFeFrete: TAction;
+    ACTNFeSeguro: TAction;
+    ACTNFeINFADCAD: TAction;
+    ACTNFeBoleto: TAction;
+    ACTXMLSend: TAction;
+    ACTEveExecute: TAction;
+    ACTRelatorios: TAction;
+    ACTMEAppend: TAction;
+    ACTMEEdit: TAction;
+    ACTMEDelete: TAction;
+    ACTMEPost: TAction;
+    ACTMECancel: TAction;
+    ACTMPAppend: TAction;
+    ACTMPEdit: TAction;
+    ACTMPDelete: TAction;
+    ACTMPPost: TAction;
+    ACTMPValidate: TAction;
+    ACTMPCancel: TAction;
+    ACTEveExpress: TAction;
+    ACTProgressBar: TAction;
+    ACTDashboards: TAction;
+    ACTCheckConstraints: TAction;
+    ACTCheckErrors: TAction;
+    ACTSaida: TAction;
+    ACTEdicao: TAction;
+    ACTEmail: TAction;
+    ACTImporta: TAction;
+    ACTEDI_CAD_PAD: TAction;
+    ACTVisualiza: TAction;
+    ACTNFePDF: TAction;
+    ACTXMLImporta: TAction;
+    ACTEDI_CAD_PRO: TAction;
+    ACTEDI_CAD_PRO_EST: TAction;
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
@@ -181,17 +233,12 @@ type
     procedure DTSEdicaoDataChange(Sender: TObject; Field: TField);
     procedure FormPaint(Sender: TObject);
     procedure SIMNFeClick(Sender: TObject);
-    procedure EdicaoBeforeScroll(DataSet: TDataSet);
-    procedure EdicaoAfterScroll(DataSet: TDataSet);
-    procedure DBGConsultaCustomDrawCell(Sender: TObject; ACanvas: TCanvas;
-      ARect: TRect; ANode: TdxTreeListNode; AColumn: TdxTreeListColumn;
-      ASelected, AFocused, ANewItemRow: Boolean; var AText: String;
-      var AColor: TColor; AFont: TFont; var AAlignment: TAlignment;
-      var ADone: Boolean);
+    procedure ACTEveRegisterExecute(Sender: TObject);
+    procedure ACTEveExecuteExecute(Sender: TObject);
+    procedure ACTEveExpressExecute(Sender: TObject);
   private
     { Private declarations }
     REC_SHE_DEF: TREC_SHE_DEF;
-    RECPedido : TRECPedidos;
 
     FMSGRodape: String;
     FCaixa,
@@ -209,6 +256,7 @@ type
     procedure SetCaixa(const AValue: Boolean);
   public
     { Public declarations }
+    RECPedido : TRECPedidos;
     ROM_QTDE,
     ROM_TSDE,
     ROM_TCDE,
@@ -222,7 +270,6 @@ type
     procedure _Etiquetas;
     procedure _Produtos;
     procedure _Salva;
-    procedure _NFEmissao(ATIPO_NF: String = 'NORMAL');
 
     Constructor Create(AOwner: TComponent; const AIDPK: Integer); reintroduce; overload;
   end;
@@ -257,12 +304,20 @@ end;
 
 procedure Tfrmven_rom.FormCreate(Sender: TObject);
 begin
-  Screen.Cursor := crAppStart;
+  { FORM SCREEN }
+  REC_SHE_DEF.FPosition := Self.Position; { Posição }
 
-  { Default }
-  oIREC_SHE_DEF(REC_SHE_DEF);
-  REC_SHE_DEF.FPosition := Self.Position;
-  REC_SHE_DEF.FB_Event  := 'PED_PDV_ADM';
+  REC_SHE_DEF.FMainArea := False; { Aplicativo }
+  REC_SHE_DEF.FWorkArea := False; { Windows    }
+
+  { ACCESS MANAGER }
+  REC_SHE_DEF.FB_Event := 'PED_PDV_ADM'; { Eventos }
+
+  { GRANT USER }
+  REC_SHE_DEF.GDescricao  := '';
+  REC_SHE_DEF.GReferencia := '';
+  REC_SHE_DEF.GRegra      := '';
+  REC_SHE_DEF.GAdmin      := True;
 
   { Métodos }
   SMSGRodape := 'Inclusão de Romaneios';
@@ -276,6 +331,16 @@ begin
     ForceClose := True;
     Abort;
   end;
+
+  oOTransact(TSEdicao);
+  with SQLSEdicao do
+  begin
+    Close;
+    SQL.Clear;
+    SQL.Add('DELETE FROM ROM_ITE');
+    ExecQuery;
+  end;
+  oRTransact(TSEdicao);
 
   oOTransact(TConsulta);
   with Pedidos do
@@ -335,49 +400,14 @@ procedure Tfrmven_rom.FormActivate(Sender: TObject);
 begin
   OnActivate := Nil;
   if ForceClose then
-     Abort;
+  Abort;
 
   try
-    { Registra Evento }
-    if REC_SHE_DEF.FB_Event <> EmptyStr then
-       with EEvent do
-            try
-              UnregisterEvents;
-              Events.Add(oREPZero(Trim(REC_SHE_DEF.FB_Event),'_',RECParametros.EP_ID,3));
-              RegisterEvents;
-            except
-              on E: Exception do
-                    oErro(Handle,'Falha ao tentar registrar evento !'+#13+
-                                 'Evento: '    +REC_SHE_DEF.FB_Event +'.'+#13+
-                                 'Form: '      +Self.Name+'.'    +#13+#13+
-                                 'Error Code: '+E.Message);
-            end;
+    ACTEveRegister.Execute; { Registro }
   finally
     Screen.Cursor := crDefault;
     Tag := 0;
   end;
-
-  oOTransact(TSEdicao);
-  try
-    with SQLSEdicao do
-    begin
-      Close;
-      SQL.Clear;
-      SQL.Add('DELETE FROM ROM_ITE');
-      ExecQuery;
-    end;
-    oRTransact(TSEdicao);
-  except
-    on E: Exception do
-    begin
-      oCTransact(TSEdicao,ltRollback);
-      oErro(Handle,'Falha ao tentar incluir os itens !'+#13+
-                   'Evento: '    +oREPZero('CTR_PED','_',RECParametros.EP_ID,3)+'.'+#13+
-                   'Form: '      +Self.Name+'.'+#13+#13+
-                   'Error Code: '+E.Message);
-    end;
-  end;
-  oRTransact(TSEdicao);
 end;
 
 procedure Tfrmven_rom.FormClose(Sender: TObject; var Action: TCloseAction);
@@ -386,64 +416,39 @@ begin
 end;
 
 procedure Tfrmven_rom.FormDestroy(Sender: TObject);
-var
-  MainHandle: THandle;
 begin
-  try
-    Screen.Cursor := crAppStart;
-    OnDestroy     := Nil;
-
-    try
-      oFTransact(TConsulta);
-    except
-      on E: Exception do
-      begin
-        oErro(Application.Handle,'Falha ao tentar fechar tabelas !'+#13+#13+
-                                 'Error Code: '+E.Message+'.'      +#13+
-                                  Self.Caption+'.');
-      end;
-    end;
-
-    try
-      EEvent.UnRegisterEvents;
-    except
-      on E: Exception do
-      begin
-        oErro(Application.Handle,'Falha ao tentar fechar eventos !'+#13+#13+
-                                 'Error Code: '+E.Message+'.'      +#13+
-                                  Caption+'.');
-      end;
-    end;
-
-    try
-      oFRECPedidos(RECPedido );
-      oFREC_SHE_DEF(REC_SHE_DEF);
-    except
-      on E: Exception do
-      begin
-        oErro(Application.Handle,'Falha ao tentar esvaziar memória !'+#13+#13+
-                                 'Error Code: '+E.Message+'.'        +#13+
-                                  Caption+'.');
-      end;
-    end;
-  finally
-    Screen.Cursor := crDefault;
-    Frmven_rom    := Nil;
-  end;
+  OnDestroy := Nil;
 
   try
-    MainHandle := OpenProcess(PROCESS_ALL_ACCESS, False, GetCurrentProcessID);
-    SetProcessWorkingSetSize(MainHandle, $FFFFFFFF, $FFFFFFFF);
-    CloseHandle(MainHandle);
+    oFTransact(TConsulta);
   except
-    ;
+    on E: Exception do
+    begin
+      oErro(Application.Handle,'Falha ao tentar fechar tabelas !'+#13+#13+
+                               'Error Code: '+E.Message+'.'      +#13+
+                                Self.Caption+'.');
+    end;
   end;
+
+  try
+    EEvent.UnRegisterEvents;
+  except
+    on E: Exception do
+    begin
+      oErro(Application.Handle,'Falha ao tentar fechar eventos !'+#13+#13+
+                               'Error Code: '+E.Message+'.'      +#13+
+                                Caption+'.');
+    end;
+  end;
+
+  frmven_rom := Nil;
 end;
 
 procedure Tfrmven_rom.FormKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   case key of
+       vk_escape: Close;
        VK_RETURN: if (not (activeControl is TdxDBGrid) and
                       not (activeControl is TDBMemo)   and
                       not (activeControl is TdxMemo)   and
@@ -482,9 +487,9 @@ begin
   { Ajusta o Form para o tamanho da area livre do MainForm }
   GetWindowRect(FrmPrincipal.ClientHandle,AScreen);
 
-  Left   := 0;
-  Top    := 0;
-  Height := AScreen.Bottom - AScreen.Top - 5;
+  Left   := AScreen.Left   + 5;
+  Height := AScreen.Bottom - AScreen.Top;
+  Top    := AScreen.Top    + 5;
 end;
 
 procedure Tfrmven_rom.FormResize(Sender: TObject);
@@ -496,17 +501,18 @@ end;
 procedure Tfrmven_rom.SIMSalvaClick(Sender: TObject);
 begin
   _Salva;
+  RECPedido.IDFK := 0;
   if not SIMSalva.Enabled then
-     Close;
+  Close;
 end;
 
 procedure Tfrmven_rom.SIMNFeClick(Sender: TObject);
 begin
-  _Salva; if SIMSalva.Enabled then
-             Abort;
+  _Salva;
+  if SIMSalva.Enabled then
+  Abort;
 
-  _NFEmissao;
-  Close;
+  Self.Close;
 end;
 
 procedure Tfrmven_rom.SIMSaidaClick(Sender: TObject);
@@ -697,318 +703,325 @@ end;
 procedure Tfrmven_rom._Salva;
 begin
   oRTransact(TSEdicao);
+  RECPEdido.IDFK := 0;
 
+  if PedidosId.AsInteger = 0 then
+  oException(Nil,'Pedido não Encontrado !');
+
+  if EdicaoId.AsInteger = 0 then
+  oException(Nil,'Itens do Pedido não Encontrado !');
+
+  { Verifica Duplicidades }
+  with SQLSEdicao do
+  begin
+    Close;
+    SQL.Clear;
+    SQL.Add('SELECT ROM_CDET,COUNT(*) AS QT FROM ROM_ITE');
+    SQL.Add('WHERE  ROM_CDET <> ''0''');
+    SQL.Add('AND    ROM_CDET <> '' ''');
+    SQL.Add('GROUP  BY 1');
+    SQL.Add('HAVING COUNT(*) > 1');
+    ExecQuery;
+
+    if Current.Vars[1].AsInteger > 0 then
+       oException(Nil,'Falha ao tentar salvar romaneio !' + #13 +
+                      'Etiqueta Nº ' + Current.Vars[0].AsString + ' em duplicidade.' + #13 + #13 +
+                      'Favor entrar em contato com o responsável pela separação.');
+  end;
+
+  { Sumário }
+  with SQLSEdicao do
+  begin
+    Close;
+    SQL.Clear;
+    SQL.Add('SELECT SUM(PK.ROM_QTDE) AS QTDE,SUM(PK.ROM_QTRL) AS QTRL,SUM(PK.ROM_TSDE) AS TSDE,SUM(PK.ROM_TOTA) AS TCDE,SUM(PK.ROM_PSBR) AS PSBR,SUM(PK.ROM_PSLQ) AS PSLQ');
+    SQL.Add('FROM   ROM_ITE AS PK');
+    SQL.Add('WHERE  PK.ROM_FLAG = 0 ');
+    ExecQuery;
+
+    RECPedido.PK_QTDE := Current.ByName('QTDE').AsCurrency;
+    RECPedido.PK_QTRL := Current.ByName('QTRL').AsInteger;
+
+    RECPedido.PK_VDSC := PedidosVDSC.AsCurrency;
+    RECPedido.PK_PDSC := RoundTO((RECPedido.PK_VDSC * 100) / Current.ByName('TSDE').AsCurrency,-2);
+
+    RECPedido.PK_TSDE := Current.ByName('TSDE').AsCurrency;
+    RECPedido.PK_TCDE := Current.ByName('TCDE').AsCurrency - RECPedido.PK_VDSC;
+
+    RECPedido.PK_PSBR := Current.ByName('PSBR').AsCurrency;
+    RECPedido.PK_PSLQ := Current.ByName('PSLQ').AsCurrency;
+  end;
+
+  { Cabeçalho }
   try
-    Pedidos.DisableControls;
-    Pedidos.First;
-    if PedidosId.AsInteger = 0 then
-       oException(Nil,'Pedido não Encontrado !');
+    oOTransact(TEdicao);
 
-    Edicao.DisableControls;
+    SPEdicao.Close;
+    SPEdicao.StoredProcName := 'SP_ROM_CAB';
+    SPEdicao.Prepare;
+
+    SPEdicao.ParamByName('ped').Value  := oREPZero('ROM_CAB','_',RECParametros.EP_ID,3);
+    SPEdicao.ParamByName('id').Value   := 0;
+
+    SPEdicao.ParamByName('dero').Value := PedidosDEPK.AsString;
+    SPEdicao.ParamByName('ctnr').Value := PedidosCTNR.AsString;
+    SPEdicao.ParamByName('cdcx').Value := RECParametros.CDCX;
+
+    SPEdicao.ParamByName('ccli').Value := PedidosIDCD.AsInteger;
+    SPEdicao.ParamByName('cven').Value := PedidosIDCV.AsInteger;
+    SPEdicao.ParamByName('crep').Value := PedidosIDCR.AsInteger;
+
+    SPEdicao.ParamByName('qtve').Value := RECPedido.PK_QTDE;
+    SPEdicao.ParamByName('rlve').Value := RECPedido.PK_QTRL;
+
+    SPEdicao.ParamByName('tsde').Value := RECPedido.PK_TSDE;
+    SPEdicao.ParamByName('tdsc').Value := PedidosTDSC.AsString;
+    SPEdicao.ParamByName('pdsc').Value := RECPedido.PK_PDSC;
+    SPEdicao.ParamByName('vdsc').Value := RECPedido.PK_VDSC;
+    SPEdicao.ParamByName('tcde').Value := RECPedido.PK_TCDE;
+
+    SPEdicao.ParamByName('ctra').Value := PedidosIDCT.AsInteger;
+    SPEdicao.ParamByName('dtra').Value := PedidosDECT.AsString;
+    SPEdicao.ParamByName('mfrt').Value := PedidosMFRT.AsString;
+    SPEdicao.ParamByName('cfrt').Value := EmptyStr;
+    SPEdicao.ParamByName('vfrt').Value := 0;
+    SPEdicao.ParamByName('psbr').Value := RECPEdido.PK_PSBR;
+    SPEdicao.ParamByName('pslq').Value := RECPEdido.PK_PSLQ;
+
+    SPEdicao.ParamByName('stpd').Value := PedidosSTPD.AsString;
+    SPEdicao.ParamByName('stco').Value := PedidosSTCO.AsString;
+    SPEdicao.ParamByName('conc').Value := PedidosTPCO.AsInteger;
+    SPEdicao.ParamByName('cpag').Value := PedidosCDPG.AsInteger;
+    SPEdicao.ParamByName('stfi').Value := PedidosDEST.AsString;
+    SPEdicao.ExecProc;
+
+    RECPedido.IDFK := IntToStr(SPEdicao.ParamByName('rID').AsInteger);
+
+    if RECPedido.IDFK = 0 then
+    Abort;
+  except
+    on E: Exception do
+    begin
+      SIMSalva.Enabled := True;
+
+      oCTransact(TEdicao,ltRollback);
+      oException(Nil    ,'Falha ao tentar registrar romaneio !'+#13+
+                         'Favor entrar em contato com o administrador do sistema.'+#13+#13+
+                         'Erro: '+E.Message);
+    end;
+  end;
+
+  { Itens }
+  try
     Edicao.First;
-    if EdicaoId.AsInteger = 0 then
-       oException(Nil,'Itens do Pedido não Encontrado !');
+    while not Edicao.Eof do
+    begin
+      Application.ProcessMessages;
 
-    { Verifica Duplicidades }
-    with SQLSEdicao do
+      SPEdicao.Close;
+      SPEdicao.StoredProcName := 'SP_ROM_ITE';
+      SPEdicao.Prepare;
+
+      SPEdicao.ParamByName('AID'  ).Value := 0;
+      SPEdicao.ParamByName('AIDEP').Value := RECParametros.EP_ID;
+      SPEdicao.ParamByName('AIDCA').Value := RECUsuarios.ID;
+      SPEdicao.ParamByName('AIDPK').Value := RECPedido.IDFK;
+
+      SPEdicao.ParamByName('AITEM').Value := EdicaoROM_ITEM.AsString;
+      SPEdicao.ParamByName('ACDET').Value := EdicaoROM_CDET.AsString;
+      SPEdicao.ParamByName('AIDCP').Value := EdicaoROM_IPRO.AsInteger;
+      SPEdicao.ParamByName('ACEAN').Value := EdicaoROM_CBAR.AsString;
+      SPEdicao.ParamByName('ADECP').Value := EdicaoROM_DPRO.AsString;
+      SPEdicao.ParamByName('ADGCP').Value := EdicaoROM_COMP.AsString;
+
+      SPEdicao.ParamByName('AUCOM').Value := EdicaoROM_DUNI.AsString;
+      SPEdicao.ParamByName('AUCON').Value := '';
+
+      SPEdicao.ParamByName('AQTDE').Value := EdicaoROM_QTDE.AsCurrency;
+      SPEdicao.ParamByName('AQTRL').Value := EdicaoROM_QTRL.AsCurrency;
+      SPEdicao.ParamByName('APSBR').Value := EdicaoROM_PSBR.AsFloat;
+      SPEdicao.ParamByName('APSLQ').Value := EdicaoROM_PSLQ.AsFloat;
+
+      SPEdicao.ParamByName('AVPRC_PAD_INI').Value := EdicaoROM_PTABI.AsFloat;
+      SPEdicao.ParamByName('AVPRC_PAD_FIM').Value := EdicaoROM_UNIT.AsFloat;
+      SPEdicao.ParamByName('AVPRC_PAD').Value := EdicaoROM_PREC.AsFloat;
+      SPEdicao.ParamByName('AVPRC_COM').Value := EdicaoROM_UNIT.AsFloat;
+
+      SPEdicao.ParamByName('APDSC').Value := EdicaoROM_PDSC.AsFloat;
+      SPEdicao.ParamByName('AVDSC').Value := EdicaoROM_VDSC.AsFloat;
+
+      SPEdicao.ParamByName('ATSDE').Value := EdicaoROM_TSDE.AsCurrency;
+      SPEdicao.ParamByName('ATCDE').Value := EdicaoROM_TOTA.AsCurrency;
+
+      SPEdicao.ParamByName('ANCM' ).Value := EdicaoROM_CCLF.AsString;
+      SPEdicao.ParamByName('APIPI').Value := EdicaoROM_PIPI.AsCurrency;
+      SPEdicao.ParamByName('AVIPI').Value := EdicaoROM_VIPI.AsCurrency;
+      SPEdicao.ParamByName('AIP'  ).Value := RECParametros.IP;
+      SPEdicao.ParamByName('AHOST').Value := RECParametros.HOST;
+      SPEdicao.ParamByName('AFLAG').Value := 0;
+      SPEdicao.ExecProc;
+
+      Edicao.Next;
+    end;
+  except
+    on E: Exception do
+    begin
+      SIMSalva.Enabled := True;
+
+      oCTransact(TEdicao,ltRollback);
+      oException(Nil    ,'Falha ao tentar registrar os itens do romaneio !'       +#13+
+                         'Favor entrar em contato com o administrador do sistema.'+#13+#13+
+                         'Erro: '+E.Message);
+    end;
+  end;
+
+  { Pedido }
+  try
+    with SQLEdicao do
     begin
       Close;
       SQL.Clear;
-      SQL.Add('SELECT ROM_CDET,COUNT(*) AS QT FROM ROM_ITE');
-      SQL.Add('WHERE  ROM_CDET <> ''0''');
-      SQL.Add('AND    ROM_CDET <> '' ''');
-      SQL.Add('GROUP  BY 1');
-      SQL.Add('HAVING COUNT(*) > 1');
+      SQL.Add('EXECUTE BLOCK');
+      SQL.Add('RETURNS (CDRO bigint)');
+      SQL.Add('AS');
+      SQL.Add('BEGIN');
+
+      SQL.Add('UPDATE ' + oREPZero('PED_VEN_CAB','_',RECParametros.EP_ID,3));
+      SQL.Add('SET    ROM_CDRO = '''+RECPedido.IDFK+''',');
+      SQL.Add('       DTRO     = CURRENT_TIMESTAMP,');
+      SQL.Add('       ROM_QTPD = '''+oStrTran(FloatToStr(RECPedido.PK_QTDE),',','.')+''',');
+      SQL.Add('       ROM_RLPD = '''+oStrTran(IntToStr  (RECPedido.PK_QTRL),',','.')+'''');
+      SQL.Add('WHERE  IDEP     = '''+RECParametros.EP_ID  +'''');
+      SQL.Add('AND    ID       = '''+PedidosId.AsString+'''');
+      SQL.Add('RETURNING CDRO INTO :CDRO;');
+
+      SQL.Add('SUSPEND;');
+      SQL.Add('END;');
+
+      ParamCheck := False;
+      Prepare;
       ExecQuery;
-
-      if Current.Vars[1].AsInteger > 0 then
-         oException(Nil,'Falha ao tentar salvar romaneio !' + #13 +
-                        'Etiqueta Nº ' + Current.Vars[0].AsString + ' em duplicidade.' + #13 + #13 +
-                        'Favor entrar em contato com o responsável pela separação.');
-    end;
-    
-    { Auto Increment }
-    try
-      oOTransact(TEdicao);
-      with SQLEdicao do
-      begin
-        Close;
-        SQL.Clear;
-        SQL.Add('SELECT GEN_ID(ID_NO_'+SLPrincipal.Values['rom_cab']+',0) FROM RDB$DATABASE');
-        ExecQuery;
-        RECPedido.IDFK := IntToStr(Current.Vars[0].AsInteger + 1);
-      end;
-    except
-      on E: Exception do
-      begin
-        SIMSalva.Enabled := True;
-
-        oCTransact(TEdicao,ltRollback);
-        oException(Nil    ,'Falha ao tentar atribuir ID de Identificação !'         +#13+
-                           'Favor entrar em contato com o administrador do sistema.'+#13+#13+
-                           'Erro: '+E.Message);
-      end;
-    end;
-    SIMSalva.Enabled := False;
-
-    { Itens }
-    try
-      while not Edicao.Eof do
-      begin
-        Application.ProcessMessages;
-
-        SPEdicao.Close;
-        SPEdicao.StoredProcName := 'SP_ROM_ITE';
-        SPEdicao.Prepare;
-
-        SPEdicao.ParamByName('AID'  ).Value := 0;
-        SPEdicao.ParamByName('AIDEP').Value := RECParametros.EP_ID;
-        SPEdicao.ParamByName('AIDCA').Value := RECUsuarios.ID;
-        SPEdicao.ParamByName('AIDPK').Value := RECPedido.IDFK;
-
-        SPEdicao.ParamByName('AITEM').Value := EdicaoROM_ITEM.AsString;
-        SPEdicao.ParamByName('ACDET').Value := EdicaoROM_CDET.AsString;
-        SPEdicao.ParamByName('AIDCP').Value := EdicaoROM_IPRO.AsInteger;
-        SPEdicao.ParamByName('ACEAN').Value := EdicaoROM_CBAR.AsString;
-        SPEdicao.ParamByName('ADECP').Value := EdicaoROM_DPRO.AsString;
-        SPEdicao.ParamByName('ADGCP').Value := EdicaoROM_COMP.AsString;
-
-        SPEdicao.ParamByName('AUCOM').Value := EdicaoROM_DUNI.AsString;
-        SPEdicao.ParamByName('AUCON').Value := '';
-
-        SPEdicao.ParamByName('AQTDE').Value := EdicaoROM_QTDE.AsCurrency;
-        SPEdicao.ParamByName('AQTRL').Value := EdicaoROM_QTRL.AsCurrency;
-        SPEdicao.ParamByName('APSBR').Value := EdicaoROM_PSBR.AsFloat;
-        SPEdicao.ParamByName('APSLQ').Value := EdicaoROM_PSLQ.AsFloat;
-
-        SPEdicao.ParamByName('AVPRC_PAD_INI').Value := EdicaoROM_PTABI.AsFloat;
-        SPEdicao.ParamByName('AVPRC_PAD_FIM').Value := EdicaoROM_UNIT.AsFloat;
-        SPEdicao.ParamByName('AVPRC_PAD').Value := EdicaoROM_PREC.AsFloat;
-        SPEdicao.ParamByName('AVPRC_COM').Value := EdicaoROM_UNIT.AsFloat;
-
-        SPEdicao.ParamByName('APDSC').Value := EdicaoROM_PDSC.AsFloat;
-        SPEdicao.ParamByName('AVDSC').Value := EdicaoROM_VDSC.AsFloat;
-
-        SPEdicao.ParamByName('ATSDE').Value := EdicaoROM_TSDE.AsCurrency;
-        SPEdicao.ParamByName('ATCDE').Value := EdicaoROM_TOTA.AsCurrency;
-
-        SPEdicao.ParamByName('ANCM' ).Value := EdicaoROM_CCLF.AsString;
-        SPEdicao.ParamByName('APIPI').Value := EdicaoROM_PIPI.AsCurrency;
-        SPEdicao.ParamByName('AVIPI').Value := EdicaoROM_VIPI.AsCurrency;
-        SPEdicao.ParamByName('AIP'  ).Value := RECParametros.IP;
-        SPEdicao.ParamByName('AHOST').Value := RECParametros.HOST;
-        SPEdicao.ParamByName('AFLAG').Value := 0;
-        SPEdicao.ExecProc;
-
-        Edicao.Next;
-      end;
-
-      { Sumário }
-      with SQLEdicao do
-      begin
-        Close;
-        SQL.Clear;
-        SQL.Add('SELECT ID FROM '+SLPrincipal.Values['rom_ite'] + ' AS PK');
-        SQL.Add('WHERE  PK.CDRO = ''' + RECPedido.IDFK + '''');
-        ExecQuery;
-
-        if Current.Vars[0].AsInteger  = 0 then
-           oException(Nil,'Itens não Encontrados !');
-
-        { Exatamente o mesmo valor do agrupamento e também não agrupados }
-        Close;
-        SQL.Clear;
-        SQL.Add('SELECT SUM(PK.QTDE) AS QTDE,SUM(PK.QTRL) AS QTRL,SUM(PK.TCDE) AS TCDE,SUM(PK.PSBR) AS PSBR,SUM(PK.PSLQ) AS PSLQ');
-        SQL.Add('FROM (');
-        SQL.Add('SELECT   FK.ID AS IDCP,FK.SKU AS CPROD,PK.ROM_DPRO||'' ''||COALESCE(PK.DGCP,'''') AS XPROD,PK.ROM_DUNI AS UCOM,');
-        SQL.Add('         FK.CEAN,FK.NCM,FK.PIPI,FK.CEST,FK.EXTIPI,FK.UTRIB,FK.ORIG,');
-        SQL.Add('         FK.PESO,FK.PSCN,FK.METRO,FK.REND,FK.UQTDE,');
-        SQL.Add('         FK.CMP_PAD ,FK.REST,');
-        SQL.Add('         FK.UQVOL,FK.UESP,');
-        SQL.Add('         PK.ROM_PREC,PK.ROM_UNIT AS VUNCOM,PK.ROM_NFCI,');
-        SQL.Add('         SUM(PK.QTDE) AS QTDE,SUM(PK.QTRL) AS QTRL,CAST(SUM(CAST(PK.QTDE AS NUMERIC(15,2)) * PK.VPRC_COM)  AS NUMERIC(15,2)) AS TCDE,SUM(PK.PSBR) AS PSBR,SUM(PK.PSLQ) AS PSLQ');
-        SQL.Add('FROM   '+SLPrincipal.Values['rom_ite'] + ' AS PK');
-        SQL.Add('JOIN     SP_CAD_PRO_PSQ('+RECParametros.EP_ID+', PK.IDCP,''ID'') AS FK ON (1=1)');
-        SQL.Add('WHERE    PK.CDRO = '''+RECPedido.IDFK+'''');
-        SQL.Add('GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23) AS PK');
-        ExecQuery;
-
-        RECPedido.PK_QTDE := 0;
-
-        RECPedido.PK_QTDE := Current.ByName('QTDE').AsCurrency;
-        RECPedido.PK_QTRL := Current.ByName('QTRL').AsInteger;
-        RECPedido.PK_TSDE := Current.ByName('TCDE').AsCurrency;
-        //RECPedido.PK_PDSC := PedidosPDSC.AsFloat;
-        //RECPedido.PK_VDSC := RoundTO(IFThen(PedidosTDSC.AsString = '%',(RECPedido.PK_PDSC / 100) * RECPedido.PK_TSDE,RECPedido.PK_PDSC),-2);
-
-        RECPedido.PK_VDSC := PedidosVDSC.AsFloat;
-        RECPedido.PK_PDSC := RoundTO((RECPedido.PK_VDSC * 100) / RECPedido.PK_TSDE,-2);
-
-        RECPedido.PK_TCDE := RECPedido.PK_TSDE - RECPedido.PK_VDSC;
-        RECPedido.PK_PSBR := Current.ByName('PSBR').AsFloat;
-        RECPedido.PK_PSLQ := Current.ByName('PSLQ').AsFloat;
-      end;
-    except
-      on E: Exception do
-      begin
-        SIMSalva.Enabled := True;
-
-        oCTransact(TEdicao,ltRollback);
-        oException(Nil    ,'Falha ao tentar registrar os itens do romaneio !'       +#13+
-                           'Favor entrar em contato com o administrador do sistema.'+#13+#13+
-                           'Erro: '+E.Message);
-      end;
+      ParamCheck := True;
     end;
 
-    { Cabeçalho }
-    try
-      SPEdicao.Close;
-      SPEdicao.StoredProcName := 'SP_ROM_CAB';
-      SPEdicao.Prepare;
+    if RECPedido.IDFK <> SQLEdicao.Current.Vars[0].AsInteger then
+    oException(Nil,'Falha ao tentar gerar romaneio !');
+  except
+    on E: Exception do
+    begin
+      SIMSalva.Enabled := True;
 
-      SPEdicao.ParamByName('ped').Value  := oREPZero('ROM_CAB','_',RECParametros.EP_ID,3);
-      SPEdicao.ParamByName('id').Value   := 0;
-
-      SPEdicao.ParamByName('dero').Value := PedidosDEPK.AsString;
-      SPEdicao.ParamByName('ctnr').Value := PedidosCTNR.AsString;
-      SPEdicao.ParamByName('cdcx').Value := RECParametros.CDCX;
-
-      SPEdicao.ParamByName('ccli').Value := PedidosIDCD.AsInteger;
-      SPEdicao.ParamByName('cven').Value := PedidosIDCV.AsInteger;
-      SPEdicao.ParamByName('crep').Value := PedidosIDCR.AsInteger;
-
-      SPEdicao.ParamByName('qtve').Value := RECPedido.PK_QTDE;
-      SPEdicao.ParamByName('rlve').Value := RECPedido.PK_QTRL;
-
-      SPEdicao.ParamByName('tsde').Value := RECPedido.PK_TSDE;
-      SPEdicao.ParamByName('tdsc').Value := PedidosTDSC.AsString;
-      SPEdicao.ParamByName('pdsc').Value := RECPedido.PK_PDSC;
-      SPEdicao.ParamByName('vdsc').Value := RECPedido.PK_VDSC;
-      SPEdicao.ParamByName('tcde').Value := RECPedido.PK_TCDE;
-
-      SPEdicao.ParamByName('ctra').Value := PedidosIDCT.AsInteger;
-      SPEdicao.ParamByName('dtra').Value := PedidosDECT.AsString;
-      SPEdicao.ParamByName('mfrt').Value := PedidosMFRT.AsString;
-      SPEdicao.ParamByName('cfrt').Value := EmptyStr;
-      SPEdicao.ParamByName('vfrt').Value := 0;
-      SPEdicao.ParamByName('psbr').Value := RECPEdido.PK_PSBR;
-      SPEdicao.ParamByName('pslq').Value := RECPEdido.PK_PSLQ;
-
-      SPEdicao.ParamByName('stpd').Value := PedidosSTPD.AsString;
-      SPEdicao.ParamByName('stco').Value := PedidosSTCO.AsString;
-      SPEdicao.ParamByName('conc').Value := PedidosTPCO.AsInteger;
-      SPEdicao.ParamByName('cpag').Value := PedidosCDPG.AsInteger;
-      SPEdicao.ParamByName('stfi').Value := PedidosDEST.AsString;
-      SPEdicao.ExecProc;
-    except
-      on E: Exception do
-      begin
-        SIMSalva.Enabled := True;
-
-        oCTransact(TEdicao,ltRollback);
-        oException(Nil    ,'Falha ao tentar registrar romaneio !'+#13+
-                           'Favor entrar em contato com o administrador do sistema.'+#13+#13+
-                           'Erro: '+E.Message);
-      end;
+      oCTransact(TEdicao,ltRollback);
+      oException(Nil    ,'Falha ao tentar atualizar pedido(s) !'+#13+
+                         'Favor entrar em contato com o administrador do sistema.'+#13+#13+
+                         'Erro: '+E.Message);
     end;
-
-    { Pedido }
-    try
-      with SQLEdicao do
-      begin
-        Close;
-        SQL.Clear;
-        SQL.Add('EXECUTE BLOCK');
-        SQL.Add('RETURNS (CDRO bigint)');
-        SQL.Add('AS');
-        SQL.Add('BEGIN');
-
-        SQL.Add('UPDATE '+SLPrincipal.Values['ped_ven_cab']);
-        SQL.Add('SET    ROM_CDRO = '''+RECPedido.IDFK+''',');
-        SQL.Add('       DTRO     = CURRENT_TIMESTAMP,');
-        SQL.Add('       ROM_QTPD = '''+oStrTran(FloatToStr(RECPedido.PK_QTDE),',','.')+''',');
-        SQL.Add('       ROM_RLPD = '''+oStrTran(IntToStr  (RECPedido.PK_QTRL),',','.')+'''');
-        SQL.Add('WHERE  IDEP     = '''+RECParametros.EP_ID  +'''');
-        SQL.Add('AND    ID       = '''+PedidosId.AsString+'''');
-        SQL.Add('RETURNING CDRO INTO :CDRO;');
-
-        SQL.Add('SUSPEND;');
-        SQL.Add('END;');
-
-        ParamCheck := False;
-        Prepare;
-        ExecQuery;
-        ParamCheck := True;
-      end;
-
-      if RECPedido.IDFK <> SQLEdicao.Current.Vars[0].AsInteger then
-         oException(Nil,'Falha ao tentar gerar romaneio !');
-    except
-      on E: Exception do
-      begin
-        SIMSalva.Enabled := True;
-
-        oCTransact(TEdicao,ltRollback);
-        oException(Nil    ,'Falha ao tentar atualizar pedido(s) !'+#13+
-                           'Favor entrar em contato com o administrador do sistema.'+#13+#13+
-                           'Erro: '+E.Message);
-      end;
-    end;
-
-    try
-      oCTransact(TEdicao);
-      //oAviso(handle,'Romaneio Gerado com Sucesso !');
-    except
-      on E: Exception do
-      begin
-        SIMSalva.Enabled := True;
-
-        oCTransact(TEdicao,ltRollback);
-        oException(Nil    ,'Falha ao tentar completar os registros do romaneio !'   +#13+
-                           'Favor entrar em contato com o administrador do sistema.'+#13+#13+
-                           'Erro: '+E.Message);
-      end;
-    end;
-  finally
-    Pedidos.First;
-    Pedidos.EnableControls;
-
-    Edicao.First;
-    Edicao.EnableControls;
   end;
+  oCTransact(TEdicao);
+  SIMSalva.Enabled := False;
 
   oSP_CAD_PRO_EST_LAN_UPD(SQLEvent,'PED_VEN_ITE',RECParametros.EP_ID,PedidosId.AsInteger);
-
-  if Assigned(frmctr_ped) then
-     frmctr_ped.EEvent.Tag := 0;
-
-  oExecEvent(REC_SHE_DEF,Edicao);
+  ACTEveExecute.Execute
 end;
 
-procedure Tfrmven_rom._NFEmissao(ATIPO_NF: String = 'NORMAL');
+procedure TFrmVEN_ROM.ACTEveRegisterExecute(Sender: TObject);
 begin
+  { UNREGISTER EVENTS }
+  if EEvent.Registered then
+
+  try
+    EEvent.UnregisterEvents;
+    EEvent.Events.Clear;
+
+    REC_SHE_DEF.FB_EVE_ADM := EmptyStr; { Admin  }
+    REC_SHE_DEF.FB_EVE_PAD := EmptyStr; { Padrão }
+  except
+    on E: Exception do
+    begin
+      oErro(Handle,'Falha ao tentar limpar evento Padrão !' + #13 +
+                   'Erro: ' + E.Message + '.');
+    end;
+  end;
+
+  { REGISTER EVENTS }
+  REC_SHE_DEF.FB_Event := TRIM(REC_SHE_DEF.FB_Event);
+  if REC_SHE_DEF.FB_Event <> EmptyStr then
+
+  try
+    { ADMIN }
+    REC_SHE_DEF.FB_EVE_ADM := REC_SHE_DEF.FB_Event + '-' + oStrZero(RECParametros.EP_ID,3) + '-ADM';
+    EEvent.Events.Add(REC_SHE_DEF.FB_EVE_ADM);
+
+    { PADRÃO }
+    if not RECUsuarios.IS_EVE_ADM then
+    begin
+      REC_SHE_DEF.FB_EVE_PAD := REC_SHE_DEF.FB_Event + '-' + oStrZero(RECParametros.EP_ID,3) + '-' + oStrZero(RECUsuarios.ID,3);
+      EEvent.Events.Add(REC_SHE_DEF.FB_EVE_PAD);
+    end;
+
+    { EDIÇÃO }
+    if REC_SHE_DEF.FB_EVE_EDT <> EmptyStr then
+    begin
+      if ACTEveRegister.Tag > 0 then
+      REC_SHE_DEF.FB_EVE_EDT := REC_SHE_DEF.FB_EVE_EDT + '-' + oStrZero(RECParametros.EP_ID,3) + '-' + oStrZero(ACTEveRegister.Tag,3) else
+      REC_SHE_DEF.FB_EVE_EDT := REC_SHE_DEF.FB_EVE_EDT + '-' + oStrZero(RECParametros.EP_ID,3) + '-' + oStrZero(RECUsuarios.ID,3);
+
+      EEvent.Events.Add(REC_SHE_DEF.FB_EVE_EDT);
+      ACTEveRegister.Tag := 0;
+    end;
+
+    EEvent.RegisterEvents;
+  except
+    on E: Exception do
+    begin
+      oErro(Application.Handle,'Falha ao tentar registrar evento !' + #13 +
+                               'Erro: '   + E.Message + '.');
+    end;
+  end;
 end;
 
-procedure Tfrmven_rom.EdicaoBeforeScroll(DataSet: TDataSet);
+procedure TFrmVEN_ROM.ACTEveExecuteExecute(Sender: TObject);
+var
+  i: word;
 begin
-  DBGConsultaROM_TSDE.Visible := False;
+  if REC_SHE_DEF.FB_Event = EmptyStr then
+  begin
+    if not ALockWindowUpdate then { SQL INJECTION }
+    oRefresh(Edicao);
+  end else
+
+  try
+    oOTransact(TEvent);
+
+    { ADMIN }
+    SPEvent.Close;
+    SPEvent.StoredProcName := 'SP_SHE_EVE';
+    SPEvent.Prepare;
+
+    for i := 0 to SPEvent.ParamCount - 1 do
+    SPEvent.Params[i].Value := Null;
+
+    SPEvent.Params[0].Value := REC_SHE_DEF.FB_EVE_ADM;
+    SPEvent.Params[1].Value := REC_SHE_DEF.FB_EVE_PAD;
+    SPEvent.Params[2].Value := REC_SHE_DEF.FB_EVE_EDT;
+    SPEvent.ExecProc;
+
+    oCTransact(TEvent);
+  except
+    on E: Exception do
+    begin
+      oCTransact(TEvent,ltRollback);
+      oErro(Application.Handle,'Falha ao tentar executar evento !' + #13 +
+                                REC_SHE_DEF.FB_Event   + '.' + #13 + #13 +
+                                E.Message              + '.');
+    end;
+  end;
 end;
 
-procedure Tfrmven_rom.EdicaoAfterScroll(DataSet: TDataSet);
+procedure TFrmVEN_ROM.ACTEveExpressExecute(Sender: TObject);
 begin
-  if EdicaoROM_TSDE.AsCurrency <> EdicaoROM_TOTA.AsCurrency then
-     DBGConsultaROM_TSDE.Visible := True;
-end;
-
-procedure Tfrmven_rom.DBGConsultaCustomDrawCell(Sender: TObject;
-  ACanvas: TCanvas; ARect: TRect; ANode: TdxTreeListNode;
-  AColumn: TdxTreeListColumn; ASelected, AFocused, ANewItemRow: Boolean;
-  var AText: String; var AColor: TColor; AFont: TFont;
-  var AAlignment: TAlignment; var ADone: Boolean);
-begin
-  if not ASelected then
-     if (AColumn = DBGConsultaROM_VIPI) and (ANode.Values[DBGConsultaROM_VIPI.Index] > 0) then
-         AFont.Style := [fsBold];
+  ACTEveRegister.Execute;
+  ACTEveExecute.Execute;
 end;
 
 end.

@@ -590,9 +590,6 @@ uses uPrincipal, bPrincipal,
 
 procedure Tfrmctr_ped.FormCreate(Sender: TObject);
 begin
-  { ADMIN MANAGER }
-  //DBGConsultaIDPK.Visible := (RECUsuarios.ID = 0); { Código Pedido }
-
   { FORM SCREEN }
   REC_SHE_DEF.FPosition := Self.Position; { Posição }
 
@@ -634,13 +631,9 @@ begin
   if CadastroId.AsInteger = 0 then
      oException(DBGConsulta,'Cliente não Selecionado !');
 
-  frmcad_cli_edi     := TFrmcad_cli_edi.Create(Self);
-  frmcad_cli_edi.Tag := 1;
-  frmcad_cli_edi.IDCliente := IntToStr(CadastroIDCD.AsInteger);
+  frmcad_cli_edi := TFrmcad_cli_edi.Create(Self,CadastroIDCD.AsInteger);
   try frmcad_cli_edi.ShowModal;
   finally
-    if frmcad_cli_edi.REC_SHE_DEF.Edited then
-       oRefresh(Cadastro);
     FreeAndNil(frmcad_cli_edi);
   end;
 end;
@@ -654,101 +647,109 @@ begin
 end;
 
 procedure Tfrmctr_ped.SIRomaneioClick(Sender: TObject);
+var
+  ACDRO: Integer;
 begin
   if oYesNo(handle,'Romanear Pedido '+CadastroDEPK.AsString+' ?') = mrNo then
-     Abort;
+  Abort;
 
   if CadastroId.AsInteger = 0 then
-     oException(DBGConsulta,'Pedido não Selecionado !');
+  oException(DBGConsulta,'Pedido não Selecionado !');
 
-  if RECUsuarios.ID > 0 then
+  if RECParametros.STCX <>  'Caixa Aberto' then
+  oException(DBGConsulta,'Geração de Romaneio não Permitida !'+#13+
+                            'Abertura de caixa não registrada.');
+
+  if Pos(LeftStr(CadastroDEST.AsString,3),'CAN') > 0 then
+  oException(DBGConsulta,'Geração de Romaneio não Permitida !'+#13+
+                            'Pedido já Cancelado !');
+
+  if CadastroBQST.AsInteger > 0 then
+  oException(DBGConsulta,'Geração de Romaneio não Permitida !'+#13+
+                            'Pedido possui bloqueio financeiro.');
+
+  if CadastroCDBX.AsInteger > 0 then
+  oException(DBGConsulta,'Geração de Romaneio não Permitida !'+#13+
+                            'Pedido já Finalizado !');
+
+  if CadastroCDNF.AsInteger > 0 then
+  oException(DBGConsulta,'Geração de Romaneio não Permitida !'+#13+
+                            'Nota Fiscal já Emitida !');
+
+  if CadastroCDRO.AsInteger > 0 then
+  oException(DBGConsulta,'Geração de Romaneio não Permitida !'+#13+
+                            'Pedido já Romaneado !');
+
+  with SQLConsulta do
   begin
-    if RECParametros.STCX <>  'Caixa Aberto' then
-       oException(DBGConsulta,'Geração de Romaneio não Permitida !'+#13+
-                              'Abertura de caixa não registrada.');
+    Close;
+    SQL.Clear;
+    SQL.Add('SELECT ID FROM ' + oREPZero('ROM_CAB','_',RECParametros.EP_ID,3)+' AS PK');
+    SQL.Add('WHERE  PK.DERO = ''' + CadastroDEPK.AsString + '''');
+    SQL.Add('AND    PK.IDCD = ''' + CadastroIDCD.AsString + '''');
+    ExecQuery;
 
-    if Pos(LeftStr(CadastroDEST.AsString,3),'CAN') > 0 then
-       oException(DBGConsulta,'Geração de Romaneio não Permitida !'+#13+
-                              'Pedido já Cancelado !');
+    if Current.Vars[0].AsInteger > 0 then
+    oException(DBGConsulta,'Geração de Romaneio não Permitida !'+#13+
+                           'Pedido já Romaneado !' +#13+#13+
+                           'Favor cancelar romaneio para continuar.');
 
-    if CadastroBQST.AsInteger > 0 then
-       oException(DBGConsulta,'Geração de Romaneio não Permitida !'+#13+
-                              'Pedido possui bloqueio financeiro.');
-
-    if CadastroCDBX.AsInteger > 0 then
-       oException(DBGConsulta,'Geração de Romaneio não Permitida !'+#13+
-                              'Pedido já Finalizado !');
-
-    if CadastroCDNF.AsInteger > 0 then
-       oException(DBGConsulta,'Geração de Romaneio não Permitida !'+#13+
-                              'Nota Fiscal já Emitida !');
-
-    if CadastroCDRO.AsInteger > 0 then
-       oException(DBGConsulta,'Geração de Romaneio não Permitida !'+#13+
-                              'Pedido já Romaneado !');
-
-    with SQLConsulta do
+    if CadastroSEPD.AsInteger > 0 then
     begin
       Close;
       SQL.Clear;
-      SQL.Add('SELECT ID FROM ' + oREPZero('ROM_CAB','_',RECParametros.EP_ID,3)+' AS PK');
-      SQL.Add('WHERE  PK.DERO = ''' + CadastroDEPK.AsString + '''');
-      SQL.Add('AND    PK.IDCD = ''' + CadastroIDCD.AsString + '''');
+      SQL.Add('SELECT COUNT(*) FROM CAD_PRO_SEP AS PK');
+      SQL.Add('WHERE  PK.IDEP = ''' + RECParametros.EP_ID      + '''');
+      SQL.Add('AND    PK.IDPK = ''' + CadastroIDPK.AsString + '''');
       ExecQuery;
 
-      if Current.Vars[0].AsInteger > 0 then
-         oException(DBGConsulta,'Geração de Romaneio não Permitida !'+#13+
-                                'Pedido já Romaneado !' +#13+#13+
-                                'Favor cancelar romaneio para continuar.');
-
-      if CadastroSEPD.AsInteger > 0 then
-      begin
-        Close;
-        SQL.Clear;
-        SQL.Add('SELECT COUNT(*) FROM CAD_PRO_SEP AS PK');
-        SQL.Add('WHERE  PK.IDEP = ''' + RECParametros.EP_ID      + '''');
-        SQL.Add('AND    PK.IDPK = ''' + CadastroIDPK.AsString + '''');
-        ExecQuery;
-
-        if Current.Vars[0].AsInteger = 0 then
-           oException(DBGConsulta,'Geração de Romaneio não Permitida !'+#13+
-                                  'Pedido sem itens separados.');
-      end;
+      if Current.Vars[0].AsInteger = 0 then
+      oException(DBGConsulta,'Geração de Romaneio não Permitida !'+#13+
+                             'Pedido sem itens separados.');
     end;
   end;
 
-  if Assigned(frmven_rom) then
-  begin
-    frmven_rom.BringToFront;
-    frmven_rom.SetFocus;
-  end else
-  begin
-    frmven_rom := tfrmven_rom.Create(Self,CadastroId.AsInteger);
-    frmven_rom.Show;
+  frmven_rom := tfrmven_rom.Create(Self,CadastroId.AsInteger);
+
+  frmven_rom.Pedidos.Prepare;
+  frmven_rom.Pedidos.Open;
+
+  frmven_rom.FKPedidos.Prepare;
+  frmven_rom.FKPedidos.Open;
+
+  if frmven_rom.PedidosSEPD.AsInteger = 1 then
+     frmven_rom._Etiquetas else
+     frmven_rom._Produtos;
+
+  oRTransact(frmven_rom.TSEdicao);
+
+  try
+    frmven_rom.ShowModal;
+  finally
+    ACDRO := frmven_rom.RECPedido.IDFK;
+    FreeAndNil(frmven_rom);
   end;
 
-  if Assigned(frmven_rom) then
-  try
-    Application.ProcessMessages;
-    oLockWindowUpdate;
-     with frmven_rom do
-     begin
-       frmven_rom.Pedidos.Prepare;
-       frmven_rom.Pedidos.Open;
+  if ACDRO > 0 then
+  begin
+    TFrmVEN_NFE._ExecForm(
 
-       frmven_rom.FKPedidos.Prepare;
-       frmven_rom.FKPedidos.Open;
+    Self,       { Owner    }
+    FrmVEN_NFE, { Form     }
+    False,      { Pesquisa }
+    fsMDIChild, { Tipo     }
 
-       if frmven_rom.PedidosSEPD.AsInteger = 1 then
-          frmven_rom._Etiquetas else
-          frmven_rom._Produtos;
+    ACDRO, { Código Principal }
+    '', { Descrição Principal }
 
-       oRTransact(frmven_rom.TSEdicao);
-     end;
-   finally
-     oUnLockWindowUpdate;
-     Application.ProcessMessages;
-   end
+    0, { Evento Principal }
+    1, { Código Evento - 0: Triangular 1: Normal 2: Complementar 3: Ajustes 4:Devolução }
+    2, { Tipo   Evento - 0: Copiado    1: Vazio  2: Romaneado }
+
+    oREPZero('ROM_CAB','_',RECParametros.EP_ID,3), { Tabela }
+    '' { Get }
+    );
+  end;
 end;
 
 procedure Tfrmctr_ped.SIFinalizaClick(Sender: TObject);

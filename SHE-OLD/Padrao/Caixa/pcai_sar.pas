@@ -35,9 +35,9 @@ type
     cadastroCAI_BCON: TIntegerField;
     cadastroCAI_DCON: TIBStringField;
     procedure FormCreate(Sender: TObject);
-    procedure SIEIncluiClick(Sender: TObject);
-    procedure SIEAlteraClick(Sender: TObject);
-    procedure SIEExcluiClick(Sender: TObject);
+    procedure ACTEAppendExecute(Sender: TObject);
+    procedure ACTEEditExecute(Sender: TObject);
+    procedure ACTEDeleteExecute(Sender: TObject);
   private
     { Private declarations }
   public
@@ -55,9 +55,6 @@ uses uPrincipal, bPrincipal, pcai_sar_edi;
 
 procedure Tfrmcai_sar.FormCreate(Sender: TObject);
 begin
-  { ADMIN MANAGER }
-  //DBGConsultaIDPK.Visible := (RECUsuarios.ID = 0); { Código Pedido }
-
   { FORM SCREEN }
   REC_SHE_DEF.FPosition := Self.Position; { Posição }
 
@@ -86,9 +83,8 @@ begin
   end;
 end;
 
-procedure Tfrmcai_sar.SIEIncluiClick(Sender: TObject);
+procedure Tfrmcai_sar.ACTEAppendExecute(Sender: TObject);
 begin
-  inherited;
   bExecEvent('Caixa',lwShowWarning);
     
   frmcai_sar_edi := Tfrmcai_sar_edi.Create(Self);
@@ -103,9 +99,8 @@ begin
   end;
 end;
 
-procedure Tfrmcai_sar.SIEAlteraClick(Sender: TObject);
+procedure Tfrmcai_sar.ACTEEditExecute(Sender: TObject);
 begin
-  inherited;
   frmcai_sar_edi := Tfrmcai_sar_edi.Create(Self);
 
   frmcai_sar_edi.cai_mov.Close;
@@ -123,10 +118,10 @@ begin
   end;
 end;
 
-procedure Tfrmcai_sar.SIEExcluiClick(Sender: TObject);
+procedure Tfrmcai_sar.ACTEDeleteExecute(Sender: TObject);
 begin
   if oYesNo(handle,'Confirma Exclusão ?') = mrNo then
-     Abort;
+  Abort;
 
   try
     oOTransact(TEdicao);

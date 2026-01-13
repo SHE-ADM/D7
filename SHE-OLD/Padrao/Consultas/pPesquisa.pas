@@ -79,7 +79,7 @@ begin
   case tag of
     1: begin { Clientes }
          { CADASTRO }
-         cbcampo.Items.Add('Código Cliente');
+         cbcampo.Items.Add('Código');
          cbcampo.Items.Add('Nome Fantasia');
          cbcampo.Items.Add('Razão Social');
          cbcampo.Items.Add('Grupo Comercial');
@@ -99,8 +99,8 @@ begin
          cbcampo.Items.Add('');
 
          { VENDEDORES }
-         cbcampo.Items.Add('Código Vendedor');
-         cbcampo.Items.Add('Nome Vendedor');
+         cbcampo.Items.Add('Código Vendedor/Comprador');
+         cbcampo.Items.Add('Nome Vendedor/Comprador');
          cbcampo.Items.Add('');
 
          { REPRESENTANRES }
@@ -128,236 +128,24 @@ begin
          cbcampo.Items.Add('UF');
          cbcampo.Items.Add('');
 
-         APSQ_CAD_CLI := IFThen(APSQ_CAD_CLI = '','Nome Fantasia',APSQ_CAD_CLI);
-         cbcampo.Text := APSQ_CAD_CLI;
+         APSQ_CAD := IFThen(APSQ_CAD = '','Nome Fantasia',APSQ_CAD);
+         cbcampo.Text := APSQ_CAD;
 
          { PERÍODOS CADASTRAIS }
-         cbdata.Items.Add('Criação');
-         cbdata.Items.Add('Cancelamento');
+         cbdata.Items.Add('Criação de Cadastro');
+         cbdata.Items.Add('Cancelamento de Cadastro');
          cbdata.Items.Add('');
 
          { PERÍODOS DE CONTROLE }
-         cbdata.Items.Add('Entradas de Pedidos Programados');
-         cbdata.Items.Add('Entradas de Pedidos Pronta Entrega');
+         cbdata.Items.Add('Entradas de Pedidos');
          cbdata.Items.Add('');
-         
+
          cbdata.Items.Add('Emissões de Notas Fiscais');
          cbdata.Items.Add('Saídas de Notas Fiscais');
          cbdata.Items.Add('Faturamentos');
 
-         cbdata.Text := 'Criação';
+         cbdata.Text := 'Criação de Cadastro';
        end;
-    2: begin { Fornecedores }
-         { CADASTRO }
-         cbcampo.Items.Add('Código Cliente');
-         cbcampo.Items.Add('Nome Fantasia');
-         cbcampo.Items.Add('Razão Social');
-         cbcampo.Items.Add('Grupo Comercial');
-         cbcampo.Items.Add('');
-
-         { SITUAÇÕES }
-         cbcampo.Items.Add('Situação Cadastral');
-         cbcampo.Items.Add('Situação Pedidos');
-         cbcampo.Items.Add('Situação Financeira');
-         cbcampo.Items.Add('');
-
-         { DOCUMENTOS }
-         cbcampo.Items.Add('CNPJ');
-         cbcampo.Items.Add('Inscrição Estadual');
-         cbcampo.Items.Add('Regime Tributário');
-         cbcampo.Items.Add('CPF');
-         cbcampo.Items.Add('');
-
-         { VENDEDORES }
-         cbcampo.Items.Add('Código Vendedor');
-         cbcampo.Items.Add('Nome Vendedor');
-         cbcampo.Items.Add('');
-
-         { REPRESENTANRES }
-         cbcampo.Items.Add('Código Representante');
-         cbcampo.Items.Add('Nome Representante');
-         cbcampo.Items.Add('');
-
-         { TRANSPORTADORAS }
-         cbcampo.Items.Add('Código Transportadora');
-         cbcampo.Items.Add('Nome Transportadora');
-         cbcampo.Items.Add('');
-
-         { CONTROLE }
-         cbcampo.Items.Add('Nº Pedido');
-         cbcampo.Items.Add('Nº Romaneio');
-         cbcampo.Items.Add('Nº Nota Fiscal');
-         cbcampo.Items.Add('Nº Título');
-         cbcampo.Items.Add('');
-
-         { ENDEREÇOS }
-         cbcampo.Items.Add('Logradouro');
-         cbcampo.Items.Add('Cep');
-         cbcampo.Items.Add('Bairro');
-         cbcampo.Items.Add('Cidade');
-         cbcampo.Items.Add('UF');
-         cbcampo.Items.Add('');
-
-         APSQ_CAD_FOR := IFThen(APSQ_CAD_FOR = '','Nome Fantasia',APSQ_CAD_FOR);
-         cbcampo.Text := APSQ_CAD_FOR;
-
-         { PERÍODOS CADASTRAIS }
-         cbdata.Items.Add('Criação');
-         cbdata.Items.Add('Cancelamento');
-         cbdata.Items.Add('');
-
-         { PERÍODOS DE CONTROLE }
-         cbdata.Items.Add('Entradas de Pedidos Programados');
-         cbdata.Items.Add('Entradas de Pedidos Pronta Entrega');
-         cbdata.Items.Add('');
-         
-         cbdata.Items.Add('Emissões de Notas Fiscais');
-         cbdata.Items.Add('Saídas de Notas Fiscais');
-         cbdata.Items.Add('Faturamentos');
-
-         cbdata.Text := 'Criação';
-       end;
-    3: begin { Representantes }
-         { CADASTRO }
-         cbcampo.Items.Add('Código Cliente');
-         cbcampo.Items.Add('Nome Fantasia');
-         cbcampo.Items.Add('Razão Social');
-         cbcampo.Items.Add('Grupo Comercial');
-         cbcampo.Items.Add('');
-
-         { SITUAÇÕES }
-         cbcampo.Items.Add('Situação Cadastral');
-         cbcampo.Items.Add('Situação Pedidos');
-         cbcampo.Items.Add('Situação Financeira');
-         cbcampo.Items.Add('');
-
-         { DOCUMENTOS }
-         cbcampo.Items.Add('CNPJ');
-         cbcampo.Items.Add('Inscrição Estadual');
-         cbcampo.Items.Add('Regime Tributário');
-         cbcampo.Items.Add('CPF');
-         cbcampo.Items.Add('');
-
-         { VENDEDORES }
-         cbcampo.Items.Add('Código Vendedor');
-         cbcampo.Items.Add('Nome Vendedor');
-         cbcampo.Items.Add('');
-
-         { REPRESENTANRES }
-         cbcampo.Items.Add('Código Representante');
-         cbcampo.Items.Add('Nome Representante');
-         cbcampo.Items.Add('');
-
-         { TRANSPORTADORAS }
-         cbcampo.Items.Add('Código Transportadora');
-         cbcampo.Items.Add('Nome Transportadora');
-         cbcampo.Items.Add('');
-
-         { CONTROLE }
-         cbcampo.Items.Add('Nº Pedido');
-         cbcampo.Items.Add('Nº Romaneio');
-         cbcampo.Items.Add('Nº Nota Fiscal');
-         cbcampo.Items.Add('Nº Título');
-         cbcampo.Items.Add('');
-
-         { ENDEREÇOS }
-         cbcampo.Items.Add('Logradouro');
-         cbcampo.Items.Add('Cep');
-         cbcampo.Items.Add('Bairro');
-         cbcampo.Items.Add('Cidade');
-         cbcampo.Items.Add('UF');
-         cbcampo.Items.Add('');
-
-         APSQ_CAD_REP := IFThen(APSQ_CAD_REP = '','Nome Fantasia',APSQ_CAD_REP);
-         cbcampo.Text := APSQ_CAD_REP;
-
-         { PERÍODOS CADASTRAIS }
-         cbdata.Items.Add('Criação');
-         cbdata.Items.Add('Cancelamento');
-         cbdata.Items.Add('');
-
-         { PERÍODOS DE CONTROLE }
-         cbdata.Items.Add('Entradas de Pedidos Programados');
-         cbdata.Items.Add('Entradas de Pedidos Pronta Entrega');
-         cbdata.Items.Add('');
-         
-         cbdata.Items.Add('Emissões de Notas Fiscais');
-         cbdata.Items.Add('Saídas de Notas Fiscais');
-         cbdata.Items.Add('Faturamentos');
-
-         cbdata.Text := 'Criação';
-       end;
-    4: begin { Transportadoras }
-         { CADASTRO }
-         cbcampo.Items.Add('Código Cliente');
-         cbcampo.Items.Add('Nome Fantasia');
-         cbcampo.Items.Add('Razão Social');
-         cbcampo.Items.Add('Grupo Comercial');
-         cbcampo.Items.Add('');
-
-         { SITUAÇÕES }
-         cbcampo.Items.Add('Situação Cadastral');
-         cbcampo.Items.Add('Situação Pedidos');
-         cbcampo.Items.Add('Situação Financeira');
-         cbcampo.Items.Add('');
-
-         { DOCUMENTOS }
-         cbcampo.Items.Add('CNPJ');
-         cbcampo.Items.Add('Inscrição Estadual');
-         cbcampo.Items.Add('Regime Tributário');
-         cbcampo.Items.Add('CPF');
-         cbcampo.Items.Add('');
-
-         { VENDEDORES }
-         cbcampo.Items.Add('Código Vendedor');
-         cbcampo.Items.Add('Nome Vendedor');
-         cbcampo.Items.Add('');
-
-         { REPRESENTANRES }
-         cbcampo.Items.Add('Código Representante');
-         cbcampo.Items.Add('Nome Representante');
-         cbcampo.Items.Add('');
-
-         { TRANSPORTADORAS }
-         cbcampo.Items.Add('Código Transportadora');
-         cbcampo.Items.Add('Nome Transportadora');
-         cbcampo.Items.Add('');
-
-         { CONTROLE }
-         cbcampo.Items.Add('Nº Pedido');
-         cbcampo.Items.Add('Nº Romaneio');
-         cbcampo.Items.Add('Nº Nota Fiscal');
-         cbcampo.Items.Add('Nº Título');
-         cbcampo.Items.Add('');
-
-         { ENDEREÇOS }
-         cbcampo.Items.Add('Logradouro');
-         cbcampo.Items.Add('Cep');
-         cbcampo.Items.Add('Bairro');
-         cbcampo.Items.Add('Cidade');
-         cbcampo.Items.Add('UF');
-         cbcampo.Items.Add('');
-
-         APSQ_CAD_TRA := IFThen(APSQ_CAD_TRA = '','Nome Fantasia',APSQ_CAD_TRA);
-         cbcampo.Text := APSQ_CAD_TRA;
-
-         { PERÍODOS CADASTRAIS }
-         cbdata.Items.Add('Criação');
-         cbdata.Items.Add('Cancelamento');
-         cbdata.Items.Add('');
-
-         { PERÍODOS DE CONTROLE }
-         cbdata.Items.Add('Entradas de Pedidos Programados');
-         cbdata.Items.Add('Entradas de Pedidos Pronta Entrega');
-         cbdata.Items.Add('');
-         
-         cbdata.Items.Add('Emissões de Notas Fiscais');
-         cbdata.Items.Add('Saídas de Notas Fiscais');
-         cbdata.Items.Add('Faturamentos');
-
-         cbdata.Text := 'Criação';
-       end;
-
     5: begin { Compras }
          cbcampo.Items.Add('Nº Pedido');
          cbcampo.Items.Add('Container');
@@ -666,7 +454,7 @@ begin
   case Tag of
     1: begin { Clientes }
          { CADASTRO }
-         if cbCAMPO.Text = 'Código Cliente' then
+         if cbCAMPO.Text = 'Código' then
             cField := 'PK.CD_ID' else
          if cbCAMPO.Text = 'Nome Fantasia' then
             cField := 'PK.CD_NO' else
@@ -735,32 +523,21 @@ begin
 
          { PERÍODOS CADASTRO }
          if cbDATA.Text = 'Criação de Cadastro' then
-            cData := 'PK.DTCD' else
+            cData := 'CAST(PK.DTCA AS DATE)' else
          if cbDATA.Text = 'Cancelamento de Cadastro' then
             cData := 'CAST(PK.DTST AS DATE)';
 
          { PERÍODOS VENDAS }
-         if cbDATA.Text = 'Entradas de Pedidos Programados' then
-            cData := 'PK.DTPP' else
-         if cbDATA.Text = 'Entradas de Pedidos Pronta Entrega' then
-            cData := 'PK.DTPV' else
+         if cbDATA.Text = 'Entradas de Pedidos' then
+            cData := 'CAST(PK.DSPD AS DATE)' else
 
          { PERÍODOS FINANCEIRO }
          if cbDATA.Text = 'Emissões de Notas Fiscais' then
-            cData := 'PK.DTNF' else
+            cData := 'CAST(PK.DSNF AS DATE)' else
          if cbDATA.Text = 'Saídas de Notas Fiscais' then
-            cData := 'PK.DTSA' else
+            cData := 'CAST(PK.DSSA AS DATE)' else
          if cbDATA.Text = 'Faturamentos' then
-            cData := 'PK.DTBX';
-        end;
-
-     2: begin { Fornecedores }
-        end;
-
-     3: begin { Representantes }
-        end;
-
-     4: begin { Transportadoras }
+            cData := 'CAST(PK.DSBX AS DATE)';
         end;
 
      5: begin { Compras }

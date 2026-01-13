@@ -437,7 +437,7 @@ var
   VALOR_BANCARIO,
   VALOR_CARTEIRA: Double;
 
-  APSQ_CAD_CLI,
+  APSQ_CAD,
   APSQ_CAD_FOR,
   APSQ_CAD_REP,
   APSQ_CAD_TRA,
@@ -455,14 +455,14 @@ implementation
 uses bPrincipal, pSobre, pLogin, psenha, pImpressoras, pProduto, pPSQEND,
   pPSQCAD, pPesquisaCodigoMunicipal, pPesquisaLogradouros, 
   pcad_cli_inf, pPSQ_CAD_PAD, pProduto_Imagem, pProduto_Pesquisa,
-  pConsultaCNPJ, pcai_abr, pcai_fec, pcai_sar, pcai_mov, pcad_cli,
-  pCAD_REP, pcad_for, pCAD_TRA, pProduto_Cor, pProduto_Grupo,
+  pConsultaCNPJ, pcai_abr, pcai_fec, pcai_sar, pcai_mov, pProduto_Cor, pProduto_Grupo,
   pProduto_SubGrupo, pProduto_Categoria, pProduto_SubCategoria, pctr_ped,
   pctr_rom, pNFeConsulta, pNFeSaida, pNFeSaidaConsulta, pEtiqueta_Geral,
   pEstoque, pent_pro, peti_pro, pEstoqueDefeitos, pEXP_SEP_COL,
   pEXP_SEP_MAN, pctr_prc, pctr_prg, ptab_nat, ptab_pag, pctr_nfe, pven_nfd,
   pcad_con, pProduto_Custo_Importado, pfin_rec_con, pfin_dup, ppag_com,
-  pProduto_Segmento, pCAD_PRO_PSQ, pven_nfe;
+  pProduto_Segmento, pCAD_PRO_PSQ, pven_nfe, pcad_cli, pcad_rep, pcad_for,
+  pcad_tra;
 
 {$R *.dfm}
 

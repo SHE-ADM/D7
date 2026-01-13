@@ -1,9 +1,9 @@
-inherited frmcad_for: Tfrmcad_for
+inherited frmcad_cli: Tfrmcad_cli
   Left = 37
   HelpType = htKeyword
   HelpKeyword = '3'
   AlphaBlendValue = 0
-  Caption = 'Cadastro de Fornecedores'
+  Caption = 'Cadastro de Clientes'
   ClientHeight = 1009
   ClientWidth = 1920
   OldCreateOrder = True
@@ -307,9 +307,7 @@ inherited frmcad_for: Tfrmcad_for
       'WITH RECURSIVE PK'
       'AS ('
       'SELECT PK.ID   ,PK.EP_ID,'
-      
-        '       PK.DTEV ,PK.DTCA ,CAST(PK.PED_DT AS DATE) AS PED_DT,CAST(' +
-        'PK.NFE_DT AS DATE) AS NFE_DT,CAST(PK.NFS_DT AS DATE) AS NFS_DT,'
+      '       PK.DTEV ,PK.DTCA ,'
       '       PK.CDST ,PK.REST ,PK.DEST,CRD.CRD_DEST AS CRD_DEST,'
       '       PK.CD_ID,PK.CD_NO,PK.CD_RZ_NO,PK.CD_GP_NO ,'
       '       PK.CNPJ ,FCNPJ(PK.CNPJ) AS CNPJ_MASK,PK.IE,PK.ISUF,'
@@ -325,11 +323,14 @@ inherited frmcad_for: Tfrmcad_for
         '3 AS VARCHAR(200))) AS EMAIL,'
       '       PK.LOG_NO_ABREV,PK.BAI_NO_ABREV,PK.LOC_NO_ABREV,PK.UF,'
       
+        '       PK.DSPD,PK.DSNF,PK.DSSA,PK.DSFT,PK.DSLQ,PK.DSBX,PK.DSDV,P' +
+        'K.DSAB,PK.DSFP,'
+      
         '       CRD.CRD_VPAD,CRD.CRD_VTAP,CRD.CRD_VTSD,CRD.CRD_VTKT,CRD.C' +
         'RD_BQST,'
       '       PK.FIS_DTFU,PK.FIS_CRT_NO,'
       '       PK.INFADCAD'
-      'FROM      VW_PSQ_CAD_FOR  AS PK'
+      'FROM      VW_PSQ_CAD_CLI  AS PK'
       
         'LEFT JOIN CAD_CLI_CRD_FIN AS CRD ON (CRD.EP_ID = :EP_ID AND CRD.' +
         'CD_ID = PK.CD_ID)'
@@ -369,18 +370,6 @@ inherited frmcad_for: Tfrmcad_for
       DisplayLabel = 'Cadastro'
       FieldName = 'DTCA'
       Origin = '"VW_PSQ_CAD_CLI"."DTCA"'
-    end
-    object CadastroPED_DT: TDateField
-      FieldName = 'PED_DT'
-      ProviderFlags = []
-    end
-    object CadastroNFE_DT: TDateField
-      FieldName = 'NFE_DT'
-      ProviderFlags = []
-    end
-    object CadastroNFS_DT: TDateField
-      FieldName = 'NFS_DT'
-      ProviderFlags = []
     end
     object CadastroCDST: TSmallintField
       FieldName = 'CDST'
@@ -538,6 +527,42 @@ inherited frmcad_for: Tfrmcad_for
       FixedChar = True
       Size = 2
     end
+    object CadastroDSPD: TDateTimeField
+      FieldName = 'DSPD'
+      Origin = '"VW_PSQ_CAD_CLI"."DSPD"'
+    end
+    object CadastroDSNF: TDateTimeField
+      FieldName = 'DSNF'
+      Origin = '"VW_PSQ_CAD_CLI"."DSNF"'
+    end
+    object CadastroDSSA: TDateTimeField
+      FieldName = 'DSSA'
+      Origin = '"VW_PSQ_CAD_CLI"."DSSA"'
+    end
+    object CadastroDSFT: TDateTimeField
+      FieldName = 'DSFT'
+      Origin = '"VW_PSQ_CAD_CLI"."DSFT"'
+    end
+    object CadastroDSLQ: TDateTimeField
+      FieldName = 'DSLQ'
+      Origin = '"VW_PSQ_CAD_CLI"."DSLQ"'
+    end
+    object CadastroDSBX: TDateTimeField
+      FieldName = 'DSBX'
+      Origin = '"VW_PSQ_CAD_CLI"."DSBX"'
+    end
+    object CadastroDSDV: TDateTimeField
+      FieldName = 'DSDV'
+      Origin = '"VW_PSQ_CAD_CLI"."DSDV"'
+    end
+    object CadastroDSAB: TDateTimeField
+      FieldName = 'DSAB'
+      Origin = '"VW_PSQ_CAD_CLI"."DSAB"'
+    end
+    object CadastroDSFP: TDateTimeField
+      FieldName = 'DSFP'
+      Origin = '"VW_PSQ_CAD_CLI"."DSFP"'
+    end
     object CadastroCRD_VPAD: TIBBCDField
       FieldName = 'CRD_VPAD'
       Origin = '"CAD_CLI_CRD_FIN"."CRD_VPAD"'
@@ -585,6 +610,13 @@ inherited frmcad_for: Tfrmcad_for
       ProviderFlags = []
       ReadOnly = True
       Size = 768
+    end
+  end
+  inherited ALPrincipal: TActionList
+    object ACTCAD_CLI_INF: TAction
+      Category = 'Sistema'
+      Caption = 'ACTCAD_CLI_INF'
+      OnExecute = ACTCAD_CLI_INFExecute
     end
   end
 end

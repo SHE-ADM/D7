@@ -715,6 +715,7 @@ begin
       { PASTHS NOTAS FISCAIS }
       RECParametros.NFE_PATH                      := Current.ByName('PATH_NFE'                     ).AsString; { Principal                   }
       RECParametros.NFE_PATH_XML                  := Current.ByName('PATH_NFE_XML'                 ).AsString; { Arquivos XML Compartilhados }
+      RECParametros.NFE_PATH_XML                  := RECParametros.NFE_PATH_XML + '\' + RECParametros.CNPJ;
       RECParametros.NFE_PATH_XML_PROCNFE          := Current.ByName('PATH_NFE_XML_PROCNFE'         ).AsString; { Arquivos XML Gerados        }
       RECParametros.NFE_PATH_DANFE                := Current.ByName('PATH_NFE_DANFE'               ).AsString; { PDF Nota Fiscal             }
       RECParametros.NFE_PATH_CCE                  := Current.ByName('PATH_NFE_CCE'                 ).AsString; { PDF Carta de Correção       }

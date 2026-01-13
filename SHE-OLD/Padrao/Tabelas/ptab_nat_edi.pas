@@ -90,8 +90,20 @@ uses ptab_nat, uPrincipal, bPrincipal;
 
 procedure Tfrmtab_nat_edi.FormCreate(Sender: TObject);
 begin
+  { FORM SCREEN }
+  REC_SHE_DEF.FPosition := Self.Position; { Posição }
+
+  REC_SHE_DEF.FMainArea := False; { Aplicativo }
+  REC_SHE_DEF.FWorkArea := False; { Windows    }
+
+  { ACCESS MANAGER }
   REC_SHE_DEF.FB_Event := 'FIS_CFOP'; { Eventos }
-  REC_SHE_DEF.GAdmin   := True;       { Grant   }
+
+  { GRANT USER }
+  REC_SHE_DEF.GDescricao  := 'Fiscal';
+  REC_SHE_DEF.GReferencia := 'CFOP';
+  REC_SHE_DEF.GRegra      := 'Permissões Gerais';
+  REC_SHE_DEF.GAdmin      := False;
   inherited;
 
   with Consulta do
@@ -291,10 +303,9 @@ end;
 procedure Tfrmtab_nat_edi.FormShow(Sender: TObject);
 begin
   inherited;
-  if tag = 1 then
-     ALTERA_TAB_NAT
-  else
-     NOVO_TAB_NAT;   
+
+  NOVO_TAB_NAT;
+  ALTERA_TAB_NAT
 end;
 
 procedure Tfrmtab_nat_edi.edpenfValidate(Sender: TObject;
@@ -330,11 +341,8 @@ begin
   try
     ibSP.StoredProcName := 'SP_TAB_NAT';
     ibSP.Prepare;
-    case frmtab_nat_edi.Tag of
-      0: ibSP.ParamByName('id').Value := 0;
-      1: ibSP.ParamByName('id').Value := edid.Text;
-    end;
 
+    ibSP.ParamByName('ID'  ).Value := REC_SHE_DEF.IDPK;
     ibSP.ParamByName('cnat').Value := edcnat.Text;
     ibSP.ParamByName('cfop').Value := edcfop.Text;
     ibSP.ParamByName('dnat').Value := eddnat.Text;

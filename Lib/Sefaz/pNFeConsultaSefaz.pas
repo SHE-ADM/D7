@@ -10,6 +10,9 @@ uses
   StrInt, StrIntImp, XMLDom, XMLIntf, MSXMLDom, XMLDoc, XMLXForm,
   cxGraphics, cxControls, dxStatusBar, IBSQL, IBDatabase;
 
+Const
+  dllNFe = 'C:\Sheild\NotaFiscal\NFe.dll';
+
 type
   TFrmNFeConsultaSefaz = class(TForm)
     PNLParametros: TPanel;

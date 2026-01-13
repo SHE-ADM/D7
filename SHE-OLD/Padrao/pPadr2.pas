@@ -1011,7 +1011,10 @@ begin
      ((not RECUSuarios.IS_EVE_ADM) and (RightStr(EventName,3) = oStrZero(RECUsuarios.ID,3))) then
 
   if REC_SHE_DEF.FB_EventAlert then
-  oRefresh(Cadastro);
+  begin
+    //ShowMessage(EventName);
+    oRefresh(Cadastro);
+  end;
 end;
 
 procedure TFrmPadr2.CadastroBeforeOpen(DataSet: TDataSet);
@@ -1196,22 +1199,17 @@ end;
 
 procedure TFrmPadr2.DBGConsultaDblClick(Sender: TObject);
 begin
-  if ACTMEEdit.Enabled then ACTMEEdit.Execute else
-  if ACTMPEdit.Enabled then ACTMPEdit.Execute;
+  ACTMEEdit.Execute;
 end;
 
 procedure TFrmPadr2.DBGConsultaKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   case key of
-       VK_insert: if ACTMEAppend.Enabled then ACTMEAppend.Execute else
-                  if ACTMPAppend.Enabled then ACTMPAppend.Execute;
-
-       vk_return: if ACTMEEdit.Enabled then ACTMEEdit.Execute else
-                  if ACTMPEdit.Enabled then ACTMPEdit.Execute;
-
-       VK_delete: if ACTMEDelete.Enabled then ACTMEDelete.Execute else
-                  if ACTMPDelete.Enabled then ACTMPDelete.Execute;
+       VK_insert: ACTMEAppend.Execute;
+       vk_return: ACTMEEdit.Execute;
+       VK_delete: ACTMEDelete.Execute;
+       vk_escape: ACTMECancel.Execute;
   end;
 end;
 

@@ -9,6 +9,9 @@ uses
   StdCtrls,  ImgList, Registry, DB, IBCustomDataSet, IBQuery, IBDatabase, rxSpeedbar,
   StrInt, StrIntImp, XMLDom, XMLIntf, MSXMLDom, XMLDoc, XMLXForm;
 
+Const
+  dllNFe = 'C:\Sheild\NotaFiscal\NFe.dll';
+
 type
   Tfrmnfe_cce = class(TForm)
     Shape1: TShape;

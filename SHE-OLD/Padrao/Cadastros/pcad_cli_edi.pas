@@ -531,7 +531,6 @@ type
     procedure PESQUISA_CLIENTE(var ASender: TdxMaskEdit);
   public
     { Public declarations }
-    IDCliente  : Variant;
   end;
 
 var
@@ -545,9 +544,6 @@ uses uPrincipal, bPrincipal;
 
 procedure Tfrmcad_cli_edi.FormCreate(Sender: TObject);
 begin
-  { ADMIN MANAGER }
-  //DBGConsultaIDPK.Visible := (RECUsuarios.ID = 0); { Código Pedido }
-
   { FORM SCREEN }
   REC_SHE_DEF.FPosition := Self.Position; { Posição }
 
@@ -564,7 +560,6 @@ begin
   REC_SHE_DEF.GAdmin      := False;
   inherited;
 
-  IDCliente   := '0';
   IEIDCR.Text := RECParametros.CR_ID;
 
   // RICARDO EMINFADFIN.ReadOnly := NOT (bPSQUSER('USU_AUTO','Financeiro','Contas a Receber' ,'Permissões Gerais',false));
@@ -614,78 +609,11 @@ begin
   inherited;
   NOVO_CLIENTE;
 
-  if Tag = 99 then
-  with SQLConsulta do
-  begin
-    Close;
-    SQL.Clear;
-    SQL.Add('SELECT PK.IDCD,PK.DECD,PK.RZCD,PK.GPCD,');
-
-    { CAD_CLI_CRD }
-    SQL.Add('COALESCE(FK.IDEP    ,0) AS FIN_IDEP    ,COALESCE(FK.VCRD        ,0) AS FIN_VCRD        ,COALESCE(FK.NAFA        ,0   ) AS FIN_CSPD,');
-    SQL.Add('COALESCE(FK.PDSC    ,0) AS FIN_PDSC    ,COALESCE(FK.VDSC        ,0) AS FIN_VDSC        ,NULLIF(FK.INFADCAD_L1   ,'''') AS FIN_INFADCAD_L1 ,NULLIF(FK.INFADCAD_L2    ,'''') AS FIN_INFADCAD_L2,');
-    SQL.Add('COALESCE(FK.PDSC_001,0) AS FIN_PDSC_001,COALESCE(FK.VDSC_INI_001,0) AS FIN_VDSC_INI_001,COALESCE(FK.VDSC_FIM_001,0   ) AS FIN_VDSC_FIM_001,NULLIF(FK.INFADCAD_L1_001,'''') AS FIN_INFADCAD_L1_001,NULLIF(FK.INFADCAD_L2_001,'''') AS FIN_INFADCAD_L2_001,');
-    SQL.Add('COALESCE(FK.PDSC_002,0) AS FIN_PDSC_002,COALESCE(FK.VDSC_INI_002,0) AS FIN_VDSC_INI_002,COALESCE(FK.VDSC_FIM_002,0   ) AS FIN_VDSC_FIM_002,NULLIF(FK.INFADCAD_L1_002,'''') AS FIN_INFADCAD_L1_002,NULLIF(FK.INFADCAD_L2_002,'''') AS FIN_INFADCAD_L2_002,');
-    SQL.Add('COALESCE(FK.PDSC_003,0) AS FIN_PDSC_003,COALESCE(FK.VDSC_INI_003,0) AS FIN_VDSC_INI_003,COALESCE(FK.VDSC_FIM_003,0   ) AS FIN_VDSC_FIM_003,NULLIF(FK.INFADCAD_L1_003,'''') AS FIN_INFADCAD_L1_003,NULLIF(FK.INFADCAD_L2_003,'''') AS FIN_INFADCAD_L2_003,');
-
-    SQL.Add('PK.DTCA,PK.DTFU,PK.DTUTPC,PK.DTUTPP,PK.DTUTPV,');
-    SQL.Add('PK.CDST,PK.REST,PK.DEST  ,');
-    SQL.Add('PK.CNPJ,PK.FIS_CRT,PK.FIS_CREDICMS,');
-    SQL.Add('PK.IE  ,PK.FIS_INDIEDEST,PK.FIS_INDFINAL,');
-    SQL.Add('PK.ISUF,PK.IM,');
-    SQL.Add('PK.CPF ,PK.IDESTRANGEIRO,');
-    SQL.Add('PK.IDCV,PK.DECV,PK.IDCR,PK.DECR,PK.IDCC,PK.DECC,');
-    SQL.Add('PK.CDPD,PK.CDCO,PK.CDPG,PK.DEPG,');
-    SQL.Add('PK.IDCT,PK.DECT,PK.MFRT,');
-    SQL.Add('PK.CONTATO,PK.DDD,PK.TEL,PK.EMAIL,PK.ENVEMAIL,PK.D_FONE,PK.D_CONTATO,PK.D_CONTATO2,PK.D_CONTATO3,PK.D_CEL_CONTATO,PK.D_CEL_CONTATO2,PK.D_ZAP_CONTATO,');
-    SQL.Add('PK.LOG_NU,PK.TLO_TX,PK.LOG_NO,PK.NRO,PK.XCPL,PK.CEP,PK.BAI_NO,PK.LOC_NO,PK.CMUN,ZFM_CMUN,ZFM_CENQ,PK.UF,PK.CPAIS,PK.XPAIS,PK.D_LOG,');
-    SQL.Add('PK.ENT_LOG_NU,PK.ENT_TLO_TX,PK.ENT_LOG_NO,PK.ENT_NRO,PK.ENT_XCPL,PK.ENT_CEP,PK.ENT_BAI_NO,PK.ENT_LOC_NO,PK.ENT_CMUN,PK.ENT_UF,');
-    SQL.Add('PK.INFADCAD,PK.INFADFIN');
-
-    SQL.Add('FROM      VW_CAD_CLI  AS PK');
-    SQL.Add('LEFT JOIN CAD_CLI_CRD AS FK ON (FK.IDCD = PK.IDCD AND FK.IDEP = '''+ RECParametros.EP_ID +''')');
-
-    SQL.Add('WHERE PK.IDCD = ''' + IDCLIENTE + '''');
-    ExecQuery;
-
-    if Current.Vars[0].AsInteger > 0 then
-    begin
-      edccli.Text := oStrZero(Current.ByName('IDCD').AsInteger,5);
-
-      edfant.Text := Current.ByName('DECD').AsString;
-      edraza.Text := Current.ByName('RZCD').AsString;
-      PEDEGP.Text := Current.ByName('GPCD').AsString;
-
-      if Current.ByName('CLI_DFUN').AsDateTime > 0 then
-         eddfun.Date := Current.ByName('CLI_DFUN').AsDateTime;
-
-    //cbramo.Text := Current.ByName('CLI_RAMO').AsString;
-
-      { Fone Principal }
-      edcont.Text := Current.ByName('CONTATO').AsString;
-      edddd.Text  := Current.ByName('DDD').AsString;
-      edtel1.Text := oRETNumero(Current.ByName('TEL').AsString);
-      edmail.Text := Current.ByName('EMAIL').AsString;
-
-      { Fone 2 }
-      eddd2.Text  := Current.ByName('DDD2').AsString;
-      edtel2.Text := oRETNumero(Current.ByName('TEL2').AsString);
-
-      { Fone 3 }
-      eddd3.Text  := Current.ByName('DDD3').AsString;
-      edtel3.Text := Current.ByName('TEL3').AsString;
-
-      { Celular }
-      eddd5.Text  := Current.ByName('CEL_DDD').AsString;
-      edcel.Text  := oRETNumero(Current.ByName('CEL_TEL').AsString);
-      edneid.Text := Current.ByName('CLI_NEID').AsString;
-    end;
-  end;
-
+  if REC_SHE_DEF.IDPK > 0 then
   with cad_cli do
   begin
     cad_cli.Close;
-    cad_cli.Params[0].Value := IDCliente;
+    cad_cli.Params[0].Value := REC_SHE_DEF.IDPK;
     cad_cli.Open;
 
     edccli.Text := oStrZero(FieldByName('ID').AsInteger,5);
@@ -697,7 +625,7 @@ begin
     edraza.Text := FieldByName('CLI_RAZA').AsString;
     PEDEGP.Text := FieldByName('CLI_DEGP').AsString;
 
-    IEIDCV.Text := IFThen(RECUsuarios.Grupo = 'VEN'             ,RECUsuarios.Id       ,IntToStr(FieldByName('CLI_CVEN').AsInteger));
+    IEIDCV.Text := IFThen(RECUsuarios.Grupo = 'VEN'            ,RECUsuarios.Id     ,IntToStr(FieldByName('CLI_CVEN').AsInteger));
     IEIDCR.Text := IFThen(FieldByName('CLI_CREP').AsInteger = 0,RECParametros.CR_ID,IntToStr(FieldByName('CLI_CREP').AsInteger));
 
     cbramo.Text := FieldByName('CLI_RAMO').AsString;
@@ -1170,7 +1098,7 @@ begin
     ibSP.Prepare;
 
     { Cadastro }
-    ibSP.ParamByName('ID'  ).Value := IDCliente;
+    ibSP.ParamByName('ID'  ).Value := REC_SHE_DEF.IDPK;
     ibSP.ParamByName('IDEP').Value := RECParametros.EP_ID;
     ibSP.ParamByName('IDCA').Value := RECUsuarios.Id;
 

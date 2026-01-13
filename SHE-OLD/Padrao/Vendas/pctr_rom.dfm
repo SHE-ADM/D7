@@ -1,6 +1,6 @@
 inherited frmctr_rom: Tfrmctr_rom
-  Left = -14
-  Top = 0
+  Left = 6
+  Top = 26
   HelpType = htKeyword
   HelpKeyword = '3'
   AlphaBlendValue = 0
@@ -4620,7 +4620,7 @@ inherited frmctr_rom: Tfrmctr_rom
   end
   object SQLFKEdicao: TIBSQL
     Database = FBird.DBERP
-    Transaction = FBird.TFBEdicao
+    Transaction = TEdicao
     Left = 224
     Top = 192
   end

@@ -43,65 +43,47 @@ inherited frmcad_con: Tfrmcad_con
   end
   inherited PNLForm: TPanel
     Width = 884
-    Height = 634
+    Height = 569
     inherited PNLPrincipal: TPanel
       Width = 884
-      Height = 634
+      Height = 569
       inherited PNLPrincipalRodape: TPanel
-        Top = 634
+        Top = 569
         Width = 884
       end
       inherited PNLPrincipalME: TPanel
-        Height = 634
+        Height = 569
       end
       inherited PNLPrincipalMD: TPanel
         Left = 884
-        Height = 634
+        Height = 569
       end
       inherited PNLCadastro: TPanel
         Width = 884
-        Height = 634
+        Height = 569
         inherited PNLCadastroCabecalho: TPanel
           Width = 884
         end
-        inherited PNLCadastroMenu: TPanel
-          Width = 884
-          inherited GBMenu: TGroupBox
-            Width = 884
-            inherited SBMenu: TSpeedBar
-              Width = 880
-            end
-          end
-        end
         inherited PNLCustomize: TPanel
           Width = 884
-          Height = 532
-          inherited PNLCustomizeEdicao: TPanel
-            Height = 532
-            inherited GBEdicao: TGroupBox
-              Height = 532
-              inherited SBEdicao: TSpeedBar
-                Height = 511
-              end
-            end
-          end
+          Height = 569
           inherited PNLCustomizeSumario: TPanel
-            Top = 532
+            Top = 569
             Width = 884
           end
           inherited PNLCustomizeConsulta: TPanel
-            Width = 824
-            Height = 532
+            Width = 884
+            Height = 569
             inherited GBCadastro: TGroupBox
-              Width = 824
-              Height = 532
+              Width = 830
+              Height = 569
               inherited PCConsulta: TdxPageControl
-                Width = 820
-                Height = 511
+                Width = 826
+                Height = 548
                 inherited TSConsulta: TdxTabSheet
                   inherited DBGConsulta: TdxDBGrid
-                    Width = 820
-                    Height = 511
+                    Width = 826
+                    Height = 548
                     KeyField = 'ID'
                     ShowSummaryFooter = True
                     Filter.Active = True
@@ -176,23 +158,32 @@ inherited frmcad_con: Tfrmcad_con
               end
             end
             inherited PNLCustomizeCabecalho: TPanel
-              Width = 824
+              Width = 884
             end
             inherited PNLCustomizeRodape: TPanel
-              Top = 532
-              Width = 824
+              Top = 569
+              Width = 884
+            end
+            inherited GBMenuEdicao: TGroupBox
+              Height = 569
+              inherited SBMenuEdicao: TSpeedBar
+                Height = 548
+              end
             end
           end
         end
       end
     end
     inherited PNLFormRodape: TPanel
-      Top = 634
+      Top = 569
       Width = 884
       inherited PNLFormRodapeMD: TPanel
         Left = 884
       end
     end
+  end
+  inherited SBMenuPrincipal: TSpeedBar
+    Width = 884
   end
   inherited Cadastro: TIBQuery
     SQL.Strings = (

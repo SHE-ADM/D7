@@ -9262,7 +9262,13 @@ inherited frmctr_ped: Tfrmctr_ped
     Left = 344
     Top = 256
   end
+  inherited EEvent: TIBEvents
+    Left = 408
+    Top = 256
+  end
   inherited ALPrincipal: TActionList
+    Left = 440
+    Top = 256
     object ACTEdicaoPedido: TAction
       Category = 'Edi'#231#245'es'
       Caption = 'ACTEdicaoPedido'

@@ -555,7 +555,7 @@ object FrmNFeConsultaSefaz: TFrmNFeConsultaSefaz
   end
   object TConsulta: TIBTransaction
     AllowAutoStart = False
-    DefaultDatabase = FBird.DBErp
+    DefaultDatabase = FBird.DBERP
     DefaultAction = TARollbackRetaining
     Params.Strings = (
       'read'
@@ -567,7 +567,7 @@ object FrmNFeConsultaSefaz: TFrmNFeConsultaSefaz
     Top = 144
   end
   object SQLConsulta: TIBSQL
-    Database = FBird.DBErp
+    Database = FBird.DBERP
     Transaction = TConsulta
     Left = 448
     Top = 144
