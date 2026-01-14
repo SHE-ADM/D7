@@ -1014,40 +1014,29 @@ object frmven_rom: Tfrmven_rom
     Transaction = TConsulta
     BufferChunks = 2500
     SQL.Strings = (
-      'SELECT   PK.ID      ,PK.IDPK    ,PK.ITEM,'
-      '         PK.IDCP    ,PK.CP_IDEP ,'
-      '         PK.ARTIGO  ,PK.SKU     ,PK.CEAN,'
-      '         PK.DECP    ,PK.DGCP    ,'
-      '         PK.UCOM    ,PK.UPESO   ,PK.UPSCN,PK.UMETRO,PK.UREND,'
+      'SELECT   PK.ID    ,PK.IDPK   ,PK.ITEM,'
+      '         PK.IDCP  ,PK.CP_IDEP,'
+      '         PK.ARTIGO,PK.SKU    ,PK.CEAN,'
+      '         PK.DECP  ,PK.DGCP   ,'
+      
+        '         PK.UCOM  ,PK.UPSLQ AS UPESO,PK.UPSCN ,PK.UMETRO,PK.UREN' +
+        'D,'
       '         IIF(PK.QTSP > 0,PK.QTSP,PK.QTDE) AS QTDE,'
       '         IIF(PK.QTSP > 0,PK.RLSP,PK.QTRL) AS QTRL,'
       '         PK.VPRC_PAD_INI,PK.VPRC_PAD_FIM,'
-      '         PK.VPRC_PAD,PK.PDSC    ,PK.VPRC_COM,'
-      '         PK.TSDE    ,PK.TCDE    ,'
-      '         PK.NCM     ,PK.PIPI    ,'
-      '         PK.PSBR    ,PK.PSLQ    ,'
-      '         PK.ORIG    ,PK.CPAIS   ,'
+      '         PK.VPRC_PAD,PK.PDSC,PK.VPRC_COM,'
+      '         PK.TSDE,PK.TCDE ,'
+      '         PK.NCM ,PK.PIPI ,'
+      '         PK.PSBR,PK.PSLQ ,'
+      '         PK.ORIG,PK.CPAIS,'
       '         PK.INFADCAD,'
       '         PK.IP,PK.HOST'
-      'FROM     VW_PED_VEN_ITE AS PK'
-      'WHERE    PK.IDEP = :IDEP'
-      'AND      PK.IDPK = :IDPK'
+      'FROM VW_PED_VEN_ITE_004 AS PK'
+      'WHERE    PK.IDEP = '#39'4'#39
+      'AND      PK.IDPK = '#39'216823'#39
       'ORDER BY PK.ITEM')
     Left = 392
     Top = 248
-    ParamData = <
-      item
-        DataType = ftSmallint
-        Name = 'IDEP'
-        ParamType = ptInput
-        Value = '0'
-      end
-      item
-        DataType = ftInteger
-        Name = 'IDPK'
-        ParamType = ptInput
-        Value = '0'
-      end>
     object FKPedidosID: TIntegerField
       FieldName = 'ID'
       Origin = '"VW_PED_VEN_ITE_TMP"."ID"'
@@ -1097,12 +1086,6 @@ object frmven_rom: Tfrmven_rom
       FieldName = 'UCOM'
       Origin = '"VW_PED_VEN_ITE_TMP"."UCOM"'
       Size = 10
-    end
-    object FKPedidosUPESO: TIBBCDField
-      FieldName = 'UPESO'
-      Origin = '"VW_PED_VEN_ITE"."UPESO"'
-      Precision = 9
-      Size = 2
     end
     object FKPedidosUPSCN: TIBBCDField
       FieldKind = fkInternalCalc
@@ -1218,6 +1201,13 @@ object frmven_rom: Tfrmven_rom
       FieldName = 'IP'
       Origin = '"VW_PED_VEN_ITE"."IP"'
       Size = 30
+    end
+    object FKPedidosUPESO: TIBBCDField
+      FieldName = 'UPESO'
+      Origin = '"VW_PED_VEN_ITE_004"."UPSLQ"'
+      ProviderFlags = []
+      Precision = 9
+      Size = 3
     end
   end
   object Pedidos: TIBQuery

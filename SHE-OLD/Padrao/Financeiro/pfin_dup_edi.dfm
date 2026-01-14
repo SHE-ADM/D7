@@ -812,6 +812,7 @@ inherited frmfin_dup_edi: Tfrmfin_dup_edi
   end
   object dup_001: TIBDataSet
     Tag = 1
+    Database = FBird.DBEDI
     Transaction = tSHEILD
     AfterDelete = dup_001AfterDelete
     AfterEdit = dup_001AfterEdit
@@ -1286,6 +1287,7 @@ inherited frmfin_dup_edi: Tfrmfin_dup_edi
     end
   end
   object tSHEILD: TIBTransaction
+    DefaultDatabase = FBird.DBEDI
     DefaultAction = TACommitRetaining
     Params.Strings = (
       'read_committed'
@@ -1296,6 +1298,7 @@ inherited frmfin_dup_edi: Tfrmfin_dup_edi
     Top = 16
   end
   object consulta_S: TIBQuery
+    Database = FBird.DBEDI
     Transaction = tSHEILD
     Left = 752
     Top = 48

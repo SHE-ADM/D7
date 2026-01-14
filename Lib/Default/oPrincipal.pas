@@ -9623,6 +9623,9 @@ begin
        if TQRImage(FindComponent('QRILogo')) <> Nil then
           TQRImage(FindComponent('QRILogo')).Picture.Assign(RECParametros.IMG_JPG_REL.Picture);
 
+       if TQRImage(FindComponent('QRIEmpresa')) <> Nil then
+          TQRImage(FindComponent('QRIEmpresa')).Picture.Assign(RECParametros.IMG_JPG_REL.Picture);
+
        { EMPRESA }
        if TQRLabel(FindComponent('QRLEmpresa')) <> Nil then
           TQRLabel(FindComponent('QRLEmpresa')).Caption := _QRLEmpresa;

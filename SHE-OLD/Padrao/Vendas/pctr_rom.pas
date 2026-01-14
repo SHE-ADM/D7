@@ -277,6 +277,8 @@ type
     DBILA_BMP6: TDBImage;
     DBILA_BMP7: TDBImage;
     DBILA_BMP8: TDBImage;
+    DBGItemROM_PSBR: TdxDBGridMaskColumn;
+    DBGItemROM_PSLQ: TdxDBGridMaskColumn;
     procedure FormCreate(Sender: TObject);
     procedure dbgConsultaCustomDrawCell(Sender: TObject; ACanvas: TCanvas;
       ARect: TRect; ANode: TdxTreeListNode; AColumn: TdxTreeListColumn;
@@ -298,12 +300,12 @@ type
       var AColor: TColor; AFont: TFont; var AAlignment: TAlignment;
       var ADone: Boolean);
     procedure DTSCadastroStateChange(Sender: TObject);
-    procedure siRELClick(Sender: TObject);
     procedure SICAD_CLI_CRDClick(Sender: TObject);
     procedure rom_iteAfterOpen(DataSet: TDataSet);
     procedure DTSCAD_PRO_IMGDataChange(Sender: TObject; Field: TField);
     procedure ACTConsultaExecute(Sender: TObject);
     procedure ACTPesquisaExecute(Sender: TObject);
+    procedure ACTRelatoriosExecute(Sender: TObject);
   private
     { Private declarations }
      RECEstoque: TRECPedidos;
@@ -1083,21 +1085,6 @@ begin
   end;
 end;
 
-procedure Tfrmctr_rom.siRELClick(Sender: TObject);
-begin
-  inherited;
-  frmrelatorio_geral := TFrmrelatorio_geral.Create(Self);
-  try
-    frmrelatorio_geral.CDRO                 := CadastroIDPK.AsString;
-    frmrelatorio_geral.CDNF                 := CadastroROM_CDNF.AsString;
-    frmrelatorio_geral.tsROM_CAB.TabVisible := true;
-    frmrelatorio_geral.pcMAIN.ActivePage    := frmrelatorio_geral.tsROM_CAB;
-    frmrelatorio_geral.ShowModal;
-  finally
-    freeAndNil(frmrelatorio_geral);
-  end;
-end;
-
 procedure Tfrmctr_rom.SICAD_CLI_CRDClick(Sender: TObject);
 begin
   if CadastroIDPK.AsInteger = 0 then
@@ -1294,6 +1281,20 @@ begin
   DBGConsulta.Filter.Clear;
   DBGConsultaROM_DERO.Field.FocusControl;
   DBGConsulta.SetFocus;
+end;
+
+procedure Tfrmctr_rom.ACTRelatoriosExecute(Sender: TObject);
+begin
+  frmrelatorio_geral := TFrmrelatorio_geral.Create(Self);
+  try
+    frmrelatorio_geral.CDRO                 := CadastroIDPK.AsString;
+    frmrelatorio_geral.CDNF                 := CadastroROM_CDNF.AsString;
+    frmrelatorio_geral.tsROM_CAB.TabVisible := true;
+    frmrelatorio_geral.pcMAIN.ActivePage    := frmrelatorio_geral.tsROM_CAB;
+    frmrelatorio_geral.ShowModal;
+  finally
+    freeAndNil(frmrelatorio_geral);
+  end;
 end;
 
 end.

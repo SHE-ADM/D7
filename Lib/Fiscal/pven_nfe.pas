@@ -2553,7 +2553,7 @@ begin
     SQL.Add('       CAST(SUM(FK.PSBR) OVER(PARTITION BY FK.CP_ID,FK.ITEM) AS NUMERIC(15,2)) AS PSBR,');
     SQL.Add('       CAST(SUM(FK.PSLQ) OVER(PARTITION BY FK.CP_ID,FK.ITEM) AS NUMERIC(15,2)) AS PSLQ,');
 
-    SQL.Add('       PK.DEST,CP.ORIG,FK.NFCI,FK.INFADCAD');
+    SQL.Add('       PK.DEST,CP.ORIG,FK.NFCI,PK.INFADCAD');
 
     SQL.Add('FROM ' + oREPZero('ROM_CAB'    ,'_',RECParametros.EP_ID,3) + ' AS PK');
     SQL.Add('JOIN ' + oREPZero('ROM_ITE'    ,'_',RECParametros.EP_ID,3) + ' AS FK ON (FK.CDRO = PK.CDRO)');

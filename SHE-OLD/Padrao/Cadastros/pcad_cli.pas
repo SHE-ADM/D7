@@ -81,6 +81,7 @@ type
     CadastroPED_DT: TDateField;
     CadastroNFE_DT: TDateField;
     CadastroNFS_DT: TDateField;
+    SICAD_CLI_CRD: TSpeedItem;
     procedure FormCreate(Sender: TObject);
     procedure dbgConsultaCustomDrawCell(Sender: TObject; ACanvas: TCanvas;
       ARect: TRect; ANode: TdxTreeListNode; AColumn: TdxTreeListColumn;
@@ -93,6 +94,7 @@ type
     procedure ACTCAD_CLI_INFExecute(Sender: TObject);
     procedure ACTMEAppendExecute(Sender: TObject);
     procedure ACTMEEditExecute(Sender: TObject);
+    procedure SICAD_CLI_CRDClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -337,6 +339,14 @@ begin
   finally
     FreeAndNil(frmcad_cli_edi);
   end;
+end;
+
+procedure Tfrmcad_cli.SICAD_CLI_CRDClick(Sender: TObject);
+begin
+  if CadastroId.AsInteger = 0 then
+  oException(DBGConsulta,'Cliente não Selecionado !');
+
+  uPSQSCORE(self,CadastroID.AsString,EmptyStr);
 end;
 
 end.
