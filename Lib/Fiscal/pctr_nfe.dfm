@@ -5384,7 +5384,7 @@ inherited frmctr_nfe: Tfrmctr_nfe
       
         '         PK.NFE_CDNF,PK.NFE_DEMI,PK.NFE_DSAI,PK.NFE_HRSE,PK.DTSA' +
         ',PK.NFE_ESTO,PK.NFE_CNAT,TB_NAT.NAT_TIPO AS TIPO_NF,TB_NAT.NAT_O' +
-        'PER AS TIPO_OP,'
+        'PER AS TIPO_OP,TB_NAT.FINALIDADE_ABREV,'
       
         '         PK.NFE_CLFO,IIF(PK.NFE_CLFO = 0,'#39'Cliente'#39',IIF(PK.NFE_CL' +
         'FO = 1,'#39'Fornecedor'#39','#39'Representante'#39')) AS CLFO,PK.NFE_CFAV,PK.NFE' +
@@ -5771,6 +5771,11 @@ inherited frmctr_nfe: Tfrmctr_nfe
     object CadastroCSTAT: TSmallintField
       FieldName = 'CSTAT'
       Origin = '"NFE_CAB_004"."CSTAT"'
+    end
+    object CadastroFINALIDADE_ABREV: TIBStringField
+      FieldName = 'FINALIDADE_ABREV'
+      Origin = '"TAB_NAT"."FINALIDADE_ABREV"'
+      Size = 30
     end
   end
   inherited ILDockIcons: TImageList

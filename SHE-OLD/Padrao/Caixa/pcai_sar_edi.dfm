@@ -507,11 +507,13 @@ inherited frmcai_sar_edi: Tfrmcai_sar_edi
     Top = 64
   end
   object consulta_s: TIBQuery
+    Database = FBird.DBEDI
     Transaction = tSHEILD
     Left = 512
     Top = 40
   end
   object tSHEILD: TIBTransaction
+    DefaultDatabase = FBird.DBEDI
     DefaultAction = TACommitRetaining
     Params.Strings = (
       'read_committed'

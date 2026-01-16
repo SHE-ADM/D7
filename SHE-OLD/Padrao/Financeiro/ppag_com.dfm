@@ -13454,6 +13454,7 @@ object frmpag_com: Tfrmpag_com
     Top = 152
   end
   object TSEdicao: TIBTransaction
+    DefaultDatabase = FBird.DBEDI
     DefaultAction = TACommitRetaining
     Params.Strings = (
       'read_committed'
@@ -13464,6 +13465,7 @@ object frmpag_com: Tfrmpag_com
     Top = 184
   end
   object consulta_s: TIBQuery
+    Database = FBird.DBEDI
     Transaction = TSEdicao
     Left = 384
     Top = 216
@@ -15864,6 +15866,7 @@ object frmpag_com: Tfrmpag_com
   end
   object Edicao: TIBDataSet
     Tag = 1
+    Database = FBird.DBEDI
     Transaction = TSEdicao
     AfterDelete = EdicaoAfterDelete
     AfterPost = EdicaoAfterPost
@@ -16711,6 +16714,7 @@ object frmpag_com: Tfrmpag_com
     Top = 248
   end
   object SQLSEdicao: TIBSQL
+    Database = FBird.DBEDI
     Transaction = TSEdicao
     Left = 488
     Top = 248

@@ -5188,6 +5188,7 @@ object FrmEmail: TFrmEmail
   end
   object copia_email: TIBDataSet
     Tag = 1
+    Database = FBird.DBEDI
     Transaction = TSEdicao
     AfterCancel = copia_emailAfterCancel
     AfterDelete = copia_emailAfterDelete
@@ -5244,6 +5245,7 @@ object FrmEmail: TFrmEmail
   end
   object TSEdicao: TIBTransaction
     AllowAutoStart = False
+    DefaultDatabase = FBird.DBEDI
     DefaultAction = TACommitRetaining
     Params.Strings = (
       'read_committed'
@@ -5272,6 +5274,7 @@ object FrmEmail: TFrmEmail
     Top = 152
   end
   object QSEdicao: TIBQuery
+    Database = FBird.DBEDI
     Transaction = TSEdicao
     Left = 40
     Top = 184

@@ -9138,6 +9138,7 @@ object FrmEtiqueta_Geral: TFrmEtiqueta_Geral
   end
   object Edicao: TIBDataSet
     Tag = 1
+    Database = FBird.DBEDI
     Transaction = tSHEILD
     AfterDelete = EdicaoAfterDelete
     AfterEdit = EdicaoAfterEdit
@@ -10033,6 +10034,7 @@ object FrmEtiqueta_Geral: TFrmEtiqueta_Geral
   end
   object tSHEILD: TIBTransaction
     AllowAutoStart = False
+    DefaultDatabase = FBird.DBEDI
     DefaultAction = TACommitRetaining
     Params.Strings = (
       'read_committed'
@@ -10043,6 +10045,7 @@ object FrmEtiqueta_Geral: TFrmEtiqueta_Geral
     Top = 336
   end
   object consulta_s: TIBQuery
+    Database = FBird.DBEDI
     Transaction = tSHEILD
     Left = 1120
     Top = 400
@@ -12079,6 +12082,7 @@ object FrmEtiqueta_Geral: TFrmEtiqueta_Geral
     Top = 368
   end
   object SQLSEdicao: TIBSQL
+    Database = FBird.DBEDI
     Transaction = tSHEILD
     Left = 1120
     Top = 368

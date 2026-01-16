@@ -87,8 +87,11 @@ type
     procedure FormDestroy(Sender: TObject);
   private
     { Private declarations }
+    ATextoEmail: String;
   public
     { Public declarations }
+    Constructor Create(AOwner: TComponent;
+                 const ATexto: String = ''); reintroduce; overload;
   end;
 
 var
@@ -99,6 +102,13 @@ implementation
 uses uPrincipal;
 
 {$R *.dfm}
+
+Constructor TFrmEmail.Create(AOwner: TComponent;
+                        const ATexto: String = '');
+begin
+  ATextoEmail := ATexto;
+  inherited Create(AOwner);
+end;
 
 procedure TFrmEmail.FormCreate(Sender: TObject);
 begin
@@ -146,54 +156,45 @@ begin
 end;
 
 procedure TFrmEmail.BEnvClick(Sender: TObject);
-const
-  olMailItem = 0;
 var
-  Outlook: OleVariant;
-  vMailItem: variant;
-  i: integer;
+  Ok: Boolean;
+  Err : string;
+  Html: string;
 begin
-  if copia_email.State in [dsEdit,dsInsert] then
-  begin
-    if copia_emailEMAIL.AsString <> '' then
-    copia_email.Post else
-    copia_email.Cancel;
-  end;
-  copia_email.First;
+  Html :=
 
-  if cbarqs.Text = '' then
-  raise exception.Create('Arquivo não Gerado !');
+  '<html><body style="font-family:Segoe UI, Arial; font-size:12pt">' +
 
-  if (cbemail.Text = '') and (copia_email.Fields[0].IsNull) then
-  raise exception.Create('Email não Selecionado !');
+  '<p>Prezado cliente,</p>'   +
 
-  try
-    try
-      Outlook := GetActiveOleObject('Outlook.Application');
-    except
-      Outlook := CreateOleObject('Outlook.Application');
-    end;
-    vMailItem := Outlook.CreateItem(olMailItem);
+  '<p>' + Memo1.Text + '</p>' +
 
-    if cbemail.Text <> '' then
-    vMailItem.Recipients.Add(cbemail.Text); // 1o destinatário
+  '<p><b>Atenciosamente,</b><br/>' + RECUsuarios.Login + '</p>' +
 
-    while not copia_email.Eof do
-    begin
-      vMailItem.Recipients.Add(copia_emailEMAIL.AsString);
-      copia_email.Next;
-    end;
-    vMailItem.Subject := edtitulo.Text;
-    vMailItem.Body    := memo1.Text;
+  '</body></html>';
 
-    for i := 0 to cbarqs.Items.Count - 1 do
-        vMailItem.Attachments.Add(cbarqs.Items[i]);
+  Ok := oSendEmailOutlook365(
 
-    vMailItem.Send;
-    VarClear(Outlook);
-  finally
-    Close;
-  end;  
+  cbemail.Text, {'ricardo@sheild.com.br; suporte@sheild.app.br',  Destinatário }
+  '', { CC  }
+  '', { BCC }
+
+  RECParametros.EP_NO + ' - Nota Fiscal', { Assunto }
+
+  Html, { Corpo da Mensagem }
+
+  [cbarqs.Items[0], cbarqs.Items[1]], { Anexos }
+
+  False   , { False = enviar; True = abrir na tela }
+  mpNormal, { Prioridade }
+  '',       { ou 'shared-mailbox@empresa.com' se for enviar em nome de }
+  Err
+  );
+
+  if not Ok then
+    ShowMessage('Falha: ' + Err)
+  else
+    ShowMessage('E-mail enviado com sucesso.');
 end;
 
 procedure TFrmEmail.btnpsqClick(Sender: TObject);

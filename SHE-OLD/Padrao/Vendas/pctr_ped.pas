@@ -513,6 +513,7 @@ type
     DBILA_BMP6: TDBImage;
     DBILA_BMP7: TDBImage;
     DBILA_BMP8: TDBImage;
+    DBGConsultaIDOS: TdxDBGridCheckColumn;
     procedure FormCreate(Sender: TObject);
     procedure dbgConsultaCustomDrawCell(Sender: TObject; ACanvas: TCanvas;
       ARect: TRect; ANode: TdxTreeListNode; AColumn: TdxTreeListColumn;

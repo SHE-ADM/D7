@@ -767,9 +767,16 @@ procedure Tfrmctr_prg.SIPEDClick(Sender: TObject);
                 TPCO := 1;
                 CDPG := CadastroPRZ_ID.AsInteger;
 
-                PK_CDST := 0;
+                { SITUAÇÃO }
                 PK_DEST := RETORNA_STFI;
+                SQLConsulta.Close;
+                SQLConsulta.SQL.Clear;
+                SQLConsulta.SQL.Add('SELECT PK.ID FROM TAB_STA_PED AS PK');
+                SQLConsulta.SQL.Add('WHERE  PK.DESCRICAO = ''' + PK_DEST + '''');
+                SQLConsulta.ExecQuery;
+                PK_CDST := SQLConsulta.Current.Vars[0].AsInteger;
 
+                { INFORMAÇÕES ADICIONAIS }
                 INFADCAD := CadastroINFADCAD.AsString;
 
                 if cad_cli_crdVDSC.AsFloat > 0 then
@@ -954,7 +961,7 @@ var
   i: Word;
 begin
   if oYesNo(handle,'Gerar Venda(s) ?') = mrNo then
-     Abort;
+  Abort;
 
   try
 
@@ -988,6 +995,8 @@ begin
     DBGFKCadastro.ClearSelection;
     DBGFKCadastro.FullRefresh;
   end;
+
+  oRefresh(Cadastro);
 end;
 
 function Tfrmctr_prg.RETORNA_STFI: string;
@@ -996,11 +1005,18 @@ var
 begin
   stfi := uFIN_BLQ(CadastroTCO_NO.AsString,'1',CadastroCD_ID.AsString);
 
-  if stfi  = EmptyStr then
-     stfi := uLimiteVenda(CadastroTCO_NO.AsString,'1',CadastroCD_ID.AsString,CadastroTCDE.AsFloat);
-     stfi := IFThen(stfi = EmptyStr,'SEPARANDO',stfi);
+  if stfi <> EmptyStr then
+  oErro(Application.Handle,'Cliente bloqueado por falta de pagamento !') else
 
-  result  := stfi;
+  if (RECParametros.EP_NO <> 'OTIMOTEX FARDO') and (stfi = EmptyStr) then
+  begin
+    stfi := uLimiteVenda(CadastroTCO_NO.AsString,'1',CadastroCD_ID.AsString,CadastroTCDE.AsFloat);
+
+    if stfi <> '' then
+    oErro(Application.Handle,'Cliente bloqueado por falta de crédito !');
+  end;
+
+  result := IFThen(stfi <> EmptyStr,stfi,RECParametros.PED_STFI);
 end;
 
 procedure Tfrmctr_prg.CadastroAfterOpen(DataSet: TDataSet);
@@ -1126,7 +1142,16 @@ end;
 procedure Tfrmctr_prg.ACTPesquisaExecute(Sender: TObject);
 begin
   inherited;
-  if not REC_SHE_DEF.FInitialize then
+
+  if REC_SHE_DEF.FInitialize then
+  begin
+    Cadastro.SQL.Add('SELECT DISTINCT PK.* FROM CTE_PSQ AS PK');
+
+    if RECUsuarios.Grupo = 'VEN' then
+    Cadastro.SQL.Add('WHERE    PK.CV_ID = ''' + RECUsuarios.ID + '''');
+    Cadastro.SQL.Add('ORDER BY PK.DTCA DESC');
+  end else
+
   try
     FrmPesquisa := TFrmPesquisa.Create(Self);
     FrmPesquisa.Tag := 6;
@@ -1146,7 +1171,7 @@ begin
       SQL.Add('AS (');
 
       SQL.Add('SELECT   PK.ID  ,PK.EP_ID,PK.IDEV,');
-      SQL.Add('         PK.IDPK,PK.DEPK ,PK.DTPK,PK.HTPK,PK.API_B2B_IDPK,PK.API_B2B_DEPK,PK.API_B2B_DTPK,PK.API_B2B_HTPK,');
+      SQL.Add('         PK.IDPK,PK.DEPK ,PK.DTPK,PK.HTPK,PK.API_B2B_IDPK,PK.API_B2B_DEPK,PK.API_B2B_DTPK,PK.API_B2B_HTPK,PK.DTCA,');
       SQL.Add('         PK.CTNR,PK.CDCX ,');
 
       SQL.Add('         PK.CD_ID,PK.CD_NO,PK.CD_NO_RZ,PK.CD_CNPJ,');
@@ -1233,12 +1258,12 @@ begin
         end;
       end;
 
-      SQL.Add('ORDER BY ' + IFThen(LeftStr(FrmPesquisa.CField,2) = 'PK',FrmPesquisa.CField,'PK.CD_NO'));
+      SQL.Add('ORDER BY PK.ID DESC'); //+ IFThen(LeftStr(FrmPesquisa.CField,2) = 'PK',FrmPesquisa.CField,'PK.CD_NO'));
     end;
 
     if FrmPesquisa.EDTXT.Text <> EmptyStr then
     begin
-      APSQ_PED_PDP := FrmPesquisa.cbCAMPO.Text;
+      APSQ_PED_PDV := FrmPesquisa.cbCAMPO.Text;
       SBRodape.Panels[1].Text := SBRodape.Panels[1].Text + ' Pesquisado ' + FrmPesquisa.cbCampo.Text + ' ' + FrmPesquisa.EDTXT.Text;
     end;
 
@@ -1252,6 +1277,8 @@ begin
   end;
 
   DBGConsulta.Filter.Clear;
+  DBGFKCadastro.Filter.Clear;
+
   DBGConsultaDEPK.Field.FocusControl;
   DBGConsulta.SetFocus;
 end;

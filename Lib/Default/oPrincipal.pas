@@ -19,6 +19,9 @@ uses
   //ShlObj;
 
 type
+  TMailPriority = (mpNormal, mpLow, mpHigh);
+
+type
    TDirection          = (lNone  ,lVertical,lHorizontal,lUndefined);
    TReturning          = (lrNone ,lrVariant,lrString,lrInteger,lrFloat);
    TWarning            = (lwNone ,lwShowWarning);
@@ -2688,6 +2691,16 @@ Const
   KEY_WOW64_64KEY = $0100;
   KEY_WOW64_32KEY = $00200;
 
+  olMailItem   = 0;
+  olTo         = 1;
+  olCC         = 2;
+  olBCC        = 3;
+  olImportanceLow = 0;
+  olImportanceNormal = 1;
+  olImportanceHigh = 2;
+  olFormatPlain = 1;
+  olFormatHTML  = 2;
+
   aDup : array [1..24] of string = ('A','B','C','D','E','F','G',
                                     'H','I','J','K','L','M','N',
                                     'O','P','Q','R','S','T','U',
@@ -2822,6 +2835,12 @@ aAlfabeto: Array[00..35,00..01] of String = (('A','0'),
   aCentenas: Array[01..09] of String = ('Cento' ,'Duzentos','Trezentos','Quatrocentos','Quinhentos','Seiscentos','Setecentos','Oitocentos','Novecentos'        );
 	aMilhar  : Array[00..05] of String = ('','Mil','Milhao'  ,'Bilhao'   ,'Trilhao'     ,'Quatrilhao' );
 	aMilhares: Array[00..05] of String = ('','Mil','Milhoes' ,'Bilhoes'  ,'Trilhoes'    ,'Quatrilhoes');
+
+
+  function oSendEmailOutlook365(const ATo, ACc, ABcc, ASubject, AHtmlBody: string;
+  const AAttachments: array of string; const ADisplayInsteadOfSend: Boolean = False;
+  const APriority: TMailPriority = mpNormal; const ASentOnBehalfOf: string = '';
+  AErrorMsg: string = ''): Boolean;
 
   { Cria diretório de forma recursiva - 13/01/2026 09:34 }
   function oEnsureDirRecursive(const ADirectory: string): Boolean;
@@ -9958,6 +9977,128 @@ begin
   RaiseLastOSError;
 
   Result := True;
+end;
+
+procedure AddRecipients(const MailItem: Variant; const List: string; RecType: Integer);
+var
+  arr: TStringList;
+  i: Integer;
+  rec: Variant;
+  addr: string;
+begin
+  if Trim(List) = '' then Exit;
+  arr := TStringList.Create;
+  try
+    // aceita ';' ou ',' como separador
+    arr.Text := StringReplace(StringReplace(List, ';', sLineBreak, [rfReplaceAll]),
+                              ',', sLineBreak, [rfReplaceAll]);
+    for i := 0 to arr.Count - 1 do
+    begin
+      addr := Trim(arr[i]);
+      if addr <> '' then
+      begin
+        rec := MailItem.Recipients.Add(addr);
+        rec.Type := RecType;
+      end;
+    end;
+    // Resolve nomes endereçados do catálogo (se aplicável)
+    MailItem.Recipients.ResolveAll;
+  finally
+    arr.Free;
+  end;
+end;
+
+function FileListToAttachments(const MailItem: Variant; const AAttachments: array of string; out AErr: string): Boolean;
+var
+  i: Integer;
+  f: string;
+begin
+  Result := True;
+  for i := Low(AAttachments) to High(AAttachments) do
+  begin
+    f := Trim(AAttachments[i]);
+    if f = '' then Continue;
+    if not FileExists(f) then
+    begin
+      AErr := Format('Anexo não encontrado: %s', [f]);
+      Result := False;
+      Exit;
+    end;
+    MailItem.Attachments.Add(f);
+  end;
+end;
+
+function oSendEmailOutlook365(const ATo, ACc, ABcc, ASubject, AHtmlBody: string;
+  const AAttachments: array of string; const ADisplayInsteadOfSend: Boolean = False;
+  const APriority: TMailPriority = mpNormal; const ASentOnBehalfOf: string = '';
+  AErrorMsg: string = ''): Boolean;
+var
+  Outlook, NS, Mail: Variant;
+  Importance: Integer;
+begin
+  Result := False;
+  AErrorMsg := '';
+
+  case APriority of
+    mpLow:    Importance := olImportanceLow;
+    mpHigh:   Importance := olImportanceHigh;
+  else
+    Importance := olImportanceNormal;
+  end;
+
+  try
+    // Cria/obtém instância do Outlook
+    Outlook := CreateOleObject('Outlook.Application');
+    NS := Outlook.GetNamespace('MAPI');
+    // usa perfil padrão; ajusta para True/True se quiser forçar logon
+    NS.Logon(EmptyParam, EmptyParam, False, False);
+
+    // Cria item de e-mail
+    Mail := Outlook.CreateItem(olMailItem);
+
+    // From: enviar em nome de (opcional)
+    if Trim(ASentOnBehalfOf) <> '' then
+      Mail.SentOnBehalfOfName := ASentOnBehalfOf;
+
+    // Destinatários
+    AddRecipients(Mail, ATo,  olTo);
+    AddRecipients(Mail, ACc,  olCC);
+    AddRecipients(Mail, ABcc, olBCC);
+
+    // Assunto e corpo
+    Mail.Subject := ASubject;
+
+    // HTML (recomendado). Para texto simples, use BodyFormat/Body abaixo.
+    Mail.BodyFormat := olFormatHTML;
+    Mail.HTMLBody := AHtmlBody;
+
+    // Anexos
+    if not FileListToAttachments(Mail, AAttachments, AErrorMsg) then
+      Exit;
+
+    // Importância
+    Mail.Importance := Importance;
+
+    // Enviar ou exibir
+    if ADisplayInsteadOfSend then
+      Mail.Display(True)  // modal
+    else
+      Mail.Send;
+
+    Result := True;
+  except
+    on E: Exception do
+      AErrorMsg := 'Erro ao enviar e-mail via Outlook: ' + E.Message;
+  end;
+
+  // Libera referências COM
+  try
+    Mail := Unassigned;
+    NS   := Unassigned;
+    Outlook := Unassigned;
+  except
+    // ignora
+  end;
 end;
 
 end.

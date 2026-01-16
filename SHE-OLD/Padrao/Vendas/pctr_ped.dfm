@@ -1986,6 +1986,16 @@ inherited frmctr_ped: Tfrmctr_ped
               SummaryFooterField = 'PDSC'
               SummaryFooterFormat = '0%'
             end
+            object DBGConsultaIDOS: TdxDBGridCheckColumn
+              Alignment = taCenter
+              HeaderAlignment = taCenter
+              Width = 39
+              BandIndex = 5
+              RowIndex = 0
+              FieldName = 'IDOS'
+              ValueChecked = '1'
+              ValueUnchecked = '0'
+            end
             object DBGConsultaDTSP: TdxDBGridColumn
               BandIndex = 5
               RowIndex = 0

@@ -5476,7 +5476,7 @@ inherited frmctr_prg: Tfrmctr_prg
       'SELECT   PK.ID  ,PK.EP_ID,PK.IDEV,'
       
         '         PK.IDPK,PK.DEPK ,PK.DTPK,PK.HTPK,PK.API_B2B_IDPK,PK.API' +
-        '_B2B_DEPK,PK.API_B2B_DTPK,PK.API_B2B_HTPK,'
+        '_B2B_DEPK,PK.API_B2B_DTPK,PK.API_B2B_HTPK,PK.DTCA,'
       '         PK.CTNR,PK.CDCX ,'
       ''
       '         PK.CD_ID,PK.CD_NO,PK.CD_NO_RZ,PK.CD_CNPJ,'
@@ -5512,9 +5512,7 @@ inherited frmctr_prg: Tfrmctr_prg
       'CTE_PSQ'
       'AS ('
       'SELECT PK.* FROM PK'
-      ')'
-      'SELECT   DISTINCT PK.* FROM CTE_PSQ AS PK'
-      'ORDER BY PK.ID DESC')
+      ')')
     Top = 224
     object CadastroID: TLargeintField
       FieldKind = fkInternalCalc

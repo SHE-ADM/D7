@@ -64,12 +64,11 @@ begin
   { FORM MANAGER }
   REC_SHE_DEF.GAdmin := True; { Grant   }
   REC_SHE_DEF.Id     := -3;   { Grid Focus }
-
-  BEPesquisa.Text := REC_SHE_DEF.ID;
   inherited;
 
   with Cadastro do
   begin
+    Params[0].Value := REC_SHE_DEF.FB_TB_PK;
     Prepare;
     Open;
   end;
@@ -117,7 +116,7 @@ procedure TFrmPesquisaCodigoMunicipal.BEPesquisaKeyDown(Sender: TObject; var Key
   Shift: TShiftState);
 begin
   if Key = vk_return then
-     _Pesquisa;
+  _Pesquisa;
 end;
 
 procedure TFrmPesquisaCodigoMunicipal.ACTPesquisa_UFExecute(
@@ -166,7 +165,8 @@ end;
 
 procedure TFrmPesquisaCodigoMunicipal._Saida;
 begin
-  REC_SHE_DEF.FB_TB_PK := CadastroCMUN.AsString;
+  REC_SHE_DEF.Selected   := True;
+  REC_SHE_DEF.FB_SQL_TAB := CadastroCMUN.AsString;
   Close;
 end;
 
