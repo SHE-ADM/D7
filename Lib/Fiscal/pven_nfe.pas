@@ -572,7 +572,6 @@ Type
     DBGPKSumarioLBL_VICMSUFREMET: TdxDBGridMaskColumn;
     DBGPKSumarioNFE_VICMSUFREMET: TdxDBGridCurrencyColumn;
     IEUF: TdxImageEdit;
-    IECFOP: TdxImageEdit;
     SPSEdicao: TIBStoredProc;
 
     TAB_ALQ: TIBQuery;
@@ -1174,6 +1173,10 @@ Type
     ACTMDCancel: TAction;
     DBGEdicaoNFE_PSBR: TdxDBGridCurrencyColumn;
     DBGEdicaoNFE_PSLQ: TdxDBGridCurrencyColumn;
+    EDFINALIDADE_ABREV: TdxMaskEdit;
+    TAB_CFOPFINALIDADE_ABREV: TIBStringField;
+    DBGEdicaoNFE_RCOM: TdxDBGridMaskColumn;
+    PECFOP: TdxPickEdit;
 
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -1353,8 +1356,6 @@ Type
       var Accept: Boolean);
     procedure CEIDCTValidate(Sender: TObject; var ErrorText: String;
       var Accept: Boolean);
-    procedure IECFOPValidate(Sender: TObject; var ErrorText: String;
-      var Accept: Boolean);
     procedure IEindFinalValidate(Sender: TObject; var ErrorText: String;
       var Accept: Boolean);
     procedure IEICMS_STValidate(Sender: TObject; var ErrorText: String;
@@ -1379,6 +1380,9 @@ Type
     procedure FIS_NFE_DUPBeforeCancel(DataSet: TDataSet);
     procedure DTSFIS_NFE_DUPStateChange(Sender: TObject);
     procedure EDInfAdNFChange(Sender: TObject);
+    procedure LAIDCDClick(Sender: TObject);
+    procedure PECFOPValidate(Sender: TObject; var ErrorText: String;
+      var Accept: Boolean);
   private
     { Private declarations }
     FCurrentEvent,
@@ -1969,7 +1973,7 @@ begin
   if Edicao.State in [dsInsert,dsEdit] then
      Edicao.Post;
 
-  if ((Edicao.RecNo > 0) and (CECDRO.Value = 0)) or (REC_SHE_DEF.Editing) then
+  if ((Edicao.RecNo > 0) and (CECDRO.Value = 0) and REC_SHE_DEF.Editing) or (REC_SHE_DEF.Editing) then
 
   Case messageBox(handle,'Existem Alterações Pendentes !'+#13+
                          'Sair mesmo assim ?',
@@ -2155,8 +2159,7 @@ begin
     ExecQuery;
     while not eof do
     begin
-      IECFOP.Descriptions.Add(Current.Vars[0].AsString);
-      IECFOP.Values.Add(Current.Vars[0].AsString);
+      PECFOP.Items.Add(Current.Vars[0].AsString);
       next;
     end;
 
@@ -2215,10 +2218,6 @@ begin
   { PEGA NÚMERO DISPONÍVEL }
   ACTPSQ_NFE_NUM.HelpKeyword := EmptyStr;
   ACTPSQ_NFE_NUM.Execute;
-
-  { Habilita envio automático conforme parâmetro }
-  IEEnvMail.Text    :=  RECParametros.NFE_ENV_EMAIL_AUTO;
-  IEEnvMail.Enabled := (RECParametros.NFE_ENV_EMAIL_AUTO = 1);
 end;
 
 procedure TFrmVEN_NFE.ACTPesquisaExecute(Sender: TObject);
@@ -2553,7 +2552,7 @@ begin
     SQL.Add('       CAST(SUM(FK.PSBR) OVER(PARTITION BY FK.CP_ID,FK.ITEM) AS NUMERIC(15,2)) AS PSBR,');
     SQL.Add('       CAST(SUM(FK.PSLQ) OVER(PARTITION BY FK.CP_ID,FK.ITEM) AS NUMERIC(15,2)) AS PSLQ,');
 
-    SQL.Add('       PK.DEST,CP.ORIG,FK.NFCI,FK.INFADCAD');
+    SQL.Add('       PK.DEST,CP.ORIG,FK.NFCI,PK.INFADCAD');
 
     SQL.Add('FROM ' + oREPZero('ROM_CAB'    ,'_',RECParametros.EP_ID,3) + ' AS PK');
     SQL.Add('JOIN ' + oREPZero('ROM_ITE'    ,'_',RECParametros.EP_ID,3) + ' AS FK ON (FK.CDRO = PK.CDRO)');
@@ -2736,7 +2735,7 @@ begin
   if ACTPSQ_TAB_CFOP.HelpKeyWord = EmptyStr then
   begin
     ACTPSQ_TAB_CFOP.Caption     := 'CFOP';
-    ACTPSQ_TAB_CFOP.HelpKeyWord := IECFOP.Text;
+    ACTPSQ_TAB_CFOP.HelpKeyWord := PECFOP.Text;
   end;
 
   if (ACTPSQ_TAB_CFOP.Caption = EmptyStr) and (ACTPSQ_TAB_CFOP.HelpKeyWord = EmptyStr) then
@@ -2754,23 +2753,29 @@ begin
   if ALockWindowUpdate then { SQL INJECTION }
   Exit;
 
-  with SQLPKSEdicao do
-  begin
-    Close;
-    SQL.Clear;
-    SQL.Add('UPDATE FIS_NFE_ITE');
-    SQL.Add('SET ' + ACTPSQ_TAB_CFOP.Caption + ' = ''' + ACTPSQ_TAB_CFOP.HelpKeyWord + '''');
+  try
+    ALockWindowUpdate := True;
+    Edicao.DisableControls;
+    Edicao.First;
 
-    SQL.Add('WHERE IDEV     =  ''' + REC_SHE_DEF.IDEV            + '''');
-    SQL.Add('AND   NFE_CFOP <> ''' + ACTPSQ_TAB_CFOP.HelpKeyWord + '''');
-    ExecQuery;
+    while not Edicao.Eof do
+    begin
+      Edicao.Edit;
+      EdicaoNFE_CFOP.Value := ACTPSQ_TAB_CFOP.HelpKeyWord;
+      Edicao.Post;
+      Edicao.Next;
+    end;
 
+    TSEdicao.CommitRetaining;
+  finally
+    ALockWindowUpdate := False;
+
+    Edicao.EnableControls;
     Edicao.Close;
     Edicao.Open;
-    Edicao.Last;
   end;
 
-  if Pos(IECFOP.Text,'51236123') > 0 then
+  if Pos(PECFOP.Text,'51236123') > 0 then
   begin
     EDCFOP_TPNF_NO.Text := EDCFOP_TPNF_NO.Text + ' TRIANGULAR';
 
@@ -3188,7 +3193,7 @@ procedure TFrmVEN_NFE.ACTEDI_CAD_PROExecute(Sender: TObject);
 var
   REC_SHE_DEF: TREC_SHE_DEF;
 begin
-  if LeftStr(IECFOP.Text,1) = '3' then
+  if LeftStr(PECFOP.Text,1) = '3' then
   begin
     try
       oOTransact(TEdicao);
@@ -3876,7 +3881,7 @@ begin
     SPEdicao.ParamByName('DTRA').Value         := PEDECT.Text;
     SPEdicao.ParamByName('MFRT').Value         := IEModFrete.Text;
     SPEdicao.ParamByName('CFRT').Value         := '';
-    SPEdicao.ParamByName('CNAT').Value         := IECFOP.Text;
+    SPEdicao.ParamByName('CNAT').Value         := PECFOP.Text;
     SPEdicao.ParamByName('INDPAG').Value       := IEINDPAG.Text;
     SPEdicao.ParamByName('TPNF').Value         := IECFOP_TPNF.Text;
     SPEdicao.ParamByName('NFREF').Value        := '0';
@@ -3921,19 +3926,18 @@ begin
     SPEdicao.ParamByName('VRETPREV').Value     := 0;
     SPEdicao.ParamByName('OBSE').Value         := StringReplace(oREPApostrofos(EDINFADNF.Text),Char(39),'',[rfReplaceAll]);
     SPEdicao.ParamByName('CLFO').Value         := LAIDCD.Tag;
-    SPEdicao.ParamByName('ESTO').Value         := IFThen((LeftStr(IECFOP.Text,1) = '3') and (RECParametros.EST_QTRL),'1','0');
+    SPEdicao.ParamByName('ESTO').Value         := IFThen((LeftStr(PECFOP.Text,1) = '3') and (RECParametros.EST_QTRL),'1','0');
     SPEdicao.ExecProc;
 
     { Cadastro de Produtos Importados }
     oCTransact(TEdicao);
-    REC_SHE_DEF.Editing := False;
 
     if Pos(SBRodape.Panels[5].Text,'110') > 0 then
     oAviso(handle,'Nota Fiscal Denegada !' + #13 +
                   'Possíveis problemas fiscais desse destinatário na receita federal.' + #13 + #13 +
                   'Favor entrar em contato com o cliente e/ou representante.');
 
-    if (LeftStr(IECFOP.Text,1) <> '3') and (CECDRO.Value > 0) then
+    if (LeftStr(PECFOP.Text,1) <> '3') and (CECDRO.Value > 0) then
     begin
       if RECRomaneio.FIN_CSPD then
       bBAI_FINANCEIRO(IFThen(FIS_NFE_DUPId.AsInteger > 0,Trunc(CECDNF.Value),0),IFThen(FIS_NFE_DUPId.AsInteger > 0,0,RECRomaneio.IDFK)) else
@@ -3941,8 +3945,6 @@ begin
       if (RECRomaneio.FAPD) and (FIS_NFE_DUPId.AsInteger > 0) then
       bBAI_FINANCEIRO(Trunc(CECDNF.Value),0);
     end;
-
-    ACTEveExecute.Execute;
   except
     on E: Exception do
     begin
@@ -3955,7 +3957,9 @@ begin
     end;
   end;
 
+  REC_SHE_DEF.Editing := False;
   ACTEDI_CAD_PRO.Execute;
+  ACTEveExecute.Execute;
 end;
 
 procedure TFrmVEN_NFE.ACTMPValidateExecute(Sender: TObject);
@@ -3964,6 +3968,7 @@ begin
                    'Lembre-se que esse recurso é permitido apenas para duplicidades') = mrYes then
   begin
     ACTMPPost.Execute;
+    REC_SHE_DEF.Editing := False;
     oAviso(Handle,'Nota Fiscal salva com sucesso !');
   end;  
 end;
@@ -4051,7 +4056,7 @@ begin
 //          ACTPSQ_CAD_TRA.Execute;
 //
 //          if XMLModFrete <> EmptyStr then
-//          IEModFrete.Text := IFThen(LeftStr(IECFOP.Text,1) = '3',XMLModFrete,'4');
+//          IEModFrete.Text := IFThen(LeftStr(PECFOP.Text,1) = '3',XMLModFrete,'4');
 //          IExPais.Text    := XMLcPais;
 //
 //          CEQVOL.Value := 0;
@@ -4083,7 +4088,7 @@ begin
 //          edvnf.Text     := formatfloat('#,0.00',imp_ncaNFE_VNF.AsFloat);  }
 //
 //          EDINFADNF.Lines.Clear;
-//          if LeftStr(IECFOP.Text,1) = '3' then
+//          if LeftStr(PECFOP.Text,1) = '3' then
 //          EDINFADNF.Lines.Add(imp_ncaNFE_INFCPL.AsString);
 //          EDINFADNF.Refresh;
 //
@@ -4107,7 +4112,7 @@ begin
 //          end;
 //          { NATUREZA DE OPERAÇÃO }
 //          ACTPSQ_TAB_CFOP.Caption     := 'NFE_CFOP'; { Field }
-//          ACTPSQ_TAB_CFOP.HelpKeyWord := IECFOP.Text; { Value }
+//          ACTPSQ_TAB_CFOP.HelpKeyWord := PECFOP.Text; { Value }
 //          ACTPSQ_TAB_CFOP.Execute;
 //
 //          imp_ite.First;
@@ -4138,21 +4143,65 @@ begin
 end;
 
 procedure TFrmVEN_NFE.ACTEmailExecute(Sender: TObject);
+var
+  Ok: Boolean;
+  Err ,
+  Html,
+  Msg: String;
 begin
+  if PEEmail.Text = EmptyStr then
+  oErro(Handle,'Email do destinatário não informado !');
+
+  Ok := False;
+  
+  if not FileExists(EDPDF.Text) then
+  Err := 'Arquivo PDF da danfe não localizado !' else
+
+  if not FileExists(EDPDF.Text) then
+  Err := 'Arquivo XML não localizado !';
+
+  Msg :=
+
+  'Segue em anexo ...' +
+  'Nota Fiscal Eletrônica ' + IFThen(Pos('Triangular',EDFINALIDADE_ABREV.Text) > 0,'','de ') + EDFINALIDADE_ABREV.Text +
+  'Número ' + CECDNF.Text + ' emitida na data ' + FormatDateTime('dd/mm/yyyy',DEdhSaiEnt.Date);
+
   if (FileExists(EDPDF.Text)) and (FileExists(EDXML.Text)) then
-  try
-    frmemail := TFrmemail.Create(self);
-    frmemail.cbemail.Text  := PEEmail.Text;
-    frmemail.edtitulo.Text := RECParametros.EP_NO+' - NF.: '+CECDNF.Text;
-    frmemail.Memo1.Lines.Add('Segue em anexo...') ;
+  begin
+    Html :=
 
-    frmemail.cbarqs.Items.Add(EDPDF.Text);
-    frmemail.cbarqs.Items.Add(EDXML.Text);
+    '<html><body style="font-family:Segoe UI, Arial; font-size:12pt">' +
 
-    frmemail.ShowModal;
-  finally
-    freeAndNil(frmemail);
+    '<p>Prezado cliente,</p>'   +
+
+    '<p>' + Msg + '</p>' +
+
+    '<p><b>Atenciosamente,</b><br/>' + RECUsuarios.Login + '</p>' +
+
+    '</body></html>';
+
+    Ok := oSendEmailOutlook365(
+
+    PEEmail.Text, {'ricardo@sheild.com.br; suporte@sheild.app.br',  Destinatário }
+    RECUsuarios.EMAIL, { CC  }
+    '', { BCC }
+
+    RECParametros.EP_NO + ' - Nota Fiscal', { Assunto }
+
+    Html, { Corpo da Mensagem }
+
+    [EDPDF.Text, EDXML.Text], { Anexos }
+
+    False   , { False = enviar; True = abrir na tela }
+    mpNormal, { Prioridade }
+    '',       { ou 'shared-mailbox@empresa.com' se for enviar em nome de }
+    Err
+    );
   end;
+
+  if not Ok then
+  oErro (Handle,'Falha: ' + Err) else
+  oAviso(Handle,'E-mail enviado com sucesso.');
 end;
 
 procedure TFrmVEN_NFE.ACTMEAppendExecute(Sender: TObject);
@@ -4258,7 +4307,7 @@ begin
 
     { Natureza de Operações }
     if oEmpty(PECFOP_NO.Text) then
-       oException(IECFOP,'CFOP não Informado ou Incorreto !');
+       oException(PECFOP,'CFOP não Informado ou Incorreto !');
 
     { Romaneios }
     if CECDRO.Value > 0 then
@@ -4294,7 +4343,7 @@ begin
       oException(EDR_DECD,'Destinatário da remessa informado incorretamente !');
     end;
 
-    if (Pos(IECFOP.Text,'5123592461236924') > 0) and ((CER_CDNF.Value = 0) or (EDR_DECD.Text = EmptyStr) or (EDR_CNPJ.Text = EDCNPJ.Text))  then
+    if (Pos(PECFOP.Text,'5123592461236924') > 0) and ((CER_CDNF.Value = 0) or (EDR_DECD.Text = EmptyStr) or (EDR_CNPJ.Text = EDCNPJ.Text))  then
     begin
       PCEdicao.ActivePage := TSNFTriangular;
 
@@ -4481,7 +4530,7 @@ begin
           Break;
         end;
 
-        if (LeftStr(IECFOP.Text,1) = '3') and (EDnDI.Text <> EmptyStr) then
+        if (LeftStr(PECFOP.Text,1) = '3') and (EDnDI.Text <> EmptyStr) then
         begin
           if (oEmpty(CEnAdicao.Text)) or (CEnAdicao.Text = '0') then
           oException(Nil,'Número da adição não informado !');
@@ -4503,7 +4552,7 @@ begin
           Edicao.Post;
         end else
 
-        if LeftStr(IECFOP.Text,1) = '7' then
+        if LeftStr(PECFOP.Text,1) = '7' then
         while not Edicao.Eof do
         begin
           Edicao.Edit;
@@ -4766,7 +4815,7 @@ begin
   EdicaoCP_IMG_ID.Value := 0;
 
   EdicaoNFE_CDNF.Value   := Trunc(CECDNF.Value);
-  EdicaoNFE_CFOP.Value   := LeftStr(IECFOP.Text,4);
+  EdicaoNFE_CFOP.Value   := LeftStr(PECFOP.Text,4);
   EdicaoNFE_MODBC.Value  := 3;
   EdicaoNFE_UF.Value     := IEUF.Text;
   EdicaoNFE_INDTOT.Value := 1;
@@ -5181,7 +5230,7 @@ end;
 procedure TFrmVEN_NFE.DBGEdicaoNFE_QCOMValidate(Sender: TObject;
   var ErrorText: String; var Accept: Boolean);
 begin
-  DBGEdicaoNFE_QCOM.Tag := IFThen(Length(IECFOP.Text) > 4,1,0);
+  DBGEdicaoNFE_QCOM.Tag := IFThen(Length(PECFOP.Text) > 4,1,0);
 end;
 
 procedure TFrmVEN_NFE.DBGEdicaoNFE_VICMSValidate(Sender: TObject;
@@ -5423,16 +5472,16 @@ end;
 
 procedure TFrmVEN_NFE.TAB_CFOPAfterOpen(DataSet: TDataSet);
 begin
-  IECFOP.Text         := TAB_CFOPCFOP.AsString;
+  PECFOP.Text         := TAB_CFOPCFOP.AsString;
   PECFOP_NO.Text      := TAB_CFOPCFOP_NO.AsString;
   IECFOP_TPNF.Text    := TAB_CFOPCFOP_TPNF.AsString;
   EDCFOP_TPNF_NO.Text := TAB_CFOPCFOP_TPNF_NO.AsString;
 
-  if IECFOP.Text = '6108' then
+  if PECFOP.Text = '6108' then
   IEindFinal.Text := '1'; { Consumidor Final }
   IEFinNFe.Text   := IFThen(TAB_CFOPCFOP_TPNF_NO.AsString = 'DEVOLUÇÃO','4','1');
 
-  if LeftStr(IECFOP.Text,1) = '3' then
+  if LeftStr(PECFOP.Text,1) = '3' then
   begin
     EDCNPJTerceiro.Text    := RECParametros.Cnpj;
     IEUFTerceiro.Text      := RECParametros.LOG_UF;
@@ -5442,7 +5491,7 @@ begin
     TSEXExporta.TabVisible := False;
   end else
 
-  if LeftStr(IECFOP.Text,1) = '7' then
+  if LeftStr(PECFOP.Text,1) = '7' then
   begin
     EDCNPJProd.Text := RECParametros.Cnpj;
     TSEXImporta.TabVisible := False;
@@ -5545,7 +5594,7 @@ begin
       ExecQuery;
     end;
 
-    if (LeftStr(IECFOP.Text,1) = '3') and (RECParametros.NFE_CAD_PRO_DI) then
+    if (LeftStr(PECFOP.Text,1) = '3') and (RECParametros.NFE_CAD_PRO_DI) then
     begin
       Edicao.First;
       while not Edicao.Eof do
@@ -5660,16 +5709,16 @@ begin
 
   if (Pos(IEFinNFe.Text,'4') > 0) and (NewCHNFE <> EmptyStr) and (NewCDNF <> EmptyStr) and (NewDTNF <> EmptyStr) then
   begin
-    if Pos(IECFOP.Text,'12011202220122025101610151026102') > 0 then
+    if Pos(PECFOP.Text,'12011202220122025101610151026102') > 0 then
     begin
-      if Pos(IECFOP.Text,'12015101') > 0 then IECFOP.Text := '5201' else
-      if Pos(IECFOP.Text,'12025102') > 0 then IECFOP.Text := '5202' else
-      if Pos(IECFOP.Text,'22016101') >0  then IECFOP.Text := '6201' else
-      if Pos(IECFOP.Text,'22026102') > 0 then IECFOP.Text := '6202';
+      if Pos(PECFOP.Text,'12015101') > 0 then PECFOP.Text := '5201' else
+      if Pos(PECFOP.Text,'12025102') > 0 then PECFOP.Text := '5202' else
+      if Pos(PECFOP.Text,'22016101') >0  then PECFOP.Text := '6201' else
+      if Pos(PECFOP.Text,'22026102') > 0 then PECFOP.Text := '6202';
 
       { NATUREZA DE OPERAÇÃO }
       ACTPSQ_TAB_CFOP.Caption     := 'NFE_CFOP';  { Field }
-      ACTPSQ_TAB_CFOP.HelpKeyWord := IECFOP.Text; { Value }
+      ACTPSQ_TAB_CFOP.HelpKeyWord := PECFOP.Text; { Value }
       ACTPSQ_TAB_CFOP.Execute;
     end;
 
@@ -5730,7 +5779,6 @@ begin
 
       EDxNome.Text   := RECRomaneio.RZCD;
       PEEmail.Text   := RECRomaneio.EMAIL;
-      IEEnvMail.Text := IFThen(RECRomaneio.ENVEMAIL,'1','0');
       edCNPJ.Text    := RECRomaneio.CNPJ;
       edCPF.Text     := RECRomaneio.CPF;
       EDISUF.Text    := RECRomaneio.ISUF;
@@ -5779,7 +5827,7 @@ begin
         IEindFinal.Text  := '1';
       end;
 
-      if (CECDRO.Value = 0) and (Pos(IECFOP.Text,'59246924') = 0) then
+      if (CECDRO.Value = 0) and (Pos(PECFOP.Text,'59246924') = 0) then
       begin
         with SQLFKConsulta do
         begin
@@ -5868,8 +5916,8 @@ procedure TFrmVEN_NFE.IEICMS_STValidate(Sender: TObject;
 begin
   if IEICMS_ST.Text = 'SIM' then
   begin
-    IECFOP.Modified := True;
-    IECFOP.ValidateEdit;
+    PECFOP.Modified := True;
+    PECFOP.ValidateEdit;
   end else
 
   ACTNFeCalculate.Execute;
@@ -6007,16 +6055,16 @@ begin
   
   if (Pos(IEFinNFe.Text,'4') > 0) and (NewCHNFE <> EmptyStr) and (NewCDNF <> EmptyStr) and (NewDTNF <> EmptyStr) then
   begin
-    if Pos(IECFOP.Text,'12011202220122025101610151026102') > 0 then
+    if Pos(PECFOP.Text,'12011202220122025101610151026102') > 0 then
     begin
-      if Pos(IECFOP.Text,'12015101') > 0 then IECFOP.Text := '5201' else
-      if Pos(IECFOP.Text,'12025102') > 0 then IECFOP.Text := '5202' else
-      if Pos(IECFOP.Text,'22016101') >0  then IECFOP.Text := '6201' else
-      if Pos(IECFOP.Text,'22026102') > 0 then IECFOP.Text := '6202';
+      if Pos(PECFOP.Text,'12015101') > 0 then PECFOP.Text := '5201' else
+      if Pos(PECFOP.Text,'12025102') > 0 then PECFOP.Text := '5202' else
+      if Pos(PECFOP.Text,'22016101') >0  then PECFOP.Text := '6201' else
+      if Pos(PECFOP.Text,'22026102') > 0 then PECFOP.Text := '6202';
 
       { NATUREZA DE OPERAÇÃO }
       ACTPSQ_TAB_CFOP.Caption     := 'NFE_CFOP';  { Field }
-      ACTPSQ_TAB_CFOP.HelpKeyWord := IECFOP.Text; { Value }
+      ACTPSQ_TAB_CFOP.HelpKeyWord := PECFOP.Text; { Value }
       ACTPSQ_TAB_CFOP.Execute;
     end;
 
@@ -6059,13 +6107,14 @@ begin
   ACTPSQ_CAD_TRA.Execute;
 end;
 
-procedure TFrmVEN_NFE.IECFOPValidate(Sender: TObject;
+procedure TFrmVEN_NFE.PECFOPValidate(Sender: TObject;
   var ErrorText: String; var Accept: Boolean);
 begin
   { NATUREZA DE OPERAÇÃO }
   ACTPSQ_TAB_CFOP.Caption     := 'NFE_CFOP';  { Field }
-  ACTPSQ_TAB_CFOP.HelpKeyWord := IECFOP.Text; { Value }
+  ACTPSQ_TAB_CFOP.HelpKeyWord := PECFOP.Text; { Value }
   ACTPSQ_TAB_CFOP.Execute;
+  EDFINALIDADE_ABREV.Text := TAB_CFOPFINALIDADE_ABREV.AsString;
 
   ACTNFeINFADCAD.Execute;
 end;
@@ -6191,7 +6240,7 @@ begin
               EdicaoNFE_VFRETE.Value := IFThen(AFRT_NREG > Edicao.RecNo,AFRT_VREG,AFRT_VSLD); { Frete }
               EdicaoNFE_VSEG.Value   := IFThen(ASEG_NREG > Edicao.RecNo,ASEG_VREG,ASEG_VSLD); { Seguro }
 
-              IF POS(IECFOP.Text,'5924692') = 0 then { TRIANGULAR }
+              IF POS(PECFOP.Text,'5924692') = 0 then { TRIANGULAR }
               begin
                 { BASE DE CÁLCULO }
                 EdicaoNFE_VBC.Value      := (EdicaoNFE_VPROD.AsFloat - EdicaoNFE_VDESC.AsFloat) + (EdicaoNFE_VFRETE.AsFloat + EdicaoNFE_VSEG.AsFloat);
@@ -6269,7 +6318,7 @@ begin
                 EdicaoNFE_VBCST.Value  := 0;
                 EdicaoNFE_VBCST.Value  := 0;
 
-                if (Pos(IECFOP.Text,'51016101610859246924') = 0) and
+                if (Pos(PECFOP.Text,'51016101610859246924') = 0) and
                    (IEIndFinal.Text <> '1' ) and
                    (IEUF.Text       <> 'EX') and
                    (EDISUF.Text = EmptyStr ) then
@@ -6326,8 +6375,8 @@ begin
                                           IFThen(IEUF.Text   = RECParametros.LOG_UF,'5401','6401'),
                                           IFThen(IEUF.Text   = RECParametros.LOG_UF,'5403','6404')));
 
-                  if (EdicaoNFE_CFOP.AsString = '6404') and (IECFOP.Text = '6403') then
-                  EdicaoNFE_CFOP.Value    := IECFOP.Text;
+                  if (EdicaoNFE_CFOP.AsString = '6404') and (PECFOP.Text = '6403') then
+                  EdicaoNFE_CFOP.Value    := PECFOP.Text;
                   EdicaoNFE_pICMSST.Value := TAB_ALQALQ_ICMI.AsFloat + TAB_ALQALQ_FCP.AsFloat;
 
                   if EdicaoNFE_PMVAST.AsFloat  = 0 then
@@ -6397,7 +6446,7 @@ begin
                 end;
 
                 if RECParametros.NFE_REDUCAO_PISCOFINS then
-                   if ((IECFOP_TPNF.Text = '1') or (Pos(IECFOP.Text,'1201120222012202') > 0)) and (EdicaoNFE_VBCPIS.AsFloat > 0) and (EdicaoNFE_VBCCOFINS.AsFloat > 0) and (EdicaoNFE_VICMS.AsFloat > 0) then
+                   if ((IECFOP_TPNF.Text = '1') or (Pos(PECFOP.Text,'1201120222012202') > 0)) and (EdicaoNFE_VBCPIS.AsFloat > 0) and (EdicaoNFE_VBCCOFINS.AsFloat > 0) and (EdicaoNFE_VICMS.AsFloat > 0) then
                    begin
                      { REDUÇÃO PIS}
                      EdicaoNFE_VBCPIS.Value  := EdicaoNFE_VBCPIS.AsFloat - EdicaoNFE_VICMS.AsFloat;
@@ -6744,7 +6793,7 @@ end;
 
 procedure TFrmVEN_NFE.ACTNFeCFOPExecute(Sender: TObject);
 begin
-  if ((IECFOP.Text  = '6102') and ((IEIndFinal.Text = '1') or (IEindIEDest.Text = '9')) and (IEUF.Text <> RECParametros.LOG_UF) and (IEUF.Text <> 'EX')) then
+  if ((PECFOP.Text  = '6102') and ((IEIndFinal.Text = '1') or (IEindIEDest.Text = '9')) and (IEUF.Text <> RECParametros.LOG_UF) and (IEUF.Text <> 'EX')) then
   begin
     if REC_SHE_DEF.FInitialize then
     begin
@@ -6781,7 +6830,7 @@ begin
   EDR_XMUN.Text    := IFThen(RECNFTriangular.Selected,RECNFTriangular.LOC_NO,EmptyStr);
   PER_UF.Text      := IFThen(RECNFTriangular.Selected,RECNFTriangular.UF    ,EmptyStr);
 
-  if Pos(IECFOP.Text,'51236123') > 0 then
+  if Pos(PECFOP.Text,'51236123') > 0 then
   begin
     EDINFADNF.Lines.Clear;
     EDINFADNF.Lines.Add('VENDA DE MERCADORIA PARA ENTREGA NA INDUSTRIA, POR CONTA E ORDEM DO ADQUIRENTE, CONFORME ARTIGO 406 DO RICMS-SP');
@@ -6812,7 +6861,7 @@ begin
     EDINFADNF.Lines.Add('Mercadoria adquirida e impostos recolhidos atraves da nota fiscal ' + CER_CDNF.Text);
   end;
 
-  if Pos(IECFOP.Text,'5123612359246924') > 0 then
+  if Pos(PECFOP.Text,'5123612359246924') > 0 then
   PCEdicao.ActivePage := TSNFTriangular;
 end;
 
@@ -7055,7 +7104,7 @@ begin
       end;
     end;
 
-    if (IERegime.Text = '1') and (IECredICMS.Text = '1') and (Pos(IECFOP.Text,'51016101') > 0)  then
+    if (IERegime.Text = '1') and (IECredICMS.Text = '1') and (Pos(PECFOP.Text,'51016101') > 0)  then
     begin
       REC_SHE_DEF.FList.Add('Reducao da base de calculo do ICMS nos termos do anexo II artigo 52 do RICMS|');
       REC_SHE_DEF.FList.Add(Trim('Decreto no 62.560/2017 (DOE de 06.05.2017) = '+FormatFloat('#,0.00%',EdicaoNFE_PREDBC.AsFloat))+'|');
@@ -7069,7 +7118,7 @@ begin
       while not FIS_NFE_MAO.Eof do
       begin
         if FIS_NFE_MAO.RecNo = 1 then
-        REC_SHE_DEF.FList.Add('NF de Retorno ('+RightStr(IECFOP.Text,4)+') Ref. a(s) NF(s).: |');
+        REC_SHE_DEF.FList.Add('NF de Retorno ('+RightStr(PECFOP.Text,4)+') Ref. a(s) NF(s).: |');
         REC_SHE_DEF.FList.Add(FIS_NFE_MAONFE_CDNF.AsString+' de '+FIS_NFE_MAONFE_DTNF.AsString+' '+FormatFloat('Valor de R$ #,0.00',FIS_NFE_MAONFE_VNF.AsFloat)+'  ');
 
         FIS_NFE_MAO.Next;
@@ -7260,7 +7309,7 @@ begin
     tIde[00] := RECParametros.LOG_UF;  //<cUF> Código da UF do emitente do Documento Fiscal
 //  tIde[01] := IntToStr(Random(CECDNF.Value)+1); //<cNF> Código Numérico que compõe a chNFe de Acesso - Numero aleatorio: apenas 8 digitos: NF-e 2.00
     tIde[01] := oStrZero(DayOf(DEdhEmi.Date),8-Length(CECDNF.Text)) + CECDNF.Text;        //<cNF> Código Numérico que compõe a chNFe de Acesso - Numero aleatorio: apenas 8 digitos: NF-e 2.00
-    tIde[02] := oREPAcentos(IECFOP.Text); //<natOp>  Descrição da Natureza da Operação
+    tIde[02] := oREPAcentos(PECFOP.Text); //<natOp>  Descrição da Natureza da Operação
     tIde[03] := '';                       //<indPag> Indicador da forma de pagamento - Retirado na versão 4.00
     tIde[04] := '55';                     //<mod>    Código do Modelo do Documento Fiscal
     tIde[05] := RECParametros.NFE_SERIE;  //<serie>  Série do Documento Fiscal
@@ -7598,23 +7647,23 @@ begin
       tProd[x,058] := IFThen(not oEmpty(EdicaoNFE_PCOFINSST.AsFloat  ),oTextToValor(EdicaoNFE_PCOFINSST.AsFloat  ,2,True),''); //<pCOFINS> Alíquota da COFINS (em percentual)
       tProd[x,059] := IFThen(not oEmpty(EdicaoNFE_VCOFINSST.AsFloat  ),oTextToValor(EdicaoNFE_VCOFINSST.AsFloat  ,2,True),''); //<vCOFINS> Valor da COFINS
 
-      tProd[x,060] := IFThen(LeftStr(IECFOP.Text,1) <> '3','',EdicaoNFE_NDI.AsString+';');                                    //     <nDI>         Número do Documento de Importação (DI, DSI, DIRE, ...)
-      tProd[x,061] := IFThen(LeftStr(IECFOP.Text,1) <> '3','',FormatDateTime('yyyy-mm-dd',EdicaoNFE_DDI.AsDateTime)+';');     //     <dDI>         Data de RegEdit do documento - Formato: “AAAA-MM-DD”
-      tProd[x,062] := IFThen(LeftStr(IECFOP.Text,1) <> '3','',EdicaoNFE_XLOCDESEMB.AsString+';');                             //     <xLocDesemb>  Local de desembaraço
-      tProd[x,063] := IFThen(LeftStr(IECFOP.Text,1) <> '3','',EdicaoNFE_UFDESEMB.AsString+';');                               //     <UFDesemb>    Sigla da UF onde ocorreu o Desembaraço Aduaneiro
-      tProd[x,064] := IFThen(LeftStr(IECFOP.Text,1) <> '3','',FormatDateTime('yyyy-mm-dd',EdicaoNFE_DDESEMB.AsDateTime)+';'); //     <dDesemb>     Data do Desembaraço Aduaneiro
-      tProd[x,065] := IFThen(LeftStr(IECFOP.Text,1) <> '3','',EdicaoNFE_CEXPORTADOR.Value+';');                               //     <cExportador> Código do Exportador
-      tprod[x,133] := IFThen(LeftStr(IECFOP.Text,1) <> '3','',oTextToValor(EdicaoNFE_VAFRMM.AsFloat,2,True)+';');             //     <vAFRMM>       Valor da AFRMM - Adicional ao Frete para Renovação da Marinha Mercante
+      tProd[x,060] := IFThen(LeftStr(PECFOP.Text,1) <> '3','',EdicaoNFE_NDI.AsString+';');                                    //     <nDI>         Número do Documento de Importação (DI, DSI, DIRE, ...)
+      tProd[x,061] := IFThen(LeftStr(PECFOP.Text,1) <> '3','',FormatDateTime('yyyy-mm-dd',EdicaoNFE_DDI.AsDateTime)+';');     //     <dDI>         Data de RegEdit do documento - Formato: “AAAA-MM-DD”
+      tProd[x,062] := IFThen(LeftStr(PECFOP.Text,1) <> '3','',EdicaoNFE_XLOCDESEMB.AsString+';');                             //     <xLocDesemb>  Local de desembaraço
+      tProd[x,063] := IFThen(LeftStr(PECFOP.Text,1) <> '3','',EdicaoNFE_UFDESEMB.AsString+';');                               //     <UFDesemb>    Sigla da UF onde ocorreu o Desembaraço Aduaneiro
+      tProd[x,064] := IFThen(LeftStr(PECFOP.Text,1) <> '3','',FormatDateTime('yyyy-mm-dd',EdicaoNFE_DDESEMB.AsDateTime)+';'); //     <dDesemb>     Data do Desembaraço Aduaneiro
+      tProd[x,065] := IFThen(LeftStr(PECFOP.Text,1) <> '3','',EdicaoNFE_CEXPORTADOR.Value+';');                               //     <cExportador> Código do Exportador
+      tprod[x,133] := IFThen(LeftStr(PECFOP.Text,1) <> '3','',oTextToValor(EdicaoNFE_VAFRMM.AsFloat,2,True)+';');             //     <vAFRMM>       Valor da AFRMM - Adicional ao Frete para Renovação da Marinha Mercante
 
       { grupo de adição de importação(Ocorrência 1-N). Atenção: em cada grupo <DI> pode ocorrer 1-n vezes as tags <adi> . Separar usando | as informações de cada grupo <adi> como
         descrito no exemplo abaixo que gera 3 grupos <adi> em cada um dos 2 grupos <DI>
       }
-      tProd[x,066] := IFThen(LeftStr(IECFOP.Text,1) <> '3','',EdicaoNFE_NADICAO.AsString +';');                               //adi: <nAdicao>     Numero da Adição (1-1)
-      tProd[x,067] := IFThen(LeftStr(IECFOP.Text,1) <> '3','',EdicaoNFE_NSEQADIC.AsString+';');                               //adi: <nSeqAdic>    Numero sequencial do item dentro da Adição (1-1)
-      tProd[x,068] := IFThen(LeftStr(IECFOP.Text,1) <> '3','',EdicaoNFE_CFABRICANTE.AsString+';');                            //adi: <cFabricante> Código do fabricante estrangeiro (1-1)
-      tProd[x,069] := IFThen(LeftStr(IECFOP.Text,1) <> '3','',                                                                 //adi: <vDescDI>     Valor do desconto do item da DI – Adição (0-1)
+      tProd[x,066] := IFThen(LeftStr(PECFOP.Text,1) <> '3','',EdicaoNFE_NADICAO.AsString +';');                               //adi: <nAdicao>     Numero da Adição (1-1)
+      tProd[x,067] := IFThen(LeftStr(PECFOP.Text,1) <> '3','',EdicaoNFE_NSEQADIC.AsString+';');                               //adi: <nSeqAdic>    Numero sequencial do item dentro da Adição (1-1)
+      tProd[x,068] := IFThen(LeftStr(PECFOP.Text,1) <> '3','',EdicaoNFE_CFABRICANTE.AsString+';');                            //adi: <cFabricante> Código do fabricante estrangeiro (1-1)
+      tProd[x,069] := IFThen(LeftStr(PECFOP.Text,1) <> '3','',                                                                 //adi: <vDescDI>     Valor do desconto do item da DI – Adição (0-1)
                       IFThen(oEmpty(EdicaoNFE_VDESCDI.AsFloat),'',oTextToValor(EdicaoNFE_VDESCDI.AsFloat,2,True))+';');
-      tProd[x,155] := IFThen(LeftStr(IECFOP.Text,1) <> '3','',EdicaoNFE_NDRAW.AsString+';');                                  //adi: <nDraw>        Número do ato concessório de Drawback
+      tProd[x,155] := IFThen(LeftStr(PECFOP.Text,1) <> '3','',EdicaoNFE_NDRAW.AsString+';');                                  //adi: <nDraw>        Número do ato concessório de Drawback
 
       tProd[x,83] := ''; //<xPed>  Número do Pedido de Compra (0-1)
       tProd[x,84] := ''; //<nItemPed> Item do Pedido de Compra (0-1)
@@ -7705,8 +7754,8 @@ begin
 
       tProd[x,099] := IFThen(not oEmpty(EdicaoNFE_VTOTTRIB.AsFloat  ),oTextToValor(EdicaoNFE_VTOTTRIB.AsFloat  ),''); //<vtotTrib>    NT 2013 003 tag opcional ref. ao valor aproximado dos tributos do produto
       tProd[x,105] := EdicaoNFE_NFCI.AsString;                                                                         //<nFCI>  Número de controle da FCI - Ficha de Conteúdo de Importação
-      tProd[x,106] := IFThen(LeftStr(IECFOP.Text,1) <> '3','',EdicaoNFE_TPVIATRANSP.AsString +';');                           //     <tpViaTransp>  NT 2013.005 1=Marítima; 2=Fluvial; 3=Lacustre; 4=Aérea; 5=Postal 6=Ferroviária; 7=Rodoviária;  8=Conduto / Rede Transmissão; 9=Meios Próprios; 10=Entrada / Saída ficta
-      tProd[x,107] := IFThen(LeftStr(IECFOP.Text,1) <> '3','',EdicaoNFE_TPINTERMEDIO.AsString+';');                           //     <tpIntermedio> 1=Importação por conta própria; 2=Importação por conta e ordem; 3=Importação por encomenda;
+      tProd[x,106] := IFThen(LeftStr(PECFOP.Text,1) <> '3','',EdicaoNFE_TPVIATRANSP.AsString +';');                           //     <tpViaTransp>  NT 2013.005 1=Marítima; 2=Fluvial; 3=Lacustre; 4=Aérea; 5=Postal 6=Ferroviária; 7=Rodoviária;  8=Conduto / Rede Transmissão; 9=Meios Próprios; 10=Entrada / Saída ficta
+      tProd[x,107] := IFThen(LeftStr(PECFOP.Text,1) <> '3','',EdicaoNFE_TPINTERMEDIO.AsString+';');                           //     <tpIntermedio> 1=Importação por conta própria; 2=Importação por conta e ordem; 3=Importação por encomenda;
       tProd[x,108] := IFThen(not oEmpty(EdicaoNFE_VICMSDESON.AsFloat),oTextToValor(EdicaoNFE_VICMSDESON.AsFloat),''); //<vICMSDeson> (ocorrência 1-1) Nota:2013/005 Informar apenas nos motivos de desoneração documentados abaixo.
 
       //<detExport> - Tag destinada a Exportação
@@ -7727,8 +7776,8 @@ begin
       tprod[x,130] := ''; //<IPI> Informação do IPI devolvido
       tprod[x,131] := ''; //<vIPIDevol> Valor do IPI devolvido
 
-      tprod[x,134] := IFThen(LeftStr(IECFOP.Text,1) <> '3','',EdicaoNFE_CNPJTERCEIRO.AsString+';');                           //     <CNPJ>         CNPJ do adquirente ou do encomendante
-      tprod[x,135] := IFThen(LeftStr(IECFOP.Text,1) <> '3','',EdicaoNFE_UFTERCEIRO.AsString+';');                             //     <UFTerceiro>   Sigla da UF do adquirente ou do encomendante
+      tprod[x,134] := IFThen(LeftStr(PECFOP.Text,1) <> '3','',EdicaoNFE_CNPJTERCEIRO.AsString+';');                           //     <CNPJ>         CNPJ do adquirente ou do encomendante
+      tprod[x,135] := IFThen(LeftStr(PECFOP.Text,1) <> '3','',EdicaoNFE_UFTERCEIRO.AsString+';');                             //     <UFTerceiro>   Sigla da UF do adquirente ou do encomendante
 
       { Tag ICMS 51 }
       tProd[x,137] := oTextToValor(EdicaoNFE_VICMSOP.AsFloat ,2,True); //<vICMSOp> Valor do ICMS da Operação
@@ -8543,8 +8592,8 @@ begin
     FreeAndNil(FrmNFeConsultaSefaz);
   end;
 
-  if Pos(SBRodape.Panels[5].Text,'100150') > 0 then { Transmissão OK }
-  //ENVIA_EMAIL;
+  if (IEEnvMail.Enabled) and (IEEnvMail.Text = '1') then
+  ACTEmail.Execute;
 end;
 
 procedure TFrmVEN_NFE.ACTXMLImportaExecute(Sender: TObject);
@@ -8710,7 +8759,7 @@ begin
           EdicaoNFE_CFOP.Value      := Trim(ANodeTmp.ChildNodes['CFOP'].Text);
           EdicaoNFE_INDTOT.AsString := Trim(ANodeTmp.ChildNodes['indTot'].Text);
 
-          if Pos(IECFOP.Text,Trim(ANodeTmp.ChildNodes['cProd'].Text)) > 0 then
+          if Pos(PECFOP.Text,Trim(ANodeTmp.ChildNodes['cProd'].Text)) > 0 then
           EdicaoNFE_CPROD.Value   := CECDNF.Text + '_' + oStrZero(EdicaoNFE_NITEMPED.AsInteger,3) else
           EdicaoNFE_CPROD.Value   := Trim(ANodeTmp.ChildNodes['cProd'].Text) + '-' + IntToStr(EdicaoNFE_NITEMPED.AsInteger);
           EdicaoNFE_CEAN.Value    := Trim(ANodeTmp.ChildNodes['cEAN'].Text);
@@ -9516,7 +9565,7 @@ begin
       AINFADTRIB.Add(StringReplace(Trim(ANodePai.ChildNodes['infCpl'].Text),'|','',[rfReplaceAll]));
       AINFADTRIB.EndUpdate;
 
-      if (AINFADTRIB.Text <> EmptyStr) and (LeftStr(IECFOP.Text,1) = '3') then
+      if (AINFADTRIB.Text <> EmptyStr) and (LeftStr(PECFOP.Text,1) = '3') then
       begin
         EDInfAdNF.Text := AINFADTRIB.Text;
         EDInfAdNF.Tag  := 1;
@@ -9545,7 +9594,7 @@ begin
         SQL.Add('WHERE FOR_RAZA LIKE ''%'+copy(trim(ANodeSec.ChildNodes['xNome'].Text),1,10)+'%''');
       end;
 
-      if LeftStr(IECFOP.Text,1) = '3' then
+      if LeftStr(PECFOP.Text,1) = '3' then
       begin
         Close;
         SQL.Clear;
@@ -9805,6 +9854,36 @@ procedure TFrmVEN_NFE.EDInfAdNFChange(Sender: TObject);
   REC_SHE_DEF.Editing := True;
 end;
 
+
+procedure TFrmVEN_NFE.LAIDCDClick(Sender: TObject);
+begin
+   if LAIDCD.Caption = 'Cliente' then
+  begin
+    LAIDCD.Caption := 'Fornecedor';
+    LAIDCD.Tag     := 1;
+  end else
+  if LAIDCD.Caption = 'Fornecedor' then
+  begin
+    LAIDCD.Caption := 'Representante';
+    LAIDCD.Tag     := 2;
+  end else
+  if LAIDCD.Caption = 'Representante' then
+  begin
+    LAIDCD.Caption := 'Transportadora';
+    LAIDCD.Tag     := 3;
+  end else
+  if LAIDCD.Caption = 'Transportadora' then
+  begin
+    LAIDCD.Caption := 'Cliente';
+    LAIDCD.Tag     := 0;
+  end;
+
+  CEIDCD.Hint := 'Código do ' + LAIDCD.Caption;
+  EDDECD.Hint := 'Nome Fantasia do ' + LAIDCD.Caption;
+
+  LAIDCD.Refresh;
+  EDDECD.SetFocus;
+end;
 
 end.
 

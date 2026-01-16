@@ -112,7 +112,6 @@ type
     EdicaoROM_CDDF: TSmallintField;
     EdicaoROM_DEDF: TIBStringField;
     EdicaoROM_PDSC: TIBBCDField;
-    FKPedidosUPESO: TIBBCDField;
     FKPedidosUPSCN: TIBBCDField;
     FKPedidosUMETRO: TIBBCDField;
     FKPedidosUREND: TIBBCDField;
@@ -218,6 +217,7 @@ type
     ACTXMLImporta: TAction;
     ACTEDI_CAD_PRO: TAction;
     ACTEDI_CAD_PRO_EST: TAction;
+    FKPedidosUPESO: TIBBCDField;
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
@@ -373,7 +373,7 @@ begin
     SQL.Add('         PK.IDCP  ,PK.CP_IDEP,');
     SQL.Add('         PK.ARTIGO,PK.SKU    ,PK.CEAN,');
     SQL.Add('         PK.DECP  ,PK.DGCP   ,');
-    SQL.Add('         PK.UCOM  ,PK.UPESO,PK.UPSCN ,PK.UMETRO,PK.UREND,');
+    SQL.Add('         PK.UCOM  ,PK.UPSLQ AS UPESO,PK.UPSCN,PK.UMETRO,PK.UREND,');
     SQL.Add('         IIF(PK.QTSP > 0,PK.QTSP,PK.QTDE) AS QTDE,');
     SQL.Add('         IIF(PK.QTSP > 0,PK.RLSP,PK.QTRL) AS QTRL,');
     SQL.Add('         PK.VPRC_PAD_INI,PK.VPRC_PAD_FIM,');
@@ -552,7 +552,7 @@ begin
   if  LeftStr(EdicaoROM_DUNI.AsString,1) = 'K' then EdicaoROM_PSLQ.Value := EdicaoROM_QTDE.AsCurrency else
       if EdicaoROM_REND.AsFloat > 0 then
          EdicaoROM_PSLQ.Value := EdicaoROM_QTDE.AsCurrency / EdicaoROM_REND.AsCurrency else
-         EdicaoROM_PSLQ.Value := EdicaoROM_PESO.AsCurrency;
+         EdicaoROM_PSLQ.Value := EdicaoROM_PESO.AsCurrency * EdicaoROM_QTDE.AsCurrency;
   { Peso Bruto }
   EdicaoROM_PSBR.Value := EdicaoROM_PSLQ.AsCurrency + (EdicaoROM_QTRL.AsInteger * EdicaoROM_PSCN.AsCurrency);
 end;

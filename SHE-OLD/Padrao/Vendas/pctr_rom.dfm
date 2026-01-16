@@ -115,6 +115,9 @@ inherited frmctr_rom: Tfrmctr_rom
             item
               Caption = 'Romaneio'
               Width = 365
+            end
+            item
+              Caption = 'Frete'
             end>
           DefaultLayout = False
           HeaderPanelRowCount = 1
@@ -291,6 +294,22 @@ inherited frmctr_rom: Tfrmctr_rom
             SummaryFooterType = cstSum
             SummaryFooterField = 'ROM_TOTA'
             SummaryFooterFormat = 'R$ #,0.00'
+            DisableFilter = True
+          end
+          object DBGItemROM_PSBR: TdxDBGridMaskColumn
+            HeaderAlignment = taRightJustify
+            Width = 80
+            BandIndex = 2
+            RowIndex = 0
+            FieldName = 'ROM_PSBR'
+            DisableFilter = True
+          end
+          object DBGItemROM_PSLQ: TdxDBGridMaskColumn
+            HeaderAlignment = taRightJustify
+            Width = 80
+            BandIndex = 2
+            RowIndex = 0
+            FieldName = 'ROM_PSLQ'
             DisableFilter = True
           end
         end
@@ -5062,14 +5081,18 @@ inherited frmctr_rom: Tfrmctr_rom
       Size = 8
     end
     object rom_iteROM_PSBR: TIBBCDField
+      DisplayLabel = 'Peso Bruto'
       FieldName = 'ROM_PSBR'
       Origin = '"ROM_ITE"."ROM_PSBR"'
+      DisplayFormat = '0.00'
       Precision = 18
       Size = 3
     end
     object rom_iteROM_PSLQ: TIBBCDField
+      DisplayLabel = 'Peso L'#237'quido'
       FieldName = 'ROM_PSLQ'
       Origin = '"ROM_ITE"."ROM_PSLQ"'
+      DisplayFormat = '0.00'
       Precision = 18
       Size = 3
     end

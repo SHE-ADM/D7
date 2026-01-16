@@ -3061,6 +3061,7 @@ object frmctr_ped_bai: Tfrmctr_ped_bai
   end
   object fin_rec: TIBDataSet
     Tag = 1
+    Database = FBird.DBEDI
     Transaction = TSheild
     AfterOpen = fin_recAfterOpen
     AfterPost = fin_recAfterPost
@@ -3569,6 +3570,7 @@ object frmctr_ped_bai: Tfrmctr_ped_bai
   end
   object TSheild: TIBTransaction
     AllowAutoStart = False
+    DefaultDatabase = FBird.DBEDI
     DefaultAction = TARollbackRetaining
     Params.Strings = (
       'read_committed'
@@ -3580,6 +3582,7 @@ object frmctr_ped_bai: Tfrmctr_ped_bai
   end
   object fin_rec_bai: TIBDataSet
     Tag = 1
+    Database = FBird.DBEDI
     Transaction = TSheild
     AfterCancel = fin_rec_baiAfterCancel
     AfterDelete = fin_rec_baiAfterDelete
@@ -4619,11 +4622,13 @@ object frmctr_ped_bai: Tfrmctr_ped_bai
       000000000000}
   end
   object consulta_s: TIBQuery
+    Database = FBird.DBEDI
     Transaction = TSheild
     Left = 1088
     Top = 40
   end
   object aux_S: TIBQuery
+    Database = FBird.DBEDI
     Transaction = TSheild
     Left = 1088
     Top = 72
@@ -13171,6 +13176,7 @@ object frmctr_ped_bai: Tfrmctr_ped_bai
     Top = 8
   end
   object SQLSEdicao: TIBSQL
+    Database = FBird.DBEDI
     Transaction = TSheild
     Left = 1120
     Top = 8

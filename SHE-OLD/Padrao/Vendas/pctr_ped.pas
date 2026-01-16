@@ -290,7 +290,6 @@ type
     DBGConsultaPPSP: TdxDBGridMaskColumn;
     DBGConsultaHTPK: TdxDBGridTimeColumn;
     DBGConsultaDTNF: TdxDBGridDateColumn;
-    DBGConsultaUFCR: TdxDBGridMaskColumn;
     CadastroID: TIntegerField;
     CadastroIDEP: TSmallintField;
     CadastroDEEP: TIBStringField;
@@ -514,6 +513,7 @@ type
     DBILA_BMP6: TDBImage;
     DBILA_BMP7: TDBImage;
     DBILA_BMP8: TDBImage;
+    DBGConsultaIDOS: TdxDBGridCheckColumn;
     procedure FormCreate(Sender: TObject);
     procedure dbgConsultaCustomDrawCell(Sender: TObject; ACanvas: TCanvas;
       ARect: TRect; ANode: TdxTreeListNode; AColumn: TdxTreeListColumn;
@@ -1305,7 +1305,6 @@ begin
   { Representante }
   if (RECParametros.EP_NO <> CadastroDECR.AsString) and (CadastroDECR.AsString <> CadastroDECV.AsString) then
   DBGConsultaDECR.Visible := True;
-  DBGConsultaUFCR.Visible := DBGConsultaDECR.Visible;
 
   { Vendedores }
   if (DBGConsultaDECV.Visible) or (DBGConsultaDECR.Visible) then
@@ -1887,7 +1886,15 @@ procedure Tfrmctr_ped.ACTPesquisaExecute(Sender: TObject);
 begin
   inherited;
 
-  if not REC_SHE_DEF.FInitialize then
+  if REC_SHE_DEF.FInitialize then
+  begin
+    Cadastro.SQL.Add('SELECT DISTINCT PK.* FROM CTE_PSQ AS PK');
+
+    if RECUsuarios.Grupo = 'VEN' then
+    Cadastro.SQL.Add('WHERE    PK.IDCV = ''' + RECUsuarios.ID + '''');
+    Cadastro.SQL.Add('ORDER BY PK.DTCA DESC');
+  end else
+
   try
     FrmPesquisa := TFrmPesquisa.Create(Self);
     FrmPesquisa.Tag := 7;

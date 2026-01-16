@@ -318,6 +318,7 @@ type
     DBINFADCAD: TdxDBMemo;
     CadastroCSTAT: TSmallintField;
     CadastroDEST: TIBStringField;
+    CadastroFINALIDADE_ABREV: TIBStringField;
     procedure FormCreate(Sender: TObject);
     procedure dbgConsultaCustomDrawCell(Sender: TObject; ACanvas: TCanvas;
       ARect: TRect; ANode: TdxTreeListNode; AColumn: TdxTreeListColumn;
@@ -474,7 +475,7 @@ begin
   if not fileexists(NOME_ARQ) then
   raise exception.Create('Arquivo '+NOME_ARQ+' não encontrado !'+#13+'Favor consultar a nota fiscal.');
 
-  frmemail := TFrmemail.Create(self);
+  frmemail := TFrmemail.Create(Self);
   try
     with SQLConsulta do
     begin
@@ -499,8 +500,12 @@ begin
     end;
 
     frmemail.cbemail.Text  := SQLConsulta.Current.Vars[0].AsString;
-    frmemail.edtitulo.Text := RECParametros.EP_NO+' - NF.: '+CadastroNFE_CDNF.AsString;
-    frmemail.Memo1.Lines.Add('Segue em anexo...') ;
+    frmemail.edtitulo.Text := RECParametros.EP_NO+' - NFe: ' + CadastroNFE_CDNF.AsString;
+
+    frmemail.Memo1.Lines.Add('Segue em anexo ...') ;
+    frmemail.Memo1.Lines.Add('');
+    frmemail.Memo1.Lines.Add('Nota Fiscal Eletrônica ' + IFThen(Pos('Triangular',CadastroFINALIDADE_ABREV.AsString) > 0,'','de ') + CadastroFINALIDADE_ABREV.AsString);
+    frmemail.Memo1.Lines.Add('Número ' + CadastroNFE_CDNF.AsString + ' emitida na data ' + FormatDateTime('dd/mm/yyyy',CadastroNFE_DEMI.AsDateTime));
 
     frmemail.cbarqs.Items.Add(NOME_ARQ);
     frmemail.cbarqs.Items.Add(NOME_FIL);
@@ -1020,7 +1025,7 @@ begin
       SQL.Add('SELECT   PK.ID,PK.IDEP,PK.NFE_TPNF,PK.CDST,PK.REST,PK.DEST,');
       SQL.Add('         PK.NFE_CDRO,PK.NFE_DERO,IIF(NOT FEMPTY(PK.NFE_DERO),PK.NFE_DERO,''AVULSO'')   AS DERO,PK.NFE_CDBX,');
       SQL.Add('         PK.NFE_FINNFE,TB_FIN.DESCRICAO AS FINNFE,IIF(PK.NFE_FINNFE = 6,''NFe Contra'',IIF(PK.NFE_FINNFE = 5,''CFe'',''NFe'')) AS EMISSOR,');
-      SQL.Add('         PK.NFE_CDNF,PK.NFE_DEMI,PK.NFE_DSAI,PK.NFE_HRSE,PK.DTSA,PK.NFE_ESTO,PK.NFE_CNAT,TB_NAT.NAT_TIPO AS TIPO_NF,TB_NAT.NAT_OPER AS TIPO_OP,');
+      SQL.Add('         PK.NFE_CDNF,PK.NFE_DEMI,PK.NFE_DSAI,PK.NFE_HRSE,PK.DTSA,PK.NFE_ESTO,PK.NFE_CNAT,TB_NAT.NAT_TIPO AS TIPO_NF,TB_NAT.NAT_OPER AS TIPO_OP,TB_NAT.FINALIDADE_ABREV,');
       SQL.Add('         PK.NFE_CLFO,IIF(PK.NFE_CLFO = 0,''Cliente'',IIF(PK.NFE_CLFO = 1,''Fornecedor'',''Representante'')) AS CLFO,');
       SQL.Add('         PK.NFE_CFAV,PK.NFE_DFAV,PK.NFE_CVEN,PK.NFE_DVEN,PK.NFE_CREP,PK.NFE_DREP,PK.NFE_CTRA,PK.NFE_DTRA,PK.CFRT,');
       SQL.Add('         FK.NFE_MODFRETE AS MODFRETE,TB_FRT.DESCRICAO AS MODFRETE_DESC,FK.NFE_QVOL||'' ''||COALESCE(FK.NFE_ESP,'''') AS VOLUME,FK.NFE_PSBR AS PESOB,FK.NFE_PSLQ AS PESOL,');
@@ -1038,10 +1043,9 @@ begin
       SQL.Add('JOIN ' + oREPZero('NFE_TRA','_',RECParametros.EP_ID,3) + ' AS FK ON (FK.IDPK = PK.IDPK)');
       SQL.Add('         LEFT JOIN TAB_TPO AS TB_FRT ON (TB_FRT.FIS_MFRT = FK.MFRT)');
 
-      SQL.Add('         WHERE CAST(PK.DTCA AS DATE) BETWEEN (DATEADD(1 - EXTRACT(DAY FROM CURRENT_DATE) DAY TO CURRENT_DATE )) AND (DATEADD(-EXTRACT(DAY FROM DATEADD(1 MONTH TO CURRENT_DATE )) DAY TO DATEADD(1 MONTH TO CURRENT_DATE)))');
-      //RICARDOSQL.Add('         WHERE CAST(PK.DTCA AS DATE) BETWEEN (DATEADD(1 - EXTRACT(DAY FROM CURRENT_DATE) DAY TO CURRENT_DATE )) AND (DATEADD(-EXTRACT(DAY FROM DATEADD(1 MONTH TO CURRENT_DATE )) DAY TO DATEADD(1 MONTH TO CURRENT_DATE)))');
+      //SQL.Add('         WHERE CAST(PK.DTCA AS DATE) BETWEEN (DATEADD(1 - EXTRACT(DAY FROM CURRENT_DATE) DAY TO CURRENT_DATE )) AND (DATEADD(-EXTRACT(DAY FROM DATEADD(1 MONTH TO CURRENT_DATE )) DAY TO DATEADD(1 MONTH TO CURRENT_DATE)))');
 
-      { PESQUISA DATA }
+      { PESQUISA DATA }
       if (FrmPesquisa.dxDT1.Date > 0) and (FrmPesquisa.dxDT2.Date > 0) and (FrmPesquisa.dxDT1.Date <= FrmPesquisa.dxDT2.Date) then
       begin
         SQL.Add('WHERE ' + FrmPesquisa.cData + ' BETWEEN ''' + FormatDateTime('mm/dd/yy',FrmPesquisa.dxDT1.Date) + ''' AND ''' + FormatDateTime('mm/dd/yy',FrmPesquisa.dxDT2.Date) + '''');

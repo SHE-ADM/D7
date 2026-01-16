@@ -427,8 +427,14 @@ inherited FrmPesquisaCodigoMunicipal: TFrmPesquisaCodigoMunicipal
         'SELECT   ID,UF,LOC_NO AS CIDADE,IIF(CMUN IS NULL,'#39'AUSENTE'#39',CMUN)' +
         ' AS CMUN'
       'FROM     TAB_CEP_LOC'
-      'WHERE    ID = 0'
+      'WHERE   UF = :UF'
       'ORDER BY UF,CIDADE')
+    ParamData = <
+      item
+        DataType = ftString
+        Name = 'UF'
+        ParamType = ptInput
+      end>
     object CadastroID: TIntegerField
       FieldName = 'ID'
       Origin = '"TAB_CEP_CID"."ID"'

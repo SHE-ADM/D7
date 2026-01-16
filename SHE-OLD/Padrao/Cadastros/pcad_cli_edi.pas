@@ -1045,7 +1045,7 @@ begin
   RECEndereco.UF := TdxEdit(FindComponent(Format('ED%sUF',[Copy(TdxButtonEdit(Sender).Name,3,4)]))).Text;
 
   if Length(RECEndereco.UF) < 2 then
-     oException(TdxEdit(FindComponent(Format('ED%sUF',[Copy(TdxButtonEdit(Sender).Name,3,4)]))),'UF não informada ou incorreta !');
+  oException(TdxEdit(FindComponent(Format('ED%sUF',[Copy(TdxButtonEdit(Sender).Name,3,4)]))),'UF não informada ou incorreta !');
 
   try
     RECEndereco.CMUN := TdxButtonEdit(Sender).Text;

@@ -2217,10 +2217,10 @@ procedure uPSQCMUN(var RECEndereco: TRECPedidos); STDCall;
 begin
   with FrmPesquisaCodigoMunicipal do
   try
-    // RICARDO TFrmPesquisaCodigoMunicipal._ExecForm(Application,FrmPesquisaCodigoMunicipal,fsNormal,RECEndereco.CMUN,-1,RECEndereco.UF);
+    TFrmPesquisaCodigoMunicipal._ExecForm(Application,FrmPesquisaCodigoMunicipal,False,fsNormal,0,0,0,0,RECEndereco.UF); //,False,fsNormal,0,0,RECEndereco.CMUN,0,'');
   finally
     if REC_SHE_DEF.Selected then
-       RECEndereco.CMUN := REC_SHE_DEF.FB_SQL_TAB;
+    RECEndereco.CMUN := REC_SHE_DEF.FB_SQL_TAB;
   end;
 end;
 

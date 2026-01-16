@@ -283,7 +283,7 @@ begin
 
   { FORM MANAGER }
   REC_SHE_DEF.FPosition := Self.Position; { Página }
-  SetCursorPos(500,Self.Top); { Cursor }
+//  SetCursorPos(500,Self.Top); { Cursor }
 
   { ACCESS MANAGER }
   REC_SHE_DEF.FForceClose := ForceClose;

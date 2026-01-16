@@ -146,6 +146,7 @@ type
     procedure DBGConsultaDblClick(Sender: TObject);
     procedure DBGConsultaKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
+    procedure ACTRelatoriosExecute(Sender: TObject);
   private
     FCurrentEvent,
     FCurrentAlert: String;
@@ -890,6 +891,11 @@ begin
 end;
 
 procedure TFrmPadr2.ACTCheckErrorsExecute(Sender: TObject);
+begin
+  { nothing }
+end;
+
+procedure TFrmPadr2.ACTRelatoriosExecute(Sender: TObject);
 begin
   { nothing }
 end;

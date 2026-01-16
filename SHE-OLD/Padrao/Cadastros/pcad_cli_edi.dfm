@@ -26,7 +26,7 @@ inherited frmcad_cli_edi: Tfrmcad_cli_edi
         Top = 1
         Width = 613
         Height = 253
-        ActivePage = tscon
+        ActivePage = tsend
         Align = alClient
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText

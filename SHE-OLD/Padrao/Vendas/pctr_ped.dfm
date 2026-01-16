@@ -168,9 +168,9 @@ inherited frmctr_ped: Tfrmctr_ped
     object GBFKPedidos: TGroupBox
       Left = 0
       Top = 0
-      Width = 1584
+      Width = 1604
       Height = 380
-      Align = alLeft
+      Align = alClient
       Caption = '  Itens  '
       Color = clHighlightText
       Font.Charset = ANSI_CHARSET
@@ -184,7 +184,7 @@ inherited frmctr_ped: Tfrmctr_ped
       object PCFKPedidos: TdxPageControl
         Left = 2
         Top = 19
-        Width = 1580
+        Width = 1600
         Height = 359
         ActivePage = TSFKPedidos
         Align = alClient
@@ -209,7 +209,7 @@ inherited frmctr_ped: Tfrmctr_ped
           object DBGITPED: TdxDBGrid
             Left = 0
             Top = 0
-            Width = 1580
+            Width = 1600
             Height = 332
             Bands = <
               item
@@ -726,7 +726,7 @@ inherited frmctr_ped: Tfrmctr_ped
           object PNLTAB_PRC: TPanel
             Left = 0
             Top = 332
-            Width = 1580
+            Width = 1600
             Height = 0
             Align = alBottom
             Alignment = taRightJustify
@@ -1231,9 +1231,9 @@ inherited frmctr_ped: Tfrmctr_ped
       end
     end
     object PNLIMG_PAD: TPanel
-      Left = 1584
+      Left = 1604
       Top = 0
-      Width = 320
+      Width = 300
       Height = 380
       Align = alRight
       Color = clHighlightText
@@ -1247,7 +1247,7 @@ inherited frmctr_ped: Tfrmctr_ped
       object GBIMG_PAD: TGroupBox
         Left = 1
         Top = 1
-        Width = 318
+        Width = 298
         Height = 316
         Align = alClient
         Caption = '  Imagem do Produto  '
@@ -1261,7 +1261,7 @@ inherited frmctr_ped: Tfrmctr_ped
         object IMG_PAD: TImage
           Left = 2
           Top = 19
-          Width = 314
+          Width = 294
           Height = 295
           Cursor = crHandPoint
           Hint = 'Amostragem do Produto'#13#10'Click para visualizar tela inteira'
@@ -1275,7 +1275,7 @@ inherited frmctr_ped: Tfrmctr_ped
       object GBIMG_ILA: TGroupBox
         Left = 1
         Top = 317
-        Width = 318
+        Width = 298
         Height = 62
         Align = alBottom
         Caption = '  Instru'#231#245'es de Lavagem'
@@ -1287,9 +1287,9 @@ inherited frmctr_ped: Tfrmctr_ped
         ParentFont = False
         TabOrder = 1
         object BVILA_BMP1: TBevel
-          Left = 10
+          Left = 4
           Top = 20
-          Width = 35
+          Width = 34
           Height = 35
           Cursor = crHandPoint
           ParentShowHint = False
@@ -1297,9 +1297,9 @@ inherited frmctr_ped: Tfrmctr_ped
           Style = bsRaised
         end
         object BVILA_BMP2: TBevel
-          Left = 47
+          Left = 40
           Top = 20
-          Width = 35
+          Width = 34
           Height = 35
           Cursor = crHandPoint
           ParentShowHint = False
@@ -1307,9 +1307,9 @@ inherited frmctr_ped: Tfrmctr_ped
           Style = bsRaised
         end
         object BVILA_BMP3: TBevel
-          Left = 84
+          Left = 76
           Top = 20
-          Width = 35
+          Width = 34
           Height = 35
           Cursor = crHandPoint
           ParentShowHint = False
@@ -1317,9 +1317,9 @@ inherited frmctr_ped: Tfrmctr_ped
           Style = bsRaised
         end
         object BVILA_BMP4: TBevel
-          Left = 121
+          Left = 112
           Top = 20
-          Width = 35
+          Width = 34
           Height = 35
           Cursor = crHandPoint
           ParentShowHint = False
@@ -1327,9 +1327,9 @@ inherited frmctr_ped: Tfrmctr_ped
           Style = bsRaised
         end
         object BVILA_BMP5: TBevel
-          Left = 158
+          Left = 148
           Top = 20
-          Width = 35
+          Width = 34
           Height = 35
           Cursor = crHandPoint
           ParentShowHint = False
@@ -1337,9 +1337,9 @@ inherited frmctr_ped: Tfrmctr_ped
           Style = bsRaised
         end
         object BVILA_BMP6: TBevel
-          Left = 195
+          Left = 184
           Top = 20
-          Width = 35
+          Width = 34
           Height = 35
           Cursor = crHandPoint
           ParentShowHint = False
@@ -1347,9 +1347,9 @@ inherited frmctr_ped: Tfrmctr_ped
           Style = bsRaised
         end
         object BVILA_BMP7: TBevel
-          Left = 232
+          Left = 220
           Top = 20
-          Width = 35
+          Width = 34
           Height = 35
           Cursor = crHandPoint
           ParentShowHint = False
@@ -1357,9 +1357,9 @@ inherited frmctr_ped: Tfrmctr_ped
           Style = bsRaised
         end
         object BVILA_BMP8: TBevel
-          Left = 269
+          Left = 256
           Top = 20
-          Width = 35
+          Width = 34
           Height = 35
           Cursor = crHandPoint
           ParentShowHint = False
@@ -1367,9 +1367,9 @@ inherited frmctr_ped: Tfrmctr_ped
           Style = bsRaised
         end
         object DBILA_BMP1: TDBImage
-          Left = 13
+          Left = 7
           Top = 23
-          Width = 30
+          Width = 29
           Height = 30
           Cursor = crHandPoint
           DataField = 'ILA_BMP1'
@@ -1386,9 +1386,9 @@ inherited frmctr_ped: Tfrmctr_ped
           TabOrder = 0
         end
         object DBILA_BMP2: TDBImage
-          Left = 50
+          Left = 43
           Top = 23
-          Width = 30
+          Width = 29
           Height = 30
           Cursor = crHandPoint
           DataField = 'ILA_BMP2'
@@ -1405,9 +1405,9 @@ inherited frmctr_ped: Tfrmctr_ped
           TabOrder = 1
         end
         object DBILA_BMP3: TDBImage
-          Left = 87
+          Left = 79
           Top = 23
-          Width = 30
+          Width = 29
           Height = 30
           Cursor = crHandPoint
           DataField = 'ILA_BMP3'
@@ -1424,9 +1424,9 @@ inherited frmctr_ped: Tfrmctr_ped
           TabOrder = 2
         end
         object DBILA_BMP4: TDBImage
-          Left = 124
+          Left = 115
           Top = 23
-          Width = 30
+          Width = 29
           Height = 30
           Cursor = crHandPoint
           DataField = 'ILA_BMP4'
@@ -1443,9 +1443,9 @@ inherited frmctr_ped: Tfrmctr_ped
           TabOrder = 3
         end
         object DBILA_BMP5: TDBImage
-          Left = 161
+          Left = 151
           Top = 23
-          Width = 30
+          Width = 29
           Height = 30
           Cursor = crHandPoint
           DataField = 'ILA_BMP5'
@@ -1462,9 +1462,9 @@ inherited frmctr_ped: Tfrmctr_ped
           TabOrder = 4
         end
         object DBILA_BMP6: TDBImage
-          Left = 198
+          Left = 187
           Top = 23
-          Width = 30
+          Width = 29
           Height = 30
           Cursor = crHandPoint
           DataField = 'ILA_BMP6'
@@ -1481,9 +1481,9 @@ inherited frmctr_ped: Tfrmctr_ped
           TabOrder = 5
         end
         object DBILA_BMP7: TDBImage
-          Left = 235
+          Left = 223
           Top = 23
-          Width = 30
+          Width = 29
           Height = 30
           Cursor = crHandPoint
           DataField = 'ILA_BMP7'
@@ -1500,9 +1500,9 @@ inherited frmctr_ped: Tfrmctr_ped
           TabOrder = 6
         end
         object DBILA_BMP8: TDBImage
-          Left = 272
+          Left = 259
           Top = 23
-          Width = 30
+          Width = 29
           Height = 30
           Cursor = crHandPoint
           DataField = 'ILA_BMP8'
@@ -1913,12 +1913,6 @@ inherited frmctr_ped: Tfrmctr_ped
               RowIndex = 0
               FieldName = 'DECR'
             end
-            object DBGConsultaUFCR: TdxDBGridMaskColumn
-              Width = 40
-              BandIndex = 2
-              RowIndex = 0
-              FieldName = 'UFCR'
-            end
             object DBGConsultaTCDE: TdxDBGridColumn
               Font.Charset = ANSI_CHARSET
               Font.Color = clWindowText
@@ -1991,6 +1985,16 @@ inherited frmctr_ped: Tfrmctr_ped
               SummaryFooterType = cstAvg
               SummaryFooterField = 'PDSC'
               SummaryFooterFormat = '0%'
+            end
+            object DBGConsultaIDOS: TdxDBGridCheckColumn
+              Alignment = taCenter
+              HeaderAlignment = taCenter
+              Width = 39
+              BandIndex = 5
+              RowIndex = 0
+              FieldName = 'IDOS'
+              ValueChecked = '1'
+              ValueUnchecked = '0'
             end
             object DBGConsultaDTSP: TdxDBGridColumn
               BandIndex = 5
@@ -8350,9 +8354,7 @@ inherited frmctr_ped: Tfrmctr_ped
       'CTE_PSQ'
       'AS ('
       'SELECT PK.* FROM PK'
-      ')'
-      'SELECT   DISTINCT PK.* FROM CTE_PSQ AS PK'
-      'ORDER BY PK.DTCA DESC')
+      ')')
     Left = 120
     Top = 289
     object CadastroID: TIntegerField
