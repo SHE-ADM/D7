@@ -2485,7 +2485,7 @@ object FrmSobre: TFrmSobre
       Top = 20
       Width = 88
       Height = 15
-      Caption = '16/01/2025 07:46'
+      Caption = '17/01/2025 16:20'
       Color = clInfoBk
       Font.Charset = ANSI_CHARSET
       Font.Color = clWindowText
@@ -2593,10 +2593,7 @@ object FrmSobre: TFrmSobre
       Font.Name = 'Segoe UI Semibold'
       Font.Style = [fsBold, fsItalic]
       Lines.Strings = (
-        
-          'Situa'#231#227'o financeira na gera'#231#227'o de pedidos de vendas via programa' +
-          #231#227'o'
-        'Abertura da programa'#231#227'o conforme c'#243'digo do vendedor')
+        'Acessibilidades para o departamento de importa'#231#227'o')
       ParentFont = False
       TabOrder = 1
     end

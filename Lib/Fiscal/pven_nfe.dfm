@@ -1,7 +1,7 @@
 object FrmVEN_NFE: TFrmVEN_NFE
   Tag = 1
-  Left = 429
-  Top = 113
+  Left = -137
+  Top = 107
   HelpType = htKeyword
   HelpKeyword = '3'
   ActiveControl = EDDECD
@@ -577,7 +577,6 @@ object FrmVEN_NFE: TFrmVEN_NFE
             Top = 16
             Width = 127
             Color = 16644596
-            Enabled = False
             Font.Charset = DEFAULT_CHARSET
             Font.Color = clWindowText
             Font.Height = -12
