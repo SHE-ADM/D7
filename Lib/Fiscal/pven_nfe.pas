@@ -1678,8 +1678,9 @@ begin
     end;
 
     PCEdicao.ActivePage := TSProduto;
+    oState(Edicao,SBMenuEdicao);
     Edicao.Last;
-  end;  
+  end;
 end;
 
 procedure TFrmVEN_NFE._WM_RESIZE(var Message: TMessage);
@@ -2213,11 +2214,6 @@ begin
     end;
     IExPais.Text := '1058';
   end;
-
-  { EDIÇÕES }
-  { PEGA NÚMERO DISPONÍVEL }
-  ACTPSQ_NFE_NUM.HelpKeyword := EmptyStr;
-  ACTPSQ_NFE_NUM.Execute;
 end;
 
 procedure TFrmVEN_NFE.ACTPesquisaExecute(Sender: TObject);
@@ -2311,6 +2307,28 @@ begin
     LAPDSC.Tag      := IFThen(SQLPKConsulta.Current.ByName('PK_PDSC').AsFloat > 0,1,0);
 
     { DESTINATÁRIO }
+    if REC_SHE_DEF.FB_SQL_TAB = '1' then
+    begin
+      LAIDCD.Caption := 'Fornecedor';
+      LAIDCD.Tag     := 1;
+    end else
+
+    if REC_SHE_DEF.FB_SQL_TAB = '2' then
+    begin
+      LAIDCD.Caption := 'Representante';
+      LAIDCD.Tag     := 2;
+    end else
+
+    if REC_SHE_DEF.FB_SQL_TAB = '3' then
+    begin
+      LAIDCD.Caption := 'Transportadora';
+      LAIDCD.Tag     := 3;
+    end else
+    begin
+      LAIDCD.Caption := 'Cliente';
+      LAIDCD.Tag     := 0;
+    end;
+
     CEIDCD.Value    := SQLPKConsulta.Current.ByName('CD_ID').AsInteger;
     CEIDCD.Modified := True;
     CEIDCD.ValidateEdit;
@@ -2681,6 +2699,8 @@ begin
       SQL.Add(''''  + RECParametros.HOST        + ''')');
       ExecQuery;                             
 
+      if CECDNF.Tag = 0 then
+      CECDNF.Tag     := Current.Vars[0].AsInteger;
       CECDNF.Value   := Current.Vars[0].AsInteger; { Normal }
       CER_CDNF.Value := Current.Vars[1].AsInteger; { Triangular }
     end;
@@ -2705,8 +2725,7 @@ begin
   ADIF := 0;
 
   { Verifica furos na numeração }
-  if not uPSQNotaFiscal
-  (CECDNF.Text) then
+  if not uPSQNotaFiscal(CECDNF.Text) then
   begin
     ACTNFeEdicao.Execute;
     oException(Nil,'Novo Número Selecionado !'+#13+
@@ -2717,7 +2736,7 @@ begin
      ADIF := CECDNF.Value - bNFE_Emissao;
   if ADIF < 0 then
      ADIF := ADIF * -1;
-  if ADIF > 100 then
+  if ADIF > 20 then
   begin
     if RECUsuarios.Id > 0 then
     begin
@@ -3103,6 +3122,30 @@ begin
     SelectSQL.Add('AND      PK.FLAG = 0');
     SelectSQL.Add('ORDER BY PK.NFE_NITEMPED');
     Prepare;
+  end;
+
+  { EDIÇÕES }
+  { PEGA NÚMERO DISPONÍVEL }
+  ACTPSQ_NFE_NUM.HelpKeyword := EmptyStr;
+  ACTPSQ_NFE_NUM.Execute;
+
+  if not uPSQNotaFiscal(CECDNF.Text,False) then
+  begin
+    oOTransact(TEdicao);
+    with SQLEdicao do
+    begin
+      Close;
+      SQL.Clear;
+      SQL.Add('DELETE FROM NFE_EMI');
+      SQL.Add('WHERE  CDNF = ''' + CECDNF.Text + '''');
+      SQL.Add('AND    TIPO = ''NORMAL''');
+      ExecQuery;
+    end;
+    oCTransact(TEdicao);
+
+    CECDNF.Tag := 0;
+    ACTPSQ_NFE_NUM.HelpKeyword := EmptyStr;
+    ACTPSQ_NFE_NUM.Execute;
   end;
 
   oRTransact(TSEdicao);
@@ -3559,8 +3602,6 @@ end;
 
 procedure TFrmVEN_NFE.ACTMPPostExecute(Sender: TObject);
 begin
-  Clipboard.AsText := SBRodape.Panels[3].Text;
-
   if Length(SBRodape.Panels[3].Text) < 44 then
   oException(Nil,'Código de Barras da Nota Fiscal não Informado !');
 
@@ -4289,6 +4330,12 @@ var
   ClickedOK: Boolean;
 begin
   ActiveControl := Nil;
+
+  if CECDNF.Value = 0 then
+  oException(Nil,'Número da nota fiscal não informada !');
+  
+  if not uPSQNotaFiscal(CECDNF.Text,True) then
+  Abort;
 
   if (IEINDPAG.Text = EmptyStr) and (IETPAG.Text <> '90') then
   oException(IEINDPAG,'Forma de pagamento não informada !');
@@ -5105,6 +5152,9 @@ begin
                     if Pos(DBGEdicao.FocusedField.FieldName,'NFE_CFOP') > 0 then
                     DBGEdicaoNFE_CPROD.Field.FocusControl else
 
+                    if (Pos(DBGEdicao.FocusedField.FieldName,'NFE_CPROD') > 0) and (EdicaoNFE_CPROD.AsString = EmptyStr) then
+                    DBGEdicaoNFE_NCM.Field.FocusControl else
+
                     if Pos(DBGEdicao.FocusedField.FieldName,'NFE_CPRODNFE_NCMNFE_XPRODNFE_ORIGNFE_UCOM') > 0 then
                     DBGEdicaoNFE_QCOM.Field.FocusControl else
 
@@ -5570,6 +5620,15 @@ begin
   ACTPSQ_CAD_PRO.Execute;
 end;
 
+procedure TFrmVEN_NFE.DBGEdicaoNFE_NCMValidate(Sender: TObject;
+  var ErrorText: String; var Accept: Boolean);
+begin
+  { SKU }
+  ACTPSQ_CAD_PRO.Caption     := 'PK.FIS_NCM'; { Field }
+  ACTPSQ_CAD_PRO.HelpKeyWord := DBGEdicao.EditingText; { Value }
+  ACTPSQ_CAD_PRO.Execute;
+end;
+
 procedure TFrmVEN_NFE.CECDNFValidate(Sender: TObject;
   var ErrorText: String; var Accept: Boolean);
 begin
@@ -5588,8 +5647,7 @@ begin
       SQL.Add('UPDATE FIS_NFE_DUP');
       SQL.Add('SET');
 
-      SQL.Add('NFE_CDNF   = REPLACE(NFE_CDNF,'''   + CECDNF.Text + '''),');
-      SQL.Add('NFE_CDNF   = REPLACE(NFE_CDNF,'''   + CECDNF.Text + ''') ');
+      SQL.Add('NFE_CDNF   = ''' + CECDNF.Text      + '''');
       SQL.Add('WHERE IDEV = ''' + REC_SHE_DEF.IDEV + '''');
       ExecQuery;
     end;
@@ -5611,7 +5669,6 @@ begin
 
   CECDNF.Tag      := Trunc(CECDNF.Value);
   CECDNF.Modified := False;
-  CECDNF.Enabled  := (RECUsuarios.ID = 0);
 end;
 
 procedure TFrmVEN_NFE.DEdhSaiEntDblClick(Sender: TObject);
@@ -6117,36 +6174,6 @@ begin
   EDFINALIDADE_ABREV.Text := TAB_CFOPFINALIDADE_ABREV.AsString;
 
   ACTNFeINFADCAD.Execute;
-end;
-
-procedure TFrmVEN_NFE.DBGEdicaoNFE_NCMValidate(Sender: TObject;
-  var ErrorText: String; var Accept: Boolean);
-begin
-  { SKU }
-  ACTPSQ_CAD_PRO.Caption     := 'PK.FIS_NCM'; { Field }
-  ACTPSQ_CAD_PRO.HelpKeyWord := DBGEdicao.EditingText; { Value }
-  ACTPSQ_CAD_PRO.Execute;
-
-{  DBGEdicao.EditingText := Trim(DBGEdicao.EditingText);
-  if (Edicao.State in [dsInsert,dsEdit]) and (DBGEdicao.EditingText <> EmptyStr) and (DBGEdicao.EditingText <> EdicaoNFE_NCM.AsString) then
-  begin
-    EdicaoNFE_NCM.Value := DBGEdicao.EditingText;
-
-    with SQLFKConsulta do
-    begin
-      Close;
-      SQL.Clear;
-      SQL.Add('SELECT UTRIB,CEST FROM TAB_NCM');
-      SQL.Add('WHERE  NCM = ''' + EdicaoNFE_NCM.AsString + '''');
-      ExecQuery;
-
-      EdicaoNFE_UTRIB.Value := IFThen(LeftStr(EdicaoNFE_CFOP.AsString,1) = '7',Current.Vars[0].AsString,EdicaoNFE_UCOM.AsString);
-      EdicaoNFE_CEST.Value  := Current.Vars[1].AsString;
-
-      if Eof then
-      DataBaseError('NCM não cadastro ou inválido !');
-    end;
-  end; }
 end;
 
 procedure TFrmVEN_NFE.ACTNFeCalculateExecute(Sender: TObject);
@@ -7283,6 +7310,9 @@ begin
   oException(Nil,'Falha ao tentar conectar com o sefaz !' + #13 +
                  'Motivo: ' + SBRodape.Panels[0].Text     + #13 + #13 +
                  'Favor entrar em contato com o administrador do sistema.');
+
+  if FIS_NFE_SUMNFE_VST.AsFloat > 0 then
+  oAviso(Handle,'Atenção, essa nota fiscal possui Substituição Tributária.');
 
   try
     Screen.cursor := crAppStart;
@@ -8499,19 +8529,12 @@ begin
 
         if Pos('DUP',UPPERCASE(SBRodape.Panels[2].Text)) > 0 then
         begin
-          SBRodape.Panels[2].Text := Trim(Copy(SBRodape.Panels[1].Text  ,Pos('DUP',UPPERCASE(SBRodape.Panels[1].Text)),Length(SBRodape.Panels[1].Text)));
+          SBRodape.Panels[2].Text := Trim(Copy(SBRodape.Panels[1].Text,Pos('DUP',UPPERCASE(SBRodape.Panels[1].Text)),Length(SBRodape.Panels[1].Text)));
           SBRodape.Panels[1].Text := 'Autorização Negada';
           SBRodape.Refresh;
-
-          if Pos('CHNFE',UPPERCASE(SBRodape.Panels[2].Text)) > 0 then
-          begin
-            if Length(Copy(SBRodape.Panels[2].Text,Pos('CHNFE',UPPERCASE(SBRodape.Panels[2].Text)) + 6,44)) = 44 then
-            if not uPSQNotaFiscal(CECDNF.Text,True) then
-               Abort;
-          end;
         end else
         begin
-          SBRodape.Panels[2].Text := Trim(Copy(SBRodape.Panels[1].Text  ,Pos('DUP',UPPERCASE(SBRodape.Panels[1].Text)),Length(SBRodape.Panels[1].Text)));
+          SBRodape.Panels[2].Text := Trim(Copy(SBRodape.Panels[1].Text,Pos('DUP',UPPERCASE(SBRodape.Panels[1].Text)),Length(SBRodape.Panels[1].Text)));
           SBRodape.Panels[1].Text := 'Autorização Negada';
           SBRodape.Refresh;
         end;
@@ -8530,6 +8553,8 @@ begin
 
     if (SBRodape.Panels[2].Text <> EmptyStr) and (Pos(SBRodape.Panels[5].Text,'100110150') = 0) then
     begin
+      Clipboard.AsText := SBRodape.Panels[3].Text;
+
       ACTNFeEdicao.Execute;
       oException(Nil,SBRodape.Panels[2].Text + #13 +
                      SBRodape.Panels[1].Text);

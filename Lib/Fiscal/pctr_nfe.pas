@@ -647,7 +647,7 @@ begin
   2, { Tipo   Evento - 0: Copiado    1: Vazio  2: Romaneado }
   1, { Código Evento - 0: Triangular 1: Normal 2: Complementar 3: Ajustes 4:Devolução }
 
-  '', { Tabela }
+  CadastroNFE_CLFO.AsString, { Tabela }
   ''  { Get }
   );
 end;
@@ -694,7 +694,7 @@ begin
     AFinalidade, { Código Evento - 0: Triangular 1: Normal 2: Complementar 3: Ajustes 4:Devolução }
     AEvento    , { Tipo   Evento - 0: Copiado    1: Vazio  2: Romaneado }
 
-    '', { Tabela }
+    CadastroNFE_CLFO.AsString, { Tabela }
     ''  { Get }
     );
   end;

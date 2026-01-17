@@ -2434,9 +2434,8 @@ begin
         SQL.Add('FROM   TAB_PAR_SIS AS EP,'+oREPZero('nfe_cab','_',i,3)+ ' "NFE_CAB"');
         SQL.Add('WHERE  EP.ID     = '''+IntToStr(i)+'''');
         SQL.Add('AND    EP.CNPJ   = '''+RECParametros.CNPJ+'''');
-        SQL.Add('AND    NFE_CAB.NFE_CDNF   = '''+ACDNF             +'''');
-        SQL.Add('AND    NFE_CAB.NFE_FINNFE < 5');
-        SQL.Add('AND    CHAR_LENGTH(NFE_CAB.NFE_CHAV) = 44');
+        SQL.Add('AND    NFE_CAB.CDNF  = '''+ACDNF             +'''');
+        SQL.Add('AND    NFE_CAB.TPCHV = 44');
         if i < 9 then
         SQL.Add('UNION');
       end;

@@ -629,64 +629,11 @@ end;
 
 procedure TFrmSHE_DEF_PSQ.FormCreate(Sender: TObject);
 begin
-  { ADMIN MANAGER }
-  //DBGConsultaIDPK.Visible := (RECUsuarios.ID = 0); { Código Pedido }
-
   { FORM SCREEN }
   REC_SHE_PSQ.FPosition := Self.Position; { Posição }
-  SetCursorPos(500,Self.Top); { Cursor }
-
   REC_SHE_PSQ.FMainArea := False; { Aplicativo }
   REC_SHE_PSQ.FWorkArea := False; { Windows    }
 
-  { GRANT USER }
-  REC_SHE_PSQ.GDescricao  := 'Vendas';
-  REC_SHE_PSQ.GReferencia := 'Pedidos';
-  REC_SHE_PSQ.GRegra      := 'Controlar';
-  REC_SHE_PSQ.GAdmin      := False;
-
-  { VALIDATE GRANT USER }
-  REC_SHE_PSQ.GView := (RECUsuarios.Grupo = 'DEV') or (REC_SHE_PSQ.GAdmin);
-
-  if not REC_SHE_PSQ.GAdmin then
-  begin
-    { SET GRANT USERT }
-    //oUSER(REC_SHE_PSQ);
-  end;
-  
-  if not REC_SHE_PSQ.GView then
-  _GetForceClose := True else
-
-  if (FForceClose) and (RECParametros.STCX = 'Caixa Aberto') then
-  _GetForceClose := False;
-
-  { ACCESS DENIED }
-  if (FForceClose) and (RECParametros.STCX <> 'Caixa Aberto') then
-  begin
-    _GetCurrentAlert := FCurrentEvent    + #13 + #13 +
-                       'ACESSO NEGADO !' + #13 +
-                        RECParametros.STCX ;
-  end else
-
-  if (FForceClose) and (RECParametros.STCX = 'Caixa Aberto') then
-  begin
-    _GetCurrentAlert := FCurrentEvent    + #13 + #13 +
-                       'ACESSO NEGADO !' + #13 +
-                       'Usuário não Autorizado';
-  end;
-
-  { ACCESS ABORT }
-  if FForceClose then
-  begin
-    oErro(Application.Handle,FCurrentAlert);
-
-    Self.Visible := False;
-    Self.Height  := 0;
-    Self.Width   := 0;
-
-    PostMessage(Handle, WM_CLOSE, 0, 0);
-    Exit;
-  end else
   PostMessage( Handle, WM_AFTER_CREATE, 0, 0);
 end;
 
