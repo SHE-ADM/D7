@@ -305,7 +305,7 @@ begin
             Application.ProcessMessages;
 
             { Teste de Pedidos }
-            TAG := 1;
+            TAG := 0;
 
             { RECEBIMENTOS }
             { Transportadoras }
@@ -409,7 +409,7 @@ begin
   ThousandSeparator := '.';
   DecimalSeparator  := ',';
 
-  MAIN_IDEP := '4';
+  MAIN_IDEP := '1';
   MAIN_DEEP := IFThen(MAIN_IDEP = 1,'OtimotexB2B','LebiancoB2B');
 end;
 
@@ -524,7 +524,7 @@ begin
     begin
       { Preenchendo o rodapé do Form Principal }
       SBRodape.Width          := Screen.Width + 1;
-      SBRodape.Panels[0].Text := RECParametros.DEEP;
+      SBRodape.Panels[0].Text := RECParametros.EP_NO;
       SBRodape.Panels[1].Text := RECUsuarios.Login + ' - ' + RECUsuarios.Cargo;
       SBRodape.Panels[3].Text := RECParametros.ServerHost;
       SBRodape.Panels[6].Text := 'Copyright © '+oStrZero(YearOf(Date),4)+' Sheild';
@@ -532,9 +532,6 @@ begin
       _oLoadJPG(Nil,Nil,IPrincipal,True,'JPG_SPLASH');
       Repaint;
     end;
-
-    { Impressoras }
-    oExecPrinter(Application.Handle,'Relatórios');
 
   finally
     TTEmpo.Enabled := True;
@@ -668,7 +665,7 @@ begin
           Descricao := aPesquisa[i,04];
 
           if oEmpty(aPesquisa[i,00]) then
-                    aPesquisa[i,00] := RECParametros.Id;
+                    aPesquisa[i,00] := RECParametros.EP_ID;
 
           if oEmpty(aPesquisa[i,01]) then
                     aPesquisa[i,01] := FormatDateTime('mm/dd/yy',Date);
@@ -751,7 +748,7 @@ begin
   try
     oOTransact(TFBConsulta);
 
-    Representantes.Params[0].Value := RECParametros.Id;
+    Representantes.Params[0].Value := RECParametros.EP_ID;
     Representantes.Open; Representantes.Last;
     PBPrincipal.Max :=   Representantes.RecNo; Representantes.First;
 
@@ -770,7 +767,7 @@ begin
       PNLRodape.Visible := True;
 
       { Load Matriz }
-      aPesquisa[01,00] := RecParametros.Id;
+      aPesquisa[01,00] := RECParametros.EP_ID;
       aPesquisa[01,01] := FormatDateTime('mm/dd/yy'      ,Date);
       aPesquisa[01,02] := FormatDateTime('mm/dd/yy hh:mm',Now );
       aPesquisa[01,05] := IntToStr(PBPrincipal.Max);
@@ -871,7 +868,7 @@ begin
   with FBird do
   try
     oOTransact(TFBConsulta);
-    CAD_CLI_ERP.Params[0].Value := RECParametros.Id;
+    CAD_CLI_ERP.Params[0].Value := RECParametros.EP_ID;
     CAD_CLI_ERP.Open;  CAD_CLI_ERP.Last;
     PBPrincipal.Max := CAD_CLI_ERP.RecNo; CAD_CLI_ERP.First;
 
@@ -890,7 +887,7 @@ begin
       PNLRodape.Visible := True;
 
       { Load Matriz }
-      aPesquisa[02,00] := RecParametros.Id;
+      aPesquisa[02,00] := RECParametros.EP_ID;
       aPesquisa[02,01] := FormatDateTime('mm/dd/yy'      ,Date);
       aPesquisa[02,02] := FormatDateTime('mm/dd/yy hh:mm',Now );
       aPesquisa[02,05] := IntToStr(PBPrincipal.Max);
@@ -1004,7 +1001,7 @@ begin
     SQL.Add('AND      ROM_CPAG > 0');
     SQL.Add('AND      ROM_CTRA > 0');
 
-    SQL.Add('AND      ID = 212427');
+//    SQL.Add('AND      ID = 212427');
     SQL.Add('ORDER BY ID');
     Open;
     Last;
@@ -1057,7 +1054,7 @@ begin
       PNLRodape.Visible := True;
 
       { Load Matriz }
-      aPesquisa[03,00] := RecParametros.Id;
+      aPesquisa[03,00] := RECParametros.EP_ID;
       aPesquisa[03,01] := FormatDateTime('mm/dd/yy'      ,Date);
       aPesquisa[03,02] := FormatDateTime('mm/dd/yy hh:mm',Now );
       aPesquisa[03,05] := IntToStr(PBPrincipal.Max);
@@ -1078,7 +1075,7 @@ begin
         begin
           Close;
           SQL.Clear;
-          SQL.Add('SELECT ID FROM ' + oREPZero('PED_PRG_CAB','_',RECParametros.IDEP,3) + ' AS PK');
+          SQL.Add('SELECT ID FROM ' + oREPZero('PED_PRG_CAB','_',RECParametros.EP_ID,3) + ' AS PK');
           SQL.Add('WHERE  ROM_CDPR = '''+B2BPedidosId.AsString+'''');
           ExecQuery;
         end;
@@ -1165,7 +1162,7 @@ begin
       PNLRodape.Visible := True;
 
       { Load Matriz }
-      aPesquisa[04,00] := RecParametros.Id;
+      aPesquisa[04,00] := RECParametros.EP_ID;
       aPesquisa[04,01] := FormatDateTime('mm/dd/yy'      ,Date);
       aPesquisa[04,02] := FormatDateTime('mm/dd/yy hh:mm',Now );
       aPesquisa[04,05] := IntToStr(PBPrincipal.Max);
@@ -1194,14 +1191,14 @@ begin
             begin
               Close;
               SQL.Clear;
-              SQL.Add('DELETE FROM '        +oREPZero('PED_PRG_CAB','_',RECParametros.IDEP,3));
+              SQL.Add('DELETE FROM '        +oREPZero('PED_PRG_CAB','_',RECParametros.EP_ID,3));
               SQL.Add('WHERE  ROM_CDPR = '''+B2BPedidosId.AsString+'''');
               ExecQuery;
             end;
 
             Close;
             SQL.Clear;
-            SQL.Add('SELECT ID FROM '     +oREPZero('PED_PRG_CAB','_',RECParametros.IDEP,3));
+            SQL.Add('SELECT ID FROM '     +oREPZero('PED_PRG_CAB','_',RECParametros.EP_ID,3));
             SQL.Add('WHERE  ROM_CDPR = '''+B2BPedidosId.AsString+'''');
             SQL.Add('AND    ROM_STFI <> ''CANCELADO''');
             ExecQuery;
@@ -1223,7 +1220,7 @@ begin
               begin
                 Close;
                 SQL.Clear;
-                SQL.Add('UPDATE '+oREPZero('PED_PRG_CAB','_',RECParametros.IDEP,3));
+                SQL.Add('UPDATE '+oREPZero('PED_PRG_CAB','_',RECParametros.EP_ID,3));
                 SQL.Add('SET');
 
                 IF B2BPedidosROM_STFI.AsInteger = 13 THEN
@@ -1421,10 +1418,10 @@ begin
 
     { Cadastro }
     FBird.SPFBEdicao.ParamByName('ID'  ).Value := 0;
-    FBird.SPFBEdicao.ParamByName('IDEP').Value := RECParametros.Id;
+    FBird.SPFBEdicao.ParamByName('IDEP').Value := RECParametros.EP_ID;
     FBird.SPFBEdicao.ParamByName('IDCA').Value := RECUsuarios.Id;
 
-    FBird.SPFBEdicao.ParamByName('dfun').Value := RECParametros.DTSERVER;
+    FBird.SPFBEdicao.ParamByName('dfun').Value := RECParametros.SHE_DATA;
     FBird.SPFBEdicao.ParamByName('NAFA').Value := 0;
 
     { Sintegra }
@@ -1694,7 +1691,7 @@ begin
     begin
       Close;
       SQL.Clear;
-      SQL.Add('SELECT GEN_ID(ID_NO_'+oREPZero('PED_PRG_CAB','_',RECParametros.IDEP,3)+',0) FROM RDB$DATABASE');
+      SQL.Add('SELECT GEN_ID(ID_NO_'+oREPZero('PED_PRG_CAB','_',RECParametros.EP_ID,3)+',0) FROM RDB$DATABASE');
       ExecQuery;
       IDPP := Current.Vars[0].AsInteger + 1;
     end;
@@ -1702,12 +1699,12 @@ begin
     SPFBEdicao.StoredProcName := 'SP_PED_PRG_CAB';
     SPFBEdicao.Prepare;
 
-    SPFBEdicao.ParamByName('ped').Value  := oREPZero('PED_PRG_CAB','_',RECParametros.Id,3);
+    SPFBEdicao.ParamByName('ped').Value  := oREPZero('PED_PRG_CAB','_',RECParametros.EP_ID,3);
     SPFBEdicao.ParamByName('id').Value   := 0;
     SPFBEdicao.ParamByName('cdpr').Value := B2BPedidosId.AsInteger;
     SPFBEdicao.ParamByName('CDCX').Value := RECParametros.CDCX;
     SPFBEdicao.ParamByName('dero').Value := B2BPedidosROM_DERO.AsString;
-    SPFBEdicao.ParamByName('stpd').Value := IFThen(RECParametros.Id = 1,'TECIDO','PLÁSTICO');
+    SPFBEdicao.ParamByName('stpd').Value := IFThen(RECParametros.EP_ID = 1,'TECIDO','PLÁSTICO');
     SPFBEdicao.ParamByName('stco').Value := 'BANCÁRIO';
     SPFBEdicao.ParamByName('stfi').Value := 'PENDENTE';
     SPFBEdicao.ParamByName('ccli').Value := IDCL;
@@ -1735,7 +1732,7 @@ begin
     B2BFKPedidos.Open;
     while not B2BFKPedidos.Eof do
     begin
-      if uCPPSQ(RECParametros.Id,B2BFKPedidosROM_CPRO.AsString,'PRODUTO') > 0 then
+      if uCPPSQ(RECParametros.EP_ID,B2BFKPedidosROM_CPRO.AsString,'PRODUTO') > 0 then
       begin
         inc(ITEM);
 
@@ -1743,7 +1740,7 @@ begin
         SPFBEdicao.StoredProcName := 'SP_PED_PRG_ITE';
         SPFBEdicao.Prepare;
 
-        SPFBEdicao.ParamByName('ped').Value  := oREPZero('PED_PRG_ITE','_',RECParametros.Id,3);
+        SPFBEdicao.ParamByName('ped').Value  := oREPZero('PED_PRG_ITE','_',RECParametros.EP_ID,3);
         SPFBEdicao.ParamByName('ID').Value   := 0;
         SPFBEdicao.ParamByName('CCAB').Value := IDPP;
         SPFBEdicao.ParamByName('ITEM').Value := oStrZero(ITEM,4);
@@ -1786,7 +1783,7 @@ begin
         SPFBEdicao.StoredProcName := 'SP_CAD_PRO_PRG';
         SPFBEdicao.Prepare;
         
-        SPFBEdicao.ParamByName('AIDEP').Value := RECParametros.Id;
+        SPFBEdicao.ParamByName('AIDEP').Value := RECParametros.EP_ID;
         SPFBEdicao.ParamByName('ACDFK').Value := IDPP;
         SPFBEdicao.ParamByName('ADEFK').Value := B2BPedidosROM_DERO.AsString;
         SPFBEdicao.ParamByName('ADTFK').Value := NOW;
@@ -1845,9 +1842,9 @@ begin
       SQL.Add('            WHEN ''SUSPENSO''                 THEN ''12''');
       SQL.Add('            ELSE ''1''');
       SQL.Add('       END) AS ROM_STFI');
-      SQL.Add('FROM '+oREPZero('PED_VEN_CAB','_',RECParametros.IDEP,3)+' AS PV');
+      SQL.Add('FROM '+oREPZero('PED_VEN_CAB','_',RECParametros.EP_ID,3)+' AS PV');
       SQL.Add('JOIN CAD_CLI AS CL ON (CL.ID  = PV.IDCD)');
-      SQL.Add('JOIN '+oREPZero('PED_PRG_CAB','_',RECParametros.IDEP,3)+' AS PP ON ((PP.ID = PV.ROM_CDPR) AND (PP.ROM_CDPR > 0))');
+      SQL.Add('JOIN '+oREPZero('PED_PRG_CAB','_',RECParametros.EP_ID,3)+' AS PP ON ((PP.ID = PV.ROM_CDPR) AND (PP.ROM_CDPR > 0))');
       SQL.Add('WHERE  PV.API_B2B = 1');
       SQL.Add('ORDER BY 2');
       Open;
@@ -1870,7 +1867,7 @@ begin
       PNLRodape.Visible := True;
 
       { Load Matriz }
-      aPesquisa[05,00] := RecParametros.Id;
+      aPesquisa[05,00] := RECParametros.EP_ID;
       aPesquisa[05,01] := FormatDateTime('mm/dd/yy'      ,Date);
       aPesquisa[05,02] := FormatDateTime('mm/dd/yy hh:mm',Now );
       aPesquisa[05,05] := IntToStr(PBPrincipal.Max);
@@ -1924,7 +1921,7 @@ begin
           begin
             Close;
             SQL.Clear;
-            SQL.Add('UPDATE '+oREPZero('PED_VEN_CAB','_',RECParametros.IDEP,3));
+            SQL.Add('UPDATE '+oREPZero('PED_VEN_CAB','_',RECParametros.EP_ID,3));
             SQL.Add('SET   API_B2B      = 0,');
             SQL.Add('      API_B2B_DTEV = CURRENT_TIMESTAMP');
             SQL.Add('WHERE ID = '''+ERPPedidosID.AsString+'''');
@@ -1991,7 +1988,7 @@ begin
         Close;
         SQL.Clear;
         SQL.Add('SELECT MAX(ID) FROM TAB_API_PRC_CAT');
-        SQL.Add('WHERE  IDEP = '''+RECParametros.Id+'''');
+        SQL.Add('WHERE  IDEP = '''+RECParametros.EP_ID+'''');
         ExecQuery;
         PBPrincipal.Max := Current.Vars[0].AsInteger;
 
@@ -2007,7 +2004,7 @@ begin
           SQL.Clear;
           SQL.Add('UPDATE TAB_API_PRC_CAT');
           SQL.Add('SET    IDEV = '''+IDG_API_PRC_CAT +'''');
-          SQL.Add('WHERE  IDEP = '''+RECParametros.Id+'''');
+          SQL.Add('WHERE  IDEP = '''+RECParametros.EP_ID+'''');
           SQL.Add('AND    IDEV = 0');
           ExecQuery;
 
@@ -2037,7 +2034,7 @@ begin
         PNLRodape.Visible := True;
 
         { Load Matriz }
-        aPesquisa[06,00] := RECParametros.Id;
+        aPesquisa[06,00] := RECParametros.EP_ID;
         aPesquisa[06,01] := FormatDateTime('mm/dd/yy'      ,Date);
         aPesquisa[06,02] := FormatDateTime('mm/dd/yy hh:mm',Now );
         aPesquisa[06,05] := IntToStr(PBPrincipal.Max);
@@ -2181,7 +2178,7 @@ begin
       Close;
       SQL.Clear;
       SQL.Add('SELECT COUNT(*) FROM TAB_API_EST');
-      SQL.Add('WHERE  IDEP    = '''+RECParametros.Id+'''');
+      SQL.Add('WHERE  IDEP    = '''+RECParametros.EP_ID+'''');
       SQL.Add('AND    API_B2B = 1');
       SQL.Add('AND    IDEV    = 0');
       ExecQuery;
@@ -2206,8 +2203,8 @@ begin
         SQL.Add('USING (');
         SQL.Add('SELECT MIN(ID) AS ID_MIN,MAX(ID) AS ID_MAX');
         SQL.Add('FROM (');
-        SQL.Add('SELECT FIRST 500 ID FROM TAB_API_EST WHERE IDEP = '''+RECParametros.ID+''' AND IDEV = 0 AND API_B2B = 1 ORDER BY ID)) AS FK');
-        SQL.Add('ON     PK.IDEP = '''+RECParametros.ID+''' AND PK.ID BETWEEN FK.ID_MIN AND FK.ID_MAX');
+        SQL.Add('SELECT FIRST 500 ID FROM TAB_API_EST WHERE IDEP = '''+RECParametros.EP_ID+''' AND IDEV = 0 AND API_B2B = 1 ORDER BY ID)) AS FK');
+        SQL.Add('ON     PK.IDEP = '''+RECParametros.EP_ID+''' AND PK.ID BETWEEN FK.ID_MIN AND FK.ID_MAX');
         SQL.Add('WHEN   MATCHED THEN');
         SQL.Add('UPDATE SET PK.IDEV = '''+IDG_API_EST+'''');
         ExecQuery;
@@ -2224,7 +2221,7 @@ begin
       if PBPrincipal.Max > 0 then
       begin
         { Load Matriz }
-        aPesquisa[07,00] := RecParametros.Id;
+        aPesquisa[07,00] := RECParametros.EP_ID;
         aPesquisa[07,01] := FormatDateTime('mm/dd/yy'      ,Date);
         aPesquisa[07,02] := FormatDateTime('mm/dd/yy hh:mm',Now );
         aPesquisa[07,05] := IntToStr(PBPrincipal.Max);
@@ -2305,7 +2302,7 @@ begin
         TAG := 0;
       END;
 
-      if uCPPSQ(RECParametros.ID,SQLFBEdicao.Current.ByName('IDCP').AsString,'ID') > 0 then
+      if uCPPSQ(RECParametros.EP_ID,SQLFBEdicao.Current.ByName('IDCP').AsString,'ID') > 0 then
       begin
         IF FBCAD_PROSKU.AsString = 'JL.01.1000' THEN
         BEGIN
@@ -2531,7 +2528,7 @@ begin
   if TAG > 0 then
   Exit;
 
-  if Pos(RECParametros.ID,'14') = 0 then
+  if Pos(RECParametros.EP_ID,'14') = 0 then
   Exit;
 
   { Clear Matriz - B2B }
@@ -2574,7 +2571,7 @@ begin
     PNLRodape.Visible := True;
 
     { Load Matriz }
-    aPesquisa[07,00] := RecParametros.Id;
+    aPesquisa[07,00] := RECParametros.EP_ID;
     aPesquisa[07,01] := FormatDateTime('mm/dd/yy'      ,Date);
     aPesquisa[07,02] := FormatDateTime('mm/dd/yy hh:mm',Now );
     aPesquisa[07,05] := IntToStr(PBPrincipal.Max);

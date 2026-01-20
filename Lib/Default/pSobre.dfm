@@ -5,7 +5,7 @@ object FrmSobre: TFrmSobre
   BorderIcons = [biSystemMenu]
   BorderStyle = bsSingle
   Caption = 'Sobre o Sistema'
-  ClientHeight = 491
+  ClientHeight = 501
   ClientWidth = 434
   Color = clBlack
   Font.Charset = ANSI_CHARSET
@@ -2066,7 +2066,7 @@ object FrmSobre: TFrmSobre
   end
   object PNLMemoria: TPanel
     Left = 0
-    Top = 442
+    Top = 452
     Width = 434
     Height = 49
     Align = alBottom
@@ -2155,7 +2155,7 @@ object FrmSobre: TFrmSobre
   end
   object PNLEmpresa: TPanel
     Left = 0
-    Top = 411
+    Top = 421
     Width = 434
     Height = 26
     Align = alBottom
@@ -2179,7 +2179,7 @@ object FrmSobre: TFrmSobre
   end
   object PNL_3: TPanel
     Left = 0
-    Top = 437
+    Top = 447
     Width = 434
     Height = 5
     Align = alBottom
@@ -2190,13 +2190,13 @@ object FrmSobre: TFrmSobre
     Left = 0
     Top = 185
     Width = 434
-    Height = 226
+    Height = 236
     Align = alClient
     BevelOuter = bvNone
     Color = clInfoBk
     TabOrder = 5
     object LAVersao: TLabel
-      Left = 5
+      Left = 15
       Top = 4
       Width = 35
       Height = 15
@@ -2211,7 +2211,7 @@ object FrmSobre: TFrmSobre
       ParentFont = False
     end
     object LACompilado: TLabel
-      Left = 5
+      Left = 15
       Top = 20
       Width = 58
       Height = 15
@@ -2226,8 +2226,8 @@ object FrmSobre: TFrmSobre
       ParentFont = False
     end
     object laLICE: TLabel
-      Left = 5
-      Top = 86
+      Left = 15
+      Top = 94
       Width = 40
       Height = 15
       Caption = 'Licen'#231'a'
@@ -2241,8 +2241,8 @@ object FrmSobre: TFrmSobre
       ParentFont = False
     end
     object laQUSU: TLabel
-      Left = 5
-      Top = 102
+      Left = 15
+      Top = 110
       Width = 45
       Height = 15
       Caption = 'Usu'#225'rios'
@@ -2256,8 +2256,8 @@ object FrmSobre: TFrmSobre
       ParentFont = False
     end
     object laCOM: TLabel
-      Left = 136
-      Top = 134
+      Left = 310
+      Top = 142
       Width = 47
       Height = 15
       Caption = 'Compras'
@@ -2271,8 +2271,8 @@ object FrmSobre: TFrmSobre
       ParentFont = False
     end
     object laVEN: TLabel
-      Left = 136
-      Top = 150
+      Left = 310
+      Top = 158
       Width = 38
       Height = 15
       Caption = 'Vendas'
@@ -2286,8 +2286,8 @@ object FrmSobre: TFrmSobre
       ParentFont = False
     end
     object lbCOM: TLabel
-      Left = 232
-      Top = 134
+      Left = 406
+      Top = 142
       Width = 12
       Height = 15
       Caption = '03'
@@ -2301,8 +2301,8 @@ object FrmSobre: TFrmSobre
       ParentFont = False
     end
     object laFAT: TLabel
-      Left = 136
-      Top = 166
+      Left = 310
+      Top = 174
       Width = 68
       Height = 15
       Caption = 'Faturamento'
@@ -2316,8 +2316,8 @@ object FrmSobre: TFrmSobre
       ParentFont = False
     end
     object lbVEN: TLabel
-      Left = 232
-      Top = 150
+      Left = 406
+      Top = 158
       Width = 12
       Height = 15
       Caption = '25'
@@ -2331,8 +2331,8 @@ object FrmSobre: TFrmSobre
       ParentFont = False
     end
     object lbFAT: TLabel
-      Left = 232
-      Top = 166
+      Left = 406
+      Top = 174
       Width = 12
       Height = 15
       Caption = '25'
@@ -2346,8 +2346,8 @@ object FrmSobre: TFrmSobre
       ParentFont = False
     end
     object laFIN: TLabel
-      Left = 136
-      Top = 182
+      Left = 310
+      Top = 190
       Width = 55
       Height = 15
       Caption = 'Financeiro'
@@ -2361,8 +2361,8 @@ object FrmSobre: TFrmSobre
       ParentFont = False
     end
     object lbFIN: TLabel
-      Left = 232
-      Top = 182
+      Left = 406
+      Top = 190
       Width = 12
       Height = 15
       Caption = '06'
@@ -2376,8 +2376,8 @@ object FrmSobre: TFrmSobre
       ParentFont = False
     end
     object laOCA: TLabel
-      Left = 136
-      Top = 118
+      Left = 310
+      Top = 126
       Width = 65
       Height = 15
       Caption = 'Or'#231'amentos'
@@ -2391,8 +2391,8 @@ object FrmSobre: TFrmSobre
       ParentFont = False
     end
     object lbOCA: TLabel
-      Left = 232
-      Top = 118
+      Left = 406
+      Top = 126
       Width = 12
       Height = 15
       Caption = '25'
@@ -2406,8 +2406,8 @@ object FrmSobre: TFrmSobre
       ParentFont = False
     end
     object laPCP: TLabel
-      Left = 136
-      Top = 86
+      Left = 310
+      Top = 94
       Width = 21
       Height = 15
       Caption = 'PCP'
@@ -2421,8 +2421,8 @@ object FrmSobre: TFrmSobre
       ParentFont = False
     end
     object lbPCP: TLabel
-      Left = 232
-      Top = 86
+      Left = 406
+      Top = 94
       Width = 12
       Height = 15
       Caption = '17'
@@ -2436,8 +2436,8 @@ object FrmSobre: TFrmSobre
       ParentFont = False
     end
     object laETI: TLabel
-      Left = 136
-      Top = 102
+      Left = 310
+      Top = 110
       Width = 48
       Height = 15
       Caption = 'Etiquetas'
@@ -2451,8 +2451,8 @@ object FrmSobre: TFrmSobre
       ParentFont = False
     end
     object lbETI: TLabel
-      Left = 232
-      Top = 102
+      Left = 406
+      Top = 110
       Width = 12
       Height = 15
       Caption = '15'
@@ -2466,7 +2466,7 @@ object FrmSobre: TFrmSobre
       ParentFont = False
     end
     object LANVersao: TLabel
-      Left = 74
+      Left = 85
       Top = 4
       Width = 46
       Height = 15
@@ -2481,11 +2481,11 @@ object FrmSobre: TFrmSobre
       ParentFont = False
     end
     object LADVersao: TLabel
-      Left = 74
+      Left = 85
       Top = 20
       Width = 88
       Height = 15
-      Caption = '17/01/2025 16:20'
+      Caption = '20/01/2026 07:26'
       Color = clInfoBk
       Font.Charset = ANSI_CHARSET
       Font.Color = clWindowText
@@ -2496,8 +2496,8 @@ object FrmSobre: TFrmSobre
       ParentFont = False
     end
     object lbLICE: TLabel
-      Left = 58
-      Top = 86
+      Left = 70
+      Top = 94
       Width = 38
       Height = 15
       Caption = 'Mensal'
@@ -2511,8 +2511,8 @@ object FrmSobre: TFrmSobre
       ParentFont = False
     end
     object lbQUSU: TLabel
-      Left = 58
-      Top = 102
+      Left = 70
+      Top = 110
       Width = 18
       Height = 15
       Caption = '100'
@@ -2540,8 +2540,8 @@ object FrmSobre: TFrmSobre
       ParentFont = False
     end
     object LABOL: TLabel
-      Left = 136
-      Top = 198
+      Left = 310
+      Top = 206
       Width = 39
       Height = 15
       Caption = 'Boletos'
@@ -2555,8 +2555,8 @@ object FrmSobre: TFrmSobre
       ParentFont = False
     end
     object LBBOL: TLabel
-      Left = 232
-      Top = 198
+      Left = 406
+      Top = 206
       Width = 12
       Height = 15
       Caption = '03'
@@ -2571,7 +2571,7 @@ object FrmSobre: TFrmSobre
     end
     object PNL_2: TPanel
       Left = 0
-      Top = 216
+      Top = 226
       Width = 434
       Height = 10
       Align = alBottom
@@ -2579,7 +2579,7 @@ object FrmSobre: TFrmSobre
       TabOrder = 0
     end
     object MInf: TMemo
-      Left = 2
+      Left = 13
       Top = 38
       Width = 415
       Height = 51
@@ -2593,7 +2593,7 @@ object FrmSobre: TFrmSobre
       Font.Name = 'Segoe UI Semibold'
       Font.Style = [fsBold, fsItalic]
       Lines.Strings = (
-        'Acessibilidades para o departamento de importa'#231#227'o')
+        'Importa'#231#227'o de xml de nfe nacional e estrangeira')
       ParentFont = False
       TabOrder = 1
     end

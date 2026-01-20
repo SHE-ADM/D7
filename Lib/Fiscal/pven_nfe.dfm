@@ -1,7 +1,7 @@
 object FrmVEN_NFE: TFrmVEN_NFE
   Tag = 1
-  Left = -137
-  Top = 107
+  Left = -8
+  Top = 0
   HelpType = htKeyword
   HelpKeyword = '3'
   ActiveControl = EDDECD
@@ -1955,7 +1955,7 @@ object FrmVEN_NFE: TFrmVEN_NFE
               CharCase = ecUpperCase
               IgnoreMaskBlank = False
             end
-            object EDCFOP_TPNF_NO: TdxMaskEdit
+            object EDCFOP_TPFN_NO: TdxMaskEdit
               Left = 181
               Top = 40
               Width = 515
@@ -2038,6 +2038,7 @@ object FrmVEN_NFE: TFrmVEN_NFE
               Style.ButtonStyle = btsFlat
               Style.Shadow = False
               TabOrder = 6
+              OnKeyDown = PECFOPKeyDown
               OnChange = EDInfAdNFChange
               OnValidate = PECFOPValidate
             end
