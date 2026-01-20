@@ -1,6 +1,6 @@
 object FrmPrincipal: TFrmPrincipal
-  Left = 0
-  Top = 100
+  Left = -19
+  Top = -7
   Width = 1939
   Height = 1039
   Caption = 'S.H.E.I.L.D. ERP'

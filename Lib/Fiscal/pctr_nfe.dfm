@@ -1,5 +1,5 @@
 inherited frmctr_nfe: Tfrmctr_nfe
-  Left = 1
+  Left = -5
   Top = 1
   HelpType = htKeyword
   HelpKeyword = '3'

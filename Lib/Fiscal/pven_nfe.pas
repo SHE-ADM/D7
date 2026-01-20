@@ -372,7 +372,7 @@ Type
     SBRodape: TdxStatusBar;
     LACFOP: TLabel;
     Label70: TLabel;
-    EDCFOP_TPNF_NO: TdxMaskEdit;
+    EDCFOP_TPFN_NO: TdxMaskEdit;
     PECFOP_NO: TdxPickEdit;
     IECFOP_TPNF: TdxImageEdit;
     Label23: TLabel;
@@ -1383,6 +1383,8 @@ Type
     procedure LAIDCDClick(Sender: TObject);
     procedure PECFOPValidate(Sender: TObject; var ErrorText: String;
       var Accept: Boolean);
+    procedure PECFOPKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
   private
     { Private declarations }
     FCurrentEvent,
@@ -2796,7 +2798,7 @@ begin
 
   if Pos(PECFOP.Text,'51236123') > 0 then
   begin
-    EDCFOP_TPNF_NO.Text := EDCFOP_TPNF_NO.Text + ' TRIANGULAR';
+    EDCFOP_TPFN_NO.Text := EDCFOP_TPFN_NO.Text + ' TRIANGULAR';
 
     ACTPSQ_NFE_NUM.HelpKeyword := 'TRIANGULAR';
     ACTPSQ_NFE_NUM.Execute;
@@ -4022,165 +4024,7 @@ end;
 
 procedure TFrmVEN_NFE.ACTImportaExecute(Sender: TObject);
 begin
-//  FrmImporta_Geral := TFrmImporta_Geral.Create(Self);
-//  FrmImporta_Geral.tsXML.Tag := LAIDCD.Tag;
-//
-//  with FrmImporta_Geral do
-//  try  ShowModal;
-//
-//  finally
-//    try
-//      if REC_SHE_DEF.Selected then
-//      begin
-//        ACTNFeCalculate.Tag := 1;
-//
-//        if cbTIPO.Text = 'NOTAS FISCAIS' then
-//        begin
-//          CEIDCD.Value    := NFeNFE_CFAV.AsInteger;
-//          CEIDCD.Modified := True;
-//          CEIDCD.ValidateEdit;
-//
-//          { TRANSPORTADORA }
-//          ACTPSQ_CAD_TRA.Caption     := 'CT_ID'; { Field }
-//          ACTPSQ_CAD_TRA.HelpKeyWord := NFeNFE_CTRA.AsString; { Value }
-//          ACTPSQ_CAD_TRA.Execute;
-//
-//          while not NFe.Eof do
-//          begin
-//            Edicao.Append;
-//
-//            { SKU }
-//            ACTPSQ_CAD_PRO.Caption     := 'PK.SKU'; { Field }
-//            ACTPSQ_CAD_PRO.HelpKeyWord := NFeNFE_CPROD.AsString; { Value }
-//            ACTPSQ_CAD_PRO.Execute;
-//
-//            EdicaoNFE_NITEMPED.Value  := NFeNFE_ITEMPED.AsInteger;
-//            EdicaoNFE_CFOP.Value     := NFeNFE_CFOP.AsString;
-//            EdicaoNFE_CPROD.Value    := NFeNFE_CPROD.AsString;
-//            EdicaoNFE_NCM.Value      := NFeNFE_NCM.AsString;
-//            EdicaoNFE_CEST.Value     := NFeNFE_CEST.AsString;
-//            EdicaoNFE_EXTIPI.Value   := NFeNFE_EXTIPI.AsString;
-//            EdicaoNFE_XPROD.Value    := NFeNFE_XPROD.AsString;
-//            EdicaoNFE_ORIG.Value     := NFeNFE_ORIG.AsInteger;
-//            EdicaoNFE_CST.Value      := NFeNFE_CST.AsString;
-//            EdicaoNFE_UCOM.Value     := NFeNFE_UCOM.AsString;
-//            EdicaoNFE_QCOM.Value     := NFeNFE_QCOM.AsCurrency;
-//            EdicaoNFE_VUNCOM.AsFloat := NFeNFE_VUNCOM.AsFloat;
-//            EdicaoNFE_VPROD.Value    := NFeNFE_VPROD.AsFloat;
-//            EdicaoNFE_VFRETE.Value   := NFeNFE_VFRETE.AsFloat;
-//            EdicaoNFE_VDESC.Value    := NFeNFE_VDESC.AsFloat;
-//            EdicaoNFE_NFCI.Value     := NFeNFE_NFCI.AsString;
-//            Edicao.Post;
-//
-//            NFe.Next;
-//          end;
-//        end else
-//
-//        if cbTIPO.Text = 'XML' then
-//        begin
-//          NewCHNFE := XMLCHNFE;
-//          NewCDNF  := XMLCDNF;
-//          NewDTNF  := XMLDTNF;
-//
-//          CEIDCD.Value    := imp_ncaNFE_CFAV.AsInteger;
-//          CEIDCD.Modified := True;
-//          CEIDCD.ValidateEdit;
-//
-//          { NATUREZA DE OPERAÇÃO }
-//          ACTPSQ_TAB_CFOP.Caption     := 'NFE_CFOP'; { Field }
-//          ACTPSQ_TAB_CFOP.HelpKeyWord := imp_nitNFE_CFOP.AsString; { Value }
-//          ACTPSQ_TAB_CFOP.Execute;
-//
-//          { TRANSPORTADORA }
-//          ACTPSQ_CAD_TRA.Caption     := 'CT_ID'; { Field }
-//          ACTPSQ_CAD_TRA.HelpKeyWord := IntToStr(XMLIDTra); { Value }
-//          ACTPSQ_CAD_TRA.Execute;
-//
-//          if XMLModFrete <> EmptyStr then
-//          IEModFrete.Text := IFThen(LeftStr(PECFOP.Text,1) = '3',XMLModFrete,'4');
-//          IExPais.Text    := XMLcPais;
-//
-//          CEQVOL.Value := 0;
-//          CEQVOL.Tag   := 1;
-//
-//          CENVOL.Value := 0;
-//
-//          PEESP.Text := '';
-//          EDMARCA.Text := '';
-//
-//          CEPSBR.Value := 0;
-//          CEPSLQ.Value := 0;
-//
-//          SBRodape.Panels[1].Text := 'Arquivo XML importado não possui informações da MODALIDADE DO FRETE !';
-//          SBRodape.Refresh;
-//
-//
-//          {CEVDSC.Value   := imp_ncaNFE_VDESC.AsFloat;
-//          edvprod.Text   := formatfloat('#,0.00',imp_ncaNFE_VPROD.AsFloat);
-//          CEVFRT.Value   := imp_ncaNFE_VFRETE.AsFloat;
-//          CEVSEG.Value   := imp_ncaNFE_VSEG.AsFloat;
-//          edvbc.Text     := formatfloat('#,0.00',imp_ncaNFE_VBC.AsFloat);
-//          edvicms.Text   := formatfloat('#,0.00',imp_ncaNFE_VICMS.AsFloat);
-//          edvipi.Text    := formatfloat('#,0.00',imp_ncaNFE_VIPI.AsFloat);
-//          edvpis.Text    := formatfloat('#,0.00',imp_ncaNFE_VPIS.AsFloat);
-//          edvcofins.Text := formatfloat('#,0.00',imp_ncaNFE_VCOFINS.AsFloat);
-//          edvoutro.Text  := formatfloat('#,0.00',imp_ncaNFE_VOUTRO.AsFloat);
-//          edvII.Text     := formatfloat('#,0.00',imp_ncaNFE_VII.AsFloat);
-//          edvnf.Text     := formatfloat('#,0.00',imp_ncaNFE_VNF.AsFloat);  }
-//
-//          EDINFADNF.Lines.Clear;
-//          if LeftStr(PECFOP.Text,1) = '3' then
-//          EDINFADNF.Lines.Add(imp_ncaNFE_INFCPL.AsString);
-//          EDINFADNF.Refresh;
-//
-//          oRTransact(frmven_nfe.TSEdicao);
-//          if EdicaoCDEV.AsInteger = 9 then
-//          while not Edicao.Eof do
-//          begin
-//            Edicao.Edit;
-//            EdicaoNFE_CPROD.Value  := CECDNF.Text + '/' + EdicaoNFE_NITEMPED.AsString;
-//            EdicaoNFE_VUNCOM.Value := IFThen(EdicaoNFE_VUNCOM.AsCurrency <> EdicaoNFE_VPROD.AsCurrency / EdicaoNFE_QCOM.AsCurrency,EdicaoNFE_VPROD.AsCurrency / EdicaoNFE_QCOM.AsCurrency,EdicaoNFE_VUNCOM.AsCurrency);
-//            Edicao.Post;
-//            Edicao.Next;
-//          end;
-//        end else
-//        begin
-//          if imp_cabROM_CCLI.AsInteger > 0 then
-//          begin
-//            CEIDCD.Value    := imp_cabROM_CCLI.AsInteger;
-//            CEIDCD.Modified := True;
-//            CEIDCD.ValidateEdit;
-//          end;
-//          { NATUREZA DE OPERAÇÃO }
-//          ACTPSQ_TAB_CFOP.Caption     := 'NFE_CFOP'; { Field }
-//          ACTPSQ_TAB_CFOP.HelpKeyWord := PECFOP.Text; { Value }
-//          ACTPSQ_TAB_CFOP.Execute;
-//
-//          imp_ite.First;
-//          while not imp_ite.Eof do
-//          begin
-//            Edicao.Append;
-//
-//            { SKU }
-//            ACTPSQ_CAD_PRO.Caption     := 'PK.CP_ID'; { Field }
-//            ACTPSQ_CAD_PRO.HelpKeyWord := imp_iteROM_IPRO.AsString; { Value }
-//            ACTPSQ_CAD_PRO.Execute;
-//
-//            EdicaoNFE_QCOM.Value     := imp_iteROM_QTDE.AsFloat;
-//            EdicaoNFE_VUNCOM.AsFloat := imp_iteROM_UNIT.AsFloat;
-//            Edicao.Post;
-//
-//            imp_ite.Next;
-//          end;
-//        end;
-//      end;
-//    finally
-//      FreeAndNil(frmimporta_geral);
-//    end;
-//
-//    PCEdicao.ActivePage := TSProduto;
-//    DBGEdicao.SetFocus;
-//  end;
+  { nothing }
 end;
 
 procedure TFrmVEN_NFE.ACTEmailExecute(Sender: TObject);
@@ -4600,7 +4444,6 @@ begin
         end else
 
         if LeftStr(PECFOP.Text,1) = '7' then
-        while not Edicao.Eof do
         begin
           Edicao.Edit;
           EdicaoNFE_CNPJProd.Value     := EDCNPJProd.Text;
@@ -4839,6 +4682,7 @@ end;
 procedure TFrmVEN_NFE.EdicaoAfterInsert(DataSet: TDataSet);
 begin
   DBGEdicaoNFE_CPROD.Field.FocusControl;
+  if PCEdicao.ActivePage = TSProduto then
   oSetFocus(DBGEdicao);
 end;
 
@@ -4878,6 +4722,7 @@ end;
 
 procedure TFrmVEN_NFE.EdicaoAfterEdit(DataSet: TDataSet);
 begin
+  if PCEdicao.ActivePage = TSProduto then
   oSetFocus(DBGEdicao);
 end;
 
@@ -4914,6 +4759,12 @@ begin
     EdicaoNFE_VNF.Value    := EdicaoNFE_VIPI.AsFloat;
   end;
 
+  if EdicaoNFE_CSTIPI.Value = EmptyStr then
+  begin
+    EdicaoNFE_CSTIPI.Value := '99';
+    EdicaoNFE_CENQ.Value   := '999';
+  end;
+    
   { Limpa CEST Incorreto ! }
   if EdicaoNFE_CEST.Value  = '0' then EdicaoNFE_CEST.Value := EmptyStr;
 
@@ -5525,11 +5376,11 @@ begin
   PECFOP.Text         := TAB_CFOPCFOP.AsString;
   PECFOP_NO.Text      := TAB_CFOPCFOP_NO.AsString;
   IECFOP_TPNF.Text    := TAB_CFOPCFOP_TPNF.AsString;
-  EDCFOP_TPNF_NO.Text := TAB_CFOPCFOP_TPNF_NO.AsString;
+  EDCFOP_TPFN_NO.Text := TAB_CFOPCFOP_TPFN_NO.AsString;
 
   if PECFOP.Text = '6108' then
   IEindFinal.Text := '1'; { Consumidor Final }
-  IEFinNFe.Text   := IFThen(TAB_CFOPCFOP_TPNF_NO.AsString = 'DEVOLUÇÃO','4','1');
+  IEFinNFe.Text   := IFThen(TAB_CFOPCFOP_TPFN_NO.AsString = 'DEVOLUÇÃO','4','1');
 
   if LeftStr(PECFOP.Text,1) = '3' then
   begin
@@ -8631,11 +8482,12 @@ var AXMLDOC: TXMLDocument;
     ANodeAdi,
     ANodeDI,
     ANodeTmp: IXMLNode;
-    AFileName: String;
+    AFileName,
+    AValue: String;
     i: word;
 begin
   { PATH - Área de Trabalho }
-  EPrincipal.InitialDir := RECParametros.SHE_PATH_DOCUMENTS;
+  //EPrincipal.InitialDir := RECParametros.SHE_PATH_DOCUMENTS;
 
   if not EPrincipal.Execute then
   Abort;
@@ -8658,9 +8510,8 @@ begin
     SBRodape.Panels[5].Text := EmptyStr; { CSTAT       }
     SBRodape.Refresh;
 
+    AValue    := EmptyStr;
     AFileName := EPrincipal.FileName;
-    //AFileName := ExtractFileName(EPrincipal.FileName);
-    //AFileName := LeftStr(AFileName,Length(AFileName) - 4);
 
     { CABEÇALHO }
     // Cria a variável baseada no TXMLDocument
@@ -8671,46 +8522,127 @@ begin
     AXMLDOC.Active;
 
     // Aqui eu peço para encontrar a primeira ocorrencia da Tag <det>>
-
     ANodePai := AXMLDOC.DocumentElement.ChildNodes.FindNode('NFe');
     if ANodePai <> Nil then
     begin
       ANodePai := ANodePai.ChildNodes.FindNode('infNFe');
-    //ANodePai := AXMLDOC.DocumentElement.ChildNodes.FindNode('infNFe');
+      
+      { EMITENTE }
+      ANodePai := ANodePai.ChildNodes['emit'];
+      ANodeEnd := ANodePai.ChildNodes['enderEmit'];
 
-      { Quando NF própria pegar destinatário }
-      if AXMLDOC.ChildNodes['nfeProc'].ChildNodes['NFe'].ChildNodes['infNFe'].ChildNodes['emit'].ChildNodes['CNPJ'].NodeValue = RECParametros.CNPJ then
+      if (TRIM(ANodePai.ChildNodes['CNPJ'].Text)) = RECParametros.CNPJ then
       begin
+        { DESTINATÁRIO }
         ANodePai := ANodePai.ChildNodes['dest'];
         ANodeEnd := ANodePai.ChildNodes['enderDest'];
-      end else
-      begin
-        ANodePai := ANodePai.ChildNodes['emit'];
-        ANodeEnd := ANodePai.ChildNodes['enderEmit'];
       end;
-
-      NewCDNF  := Trim(AXMLDOC.ChildNodes['nfeProc'].ChildNodes['NFe'].ChildNodes['infNFe'].ChildNodes['ide'].ChildNodes['nNF'].NodeValue);
-      NewDTNF  := Trim(AXMLDOC.ChildNodes['nfeProc'].ChildNodes['NFe'].ChildNodes['infNFe'].ChildNodes['ide'].ChildNodes['dhEmi'].NodeValue);
-      NewDTNF  := Trim(Copy(NewDTNF,9,2) + '/' + Copy(NewDTNF,6,2) + '/' + Copy(NewDTNF,1,4));
-      NewCHNFE := Trim(AXMLDOC.ChildNodes['nfeProc'].ChildNodes['protNFe'].ChildNodes['infProt'].ChildNodes['chNFe'].NodeValue);
     end else
     begin
       ANodePai := AXMLDOC.DocumentElement.ChildNodes.FindNode('infNFe');
-      if tag = 0 then
+      ANodePai := AXMLDOC.DocumentElement.childNodes.First.ChildNodes.FindNode('emit');
+      ANodeEnd := AXMLDOC.DocumentElement.childNodes.First.ChildNodes.FindNode('enderEmit');
+
+      if (TRIM(ANodePai.ChildNodes['CNPJ'].Text)) = RECParametros.CNPJ then
       begin
         ANodePai := AXMLDOC.DocumentElement.childNodes.First.ChildNodes.FindNode('dest');
         ANodeEnd := ANodePai.ChildNodes['enderDest'];
-      end else
-      begin
-        ANodePai := AXMLDOC.DocumentElement.childNodes.First.ChildNodes.FindNode('emit');
-        ANodeEnd := ANodePai.ChildNodes['enderEmit'];
       end;
     end;
 
-    IExPais.Text := Trim(ANodeEnd.ChildNodes['cPais'].Text);
+    IEXPais.Text := Trim(ANodeEnd.ChildNodes['cPais'].Text);
 
-    ANodeSec := ANodePai;
-    ANodeSec.ChildNodes.First;
+    if TRIM(ANodePai.ChildNodes['CNPJ'].Text) <> '' then
+    AValue := TRIM(ANodePai.ChildNodes['CNPJ'].Text) else
+    AValue := TRIM(ANodePai.ChildNodes['xNome'].Text);
+
+    { CADASTROS }
+    if AValue <> EmptyStr then
+    begin
+      with SQLConsulta do
+      begin
+        { CLIENTES }
+        if not oBSoNumero(AValue) then // Pesquisa Razão Social
+        begin
+          Close;
+          SQL.Clear;
+          SQL.Add('SELECT ID FROM CAD_CLI');
+          SQL.Add('WHERE  RAZAO = ''' + AValue + '''');
+        end else
+
+        if Length(AValue) = 14 then // Pesquisa CNPJ
+        begin
+          Close;
+          SQL.Clear;
+          SQL.Add('SELECT ID FROM CAD_CLI');
+          SQL.Add('WHERE  CNPJ = ''' + AValue + '''');
+        end else
+
+        if Length(AValue) = 11 then // Pesquisa CPF
+        begin
+          Close;
+          SQL.Clear;
+          SQL.Add('SELECT ID FROM CAD_CLI');
+          SQL.Add('WHERE  CPF = ''' + AValue + '''');
+        end else
+
+        Prepare;
+        ExecQuery;
+
+        if not Eof then
+        begin
+          LAIDCD.Tag     := 0;
+          LAIDCD.Caption := 'Cliente';
+        end else
+        begin
+          { FORNECEDORES }
+          if not oBSoNumero(AValue) then // Pesquisa Razão Social
+          begin
+            Close;
+            SQL.Clear;
+            SQL.Add('SELECT ID FROM CAD_FOR');
+            SQL.Add('WHERE  RAZAO = ''' + AValue + '''');
+          end;
+
+          if Length(AValue) = 14 then // Pesquisa CNPJ
+          begin
+            Close;
+            SQL.Clear;
+            SQL.Add('SELECT ID FROM CAD_FOR');
+            SQL.Add('WHERE  CNPJ = ''' + AValue + '''');
+          end else
+
+          if Length(AValue) = 11 then // Pesquisa CPF
+          begin
+            Close;
+            SQL.Clear;
+            SQL.Add('SELECT ID FROM CAD_FOR');
+            SQL.Add('WHERE  CPF = ''' + AValue + '''');
+          end;
+
+          Prepare;
+          ExecQuery;
+
+          if not Eof then
+          begin
+            LAIDCD.Tag     := 1;
+            LAIDCD.Caption := 'Fornecedor';
+          end;
+        end;
+
+        if Eof then
+        AValue := EmptyStr else
+        AValue := Current.Vars[0].AsString;
+
+        { PESQUISA CADASTRO }
+        if AValue <> EmptyStr then
+        begin
+          CEIDCD.Value    := Current.ByName('ID').AsInteger;
+          CEIDCD.Modified := True;
+          CEIDCD.ValidateEdit;
+        end;
+      end;
+    end;
 
     // Aqui eu peço para encontrar a primeira ocorrencia da Tag <det>>
     ANodePai := AXMLDOC.DocumentElement.childNodes.First.ChildNodes.FindNode('ide');
@@ -8740,7 +8672,7 @@ begin
 
     FIS_NFE_ADMNFE_DHEMI.Value    := strtodate(SBRodape.Hint);
     FIS_NFE_ADMNFE_DHSAIENT.Value := FIS_NFE_ADMNFE_DHEMI.AsDateTime;
-    
+
     if trim(ANodeSec.ChildNodes['dSaiEnt'].Text) <> '' then
     FIS_NFE_ADMNFE_DHSAIENT.Value  := strtodate(copy(ANodeSec.ChildNodes['dSaiEnt'].Text,9,2)+'/'+copy(ANodeSec.ChildNodes['dSaiEnt'].Text,6,2)+'/'+copy(ANodeSec.ChildNodes['dSaiEnt'].Text,1,4));
 
@@ -8756,6 +8688,23 @@ begin
     FIS_NFE_ADM.Post;
 
     { DETALHES }
+    ANodePai := AXMLDOC.DocumentElement.childNodes.First.ChildNodes.FindNode('emit');
+    if ANodePai = nil then
+    begin
+      ANodePai := AXMLDOC.DocumentElement.ChildNodes.FindNode('NFe');
+      ANodePai := ANodePai.ChildNodes.FindNode('infNFe');
+      ANodePai := ANodePai.ChildNodes['emit'];
+    end;
+
+    if SQLConsulta.Eof then
+    oErro(Application.Handle,'Destinatário não Encontrado !') else    //CADASTRA_FAVORECIDO(ANodeSec,ANodeEnd);
+    begin
+      CEIDCD.Value    := SQLConsulta.Current.Vars[0].AsInteger;
+      CEIDCD.Modified := True;
+      CEIDCD.ValidateEdit;
+    end;
+
+    { DETALHES }
     ANodePai := AXMLDOC.DocumentElement.childNodes.First.ChildNodes.FindNode('det');
     if ANodePai = nil then
     begin
@@ -8768,6 +8717,16 @@ begin
     ANodeSec := ANodePai;
     // Posiciona o primeiro elemento encontrado
     ANodeSec.ChildNodes.First;
+    ANodeTmp := ANodeSec.ChildNodes['prod'];
+
+    if ANodeTmp.ChildNodes['cProd'].text <> '' then
+    begin
+      { NATUREZA DE OPERAÇÃO }
+      ACTPSQ_TAB_CFOP.Caption     := 'NFE_CFOP';  { Field }
+      ACTPSQ_TAB_CFOP.HelpKeyWord := Trim(ANodeTmp.ChildNodes['CFOP'].Text); { Value }
+      ACTPSQ_TAB_CFOP.Execute;
+    end;
+    
     repeat
       // referencia a tag <prod> dentro de <det>
       ANodeTmp  := ANodeSec.ChildNodes['prod'];
@@ -9596,49 +9555,6 @@ begin
         EDInfAdNF.Tag  := 1;
       end;
     end;
-
-    { DESTINATÁRIO }
-    with SQLConsulta do
-    begin
-      Close;
-      SQL.Clear;
-
-      if LAIDCD.Tag = 0 then
-      begin
-        SQL.Add('SELECT ID FROM CAD_CLI');
-
-        if Trim(ANodeSec.ChildNodes['CNPJ'].Text) <> '' then
-        SQL.Add('WHERE CLI_CNPJ = '''+trim(ANodeSec.ChildNodes['CNPJ'].Text)+'''') else
-        SQL.Add('WHERE CLI_RAZA LIKE ''%'+copy(trim(ANodeSec.ChildNodes['xNome'].Text),1,10)+'%''');
-      end else
-      begin
-        SQL.Add('SELECT ID FROM CAD_FOR');
-
-        if Trim(ANodeSec.ChildNodes['CNPJ'].Text) <> '' then
-        SQL.Add('WHERE FOR_CNPJ = '''+trim(ANodeSec.ChildNodes['CNPJ'].Text)+'''') else
-        SQL.Add('WHERE FOR_RAZA LIKE ''%'+copy(trim(ANodeSec.ChildNodes['xNome'].Text),1,10)+'%''');
-      end;
-
-      if LeftStr(PECFOP.Text,1) = '3' then
-      begin
-        Close;
-        SQL.Clear;
-        SQL.Add('SELECT   FIRST 1 PK.IDCD,PK.DECD FROM  ' + oREPZero('NFE_CAB','_',RECParametros.EP_ID,3) + ' AS PK');
-        SQL.Add('WHERE    PK.CFOP = ''3102''');
-        SQL.Add('ORDER BY PK.ID DESC');
-      end;
-
-      Prepare;
-      ExecQuery;
-    end;
-
-    if SQLConsulta.Eof then
-    oErro(Application.Handle,'Destinatário não Encontrado !') else    //CADASTRA_FAVORECIDO(ANodeSec,ANodeEnd);
-    begin
-      CEIDCD.Value    := SQLConsulta.Current.Vars[0].AsInteger;
-      CEIDCD.Modified := True;
-      CEIDCD.ValidateEdit;
-    end;
   finally
     Screen.Cursor := crHourGlass; { Cursor }
 
@@ -9910,7 +9826,17 @@ procedure TFrmVEN_NFE.LAIDCDClick(Sender: TObject);
   EDDECD.SetFocus;
 end;
 
-end.
-
+procedure TFrmVEN_NFE.PECFOPKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if key = vk_return then
+  begin
+    { Habilita Cálculo }
+    ACTNFeCalculate.Tag := 0;
+    ACTXMLImporta.Tag   := 0;
+  end;
+end;
 
+
+end.
 

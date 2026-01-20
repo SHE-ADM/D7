@@ -5035,8 +5035,10 @@ begin
     if (TWinControl(FWinControl).Enabled) and
        (TWinControl(FWinControl).Visible) then
     begin
-      PostMessage(TWinControl(FWinControl).Handle, WM_SETFOCUS, 0, 0);
-      TWinControl(FWinControl).SetFocus;
+     // PostMessage(TWinControl(FWinControl).Handle, WM_SETFOCUS, 0, 0);
+     // TWinControl(FWinControl).SetFocus;
+
+      oExceptionFocus(TWinControl(FWinControl));
       Application.ProcessMessages
     end;
   end;
