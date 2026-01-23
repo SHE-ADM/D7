@@ -71,14 +71,15 @@ inherited FrmProduto: TFrmProduto
               OriginalHeight = 200
             end
             inherited DPEdicao: TdxDockPanel
-              Left = 1820
+              Left = -100
+              Height = 907
               CaptionButtons = []
               AutoHidePosition = 0
               DockType = 2
               OriginalWidth = 100
               OriginalHeight = 573
               inherited SBEdicao: TdxSideBar
-                Height = 885
+                Height = 548
                 Groups = <
                   item
                     Caption = 'Edicao'
@@ -1021,8 +1022,8 @@ inherited FrmProduto: TFrmProduto
                         object DBGPR: TdxDBGrid
                           Left = 0
                           Top = 0
-                          Width = 1060
-                          Height = 380
+                          Width = 1240
+                          Height = 544
                           Bands = <
                             item
                               Alignment = taLeftJustify
@@ -1196,8 +1197,8 @@ inherited FrmProduto: TFrmProduto
                         object DBGPS: TdxDBGrid
                           Left = 0
                           Top = 0
-                          Width = 1060
-                          Height = 380
+                          Width = 1240
+                          Height = 544
                           Bands = <
                             item
                               Alignment = taLeftJustify
@@ -1403,8 +1404,8 @@ inherited FrmProduto: TFrmProduto
                         object DBGPP: TdxDBGrid
                           Left = 0
                           Top = 0
-                          Width = 1060
-                          Height = 380
+                          Width = 1240
+                          Height = 544
                           Bands = <
                             item
                               Alignment = taLeftJustify
@@ -1701,8 +1702,8 @@ inherited FrmProduto: TFrmProduto
                             object DBGPCA: TdxDBGrid
                               Left = 0
                               Top = 0
-                              Width = 1060
-                              Height = 351
+                              Width = 1240
+                              Height = 515
                               Bands = <
                                 item
                                   Alignment = taLeftJustify
@@ -2114,8 +2115,8 @@ inherited FrmProduto: TFrmProduto
                         object DBGRV: TdxDBGrid
                           Left = 0
                           Top = 0
-                          Width = 1060
-                          Height = 380
+                          Width = 1240
+                          Height = 544
                           Bands = <
                             item
                               Alignment = taLeftJustify
@@ -2335,8 +2336,8 @@ inherited FrmProduto: TFrmProduto
                         end
                         object PNLINFADETQ: TPanel
                           Left = 0
-                          Top = 380
-                          Width = 1060
+                          Top = 544
+                          Width = 1240
                           Height = 0
                           Align = alBottom
                           BevelOuter = bvNone
@@ -2351,7 +2352,7 @@ inherited FrmProduto: TFrmProduto
                           object DBINFADETQ: TdxDBMemo
                             Left = 0
                             Top = 0
-                            Width = 1060
+                            Width = 1240
                             Align = alClient
                             Color = clInfoBk
                             Font.Charset = DEFAULT_CHARSET
@@ -2376,8 +2377,8 @@ inherited FrmProduto: TFrmProduto
                         OnShow = TSLEShow
                         object PNLINFADETQLE: TPanel
                           Left = 0
-                          Top = 380
-                          Width = 1060
+                          Top = 544
+                          Width = 1240
                           Height = 0
                           Align = alBottom
                           BevelOuter = bvNone
@@ -2392,7 +2393,7 @@ inherited FrmProduto: TFrmProduto
                           object DBINFADETQLE: TdxDBMemo
                             Left = 0
                             Top = 0
-                            Width = 1060
+                            Width = 1240
                             Align = alClient
                             Color = clInfoBk
                             Font.Charset = DEFAULT_CHARSET
@@ -2414,8 +2415,8 @@ inherited FrmProduto: TFrmProduto
                         object DBGLE: TdxDBGrid
                           Left = 0
                           Top = 0
-                          Width = 1060
-                          Height = 380
+                          Width = 1240
+                          Height = 544
                           Bands = <
                             item
                               Alignment = taLeftJustify
@@ -2659,8 +2660,8 @@ inherited FrmProduto: TFrmProduto
                         object DBGLS: TdxDBGrid
                           Left = 0
                           Top = 0
-                          Width = 1060
-                          Height = 380
+                          Width = 1240
+                          Height = 544
                           Bands = <
                             item
                               Alignment = taLeftJustify
@@ -2899,8 +2900,8 @@ inherited FrmProduto: TFrmProduto
                         end
                         object PNLINFADETQLS: TPanel
                           Left = 0
-                          Top = 380
-                          Width = 1060
+                          Top = 544
+                          Width = 1240
                           Height = 0
                           Align = alBottom
                           BevelOuter = bvNone
@@ -2915,7 +2916,7 @@ inherited FrmProduto: TFrmProduto
                           object DBINFADETQLS: TdxDBMemo
                             Left = 0
                             Top = 0
-                            Width = 1060
+                            Width = 1240
                             Align = alClient
                             Color = clInfoBk
                             Font.Charset = DEFAULT_CHARSET

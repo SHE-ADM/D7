@@ -1642,13 +1642,14 @@ begin
   ACTNFeCalculate.Tag := 1; { Desabilita }
 
   ACTConsulta.Execute; { Tabelas }
-  ACTEdicao.Execute; { Ediçõe }
+  ACTEdicao.Execute;   { Edições }
 end;
 
 procedure TFrmVEN_NFE._WM_AFTER_SHOW(var Msg: TMessage);
 begin
   { INICIALIZAÇÃO DOS COMPONENTES }
   oPRN_EXE(Application.Handle,'Relatórios');
+  
   try
     Screen.Cursor := crAppStart;
     GBMenuEdicao.Visible := False;
@@ -1825,6 +1826,7 @@ begin
           { Transação Principal }
           try
             oFTransact(TConsulta); { Consultas }
+            oFTransact(TEvent   ); { Eventos }
             oFTransact(TSEdicao ); { Edições Temporárias }
           except
             on E: Exception do
@@ -2270,6 +2272,29 @@ begin
     FList.Clear;
   end;
 
+  { DESTINATÁRIO }
+  if REC_SHE_DEF.FB_SQL_TAB = '1' then
+  begin
+    LAIDCD.Caption := 'Fornecedor';
+    LAIDCD.Tag     := 1;
+  end else
+
+  if REC_SHE_DEF.FB_SQL_TAB = '2' then
+  begin
+    LAIDCD.Caption := 'Representante';
+    LAIDCD.Tag     := 2;
+  end else
+
+  if REC_SHE_DEF.FB_SQL_TAB = '3' then
+  begin
+    LAIDCD.Caption := 'Transportadora';
+    LAIDCD.Tag     := 3;
+  end else
+  begin
+    LAIDCD.Caption := 'Cliente';
+    LAIDCD.Tag     := 0;
+  end;
+
   { INICIALIZA FORM SCREEN }
   { CARREGA PRODUTOS }
   if REC_SHE_DEF.IDPK > 0 then
@@ -2307,29 +2332,6 @@ begin
     CEPDSC.ReadOnly := True;
     CEVDSC.Value    := SQLPKConsulta.Current.ByName('PK_VDSC').Value;
     LAPDSC.Tag      := IFThen(SQLPKConsulta.Current.ByName('PK_PDSC').AsFloat > 0,1,0);
-
-    { DESTINATÁRIO }
-    if REC_SHE_DEF.FB_SQL_TAB = '1' then
-    begin
-      LAIDCD.Caption := 'Fornecedor';
-      LAIDCD.Tag     := 1;
-    end else
-
-    if REC_SHE_DEF.FB_SQL_TAB = '2' then
-    begin
-      LAIDCD.Caption := 'Representante';
-      LAIDCD.Tag     := 2;
-    end else
-
-    if REC_SHE_DEF.FB_SQL_TAB = '3' then
-    begin
-      LAIDCD.Caption := 'Transportadora';
-      LAIDCD.Tag     := 3;
-    end else
-    begin
-      LAIDCD.Caption := 'Cliente';
-      LAIDCD.Tag     := 0;
-    end;
 
     CEIDCD.Value    := SQLPKConsulta.Current.ByName('CD_ID').AsInteger;
     CEIDCD.Modified := True;
@@ -2554,23 +2556,23 @@ begin
 
     SQL.Add('       FK.VPRC_PAD,FK.VPRC_COM,');
 
-    SQL.Add('       CAST(MAX(CP.UQTDE) OVER(PARTITION BY FK.CP_ID,FK.ITEM) AS NUMERIC(15,2)) AS UQTDE,');
-    SQL.Add('       CAST(MAX(CP.UQVOL) OVER(PARTITION BY FK.CP_ID,FK.ITEM) AS NUMERIC(15,2)) AS UQVOL,');
+    SQL.Add('       CAST(MAX(CP.UQTDE) OVER(PARTITION BY FK.CP_ID,FK.ITEM,FK.VPRC_PAD,FK.VPRC_COM,FK.NFCI) AS NUMERIC(15,2)) AS UQTDE,');
+    SQL.Add('       CAST(MAX(CP.UQVOL) OVER(PARTITION BY FK.CP_ID,FK.ITEM,FK.VPRC_PAD,FK.VPRC_COM,FK.NFCI) AS NUMERIC(15,2)) AS UQVOL,');
 
-    SQL.Add('       CAST(SUM(FK.QTDE) OVER(PARTITION BY FK.CP_ID,FK.ITEM) AS NUMERIC(15,2)) AS QTDE,');
-    SQL.Add('       CAST(SUM(FK.QTRL) OVER(PARTITION BY FK.CP_ID,FK.ITEM) AS INTEGER)       AS QTRL,');
-    SQL.Add('       CAST(SUM(FK.QTDE * FK.VPRC_COM) OVER(PARTITION BY FK.CP_ID,FK.ITEM)     AS NUMERIC(15,2))  AS TCDE,');
+    SQL.Add('       CAST(SUM(FK.QTDE) OVER(PARTITION BY FK.CP_ID,FK.ITEM,FK.VPRC_PAD,FK.VPRC_COM,FK.NFCI) AS NUMERIC(15,2)) AS QTDE,');
+    SQL.Add('       CAST(SUM(FK.QTRL) OVER(PARTITION BY FK.CP_ID,FK.ITEM,FK.VPRC_PAD,FK.VPRC_COM,FK.NFCI) AS INTEGER)       AS QTRL,');
+    SQL.Add('       CAST(SUM(FK.QTDE * FK.VPRC_COM) OVER(PARTITION BY FK.CP_ID,FK.ITEM,FK.VPRC_PAD,FK.VPRC_COM,FK.NFCI)     AS NUMERIC(15,2))  AS TCDE,');
 
-    SQL.Add('       CAST(MAX(PK.VDSC) OVER(PARTITION BY FK.CP_ID,FK.ITEM) AS NUMERIC(15,2)) AS PK_VDSC,');
-    SQL.Add('       CAST(MAX(PK.PDSC) OVER(PARTITION BY FK.CP_ID,FK.ITEM) AS NUMERIC(15,2)) AS PK_PDSC,');
+    SQL.Add('       CAST(MAX(PK.VDSC) OVER(PARTITION BY FK.CP_ID,FK.ITEM,FK.VPRC_PAD,FK.VPRC_COM,FK.NFCI) AS NUMERIC(15,2)) AS PK_VDSC,');
+    SQL.Add('       CAST(MAX(PK.PDSC) OVER(PARTITION BY FK.CP_ID,FK.ITEM,FK.VPRC_PAD,FK.VPRC_COM,FK.NFCI) AS NUMERIC(15,2)) AS PK_PDSC,');
 
-    SQL.Add('       CAST(MAX(PK.TSDE) OVER(PARTITION BY FK.CP_ID,FK.ITEM) AS NUMERIC(15,2)) AS PK_TSDE,');
-    SQL.Add('       CAST(MAX(PK.TCDE) OVER(PARTITION BY FK.CP_ID,FK.ITEM) AS NUMERIC(15,2)) AS PK_TCDE,');
-    SQL.Add('       CAST(MAX(PV.TCDE) OVER(PARTITION BY FK.CP_ID,FK.ITEM) AS NUMERIC(15,2)) AS PV_TCDE,');
+    SQL.Add('       CAST(MAX(PK.TSDE) OVER(PARTITION BY FK.CP_ID,FK.ITEM,FK.VPRC_PAD,FK.VPRC_COM,FK.NFCI) AS NUMERIC(15,2)) AS PK_TSDE,');
+    SQL.Add('       CAST(MAX(PK.TCDE) OVER(PARTITION BY FK.CP_ID,FK.ITEM,FK.VPRC_PAD,FK.VPRC_COM,FK.NFCI) AS NUMERIC(15,2)) AS PK_TCDE,');
+    SQL.Add('       CAST(MAX(PV.TCDE) OVER(PARTITION BY FK.CP_ID,FK.ITEM,FK.VPRC_PAD,FK.VPRC_COM,FK.NFCI) AS NUMERIC(15,2)) AS PV_TCDE,');
 
-    SQL.Add('       CAST(MAX(PK.VFRT) OVER(PARTITION BY FK.CP_ID,FK.ITEM) AS NUMERIC(15,2)) AS FRT_VFRT,');
-    SQL.Add('       CAST(SUM(FK.PSBR) OVER(PARTITION BY FK.CP_ID,FK.ITEM) AS NUMERIC(15,2)) AS PSBR,');
-    SQL.Add('       CAST(SUM(FK.PSLQ) OVER(PARTITION BY FK.CP_ID,FK.ITEM) AS NUMERIC(15,2)) AS PSLQ,');
+    SQL.Add('       CAST(MAX(PK.VFRT) OVER(PARTITION BY FK.CP_ID,FK.ITEM,FK.VPRC_PAD,FK.VPRC_COM,FK.NFCI) AS NUMERIC(15,2)) AS FRT_VFRT,');
+    SQL.Add('       CAST(SUM(FK.PSBR) OVER(PARTITION BY FK.CP_ID,FK.ITEM,FK.VPRC_PAD,FK.VPRC_COM,FK.NFCI) AS NUMERIC(15,2)) AS PSBR,');
+    SQL.Add('       CAST(SUM(FK.PSLQ) OVER(PARTITION BY FK.CP_ID,FK.ITEM,FK.VPRC_PAD,FK.VPRC_COM,FK.NFCI) AS NUMERIC(15,2)) AS PSLQ,');
 
     SQL.Add('       PK.DEST,CP.ORIG,FK.NFCI,PK.INFADCAD');
 
@@ -2611,7 +2613,19 @@ begin
     SQL.Add('       PK.IDPK ,NULL AS DEPK,0 AS CDRO,');
     SQL.Add('       PK.CDNF ,PK.NFE_DEMI,PK.NFE_CHAV,PK.NFE_VNF,');
 
-    SQL.Add('       PK.CD_ID,CD.FANTASIA  AS CD_NO,CD.RAZAO AS CD_RZ_NO,CD.UF,FK.NFE_CFOP AS CFOP,');
+
+    if LAIDCD.Tag = 1 then { Fornecedores }
+    SQL.Add('PK.CF_ID AS CD_ID,') else
+
+    if LAIDCD.Tag = 2 then { Representantes }
+    SQL.Add('PK.CR_ID AS CD_ID,') else
+
+    if LAIDCD.Tag = 3 then { Transportadoras }
+    SQL.Add('PK.CT_ID AS CD_ID,') else
+
+    SQL.Add('PK.CD_ID,');  { Clientes }
+
+    SQL.Add('       CD.FANTASIA  AS CD_NO,CD.RAZAO AS CD_RZ_NO,CD.UF,FK.NFE_CFOP AS CFOP,');
     SQL.Add('       PK.CR_ID,CR.FANTASIA  AS CR_NO,');
     SQL.Add('       PK.CV_ID,CV.LOGIN     AS CV_NO,');
     SQL.Add('       PK.CT_ID,PK.MFRT AS FRT_MODELO,');
@@ -2644,7 +2658,7 @@ begin
     SQL.Add('       CAST(MAX(TK.PSBR) OVER(PARTITION BY FK.NFE_CPROD,FK.NFE_ITEMPED) AS NUMERIC(15,2)) AS PSBR,');
     SQL.Add('       CAST(MAX(TK.PSLQ) OVER(PARTITION BY FK.NFE_CPROD,FK.NFE_ITEMPED) AS NUMERIC(15,2)) AS PSLQ,');
 
-    SQL.Add('       PK.DEST,FK.NFE_ORIG AS ORIG,FK.NFE_NFCI AS NFCI,NULL AS INFADCAD');
+    SQL.Add('       PK.DEST,COALESCE(NULLIF(FK.NFE_ORIG,''''),0) AS ORIG,FK.NFE_NFCI AS NFCI,NULL AS INFADCAD');
 
     SQL.Add('FROM ' + oREPZero('NFE_CAB','_',RECParametros.EP_ID,3) + ' AS PK');
     SQL.Add('JOIN ' + oREPZero('NFE_TRA','_',RECParametros.EP_ID,3) + ' AS TK ON TK.IDPK = PK.IDPK');
@@ -2652,9 +2666,18 @@ begin
 
     SQL.Add('JOIN TAB_NAT  AS TB_CFOP ON (TB_CFOP.CFOP = FK.NFE_CFOP)');
 
-    SQL.Add('JOIN CAD_CLI  AS CD ON (CD.CD_ID = PK.CD_ID)');
-    SQL.Add('JOIN CAD_REP  AS CR ON (CR.CR_ID = PK.CR_ID)');
-    SQL.Add('JOIN TAB_USER AS CV ON (CV.LG_ID = PK.CV_ID)');
+    if LAIDCD.Tag = 1 then { Fornecedores }
+    SQL.Add('JOIN CAD_FOR  AS CD ON (CD.CF_ID = PK.CD_ID)') else
+
+    if LAIDCD.Tag = 2 then { Representantes }
+    SQL.Add('JOIN CAD_REP  AS CD ON (CD.CR_ID = PK.CD_ID)') else
+
+    if LAIDCD.Tag = 3 then { Transportadoras }
+    SQL.Add('JOIN CAD_TRA  AS CD ON (CD.CT_ID = PK.CD_ID)') else
+    SQL.Add('JOIN CAD_CLI  AS CD ON (CD.CD_ID = PK.CD_ID)');  { Clientes }
+
+    SQL.Add('LEFT JOIN CAD_REP  AS CR ON (CR.CR_ID = PK.CR_ID)');
+    SQL.Add('LEFT JOIN TAB_USER AS CV ON (CV.LG_ID = PK.CV_ID)');
 
     SQL.Add('LEFT JOIN CAD_PRO AS CP ON (CP.SKU = FK.NFE_CPROD)');
 
@@ -2905,7 +2928,7 @@ begin
   if (AREC_CAD_PRO_PSQ.PSQ_TVD_PK <> EmptyStr) and (AREC_CAD_PRO_PSQ.PSQ_TVD_PK <> EdicaoNFE_CPROD.AsString) then
 
   try
-    uPSQ_CAD_PRO_TMP(AREC_CAD_PRO_PSQ);
+    uPSQ_CAD_PRO(AREC_CAD_PRO_PSQ);
 
   finally
     if   AREC_CAD_PRO_PSQ.PSQ_OK then
@@ -4973,8 +4996,7 @@ begin
   Abort;
 
   if EdicaoFLAG_CTRL.AsInteger = 1 then
-  begin
-    if oYesNo(handle,'Desabilitar Cálculos Tributários ?') = mrYes then
+  begin    if oYesNo(handle,'Desabilitar Cálculos Tributários ?') = mrYes then
     begin
       Edicao.Edit;
       EdicaoFLAG_CTRL.Value := 0;
@@ -6084,6 +6106,7 @@ begin
           Edicao.Edit;
           if EdicaoFLAG_CTRL.AsString <> '1' then
           begin
+            EdicaoNFE_VDESC.Value          := 0;
             EdicaoNFE_VBC.Value            := 0;
             EdicaoNFE_VICMS.Value          := 0;
             EdicaoNFE_VICMSDESON.Value     := 0;
@@ -6091,7 +6114,7 @@ begin
             EdicaoNFE_VIPI.Value           := 0;
             EdicaoNFE_VBCPIS.Value         := 0;
             EdicaoNFE_VPIS.Value           := 0;
-            EdicaoNFE_VBCCOFINS.Value       := 0;
+            EdicaoNFE_VBCCOFINS.Value      := 0;
             EdicaoNFE_VCOFINS.Value        := 0;
             EdicaoNFE_VBCCREDICMSSN.Value  := 0;
             EdicaoNFE_PCREDSN.Value        := 0;
@@ -6114,6 +6137,7 @@ begin
             if EdicaoNFE_INDTOT.AsInteger = 1 then
             begin
               { RATEIOS }
+              if IFThen(ADSC_NREG > Edicao.RecNo,ADSC_VREG,ADSC_VSLD) < EdicaoNFE_VPROD.AsFloat then
               EdicaoNFE_VDESC.Value  := IFThen(ADSC_NREG > Edicao.RecNo,ADSC_VREG,ADSC_VSLD); { Descontos }
               EdicaoNFE_VFRETE.Value := IFThen(AFRT_NREG > Edicao.RecNo,AFRT_VREG,AFRT_VSLD); { Frete }
               EdicaoNFE_VSEG.Value   := IFThen(ASEG_NREG > Edicao.RecNo,ASEG_VREG,ASEG_VSLD); { Seguro }

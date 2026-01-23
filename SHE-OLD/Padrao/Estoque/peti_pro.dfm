@@ -4,7 +4,7 @@ inherited frmeti_pro: Tfrmeti_pro
   ActiveControl = EDCDET
   AlphaBlendValue = 0
   Caption = 'Controle de Etiquetas'
-  ClientHeight = 639
+  ClientHeight = 631
   ClientWidth = 743
   FormStyle = fsMDIChild
   OldCreateOrder = True
@@ -13,23 +13,24 @@ inherited frmeti_pro: Tfrmeti_pro
   PixelsPerInch = 96
   TextHeight = 14
   inherited PNLCadastro: TPanel
+    Top = 121
     Width = 743
-    Height = 523
+    Height = 491
     inherited PaintBox: TPaintBox
       Width = 743
-      Height = 523
+      Height = 491
     end
     object Panel1: TPanel
       Left = 0
       Top = 0
       Width = 743
-      Height = 523
+      Height = 491
       Align = alClient
       BevelOuter = bvNone
       TabOrder = 0
       object GBRomaneio: TGroupBox
         Left = 0
-        Top = 266
+        Top = 234
         Width = 743
         Height = 160
         Align = alBottom
@@ -300,7 +301,7 @@ inherited frmeti_pro: Tfrmeti_pro
       end
       object GBPedido: TGroupBox
         Left = 0
-        Top = 426
+        Top = 394
         Width = 743
         Height = 97
         Align = alBottom
@@ -887,13 +888,15 @@ inherited frmeti_pro: Tfrmeti_pro
     end
   end
   inherited sbMSG: TStatusBar
-    Top = 620
+    Top = 612
     Width = 743
   end
   inherited PNLMenu: TPanel
     Width = 743
+    Height = 121
     inherited SpeedBar2: TSpeedBar
       Width = 743
+      Height = 121
       BtnWidth = 125
       BtnHeight = 115
       inherited siVAL: TSpeedItem [4]
@@ -902,8 +905,10 @@ inherited frmeti_pro: Tfrmeti_pro
         Left = 503
       end
       inherited siCAN: TSpeedItem [6]
+        Action = nil
         BtnCaption = '[F9] Excluir'#13#10'Estoque'
         Left = 253
+        OnClick = siCANClick
       end
       inherited siSAV: TSpeedItem [7]
         Visible = False
@@ -11686,8 +11691,16 @@ inherited frmeti_pro: Tfrmeti_pro
     Top = 368
   end
   inherited SQLEvent: TIBSQL
-    Left = 408
-    Top = 80
+    Left = 664
+    Top = 368
+  end
+  inherited ALPrincipal: TActionList
+    Left = 592
+    Top = 440
+  end
+  inherited EEventAdmin: TIBEvents
+    Left = 632
+    Top = 368
   end
   object ped_ven_cab: TIBQuery
     Tag = 1

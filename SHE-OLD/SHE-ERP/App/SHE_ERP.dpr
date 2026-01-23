@@ -104,7 +104,6 @@ uses
   qEtiqueta_Cartela in '..\..\Padrao\Relatorios\Etiquetas\qEtiqueta_Cartela.pas' {qrpEtiqueta_Cartela: TQuickRep},
   qEtiqueta_Cartela2 in '..\..\Padrao\Relatorios\Etiquetas\qEtiqueta_Cartela2.pas' {qrpEtiqueta_Cartela2: TQuickRep},
   qEtiqueta_Id in '..\..\Padrao\Relatorios\Etiquetas\qEtiqueta_Id.pas' {qrpEtiqueta_Id: TQuickRep},
-  pCAD_PRO_EST_DEL in '..\..\Padrao\Estoque\pCAD_PRO_EST_DEL.pas',
   pent_pro in '..\..\Padrao\Estoque\pent_pro.pas' {frment_pro},
   pEstoque in '..\..\Padrao\Estoque\pEstoque.pas' {FrmEstoque},
   pEstoqueDefeitos in '..\..\Padrao\Estoque\pEstoqueDefeitos.pas' {FrmEstoqueDefeitos},
@@ -143,7 +142,10 @@ uses
   pcad_rep in '..\..\Padrao\Cadastros\pCAD_REP.pas' {frmcad_rep},
   pcad_rep_edi in '..\..\Padrao\Cadastros\pcad_rep_edi.pas' {frmcad_rep_edi},
   pcad_tra in '..\..\Padrao\Cadastros\pCAD_TRA.pas' {frmcad_tra},
-  pcad_tra_edi in '..\..\Padrao\Cadastros\pcad_tra_edi.pas' {frmcad_tra_edi};
+  pcad_tra_edi in '..\..\Padrao\Cadastros\pcad_tra_edi.pas' {frmcad_tra_edi},
+  pCAD_PRO_EST_ETQ in '..\..\Padrao\Estoque\pCAD_PRO_EST_ETQ.pas' {FrmCAD_PRO_EST_ETQ},
+  pCAD_PRO_EST_DEL in '..\..\Padrao\Estoque\pCAD_PRO_EST_DEL.pas' {FrmCAD_PRO_EST_DEL},
+  DelphiZXingQRCode in '..\..\..\Lib\Default\DelphiZXIngQRCode.pas';
 
 {$R *.res}
 

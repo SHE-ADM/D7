@@ -7,7 +7,7 @@ uses oPrincipal, ACBrBarCode,
   Windows, SysUtils, Messages, Graphics,
   StdCtrls, ACBrBase, ACBrETQ, Math, StrUtils,
   QRDBTextRotate, DB, IBCustomDataSet, IBQuery, QrAngLbl, QRPDFFilt,
-  QRExport, IBTable;
+  QRExport, IBTable, DelphiZXingQRCode;
 
 type
   TqrpEtiqueta_Id = class(TQuickRep)
@@ -265,21 +265,53 @@ procedure TqrpEtiqueta_Id.QRBDetalheBeforePrint(Sender: TQRCustomBand;
   var PrintBand: Boolean);
 var
   BMP: TBitmap;
+  QRCode: TDelphiZXingQRCode;
+  Row, Col: Integer;
+  Scale: Integer;
 begin
-  BMP := Nil;
-  with FrmPrincipal.ACBrBarCode do
+  // Configurações
+  Scale := 10; // Aumenta o tamanho dos "quadradinhos" do QR Code
+
+  QRCode := TDelphiZXingQRCode.Create;
+  BMP    := TBitmap.Create;
   try
-    Text := RelatorioPRO_CBAR.AsString;
+    // Define os dados e a codificação
+    QRCode.Data      := 'https://cartela.otimotex.app/c/zn.03';
+    QRCode.Encoding  := qrAuto;
+    QRCode.QuietZone := 4; // Margem branca ao redor
 
-    BMP := TBitmap.Create;
-    BMP.Width  := QRIProduto.Width;
-    BMP.Height := QRIProduto.Height;
+    // Define o tamanho do Bitmap resultante
+    BMP.Width  := QRCode.Rows    * Scale;
+    BMP.Height := QRCode.Columns * Scale;
 
-    DrawBarcode(BMP.Canvas);
+    // Pinta o fundo de branco
+    BMP.Canvas.Brush.Color := clWhite;
+    BMP.Canvas.FillRect(Rect(0, 0, BMP.Width, BMP.Height));
 
-    QRIProduto.Picture.Bitmap := BMP;
+    // Pinta os "pixels" pretos do QR Code
+    BMP.Canvas.Brush.Color := clBlack;
+    for Row := 0 to QRCode.Rows - 1 do
+    begin
+      for Col := 0 to QRCode.Columns - 1 do
+      begin
+        if QRCode.IsBlack[Row, Col] then
+        begin
+          BMP.Canvas.FillRect(Rect(
+            Col  * Scale,
+            Row  * Scale,
+            (Col + 1) * Scale,
+            (Row + 1) * Scale
+          ));
+        end;
+      end;
+    end;
+
+    // Exibe no componente TImage
+    QRIProduto.Picture.Assign(BMP);
+
   finally
-    FreeAndNil(BMP);
+    QRCode.Free;
+    BMP.Free;
   end;
 end;
 

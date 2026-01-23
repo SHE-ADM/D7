@@ -1025,7 +1025,13 @@ begin
 
   DBGConsulta.Filter.Clear;
   DBGConsultaDEPK.Field.FocusControl;
-  DBGConsulta.SetFocus;
+
+  if (Showing) then
+  if (PNLDBG.Enabled) and (PNLDBG.Visible) then
+  if (GBDET.Enabled ) and (GBDET.Visible ) then
+  if (DBGConsulta.Enabled) and (DBGConsulta.Visible) then
+  if (Cadastro.RecNo > 0) then
+  oSetFocus(DBGConsulta);
 end;
 
 procedure Tfrmctr_prc.DTSCAD_PRO_IMGDataChange(Sender: TObject;

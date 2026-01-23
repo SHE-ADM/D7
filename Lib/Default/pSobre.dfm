@@ -2485,7 +2485,7 @@ object FrmSobre: TFrmSobre
       Top = 20
       Width = 88
       Height = 15
-      Caption = '20/01/2026 07:26'
+      Caption = '23/01/2026 16:40'
       Color = clInfoBk
       Font.Charset = ANSI_CHARSET
       Font.Color = clWindowText
@@ -2593,7 +2593,8 @@ object FrmSobre: TFrmSobre
       Font.Name = 'Segoe UI Semibold'
       Font.Style = [fsBold, fsItalic]
       Lines.Strings = (
-        'Importa'#231#227'o de xml de nfe nacional e estrangeira')
+        'Estoque: # Atualiza'#231#227'o uSP_CAD_PRO_EST_LAN_UPD'
+        'Produtos: # Edi'#231#227'o FRMCAD_PRO_EDI')
       ParentFont = False
       TabOrder = 1
     end

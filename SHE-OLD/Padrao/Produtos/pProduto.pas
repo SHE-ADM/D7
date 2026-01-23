@@ -802,6 +802,8 @@ begin
 end;
 
 procedure TFrmProduto.FormCreate(Sender: TObject);
+var
+  REC_SHE_DEF_ETQ: TREC_SHE_DEF;
 begin
   { ADMIN MANAGER }
   //DBGConsultaIDPK.Visible := (RECUsuarios.ID = 0); { Código Pedido }
@@ -822,15 +824,8 @@ begin
   REC_SHE_DEF.GAdmin      := False;
   inherited;
 
-  PCMOV.ActivePage := TSPR;
-  PCCO.ActivePage  := TSCOA;
-
-  ACTEEdit.Enabled := True;
-
   DBGProdutosEPE_QTRL.Visible := (RECParametros.EST_QTRL);
   DBGProdutosEEP_QTRL.Visible := (RECParametros.EST_QTRL);
-
-  TSLF.TabVisible := (RECParametros.EST_QTRL);
 
   DBGPRQTRL.Visible := (RECParametros.EST_QTRL);
   DBGPSQTRL.Visible := (RECParametros.EST_QTRL);
@@ -838,9 +833,21 @@ begin
   DBGLSQTRL.Visible := (RECParametros.EST_QTRL);
   DBGLEQTRL.Visible := (RECParametros.EST_QTRL);
 
-  DBGLFCDET.Visible := not ((RECParametros.EP_ID = 4) and (RECUsuarios.Grupo  = 'PCP'));
-  DBGLECDET.Visible := DBGLFCDET.Visible;
-  DBGLSCDET.Visible := DBGLFCDET.Visible;
+  TSLF.TabVisible  := (RECParametros.EST_QTRL);
+  PCMOV.ActivePage := TSPR;
+  PCCO.ActivePage  := TSCOA;
+  ACTEEdit.Enabled := True;
+
+  { GRANT ETIQUETAS }
+  REC_SHE_DEF_ETQ.GDescricao  := 'Produtos';
+  REC_SHE_DEF_ETQ.GReferencia := 'Cadastro';
+  REC_SHE_DEF_ETQ.GRegra      := 'Visualizar Etiquetas';
+  REC_SHE_DEF_ETQ.GAdmin      := False;
+  oUSER(REC_SHE_DEF_ETQ);
+
+  DBGLF.Bands[1].Visible := REC_SHE_DEF_ETQ.GView;
+  DBGLECDET.Visible      := REC_SHE_DEF_ETQ.GView;
+  DBGLSCDET.Visible      := REC_SHE_DEF_ETQ.GView;
 end;
 
 procedure TFrmProduto.BEPesquisaKeyDown(Sender: TObject; var Key: Word;

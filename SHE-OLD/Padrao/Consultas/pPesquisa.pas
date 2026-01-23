@@ -345,6 +345,10 @@ begin
          cbdata.Items.Add('Cancelamento');
          cbdata.Text := 'Fatura';
        end;
+   11: begin { Financeiro }
+         cbcampo.Items.Add('Nº Nota Fiscal');
+         cbcampo.Items.Add('');
+       end;
   end;
 
   cbCAMPO.DropDownRows := cbCAMPO.Items.Count;
@@ -742,6 +746,12 @@ begin
          if cbDATA.Text = 'Data de Emissão da Nota Fiscal' then
             cData := 'PK.NFE_DEMI';
        end;
+     10: begin { Notas Fiscais }
+         end;
+     11: begin { Notas Fiscais }
+          if cbCAMPO.Text = 'Nº Nota Fiscal' then
+             cField := 'NFE_CAB.CDNF';
+        end;
   end;
 
   Editado := True;

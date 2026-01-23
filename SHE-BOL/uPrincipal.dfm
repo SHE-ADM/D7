@@ -1089,22 +1089,22 @@ object FrmSHE_BOL: TFrmSHE_BOL
     end
   end
   object dlgOpenArqRet: TOpenDialog
-    Left = 678
-    Top = 381
+    Left = 302
+    Top = 389
   end
   object dlgSalvarPDF: TSaveDialog
-    Left = 646
-    Top = 381
+    Left = 270
+    Top = 389
   end
   object dlgOpenTx2: TOpenDialog
-    Left = 614
-    Top = 381
+    Left = 238
+    Top = 389
   end
   object SQLEdicao: TIBSQL
     Database = FBird.DBERP
     Transaction = TEdicao
-    Left = 776
-    Top = 305
+    Left = 400
+    Top = 313
   end
   object TEdicao: TIBTransaction
     AllowAutoStart = False
@@ -1115,16 +1115,16 @@ object FrmSHE_BOL: TFrmSHE_BOL
       'rec_version'
       'nowait')
     AutoStopAction = saRollback
-    Left = 742
-    Top = 303
+    Left = 366
+    Top = 311
   end
   object Titulo: TIBQuery
     Database = FBird.DBERP
     Transaction = TConsulta
     SQL.Strings = (
       'SELECT * FROM SP_FIN_REC_BAN_API_BOL(4,'#39'1115097'#39')')
-    Left = 614
-    Top = 333
+    Left = 238
+    Top = 341
     object TituloID: TLargeintField
       FieldName = 'ID'
       Origin = '"SP_PSQ_FIN_REC_BOL"."ID"'
@@ -1288,8 +1288,8 @@ object FrmSHE_BOL: TFrmSHE_BOL
   end
   object DTSTitulo: TDataSource
     DataSet = Titulo
-    Left = 646
-    Top = 333
+    Left = 270
+    Top = 341
   end
   object TConsulta: TIBTransaction
     AllowAutoStart = False
@@ -1301,25 +1301,25 @@ object FrmSHE_BOL: TFrmSHE_BOL
       'rec_version'
       '')
     AutoStopAction = saRollback
-    Left = 614
-    Top = 303
+    Left = 238
+    Top = 311
   end
   object SQLConsulta: TIBSQL
     Database = FBird.DBERP
     Transaction = TConsulta
-    Left = 646
-    Top = 303
+    Left = 270
+    Top = 311
   end
   object SQLFKConsulta: TIBSQL
     Database = FBird.DBERP
     Transaction = TConsulta
-    Left = 710
-    Top = 303
+    Left = 334
+    Top = 311
   end
   object SQLPKConsulta: TIBSQL
     Database = FBird.DBERP
     Transaction = TConsulta
-    Left = 678
-    Top = 303
+    Left = 302
+    Top = 311
   end
 end

@@ -1085,18 +1085,20 @@ procedure TFrmCAD_PRO_EDI.FormCloseQuery(Sender: TObject;
   var CanClose: Boolean);
 begin
   inherited;
-  if SISAV.Enabled then
+  IF (REC_SHE_DEF.GAppend) or (REC_SHE_DEF.GEdit) then
+  if (SISAV.Enabled) then
   begin
     if CAD_PRO_GRD.State in [dsInsert,dsEdit] then
-       if (oEmpty(CAD_PRO_GRDGRD_DCOR.AsString)) and (oEmpty(CAD_PRO_GRDGRD_DGRD.AsString)) and (oEmpty(CAD_PRO_GRDGRD_CGRD.AsString)) and (oEmpty(CAD_PRO_GRDGRD_RGRD.AsString)) then
-           CAD_PRO_GRD.Cancel
-       else
-           CAD_PRO_GRD.Post;
+    if (oEmpty(CAD_PRO_GRDGRD_DCOR.AsString)) and (oEmpty(CAD_PRO_GRDGRD_DGRD.AsString)) and (oEmpty(CAD_PRO_GRDGRD_CGRD.AsString)) and (oEmpty(CAD_PRO_GRDGRD_RGRD.AsString)) then
+
+    CAD_PRO_GRD.Cancel else
+    CAD_PRO_GRD.Post;
 
     if CAD_PRO_GRD.RecNo > 0 then
     case messageBox(handle,'Existem Alterações Pendentes !'+#13+
                            'Deseja Salvar ?',
-                           PChar(Caption),MB_ICONQUESTION+MB_YESNOCANCEL) of
+                            PChar(Caption),MB_ICONQUESTION+MB_YESNOCANCEL) of
+
          mrCancel: Abort;
          mrNo    : SISAV.Enabled := False;
          mrYes   : try SISAV.Click;

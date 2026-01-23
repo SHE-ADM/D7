@@ -220,67 +220,58 @@ begin
   oException(Nil,'Nenhum filtro selecionado para pesquisa !');
              
   try
-    try
-      oOTransact(TEdicao);
+    oOTransact(TEdicao);
 
-      SPEdicao.Close;
-      SPEdicao.StoredProcName := 'SP_CAD_PRO_EST_LAN_DEL';
-      SPEdicao.Prepare;
+    SPEdicao.Close;
+    SPEdicao.StoredProcName := 'SP_CAD_PRO_EST_LAN_DEL';
+    SPEdicao.Prepare;
 
-      for i := 0 to SPEdicao.ParamCount - 1 do
-      SPEdicao.Params[i].Value := Null;
+    for i := 0 to SPEdicao.ParamCount - 1 do
+    SPEdicao.Params[i].Value := Null;
 
-      SPEdicao.ParamByName('AEL_IDEP').Value := RECParametros.EP_ID;
-      SPEdicao.ParamByName('AEF_IDEP').Value := IEIDEP.Text;
+    SPEdicao.ParamByName('AEL_IDEP').Value := RECParametros.EP_ID;
+    SPEdicao.ParamByName('AEF_IDEP').Value := IEIDEP.Text;
 
-      SPEdicao.ParamByName('ASKU'   ).Value := EDSKU.Text;
-      SPEdicao.ParamByName('AARTIGO').Value := EDARTIGO.Text;
-      SPEdicao.ParamByName('ANCM'   ).Value := EDNCM.Text;
+    SPEdicao.ParamByName('ASKU'   ).Value := EDSKU.Text;
+    SPEdicao.ParamByName('AARTIGO').Value := EDARTIGO.Text;
+    SPEdicao.ParamByName('ANCM'   ).Value := EDNCM.Text;
 
-      SPEdicao.ParamByName('ACDRO'    ).Value := CECDRO.Value;
-      SPEdicao.ParamByName('ACDET_INI').Value := CECDET_INI.Value;
-      SPEdicao.ParamByName('ACDET_FIM').Value := CECDET_FIM.Value;
+    SPEdicao.ParamByName('ACDRO'    ).Value := CECDRO.Value;
+    SPEdicao.ParamByName('ACDET_INI').Value := CECDET_INI.Value;
+    SPEdicao.ParamByName('ACDET_FIM').Value := CECDET_FIM.Value;
 
-      SPEdicao.ParamByName('ACOL_ID').Value := IECOL_ID.Text;
-      SPEdicao.ParamByName('ASEG_ID').Value := IESEG_ID.Text;
-      SPEdicao.ParamByName('AGRP_ID').Value := IEGRP_ID.Text;
-      SPEdicao.ParamByName('ASGP_ID').Value := IESGP_ID.Text;
-      SPEdicao.ParamByName('ACAT_ID').Value := IECAT_ID.Text;
-      SPEdicao.ParamByName('ASCT_ID').Value := IESCT_ID.Text;
-      SPEdicao.ExecProc;
+    SPEdicao.ParamByName('ACOL_ID').Value := IECOL_ID.Text;
+    SPEdicao.ParamByName('ASEG_ID').Value := IESEG_ID.Text;
+    SPEdicao.ParamByName('AGRP_ID').Value := IEGRP_ID.Text;
+    SPEdicao.ParamByName('ASGP_ID').Value := IESGP_ID.Text;
+    SPEdicao.ParamByName('ACAT_ID').Value := IECAT_ID.Text;
+    SPEdicao.ParamByName('ASCT_ID').Value := IESCT_ID.Text;
+    SPEdicao.ExecProc;
 
-      RNRecNo := SPEdicao.ParamByName('RNRecNo').Value;
-    except
-      on E: Exception do
-      begin
-        oCTransact(TEdicao,ltRollback);
-        oException(Nil,'Falha ao tentar cancelar estoque !' + #13 +
-                       'Favor entrar em contato com o administrador do sistema.' + #13 + #13 +
-                        oFBException(E.Message));
-      end;
-    end;
-
-    if RNRecNo > 0 then
-       case messageBox(handle,PChar(INTTOSTR(RNRecNo)  + ' registro(s) encontrado(s) !' + #13 +
-                             'Confirma Exclusão ?'),
-                              PChar(Caption),MB_ICONQUESTION+MB_YESNOCANCEL) of
-
-            mrYes   : begin
-                        oCTransact(TEdicao);
-                        ACTExecEvent.Execute;
-                      end;
-                      
-            mrCancel: Abort;
-            mrNo    : Abort;
-       end;
-
-  finally
-    if TEdicao.InTransaction then
+    RNRecNo := SPEdicao.ParamByName('RNRecNo').Value;
+  except
+    on E: Exception do
     begin
-      //uSP_CAD_PRO_EST_LAN_UPD(AREC_SHE_DEF.FB_Table,INTTOSTR(RECParametros.EP_ID),CECDRO.Text,CECDRO.Text,'PK.CDRO');
       oCTransact(TEdicao,ltRollback);
-    end
+      oException(Nil,'Falha ao tentar cancelar estoque !' + #13 +
+                     'Favor entrar em contato com o administrador do sistema.' + #13 + #13 +
+                      oFBException(E.Message));
+    end;
   end;
+
+  if RNRecNo > 0 then
+     case messageBox(handle,PChar(INTTOSTR(RNRecNo)  + ' registro(s) encontrado(s) !' + #13 +
+                           'Confirma Exclusão ?'),
+                            PChar(Caption),MB_ICONQUESTION+MB_YESNOCANCEL) of
+
+          mrYes   : begin
+                      oCTransact(TEdicao);
+                      ACTExecEvent.Execute;
+                    end;
+
+          mrCancel: Abort;
+          mrNo    : Abort;
+     end;
 
   REC_SHE_DEF.Editing := False;
   Close;

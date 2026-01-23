@@ -349,19 +349,6 @@ inherited frmctr_ped: Tfrmctr_ped
               RowIndex = 0
               FieldName = 'SKU'
             end
-            object DBGITPEDDECP: TdxDBGridMaskColumn
-              Color = clWhite
-              Font.Charset = ANSI_CHARSET
-              Font.Color = clBlack
-              Font.Height = -12
-              Font.Name = 'Tahoma'
-              Font.Style = []
-              MinWidth = 200
-              Width = 200
-              BandIndex = 0
-              RowIndex = 0
-              FieldName = 'DECP'
-            end
             object DBGITPEDDGCP: TdxDBGridColumn
               Color = clWhite
               Font.Charset = ANSI_CHARSET
@@ -374,6 +361,19 @@ inherited frmctr_ped: Tfrmctr_ped
               BandIndex = 0
               RowIndex = 0
               FieldName = 'DGCP'
+            end
+            object DBGITPEDDECP: TdxDBGridMaskColumn
+              Color = clWhite
+              Font.Charset = ANSI_CHARSET
+              Font.Color = clBlack
+              Font.Height = -12
+              Font.Name = 'Tahoma'
+              Font.Style = []
+              MinWidth = 200
+              Width = 200
+              BandIndex = 0
+              RowIndex = 0
+              FieldName = 'DECP'
             end
             object DBGITPEDUCOM: TdxDBGridMaskColumn
               Color = clWhite
