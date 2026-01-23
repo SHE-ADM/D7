@@ -181,6 +181,7 @@ type
                        ADEPK : String  = '';
                        AIDEV : LongInt = 0 ;
                        ACDEV : Word    = 0 ;
+                       ATPEV : Word    = 0 ;
 
                        AFB_SQL_TAB: String = '';
                        AFB_SQL_GET: String = ''); reintroduce; overload;
@@ -190,6 +191,7 @@ type
                               ADEPK : String  = '';
                               AIDEV : LongInt = 0 ;
                               ACDEV : Word    = 0 ;
+                              ATPEV : Word    = 0 ;
 
                               AFB_SQL_TAB: String = '';
                               AFB_SQL_GET: String = '');
@@ -229,6 +231,8 @@ begin
   Randomize;
 
   { INICIALIZAÇÃO DOS OBJETOS DECLARADOS }
+  { INICIALIZAÇÃO DOS COMPONENTES }
+  oPRN_EXE(Application.Handle,'Relatórios');
 end;
 
 procedure TFrmPadr2._WM_AFTER_CREATE(var Msg: TMessage);
@@ -265,31 +269,37 @@ begin
   { BEFORE SHOWNING }
   Screen.Cursor := crHourGlass; { Cursor }
   REC_SHE_DEF.FResize := 0;     { Form Resize }
-  ALockWindowUpdate   := True;  { Habilita SQL INJECTION }
+  ALockWindowUpdate   := True;  { SQL Injection Enabled }
 
   ACTConsulta.Execute; { Tabelas }
-  ACTEdicao.Execute; { Ediçõe }
+  ACTEdicao.Execute;   { Edições }
 end;
 
 procedure TFrmPadr2._WM_AFTER_SHOW(var Msg: TMessage);
 begin
   { INICIALIZAÇÃO DOS COMPONENTES }
   try
-    Screen.Cursor := crAppStart;
+    Screen.Cursor  := crAppStart;
+    PNLDBG.Enabled := False;
 
     { AFTER SHOWNING }
     ACTPesquisa.Execute; { Pesquisa Principal }
 
   finally
-    Screen.Cursor := crDefault;
+    Screen.Cursor     := crDefault;
+    PNLDBG.Enabled    := True;
+    ALockWindowUpdate := False;  { SQL Injection Disabled }
+
+    { INICIALIZAÇÃO }
+    REC_SHE_DEF.FInitialize := False; { Finaliza }
   end;
 
-  if Showing then
-  if Cadastro.RecNo > 0 then
-  begin
-    PostMessage(TWinControl(DBGConsulta).Handle, WM_SETFOCUS, 0, 0);
-    TWinControl(DBGConsulta).SetFocus;
-  end;
+  if (Showing) then
+  if (PNLDBG.Enabled) and (PNLDBG.Visible) then
+  if (GBDET.Enabled ) and (GBDET.Visible ) then
+  if (DBGConsulta.Enabled) and (DBGConsulta.Visible) then
+  if (Cadastro.RecNo > 0) then
+  oSetFocus(DBGConsulta);
 end;
 
 procedure TFrmPadr2._WM_RESIZE(var Message: TMessage);
@@ -333,7 +343,8 @@ Constructor TFrmPadr2.Create(AOwner: TComponent;
                                ADEPK : String  = '';
                                AIDEV : LongInt = 0 ;
                                ACDEV : Word    = 0 ;
-                               
+                               ATPEV : Word    = 0 ;
+
                                AFB_SQL_TAB: String = '';
                                AFB_SQL_GET: String = '');
 begin
@@ -344,6 +355,7 @@ begin
 
   REC_SHE_DEF.IDEV := INTTOSTR(AIDEV);
   REC_SHE_DEF.CDEV := INTTOSTR(ACDEV);
+  REC_SHE_DEF.TPEV := INTTOSTR(ATPEV);
 
   REC_SHE_DEF.FB_SQL_TAB := TRIM(AFB_SQL_TAB);
   REC_SHE_DEF.FB_SQL_GET := TRIM(AFB_SQL_GET);
@@ -356,6 +368,7 @@ Class procedure TFrmPadr2._ExecForm(AOwner : TComponent;var AForm; AFormPesquisa
                                       ADEPK : String  = '';
                                       AIDEV : LongInt = 0 ;
                                       ACDEV : Word    = 0 ;
+                                      ATPEV : Word    = 0 ;
 
                                       AFB_SQL_TAB: String = '';
                                       AFB_SQL_GET: String = '');
@@ -377,6 +390,7 @@ begin
                                ADEPK     ,
                                AIDEV     ,
                                ACDEV     ,
+                               ATPEV     ,
                                AFB_SQL_TAB ,
                                AFB_SQL_GET);
 
@@ -427,7 +441,8 @@ begin
         try
           { Transação Principal }
           try
-            oFTransact(TConsulta);
+            oFTransact(TConsulta); { Consultas }
+            oFTransact(TEvent   ); { Eventos }
           except
             on E: Exception do
             begin
@@ -438,19 +453,6 @@ begin
           end;
 
         finally
-          { record e afins }
-          try
-            Finalize(REC_SHE_DEF);
-            FillChar(REC_SHE_DEF,SizeOf(REC_SHE_DEF),0);
-          except
-            on E: Exception do
-            begin
-             oErro(Application.Handle,'Falha ao tentar esvaziar memória !'+#13+#13+
-                                      'Error Code: '+E.Message+'.'        +#13+
-                                       Caption+'.');
-            end;
-          end;
-
           { record e afins }
           try
             oFREC_SHE_DEF(REC_SHE_DEF);
@@ -470,6 +472,7 @@ begin
       PtrForm(_Form.Objects[idxForm])^ := Nil;
       _Form.Objects[idxForm] := Nil;
     end;
+
   finally
     Screen.Cursor := crDefault;
     inherited;
@@ -570,28 +573,27 @@ procedure TFrmPadr2.FormCloseQuery(Sender: TObject;
   var CanClose: Boolean);
 begin
   { VER ANTES DE SAIR }
-  if REC_SHE_DEF.Editing then
-  begin
-    if Cadastro.State in [dsInsert,dsEdit] then
-       Cadastro.Post;
+  if Cadastro.State in [dsInsert,dsEdit] then
+     Cadastro.Post;
 
-    if Cadastro.RecNo > 0 then
-       Case messageBox(handle,'Existem Alterações Pendentes !'+#13+
-                              'Deseja Salvar ?',
-                               PChar(Caption)  ,
-                               MB_ICONQUESTION + MB_YESNOCANCEL) of
-            mrCancel: Abort;
-            mrYes   : begin
-                        if ACTMPPost.Enabled then
-                           ACTMPPost.Execute else
+  if ((Cadastro.RecNo > 0) and (REC_SHE_DEF.Editing)) or (REC_SHE_DEF.Editing) then
 
-                        if ACTMPValidate.Enabled then
-                           ACTMPValidate.Execute;
+  Case messageBox(handle,'Existem Alterações Pendentes !'+#13+
+                         'Sair mesmo assim ?',
+                          PChar(Caption)  ,
+                          MB_ICONQUESTION + MB_YESNOCANCEL) of
+       mrCancel,
+       mrNo : Abort;
+       mrYes: begin
+                if ACTMPPost.Enabled then
+                   ACTMPPost.Execute else
 
-                        if ACTMEPost.Enabled then
-                           ACTMEPost.Execute;
-                      end;
-       end;
+                if ACTMPValidate.Enabled then
+                   ACTMPValidate.Execute;
+
+                if ACTMEPost.Enabled then
+                   ACTMEPost.Execute;
+              end;
   end;
 end;
 
@@ -605,25 +607,31 @@ procedure TFrmPadr2.FormKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   case key of
-       vk_return: if (not (ActiveControl is TdxDBGrid) and
-                      not (ActiveControl is TdxDBMemo) and
-                      not (ActiveControl is TdxMemo)   and
-                      not (ActiveControl is TListBox)) then
-                      SelectNext (ActiveControl,True,True);
+       vk_return: if (not (ActiveControl is TdxDBGrid)    and
+                      not (ActiveControl is TdxDBMemo)    and
+                      not (ActiveControl is TdxMemo)      and
+                      not (ActiveControl is TMemo)) then
+                  SelectNext (ActiveControl, True, True);
 
-       38       : if (not (ActiveControl is TdxDBGrid) and
-                      not (ActiveControl is TdxDBMemo) and
-                      not (ActiveControl is TdxMemo)   and
-                      not (ActiveControl is TListBox)) then
-                      SelectNext(ActiveControl,False,True);
+       40       : if (not (ActiveControl is TdxDBGrid)    and
+                      not (ActiveControl is TdxDBMemo)    and
+                      not (ActiveControl is TdxMemo)      and
+                      not (ActiveControl is TMemo))       and
+                      not (ActiveControl is TdxImageEdit) and
+                      not (ActiveControl is TdxPickEdit)  and
+                      not (ActiveControl is TComboBox)    and
+                      not (ActiveControl is TListBox)     then
+                  SelectNext (ActiveControl, True, True);
 
-       40       : if (not (ActiveControl is TdxDBGrid) and
-                      not (ActiveControl is TdxDBMemo) and
-                      not (ActiveControl is TdxMemo)   and
-                      not (ActiveControl is TListBox)) then
-                      SelectNext (ActiveControl,True,True);
-       118      : { nothing };
-       116      : { nothing };
+       38       : if (not (ActiveControl is TdxDBGrid)    and
+                      not (ActiveControl is TdxDBMemo)    and
+                      not (ActiveControl is TdxMemo)      and
+                      not (ActiveControl is TMemo))       and
+                      not (ActiveControl is TdxImageEdit) and
+                      not (ActiveControl is TdxPickEdit)  and
+                      not (ActiveControl is TComboBox)    and
+                      not (ActiveControl is TListBox)     then
+                  SelectNext(ActiveControl, False, True);
   end;
 end;
 
@@ -707,12 +715,12 @@ begin
     Self.Height := IFThen(REC_SHE_DEF.FPosition = poDefault,REC_SHE_DEF.FHeight - REC_SHE_DEF.FTop  - 5,0);
   end;
 
-  { ricardo RODAPÉ }
+  { RODAPÉ }
   REC_SHE_DEF.FMainWidth := SBRodape.Width;
   for i  := 0 to SBRodape.Panels.Count - 1 do
-  if  i  <> 1 then
+  if  i  <> 2 then
   REC_SHE_DEF.FMainWidth   := REC_SHE_DEF.FMainWidth - SBRodape.Panels[i].Width;
-  SBRodape.Panels[1].Width := REC_SHE_DEF.FMainWidth - 15;
+  SBRodape.Panels[2].Width := REC_SHE_DEF.FMainWidth - 20;
 
   { SCREEN CAPTION }
   if RECUsuarios.Id = 0 then
@@ -736,6 +744,8 @@ end;
 
 procedure TFrmPadr2.ACTSaidaExecute(Sender: TObject);
 begin
+  if Cadastro.State in [dsInsert,dsEdit] then
+  ACTMECancel.Execute else
   Close;
 end;
 
@@ -794,9 +804,9 @@ begin
     COMPOSICAO := EmptyStr; { Composição }
 
     { Lista Digitada }
-    if LISTA = Nil then
-    LISTA := TStringList.Create else
-    LISTA.Clear;
+    if FList = Nil then
+    FList := TStringList.Create else
+    FList.Clear;
   end;
 end;
 
@@ -804,6 +814,7 @@ procedure TFrmPadr2.ACTEdicaoExecute(Sender: TObject);
 begin
   { INICIALIZAÇÃO DE TRANSAÇÕES }
   { EDIÇÕES }
+  { PAGE CONTROL }
 end;
 
 procedure TFrmPadr2.ACTMPAppendExecute(Sender: TObject);
@@ -823,20 +834,14 @@ end;
 
 procedure TFrmPadr2.ACTMPPostExecute(Sender: TObject);
 begin
-  if oYesNo(handle,'Salvar Edição ?') = mrNo then
-  Abort;
-
-  ACTCheckErrors.Execute;
   ACTCheckConstraints.Execute;
+  ACTCheckErrors.Execute;
 end;
 
 procedure TFrmPadr2.ACTMPValidateExecute(Sender: TObject);
 begin
-  if oYesNo(handle,'Validar Edição ?') = mrNo then
-  Abort;
-
-  ACTCheckErrors.Execute;
   ACTCheckConstraints.Execute;
+  ACTCheckErrors.Execute;
 end;
 
 procedure TFrmPadr2.ACTMPCancelExecute(Sender: TObject);
@@ -847,7 +852,7 @@ end;
 
 procedure TFrmPadr2.ACTMEAppendExecute(Sender: TObject);
 begin
-  if ALockWindowUpdate then { SQL Injection }
+  if ALockWindowUpdate then { SQL Injection Enabled }
   Exit;
 
   oAppend(Cadastro,REC_SHE_DEF.GAppend);
@@ -855,7 +860,7 @@ end;
 
 procedure TFrmPadr2.ACTMEEditExecute(Sender: TObject);
 begin
-  if ALockWindowUpdate then { SQL Injection }
+  if ALockWindowUpdate then { SQL Injection Enabled }
   Exit;
 
   oEdit(Cadastro,REC_SHE_DEF.GEdit);
@@ -863,7 +868,7 @@ end;
 
 procedure TFrmPadr2.ACTMEDeleteExecute(Sender: TObject);
 begin
-  if ALockWindowUpdate then { SQL Injection }
+  if ALockWindowUpdate then { SQL Injection Enabled }
   Exit;
 
   oDelete(Cadastro,REC_SHE_DEF.GDelete);
@@ -871,7 +876,7 @@ end;
 
 procedure TFrmPadr2.ACTMEPostExecute(Sender: TObject);
 begin
-  if ALockWindowUpdate then { SQL Injection }
+  if ALockWindowUpdate then { SQL Injection Enabled }
   Exit;
 
   oPost(Cadastro,REC_SHE_DEF.GPost);
@@ -879,7 +884,7 @@ end;
 
 procedure TFrmPadr2.ACTMECancelExecute(Sender: TObject);
 begin
-  if ALockWindowUpdate then { SQL Injection }
+  if ALockWindowUpdate then { SQL Injection Enabled }
   Exit;
 
   oCancel(Cadastro,REC_SHE_DEF.GCancel);
@@ -887,7 +892,7 @@ end;
 
 procedure TFrmPadr2.ACTCheckConstraintsExecute(Sender: TObject);
 begin
-  { nothing }
+  ActiveControl := Nil;
 end;
 
 procedure TFrmPadr2.ACTCheckErrorsExecute(Sender: TObject);
@@ -972,7 +977,7 @@ var
 begin
   if REC_SHE_DEF.FB_Event = EmptyStr then
   begin
-    if not ALockWindowUpdate then
+    if not ALockWindowUpdate then { SQL Injection Enabled }
     oRefresh(Cadastro);
   end else
 
@@ -1055,6 +1060,9 @@ end;
 
 procedure TFrmPadr2.CadastroAfterInsert(DataSet: TDataSet);
 begin
+  if (Showing) then
+  if (GBDET.Enabled) and (GBDET.Visible) then
+  if (DBGConsulta.Enabled) and (DBGConsulta.Visible) then
   oSetFocus(DBGConsulta);
 end;
 
@@ -1065,12 +1073,14 @@ end;
 
 procedure TFrmPadr2.CadastroBeforeEdit(DataSet: TDataSet);
 begin
-  { nothing }
+  Cadastro.Fields[0].Tag := Cadastro.RecNo;
 end;
 
 procedure TFrmPadr2.CadastroAfterEdit(DataSet: TDataSet);
 begin
-  oSetFocus(DBGConsulta);
+  if (Showing) then
+  if (GBDET.Enabled) and (GBDET.Visible) then
+  if (DBGConsulta.Enabled) and (DBGConsulta.Visible) then
 end;
 
 procedure TFrmPadr2.CadastroBeforeDelete(DataSet: TDataSet);
@@ -1081,7 +1091,6 @@ end;
 
 procedure TFrmPadr2.CadastroAfterDelete(DataSet: TDataSet);
 begin
-  if not ALockWindowUpdate then
   oRefresh(Cadastro);
 end;
 
@@ -1092,7 +1101,7 @@ end;
 
 procedure TFrmPadr2.CadastroAfterPost(DataSet: TDataSet);
 begin
-  if not ALockWindowUpdate then
+  if not ALockWindowUpdate then { SQL Injection Enabled }
   begin
     REC_SHE_DEF.Editing := True;
     oRefresh(Cadastro);
@@ -1147,7 +1156,8 @@ end;
 
 procedure TFrmPadr2.DTSCadastroDataChange(Sender: TObject; Field: TField);
 begin
-  { nothing }
+  if ALockWindowUpdate then  { SQL Injection Enabled }
+  Exit;
 end;
 
 procedure TFrmPadr2.DTSCadastroStateChange(Sender: TObject);
@@ -1188,7 +1198,7 @@ begin
        AColor := $00F8F8F8 else
        AColor := clHighLightText;
   end;
-
+  
   if ANode.Selected then
   begin
     AColor      := $00750000;//$00400000;
@@ -1205,7 +1215,8 @@ end;
 
 procedure TFrmPadr2.DBGConsultaDblClick(Sender: TObject);
 begin
-  ACTMEEdit.Execute;
+  if ACTMEEdit.Enabled then ACTMEEdit.Execute else
+  if ACTMPEdit.Enabled then ACTMPEdit.Execute;
 end;
 
 procedure TFrmPadr2.DBGConsultaKeyDown(Sender: TObject; var Key: Word;
@@ -1213,7 +1224,8 @@ procedure TFrmPadr2.DBGConsultaKeyDown(Sender: TObject; var Key: Word;
 begin
   case key of
        VK_insert: ACTMEAppend.Execute;
-       vk_return: ACTMEEdit.Execute;
+       vk_return: if Cadastro.State = dsBrowse then
+                  ACTMEEdit.Execute;
        VK_delete: ACTMEDelete.Execute;
        vk_escape: ACTMECancel.Execute;
   end;

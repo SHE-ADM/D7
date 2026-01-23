@@ -279,6 +279,9 @@ type
     DBILA_BMP8: TDBImage;
     DBGItemROM_PSBR: TdxDBGridMaskColumn;
     DBGItemROM_PSLQ: TdxDBGridMaskColumn;
+    DBGItemNCM: TdxDBGridMaskColumn;
+    DBGItemPIPI: TdxDBGridMaskColumn;
+    DBGItemVIPI: TdxDBGridMaskColumn;
     procedure FormCreate(Sender: TObject);
     procedure dbgConsultaCustomDrawCell(Sender: TObject; ACanvas: TCanvas;
       ARect: TRect; ANode: TdxTreeListNode; AColumn: TdxTreeListColumn;
@@ -294,11 +297,6 @@ type
     procedure siNFEClick(Sender: TObject);
     procedure dtsrom_iteDataChange(Sender: TObject; Field: TField);
     procedure FormDestroy(Sender: TObject);
-    procedure DBGItemCustomDrawCell(Sender: TObject; ACanvas: TCanvas;
-      ARect: TRect; ANode: TdxTreeListNode; AColumn: TdxTreeListColumn;
-      ASelected, AFocused, ANewItemRow: Boolean; var AText: String;
-      var AColor: TColor; AFont: TFont; var AAlignment: TAlignment;
-      var ADone: Boolean);
     procedure DTSCadastroStateChange(Sender: TObject);
     procedure SICAD_CLI_CRDClick(Sender: TObject);
     procedure rom_iteAfterOpen(DataSet: TDataSet);
@@ -907,59 +905,11 @@ procedure Tfrmctr_rom.dbgConsultaCustomDrawCell(Sender: TObject;
 begin
   if not ASelected then
   begin
-    if Pos('CAN',ANode.Values[DBGConsultaROM_STFI.Index]) > 0 then
-    begin
-      AColor      := $000024B3;
-      AFont.Color := clWhite;
-    end else
-    if Pos('BAI',ANode.Values[DBGConsultaROM_STFI.Index]) > 0 then
-    begin
-      AColor      := clBtnFace;
-      AFont.Color := clBlack;
-    end else
-    if Pos('FIN',ANode.Values[DBGConsultaROM_STFI.Index]) > 0 then
-    begin
-      AColor      := clBtnFace;
-      AFont.Color := clBlack;
-    end else
-    if Pos('AGU',ANode.Values[DBGConsultaROM_STFI.Index]) > 0 then
-    begin
-      AColor      := $0080FFFF;
-      AFont.Color := clBlack;
-    end else
-    if Pos(LeftStr(ANode.Values[DBGConsultaROM_STPD.Index],3),'DEVABA') > 0 then
-    begin
-      AColor      := $0080FFFF; //$00E8FFE8;
-      AFont.Color := clBlack;
-    end else
-    if Pos('FAT',ANode.Values[DBGConsultaROM_STFI.Index]) > 0 then
+    if ANode.Values[DBGConsultaROM_CDNF.Index] <> Null then
+    if ANode.Values[DBGConsultaROM_CDNF.Index]  > 0 then
     begin
       AColor      := $00C4FFC4;
       AFont.Color := clBlack;
-    end else
-    if Pos('SEP',ANode.Values[DBGConsultaROM_STFI.Index]) > 0 then
-    begin
-      AColor      := clBlack;
-      AFont.Color := clWhite;
-    end else
-    begin
-      AColor      := clWhite;
-      AFont.Color := clBlack;
-    end;
-
-    if (AColumn = DBGConsultaID)       or (AColumn = DBGConsultaROM_DROM) or
-       (AColumn = DBGConsultaROM_TSDE) or (AColumn = DBGConsultaROM_PDSC) or (AColumn = DBGConsultaROM_VDSC) or (AColumn = DBGConsultaROM_TCDE) then
-    begin
-      if (AColumn = DBGConsultaROM_PDSC) and (oTextToValor(ANode.Values[DBGConsultaROM_PDSC.Index]) > 0) then
-          AFont.Style := [fsBold];
-
-      if (AColumn = DBGConsultaROM_VDSC) and (oTextToValor(ANode.Values[DBGConsultaROM_VDSC.Index]) > 0) then
-          AFont.Style := [fsBold];
-
-      if Pos(ANode.Values[DBGConsultaROM_STPD.Index],'ABATIMENTODEVOLUÇÃO') = 0 then
-      AFont.Color := clBlack else
-      AFont.Color := $000024B3;
-      AColor      := clWhite;
     end;
   end;
 end;
@@ -1054,35 +1004,6 @@ begin
 
   if Cadastro.State = dsBrowse then
      PNLInfAdProd.Visible := (not oEmpty(PNLInfAdProd.Caption));
-end;
-
-procedure Tfrmctr_rom.DBGItemCustomDrawCell(Sender: TObject;
-  ACanvas: TCanvas; ARect: TRect; ANode: TdxTreeListNode;
-  AColumn: TdxTreeListColumn; ASelected, AFocused, ANewItemRow: Boolean;
-  var AText: String; var AColor: TColor; AFont: TFont;
-  var AAlignment: TAlignment; var ADone: Boolean);
-begin
-  if AColumn = DBGITEMROM_UNIT then
-  begin
-    if ANode.Values[DBGITEMROM_UNIT.Index] < ANode.Values[DBGITEMPRO_PTABI.Index] then
-    begin
-      AFont.Style := [fsBold];
-      AFont.Color := clBlack;
-      AColor      := clInfoBk;
-    end else
-    if ANode.Values[DBGITEMROM_UNIT.Index] > ANode.Values[DBGITEMPRO_PTABF.Index] then
-    begin
-      AFont.Style := [fsBold];
-      AFont.Color := clWhite;
-      AColor      := clPurple;
-    end;
-    if ANode.Values[DBGITEMROM_UNIT.Index] > ANode.Values[DBGITEMPRO_PTABI.Index] then
-    begin
-      AFont.Style := [fsBold];
-      AFont.Color := clWhite;
-      AColor      := clRed;
-    end;
-  end;
 end;
 
 procedure Tfrmctr_rom.SICAD_CLI_CRDClick(Sender: TObject);
@@ -1280,7 +1201,13 @@ begin
 
   DBGConsulta.Filter.Clear;
   DBGConsultaROM_DERO.Field.FocusControl;
-  DBGConsulta.SetFocus;
+
+  if (Showing) then
+  if (PNLDBG.Enabled) and (PNLDBG.Visible) then
+  if (GBDET.Enabled ) and (GBDET.Visible ) then
+  if (DBGConsulta.Enabled) and (DBGConsulta.Visible) then
+  if (Cadastro.RecNo > 0) then
+  oSetFocus(DBGConsulta);
 end;
 
 procedure Tfrmctr_rom.ACTRelatoriosExecute(Sender: TObject);

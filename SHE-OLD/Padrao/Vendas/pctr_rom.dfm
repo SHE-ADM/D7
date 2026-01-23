@@ -117,6 +117,9 @@ inherited frmctr_rom: Tfrmctr_rom
               Width = 365
             end
             item
+              Caption = 'Classifica'#231#227'o Fiscal'
+            end
+            item
               Caption = 'Frete'
             end>
           DefaultLayout = False
@@ -127,7 +130,7 @@ inherited frmctr_rom: Tfrmctr_rom
           SummarySeparator = ', '
           Align = alClient
           BorderStyle = bsNone
-          Color = clWhite
+          Color = clBtnFace
           Ctl3D = True
           Font.Charset = ANSI_CHARSET
           Font.Color = clBlack
@@ -165,12 +168,10 @@ inherited frmctr_rom: Tfrmctr_rom
           PreviewFont.Name = 'Segoe UI Semibold'
           PreviewFont.Style = [fsBold, fsItalic]
           ShowBands = True
-          OnCustomDrawCell = DBGItemCustomDrawCell
           object DBGItemROM_ITEM: TdxDBGridMaskColumn
             Tag = 40
-            Color = clGray
             Font.Charset = ANSI_CHARSET
-            Font.Color = clWhite
+            Font.Color = clBlack
             Font.Height = -12
             Font.Name = 'Tahoma'
             Font.Style = []
@@ -185,19 +186,22 @@ inherited frmctr_rom: Tfrmctr_rom
           end
           object DBGItemPRO_CPRO: TdxDBGridMaskColumn
             Tag = 80
+            Font.Charset = ANSI_CHARSET
+            Font.Color = clBlack
+            Font.Height = -12
+            Font.Name = 'Tahoma'
+            Font.Style = []
             Width = 88
             BandIndex = 0
             RowIndex = 0
             FieldName = 'PRO_CPRO'
           end
-          object DBGItemROM_DPRO: TdxDBGridMaskColumn
-            Tag = 300
-            Width = 300
-            BandIndex = 0
-            RowIndex = 0
-            FieldName = 'ROM_DPRO'
-          end
           object DBGItemDGCP: TdxDBGridMaskColumn
+            Font.Charset = ANSI_CHARSET
+            Font.Color = clBlack
+            Font.Height = -12
+            Font.Name = 'Tahoma'
+            Font.Style = []
             MinWidth = 100
             Visible = False
             Width = 100
@@ -205,14 +209,36 @@ inherited frmctr_rom: Tfrmctr_rom
             RowIndex = 0
             FieldName = 'DGCP'
           end
+          object DBGItemROM_DPRO: TdxDBGridMaskColumn
+            Tag = 300
+            Font.Charset = ANSI_CHARSET
+            Font.Color = clBlack
+            Font.Height = -12
+            Font.Name = 'Tahoma'
+            Font.Style = []
+            Width = 300
+            BandIndex = 0
+            RowIndex = 0
+            FieldName = 'ROM_DPRO'
+          end
           object DBGItemROM_DUNI: TdxDBGridMaskColumn
             Tag = 1
+            Font.Charset = ANSI_CHARSET
+            Font.Color = clBlack
+            Font.Height = -12
+            Font.Name = 'Tahoma'
+            Font.Style = []
             Width = 70
             BandIndex = 0
             RowIndex = 0
             FieldName = 'ROM_DUNI'
           end
           object DBGItemROM_CDET: TdxDBGridMaskColumn
+            Font.Charset = ANSI_CHARSET
+            Font.Color = clBlack
+            Font.Height = -12
+            Font.Name = 'Tahoma'
+            Font.Style = []
             Width = 80
             BandIndex = 1
             RowIndex = 0
@@ -221,9 +247,8 @@ inherited frmctr_rom: Tfrmctr_rom
           end
           object DBGItemROM_QTDE: TdxDBGridMaskColumn
             Tag = 1
-            Color = clGray
             Font.Charset = ANSI_CHARSET
-            Font.Color = clWhite
+            Font.Color = clBlack
             Font.Height = -12
             Font.Name = 'Tahoma'
             Font.Style = []
@@ -238,9 +263,8 @@ inherited frmctr_rom: Tfrmctr_rom
             DisableFilter = True
           end
           object DBGItemROM_QTRL: TdxDBGridMaskColumn
-            Color = clGray
             Font.Charset = ANSI_CHARSET
-            Font.Color = clWhite
+            Font.Color = clBlack
             Font.Height = -12
             Font.Name = 'Tahoma'
             Font.Style = []
@@ -256,6 +280,11 @@ inherited frmctr_rom: Tfrmctr_rom
           end
           object DBGItemROM_UNIT: TdxDBGridMaskColumn
             Tag = 1
+            Font.Charset = ANSI_CHARSET
+            Font.Color = clBlack
+            Font.Height = -12
+            Font.Name = 'Tahoma'
+            Font.Style = []
             HeaderAlignment = taRightJustify
             Width = 80
             BandIndex = 1
@@ -267,12 +296,22 @@ inherited frmctr_rom: Tfrmctr_rom
             DisableFilter = True
           end
           object DBGItemPRO_PTABI: TdxDBGridMaskColumn
+            Font.Charset = ANSI_CHARSET
+            Font.Color = clBlack
+            Font.Height = -12
+            Font.Name = 'Tahoma'
+            Font.Style = []
             Visible = False
             BandIndex = 0
             RowIndex = 0
             FieldName = 'PRO_PTABI'
           end
           object DBGItemPRO_PTABF: TdxDBGridMaskColumn
+            Font.Charset = ANSI_CHARSET
+            Font.Color = clBlack
+            Font.Height = -12
+            Font.Name = 'Tahoma'
+            Font.Style = []
             Visible = False
             BandIndex = 0
             RowIndex = 0
@@ -280,14 +319,13 @@ inherited frmctr_rom: Tfrmctr_rom
           end
           object DBGItemROM_TOTA: TdxDBGridMaskColumn
             Tag = 1
-            Color = clGray
             Font.Charset = ANSI_CHARSET
-            Font.Color = clWhite
+            Font.Color = clBlack
             Font.Height = -12
             Font.Name = 'Tahoma'
             Font.Style = []
             HeaderAlignment = taRightJustify
-            Width = 100
+            Width = 95
             BandIndex = 1
             RowIndex = 0
             FieldName = 'ROM_TOTA'
@@ -296,18 +334,71 @@ inherited frmctr_rom: Tfrmctr_rom
             SummaryFooterFormat = 'R$ #,0.00'
             DisableFilter = True
           end
+          object DBGItemNCM: TdxDBGridMaskColumn
+            Font.Charset = ANSI_CHARSET
+            Font.Color = clBlack
+            Font.Height = -12
+            Font.Name = 'Tahoma'
+            Font.Style = []
+            Width = 70
+            BandIndex = 2
+            RowIndex = 0
+            FieldName = 'NCM'
+          end
+          object DBGItemPIPI: TdxDBGridMaskColumn
+            Font.Charset = ANSI_CHARSET
+            Font.Color = clBlack
+            Font.Height = -12
+            Font.Name = 'Tahoma'
+            Font.Style = []
+            HeaderAlignment = taRightJustify
+            Width = 50
+            BandIndex = 2
+            RowIndex = 0
+            FieldName = 'PIPI'
+            SummaryFooterType = cstAvg
+            SummaryFooterField = 'PIPI'
+            SummaryFooterFormat = '#,0.00'
+            DisableFilter = True
+          end
+          object DBGItemVIPI: TdxDBGridMaskColumn
+            Font.Charset = ANSI_CHARSET
+            Font.Color = clBlack
+            Font.Height = -12
+            Font.Name = 'Tahoma'
+            Font.Style = []
+            HeaderAlignment = taRightJustify
+            Width = 95
+            BandIndex = 2
+            RowIndex = 0
+            FieldName = 'VIPI'
+            SummaryFooterType = cstSum
+            SummaryFooterField = 'VIPI'
+            SummaryFooterFormat = 'R$ #,0.00'
+            DisableFilter = True
+          end
           object DBGItemROM_PSBR: TdxDBGridMaskColumn
+            Font.Charset = ANSI_CHARSET
+            Font.Color = clBlack
+            Font.Height = -12
+            Font.Name = 'Tahoma'
+            Font.Style = []
             HeaderAlignment = taRightJustify
             Width = 80
-            BandIndex = 2
+            BandIndex = 3
             RowIndex = 0
             FieldName = 'ROM_PSBR'
             DisableFilter = True
           end
           object DBGItemROM_PSLQ: TdxDBGridMaskColumn
+            Font.Charset = ANSI_CHARSET
+            Font.Color = clBlack
+            Font.Height = -12
+            Font.Name = 'Tahoma'
+            Font.Style = []
             HeaderAlignment = taRightJustify
             Width = 80
-            BandIndex = 2
+            BandIndex = 3
             RowIndex = 0
             FieldName = 'ROM_PSLQ'
             DisableFilter = True
@@ -653,13 +744,23 @@ inherited frmctr_rom: Tfrmctr_rom
             Height = 467
             KeyField = 'ID'
             ShowSummaryFooter = True
+            Color = clBtnFace
             Filter.Active = True
             Filter.Criteria = {00000000}
             IndentDesc = 10
             OptionsView = [edgoAutoCalcPreviewLines, edgoBandHeaderWidth, edgoHotTrack, edgoInvertSelect, edgoPreview, edgoUseBitmap]
             PreviewLines = 3
             ShowRowFooter = True
+            inherited DBGConsultaC_ID: TdxDBGridColumn
+              Font.Color = clBlack
+            end
             object dbgConsultaROM_DERO: TdxDBGridMaskColumn
+              Color = clWhite
+              Font.Charset = ANSI_CHARSET
+              Font.Color = clBlack
+              Font.Height = -12
+              Font.Name = 'Tahoma'
+              Font.Style = []
               Width = 60
               BandIndex = 0
               RowIndex = 0
@@ -669,20 +770,33 @@ inherited frmctr_rom: Tfrmctr_rom
               SummaryFooterFormat = '0'
             end
             object dbgConsultaID: TdxDBGridMaskColumn
+              Color = clWhite
+              Font.Charset = ANSI_CHARSET
+              Font.Color = clBlack
+              Font.Height = -12
+              Font.Name = 'Tahoma'
+              Font.Style = []
               Width = 74
               BandIndex = 0
               RowIndex = 0
               FieldName = 'ID'
             end
             object dbgConsultaROM_DROM: TdxDBGridDateColumn
+              Color = clWhite
+              Font.Charset = ANSI_CHARSET
+              Font.Color = clBlack
+              Font.Height = -12
+              Font.Name = 'Tahoma'
+              Font.Style = []
               Width = 74
               BandIndex = 0
               RowIndex = 0
               FieldName = 'ROM_DROM'
             end
             object dbgConsultaROM_CDNF: TdxDBGridMaskColumn
+              Color = clWhite
               Font.Charset = ANSI_CHARSET
-              Font.Color = clWhite
+              Font.Color = clBlack
               Font.Height = -12
               Font.Name = 'Tahoma'
               Font.Style = []
@@ -692,12 +806,24 @@ inherited frmctr_rom: Tfrmctr_rom
               FieldName = 'ROM_CDNF'
             end
             object dbgConsultaROM_DNFS: TdxDBGridDateColumn
+              Color = clWhite
+              Font.Charset = ANSI_CHARSET
+              Font.Color = clBlack
+              Font.Height = -12
+              Font.Name = 'Tahoma'
+              Font.Style = []
               Width = 74
               BandIndex = 0
               RowIndex = 0
               FieldName = 'ROM_DNFS'
             end
             object DBGConsultaROM_CTNR: TdxDBGridMaskColumn
+              Color = clWhite
+              Font.Charset = ANSI_CHARSET
+              Font.Color = clBlack
+              Font.Height = -12
+              Font.Name = 'Tahoma'
+              Font.Style = []
               Visible = False
               Width = 79
               BandIndex = 0
@@ -705,24 +831,48 @@ inherited frmctr_rom: Tfrmctr_rom
               FieldName = 'ROM_CTNR'
             end
             object DBGConsultaDECD: TdxDBGridMaskColumn
+              Color = clWhite
+              Font.Charset = ANSI_CHARSET
+              Font.Color = clBlack
+              Font.Height = -12
+              Font.Name = 'Tahoma'
+              Font.Style = []
               Width = 250
               BandIndex = 0
               RowIndex = 0
               FieldName = 'DECD'
             end
             object dbgConsultaDECV: TdxDBGridMaskColumn
+              Color = clWhite
+              Font.Charset = ANSI_CHARSET
+              Font.Color = clBlack
+              Font.Height = -12
+              Font.Name = 'Tahoma'
+              Font.Style = []
               Width = 80
               BandIndex = 0
               RowIndex = 0
               FieldName = 'DECV'
             end
             object dbgConsultaDECR: TdxDBGridMaskColumn
+              Color = clWhite
+              Font.Charset = ANSI_CHARSET
+              Font.Color = clBlack
+              Font.Height = -12
+              Font.Name = 'Tahoma'
+              Font.Style = []
               Width = 150
               BandIndex = 0
               RowIndex = 0
               FieldName = 'DECR'
             end
             object dbgConsultaROM_TSDE: TdxDBGridMaskColumn
+              Color = clWhite
+              Font.Charset = ANSI_CHARSET
+              Font.Color = clBlack
+              Font.Height = -12
+              Font.Name = 'Tahoma'
+              Font.Style = []
               HeaderAlignment = taRightJustify
               Width = 90
               BandIndex = 0
@@ -734,6 +884,12 @@ inherited frmctr_rom: Tfrmctr_rom
               DisableFilter = True
             end
             object DBGConsultaROM_PDSC: TdxDBGridCurrencyColumn
+              Color = clWhite
+              Font.Charset = ANSI_CHARSET
+              Font.Color = clBlack
+              Font.Height = -12
+              Font.Name = 'Tahoma'
+              Font.Style = []
               HeaderAlignment = taRightJustify
               Width = 50
               BandIndex = 0
@@ -747,6 +903,12 @@ inherited frmctr_rom: Tfrmctr_rom
               DisableFilter = True
             end
             object DBGConsultaROM_VDSC: TdxDBGridCurrencyColumn
+              Color = clWhite
+              Font.Charset = ANSI_CHARSET
+              Font.Color = clBlack
+              Font.Height = -12
+              Font.Name = 'Tahoma'
+              Font.Style = []
               HeaderAlignment = taRightJustify
               Width = 70
               BandIndex = 0
@@ -760,6 +922,12 @@ inherited frmctr_rom: Tfrmctr_rom
               DisableFilter = True
             end
             object dbgConsultaROM_TCDE: TdxDBGridMaskColumn
+              Color = clWhite
+              Font.Charset = ANSI_CHARSET
+              Font.Color = clBlack
+              Font.Height = -12
+              Font.Name = 'Tahoma'
+              Font.Style = []
               HeaderAlignment = taRightJustify
               Width = 90
               BandIndex = 0
@@ -771,30 +939,60 @@ inherited frmctr_rom: Tfrmctr_rom
               DisableFilter = True
             end
             object DBGConsultaROM_STFI: TdxDBGridMaskColumn
+              Color = clWhite
+              Font.Charset = ANSI_CHARSET
+              Font.Color = clBlack
+              Font.Height = -12
+              Font.Name = 'Tahoma'
+              Font.Style = []
               Width = 130
               BandIndex = 0
               RowIndex = 0
               FieldName = 'ROM_STFI'
             end
             object DBGConsultaRECO: TdxDBGridMaskColumn
+              Color = clWhite
+              Font.Charset = ANSI_CHARSET
+              Font.Color = clBlack
+              Font.Height = -12
+              Font.Name = 'Tahoma'
+              Font.Style = []
               Width = 77
               BandIndex = 0
               RowIndex = 0
               FieldName = 'RECO'
             end
             object dbgConsultaPAG_DPAG: TdxDBGridMaskColumn
+              Color = clWhite
+              Font.Charset = ANSI_CHARSET
+              Font.Color = clBlack
+              Font.Height = -12
+              Font.Name = 'Tahoma'
+              Font.Style = []
               Width = 150
               BandIndex = 0
               RowIndex = 0
               FieldName = 'PAG_DPAG'
             end
             object dbgConsultaROM_STPD: TdxDBGridMaskColumn
+              Color = clWhite
+              Font.Charset = ANSI_CHARSET
+              Font.Color = clBlack
+              Font.Height = -12
+              Font.Name = 'Tahoma'
+              Font.Style = []
               Width = 100
               BandIndex = 0
               RowIndex = 0
               FieldName = 'ROM_STPD'
             end
             object DBGConsultaROM_DTRA: TdxDBGridMaskColumn
+              Color = clWhite
+              Font.Charset = ANSI_CHARSET
+              Font.Color = clBlack
+              Font.Height = -12
+              Font.Name = 'Tahoma'
+              Font.Style = []
               Width = 215
               BandIndex = 0
               RowIndex = 0
@@ -5366,14 +5564,18 @@ inherited frmctr_rom: Tfrmctr_rom
       Origin = '"ROM_ITE"."ORIG"'
     end
     object rom_itePIPI: TIBBCDField
+      DisplayLabel = 'IPI %'
       FieldName = 'PIPI'
       Origin = '"ROM_ITE"."PIPI"'
+      DisplayFormat = ',##,0.00'
       Precision = 9
       Size = 2
     end
     object rom_iteVIPI: TIBBCDField
+      DisplayLabel = 'Total R$'
       FieldName = 'VIPI'
       Origin = '"ROM_ITE"."VIPI"'
+      DisplayFormat = 'R$ ,##,0.00'
       Precision = 18
       Size = 2
     end

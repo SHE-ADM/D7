@@ -1130,7 +1130,13 @@ begin
 
   DBGConsulta.Filter.Clear;
   DBGConsultaNFE_CDNF.Field.FocusControl;
-  DBGConsulta.SetFocus;
+
+  if (Showing) then
+  if (PNLDBG.Enabled) and (PNLDBG.Visible) then
+  if (GBDET.Enabled ) and (GBDET.Visible ) then
+  if (DBGConsulta.Enabled) and (DBGConsulta.Visible) then
+  if (Cadastro.RecNo > 0) then
+  oSetFocus(DBGConsulta);
 end;
 
 end.

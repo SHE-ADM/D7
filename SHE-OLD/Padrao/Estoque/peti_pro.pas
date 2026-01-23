@@ -174,8 +174,6 @@ type
     CEQTDE: TdxCurrencyEdit;
     CEQTCO: TdxCurrencyEdit;
     Label14: TLabel;
-    procedure siPRIClick(Sender: TObject);
-    procedure siCANClick(Sender: TObject);
     procedure siCSEClick(Sender: TObject);
     procedure siALTClick(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -187,6 +185,8 @@ type
       var Accept: Boolean);
     procedure CEQTCOValidate(Sender: TObject; var ErrorText: String;
       var Accept: Boolean);
+    procedure siCANClick(Sender: TObject);
+    procedure siPRIClick(Sender: TObject);
   private
     { Private declarations }
     RECEstoque: TRECPedidos;
@@ -198,6 +198,7 @@ type
     procedure CANCELA_SEPARACAO;
     procedure LIMPA_ETIQUETA;
     procedure PESQUISA_ETIQUETA;
+    procedure ATUALIZA_ESTOQUE;
     function  RETORNA_STFI: string;
   public
     { Public declarations }
@@ -1070,61 +1071,6 @@ begin
   Application.ProcessMessages;
 end;
 
-procedure Tfrmeti_pro.siPRIClick(Sender: TObject);
-var
-  RECRelatorios: TRECRelatorios;
-begin
-  ActiveControl := Nil;
-  if oEmpty(EDCDET.Text) then
-     oException(EDCDET,'Número de Etiqueta não Informado !');
-
-  try
-    oIRECRelatorios(RECRelatorios);
-    if Assigned(qrpEST_ETQ_PAD) then qrpEST_ETQ_PAD.BringToFront else
-    begin
-      RECRelatorios.Titulo   := 'Etiquetas de Estoque';
-      RECRelatorios.Tipo     := 'TODOS';
-      RECRelatorios.Handle   := Self.Handle;
-
-      RECRelatorios.PEC1ConsultaText  := EDCDET.Text;
-      RECRelatorios.IEC1ConsultaField := 'PK.CDET';
-
-      RECRelatorios.PrintTAG := 1;
-      RECRelatorios.Handle   := Self.Handle;
-
-      qrpEST_ETQ_PAD     := TqrpEST_ETQ_PAD.Create(Self,RECRelatorios);
-      qrpEST_ETQ_PAD.Tag := 4;
-      qrpEST_ETQ_PAD.WinControlFormCreate(qrpEST_ETQ_PAD);
-    end;
-  finally
-    oFRECRelatorios(RECRelatorios);
-  end;
-end;
-
-procedure Tfrmeti_pro.siCANClick(Sender: TObject);
-begin
-  if Length(EDCDET.Text) < 10 then
-     oException(EDCDET,'Número da etiqueta não informado !');
-     
-  CANCELA_ETIQUETA;
-end;
-
-procedure Tfrmeti_pro.siCSEClick(Sender: TObject);
-begin
-  if Length(EDCDET.Text) < 10 then
-  oException(EDCDET,'Número da etiqueta não informado !');
-
-  CANCELA_SEPARACAO;
-end;
-
-procedure Tfrmeti_pro.siALTClick(Sender: TObject);
-begin
-  if Length(EDCDET.Text) < 10 then
-  oException(EDCDET,'Número da etiqueta não informado !');
-
-  ALTERA_ETIQUETA;
-end;
-
 procedure Tfrmeti_pro.EDCDETValidate(Sender: TObject;
   var ErrorText: String; var Accept: Boolean);
 begin
@@ -1167,6 +1113,85 @@ procedure Tfrmeti_pro.CEQTCOValidate(Sender: TObject;
   var ErrorText: String; var Accept: Boolean);
 begin
   CEQTCO.Font.Style := [fsBold];
+end;
+
+procedure Tfrmeti_pro.siPRIClick(Sender: TObject);
+var
+  RECRelatorios: TRECRelatorios;
+begin
+  ActiveControl := Nil;
+  if oEmpty(EDCDET.Text) then
+     oException(EDCDET,'Número de Etiqueta não Informado !');
+
+  try
+    oIRECRelatorios(RECRelatorios);
+    if Assigned(qrpEST_ETQ_PAD) then qrpEST_ETQ_PAD.BringToFront else
+    begin
+      RECRelatorios.Titulo   := 'Etiquetas de Estoque';
+      RECRelatorios.Tipo     := 'TODOS';
+      RECRelatorios.Handle   := Self.Handle;
+
+      RECRelatorios.PEC1ConsultaText  := EDCDET.Text;
+      RECRelatorios.IEC1ConsultaField := 'PK.CDET';
+
+      RECRelatorios.PrintTAG := 1;
+      RECRelatorios.Handle   := Self.Handle;
+
+      qrpEST_ETQ_PAD     := TqrpEST_ETQ_PAD.Create(Self,RECRelatorios);
+      qrpEST_ETQ_PAD.Tag := 4;
+      qrpEST_ETQ_PAD.WinControlFormCreate(qrpEST_ETQ_PAD);
+    end;
+  finally
+    oFRECRelatorios(RECRelatorios);
+  end;
+end;
+
+procedure Tfrmeti_pro.siCANClick(Sender: TObject);
+begin
+  if Length(EDCDET.Text) < 10 then
+     oException(EDCDET,'Número da etiqueta não informado !');
+
+  CANCELA_ETIQUETA;
+  ATUALIZA_ESTOQUE;
+end;
+
+procedure Tfrmeti_pro.siCSEClick(Sender: TObject);
+begin
+  if Length(EDCDET.Text) < 10 then
+  oException(EDCDET,'Número da etiqueta não informado !');
+
+  CANCELA_SEPARACAO;
+  ATUALIZA_ESTOQUE;
+end;
+
+procedure Tfrmeti_pro.siALTClick(Sender: TObject);
+begin
+  if Length(EDCDET.Text) < 10 then
+  oException(EDCDET,'Número da etiqueta não informado !');
+
+  ALTERA_ETIQUETA;
+  ATUALIZA_ESTOQUE;
+end;
+
+procedure TFrmeti_pro.ATUALIZA_ESTOQUE;
+var
+  i: word;
+begin
+  if PED_VEN_ITEIDCP.AsInteger > 0 then
+  begin
+    IBSP.Close;
+    IBSP.StoredProcName := 'SP_CAD_PRO_EST_LAN_UPD_TMP';
+    IBSP.Prepare;
+
+    for i := 0 to IBSP.ParamCount - 1 do
+    IBSP.Params[i].Value := Null;
+
+    IBSP.Params[0].Value := RECParametros.EP_ID;
+    IBSP.Params[1].Value := PED_VEN_ITEIDCP.AsInteger;
+    IBSP.ExecProc;
+
+    oRTransact(IBTRA);
+  end;  
 end;
 
 end.

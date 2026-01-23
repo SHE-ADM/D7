@@ -2072,7 +2072,10 @@ begin
     if ADefaultPSQ <> 'PRN' then
     begin
       if ADefaultPSQ = 'REJ' then
-      SQL.Add('WHERE API_ST = ''REJEITADO''') else
+      begin
+        SQL.Add('WHERE API_ST = ''REJEITADO''');
+        SQL.Add('OR    API_ST = ''FALHA''')
+      end else
 
       if ADefaultPSQ <> 'CON' then
       SQL.Add('WHERE DEST <> ''BAIXADO''');

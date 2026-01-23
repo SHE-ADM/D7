@@ -117,18 +117,46 @@ type
     BLBPSQ_CAD5: TdxBarLargeButton;
     BBPSQ_PER5: TdxBarButton;
     DBGConsulta: TdxDBGrid;
-    ALPrincipal: TActionList;
-    ACTRefresh: TAction;
-    ACTConsulta: TAction;
-    ACTPesquisa: TAction;
-    ACTMPValidate: TAction;
-    ACTProgressBar: TAction;
-    ACTDashboards: TAction;
-    ACTSaida: TAction;
-    ACTPesquisaOK: TAction;
-    ACTPesquisaFocusControl: TAction;
     ConsultaC_ID: TLargeintField;
     DBGConsultaC_ID: TdxDBGridColumn;
+    ALPrincipal: TActionList;
+    ACTRefresh: TAction;
+    ACTSaida: TAction;
+
+    ACTConsulta: TAction;
+    ACTEdicao: TAction;
+    ACTPesquisa: TAction;
+    ACTPesquisaOK: TAction;
+    ACTPesquisaFocusControl: TAction;
+
+    ACTMPAppend: TAction;
+    ACTMPEdit: TAction;
+    ACTMPDelete: TAction;
+    ACTMPPost: TAction;
+    ACTMPValidate: TAction;
+    ACTMPCancel: TAction;
+
+    ACTMEAppend: TAction;
+    ACTMEEdit: TAction;
+    ACTMEDelete: TAction;
+    ACTMEPost: TAction;
+    ACTMECancel: TAction;
+
+    ACTCheckConstraints: TAction;
+    ACTCheckErrors: TAction;
+
+    ACTRelatorios: TAction;
+    ACTVisualiza: TAction;
+    ACTDashboards: TAction;
+    ACTProgressBar: TAction;
+
+    ACTEveRegister: TAction;
+    ACTEveExecute: TAction;
+    ACTEveExpress: TAction;
+    TEvent: TIBTransaction;
+    SQLEvent: TIBSQL;
+    SPEvent: TIBStoredProc;
+    EEvent: TIBEvents;
 
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -148,27 +176,11 @@ type
       Sender: TdxCustomDockControl; AZones: TList);
     procedure TCDSPrincipal1RodapeUpdateDockZones(
       Sender: TdxCustomDockControl; AZones: TList);
-    procedure ACTRefreshExecute(Sender: TObject);
-    procedure ACTSaidaExecute(Sender: TObject);
-    procedure ACTPesquisaOKExecute(Sender: TObject);
-    procedure ACTPesquisaFocusControlExecute(Sender: TObject);
     procedure BEPSQ_CADCurChange(Sender: TObject);
     procedure BEPSQ_CADKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure BDPSQ_PER_INICurChange(Sender: TObject);
     procedure BDPSQ_PER_FIMCurChange(Sender: TObject);
-    procedure ACTConsultaExecute(Sender: TObject);
-    procedure ACTPesquisaExecute(Sender: TObject);
-    procedure ConsultaCalcFields(DataSet: TDataSet);
-    procedure ACTMPValidateExecute(Sender: TObject);
-    procedure ACTProgressBarExecute(Sender: TObject);
-    procedure ACTDashboardsExecute(Sender: TObject);
-    procedure ConsultaBeforeOpen(DataSet: TDataSet);
-    procedure ConsultaAfterOpen(DataSet: TDataSet);
-    procedure ConsultaBeforeClose(DataSet: TDataSet);
-    procedure ConsultaAfterClose(DataSet: TDataSet);
-    procedure ConsultaBeforeScroll(DataSet: TDataSet);
-    procedure ConsultaAfterScroll(DataSet: TDataSet);
     procedure DTSConsultaDataChange(Sender: TObject; Field: TField);
     procedure DTSConsultaStateChange(Sender: TObject);
     procedure DBGConsultaBackgroundDrawEvent(Sender: TObject;
@@ -181,6 +193,76 @@ type
     procedure DBGConsultaDblClick(Sender: TObject);
     procedure DBGConsultaKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
+    procedure ACTRefreshExecute(Sender: TObject);
+    procedure ACTSaidaExecute(Sender: TObject);
+
+    procedure ACTConsultaExecute(Sender: TObject);
+    procedure ACTEdicaoExecute(Sender: TObject);
+    procedure ACTPesquisaExecute(Sender: TObject);
+    procedure ACTPesquisaOKExecute(Sender: TObject);
+    procedure ACTPesquisaFocusControlExecute(Sender: TObject);
+
+    procedure ACTMPAppendExecute(Sender: TObject);
+    procedure ACTMPEditExecute(Sender: TObject);
+    procedure ACTMPDeleteExecute(Sender: TObject);
+    procedure ACTMPPostExecute(Sender: TObject);
+    procedure ACTMPValidateExecute(Sender: TObject);
+    procedure ACTMPCancelExecute(Sender: TObject);
+
+    procedure ACTMEAppendExecute(Sender: TObject);
+    procedure ACTMEEditExecute(Sender: TObject);
+    procedure ACTMEDeleteExecute(Sender: TObject);
+    procedure ACTMEPostExecute(Sender: TObject);
+    procedure ACTMECancelExecute(Sender: TObject);
+
+    procedure ACTCheckConstraintsExecute(Sender: TObject);
+    procedure ACTCheckErrorsExecute(Sender: TObject);
+
+    procedure ACTRelatoriosExecute(Sender: TObject);
+    procedure ACTVisualizaExecute(Sender: TObject);
+    procedure ACTDashboardsExecute(Sender: TObject);
+    procedure ACTProgressBarExecute(Sender: TObject);
+
+    procedure ACTEveRegisterExecute(Sender: TObject);
+    procedure ACTEveExecuteExecute(Sender: TObject);
+    procedure ACTEveExpressExecute(Sender: TObject);
+
+    procedure ConsultaBeforeOpen(DataSet: TDataSet);
+    procedure ConsultaAfterOpen(DataSet: TDataSet);
+
+    procedure ConsultaBeforeClose(DataSet: TDataSet);
+    procedure ConsultaAfterClose(DataSet: TDataSet);
+
+    procedure ConsultaBeforeScroll(DataSet: TDataSet);
+    procedure ConsultaAfterScroll(DataSet: TDataSet);
+
+    procedure ConsultaBeforeInsert(DataSet: TDataSet);
+    procedure ConsultaAfterInsert(DataSet: TDataSet);
+    procedure ConsultaNewRecord(DataSet: TDataSet);
+
+    procedure ConsultaBeforeEdit(DataSet: TDataSet);
+    procedure ConsultaAfterEdit(DataSet: TDataSet);
+
+    procedure ConsultaBeforeDelete(DataSet: TDataSet);
+    procedure ConsultaAfterDelete(DataSet: TDataSet);
+
+    procedure ConsultaBeforePost(DataSet: TDataSet);
+    procedure ConsultaAfterPost(DataSet: TDataSet);
+
+    procedure ConsultaBeforeCancel(DataSet: TDataSet);
+    procedure ConsultaAfterCancel(DataSet: TDataSet);
+
+    procedure ConsultaCalcFields(DataSet: TDataSet);
+
+    procedure ConsultaUpdateError(DataSet: TDataSet; E: EDatabaseError;
+      UpdateKind: TUpdateKind; var UpdateAction: TIBUpdateAction);
+    procedure ConsultaEditError(DataSet: TDataSet; E: EDatabaseError;
+      var Action: TDataAction);
+    procedure ConsultaDeleteError(DataSet: TDataSet; E: EDatabaseError;
+      var Action: TDataAction);
+    procedure ConsultaPostError(DataSet: TDataSet; E: EDatabaseError;
+      var Action: TDataAction);
+
   private
     { Private declarations }
     FCurrentEvent,
@@ -195,9 +277,10 @@ type
     { Public declarations }
     REC_SHE_PSQ: TREC_SHE_PSQ;
 
-    { DOCKERS }
     FDockControl: TdxCustomDockControl;
     FDockControlPrincipal1RodapeLE: Integer;
+
+    procedure _SetDockControl (const AValue: TdxCustomDockControl; AXYPos: Integer = 0; ADirection: TDirection = lNone; ARepeat: boolean = False; AUpdateZones: Boolean = False);
 
     property _GetCurrentAlert: String  read FCurrentAlert write _SetCurrentAlert;
     property _GetCurrentEvent: String  read FCurrentEvent write _SetCurrentEvent;
@@ -214,9 +297,6 @@ type
 
     procedure _WM_RESIZE(var Message: TMessage); message WM_ENTERSIZEMOVE;
     procedure _WM_AFTER_RESIZE(var Message: TMessage); message WM_EXITSIZEMOVE;
-
-    { método para atribuição\validação de valor }
-    procedure _SetDockControl (const AValue: TdxCustomDockControl; AXYPos: Integer = 0; ADirection: TDirection = lNone; ARepeat: boolean = False; AUpdateZones: Boolean = False);
 
     Constructor Create(AOwner: TComponent;
                  const AIDPK : LongInt = 0 ;
@@ -273,14 +353,12 @@ procedure TFrmSHE_DEF_PSQ._WM_CREATE(var Msg: TMessage);
 begin
   { INICIALIZA }
   Screen.Cursor := crAppStart;  { Cursor }
+  //SetCursorPos(500,Self.Top); { Posição Inicial }
   Randomize;
 
-  { INICIALIZAÇÃO DOS PARÂMETROS DE PESQUISA }
-  RECParametros.PSQ_TFD_PAD := 'PK.ID';  { Field }
-  RECParametros.PSQ_TLD_PAD := 'ID';     { Label }
-  RECParametros.PSQ_TVD_PAD := EmptyStr; { Valor }
-
   { INICIALIZAÇÃO DOS OBJETOS DECLARADOS }
+  { INICIALIZAÇÃO DOS COMPONENTES }
+  oPRN_EXE(Application.Handle,'Relatórios');
 end;
 
 procedure TFrmSHE_DEF_PSQ._WM_AFTER_CREATE(var Msg: TMessage);
@@ -384,6 +462,7 @@ end;
 procedure TFrmSHE_DEF_PSQ._WM_ACTIVATE(var Msg: TMessage);
 begin
   { EVENTOS }
+  ACTEveRegister.Execute; { Registro }
 end;
 
 procedure TFrmSHE_DEF_PSQ._SW_SHOWNOACTIVATE(var Msg: TMessage);
@@ -403,9 +482,10 @@ begin
   { BEFORE SHOWNING }
   Screen.Cursor := crHourGlass; { Cursor }
   REC_SHE_PSQ.FResize := 0;     { Form Resize }
-  ALockWindowUpdate   := True;  { Habilita SQL INJECTION }
+  ALockWindowUpdate   := True;  { SQL Injection Enabled }
 
-  ACTConsulta.Execute; { Tabelas }
+//  ACTConsulta.Execute; { Tabelas }
+//  ACTEdicao.Execute;   { Edições }
 end;
 
 procedure TFrmSHE_DEF_PSQ._WM_AFTER_SHOW(var Msg: TMessage);
@@ -413,20 +493,24 @@ begin
   { INICIALIZAÇÃO DOS COMPONENTES }
   try
     Screen.Cursor := crAppStart;
+    PNLPrincipal1.Enabled := False;
 
     { AFTER SHOWNING }
-    ACTPesquisa.Execute; { Pesquisa Principal }
+    //ACTPesquisa.Execute; { Pesquisa Principal }
 
   finally
     Screen.Cursor := crDefault;
+    PNLPrincipal1.Enabled := True;
+    ALockWindowUpdate := False;  { SQL Injection Disabled }
+
+    { INICIALIZAÇÃO }
+    REC_SHE_PSQ.FInitialize := False; { Finaliza }
   end;
 
-  if Showing then
-  if Consulta.RecNo > 0 then
-  begin
-    PostMessage(TWinControl(DBGConsulta).Handle, WM_SETFOCUS, 0, 0);
-    TWinControl(DBGConsulta).SetFocus;
-  end;
+  if (Showing) then
+  if (DBGConsulta.Enabled) and (DBGConsulta.Visible) then
+  if (Consulta.RecNo > 0 ) then
+  oSetFocus(DBGConsulta);
 end;
 
 procedure TFrmSHE_DEF_PSQ._WM_RESIZE(var Message: TMessage);
@@ -587,33 +671,48 @@ begin
     if Assigned(_Form) and _Form.Find(ClassName,idxForm) and (_Form.Objects[idxForm] <> Nil) then
 
     try
+      { Eventos }
       try
-        { Transação Principal }
         try
-          oFTransact(TConsulta); { Consultas }
+          EEvent.UnRegisterEvents;
         except
           on E: Exception do
           begin
-            oErro(Application.Handle,'Falha ao tentar fechar tabelas !'+#13+#13+
+            oErro(Application.Handle,'Falha ao tentar fechar eventos !'+#13+#13+
                                      'Error Code: '+E.Message+'.'      +#13+
                                       Caption+'.');
           end;
         end;
 
       finally
-
-        { record e afins }
         try
-          oFREC_SHE_PSQ(REC_SHE_PSQ);
-        except
-          on E: Exception do
-          begin
-           oErro(Application.Handle,'Falha ao tentar esvaziar memória !'+#13+#13+
-                                    'Error Code: '+E.Message+'.'        +#13+
-                                     Caption+'.');
+          { Transação Principal }
+          try
+            oFTransact(TConsulta); { Consultas }
+            oFTransact(TEvent   ); { Eventos }
+          except
+            on E: Exception do
+            begin
+              oErro(Application.Handle,'Falha ao tentar fechar tabelas !'+#13+#13+
+                                       'Error Code: '+E.Message+'.'      +#13+
+                                        Caption+'.');
+            end;
           end;
-        end;
 
+        finally
+          { record e afins }
+          try
+            oFREC_SHE_PSQ(REC_SHE_PSQ);
+          except
+            on E: Exception do
+            begin
+             oErro(Application.Handle,'Falha ao tentar esvaziar memória !'+#13+#13+
+                                      'Error Code: '+E.Message+'.'        +#13+
+                                       Caption+'.');
+            end;
+          end;
+
+        end;
       end;
 
     finally
@@ -629,11 +728,33 @@ end;
 
 procedure TFrmSHE_DEF_PSQ.FormCreate(Sender: TObject);
 begin
-  { FORM SCREEN }
-  REC_SHE_PSQ.FPosition := Self.Position; { Posição }
-  REC_SHE_PSQ.FMainArea := False; { Aplicativo }
-  REC_SHE_PSQ.FWorkArea := False; { Windows    }
+  { ACCESS DENIED }
+  if (FForceClose) and (RECParametros.STCX <> 'Caixa Aberto') then
+  begin
+    _GetCurrentAlert := FCurrentEvent    + #13 + #13 +
+                       'ACESSO NEGADO !' + #13 +
+                        RECParametros.STCX ;
+  end else
 
+  if (FForceClose) and (RECParametros.STCX = 'Caixa Aberto') then
+  begin
+    _GetCurrentAlert := FCurrentEvent    + #13 + #13 +
+                       'ACESSO NEGADO !' + #13 +
+                       'Usuário não Autorizado';
+  end;
+
+  { ACCESS ABORT }
+  if FForceClose then
+  begin
+    oErro(Application.Handle,FCurrentAlert);
+
+    Self.Visible := False;
+    Self.Height  := 0;
+    Self.Width   := 0;
+
+    PostMessage(Handle, WM_CLOSE, 0, 0);
+    Exit;
+  end else
   PostMessage( Handle, WM_AFTER_CREATE, 0, 0);
 end;
 
@@ -779,6 +900,10 @@ begin
     Self.Width  := IFThen(REC_SHE_PSQ.FPosition = poDefault,REC_SHE_PSQ.FRight  - REC_SHE_PSQ.FLeft - 5,0);
     Self.Height := IFThen(REC_SHE_PSQ.FPosition = poDefault,REC_SHE_PSQ.FHeight - REC_SHE_PSQ.FTop  - 5,0);
   end;
+
+  { SCREEN CAPTION }
+  if RECUsuarios.Id = 0 then
+  Self.Caption := 'Dimensões: Monitor = ' + IntToStr(Screen.Width) + ' x ' + IntToStr(Screen.Height) + ' - APP = ' + IntToStr(REC_SHE_PSQ.FMainWidth)  + ' x ' + IntToStr(REC_SHE_PSQ.FMainHeight) + '. ' + Self.Caption;
 end;
 
 procedure TFrmSHE_DEF_PSQ.FormResize(Sender: TObject);
@@ -914,19 +1039,67 @@ begin
   end;
 end;
 
+procedure TFrmSHE_DEF_PSQ.BEPSQ_CADCurChange(Sender: TObject);
+begin
+  BEPSQ_CAD.Text := BEPSQ_CAD.CurText;
+end;
+
+procedure TFrmSHE_DEF_PSQ.BEPSQ_CADKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if key = vk_return then
+  begin
+    BEPSQ_CAD.Text := Trim(BEPSQ_CAD.Text);
+    with REC_SHE_PSQ do
+    begin
+      if oBSONumero(BEPSQ_CAD.Text) then
+      begin
+        PSQ_WHERE := ' = ';
+        PSQ_LKPK  := '''' ;
+        PSQ_LKFK  := '''' ;
+      end else
+      begin
+        PSQ_WHERE := ' LIKE ';
+        PSQ_LKPK  := '''' ;
+        PSQ_LKFK  := '%''';
+      end;
+    end;
+
+    //ACTPesquisaOK.Execute;
+  end else
+
+  if key = VK_DOWN then
+  begin
+//    if (ACTPesquisa.Enabled) and (BEPSQ_CAD.Enabled) and (DBGConsulta.Enabled) then
+//    begin
+//      PostMessage(TWinControl(DBGConsulta).Handle, WM_SETFOCUS, 0, 0);
+//      TWinControl(DBGConsulta).SetFocus;
+//    end;
+  end else
+
+  if key = vk_escape then
+//  ACTSaida.Execute;
+end;
+
+procedure TFrmSHE_DEF_PSQ.BDPSQ_PER_INICurChange(Sender: TObject);
+begin
+  BDPSQ_PER_INI.Date := BDPSQ_PER_INI.CurDate;
+end;
+
+procedure TFrmSHE_DEF_PSQ.BDPSQ_PER_FIMCurChange(Sender: TObject);
+begin
+  BDPSQ_PER_FIM.Date := BDPSQ_PER_FIM.CurDate;
+end;
+
 procedure TFrmSHE_DEF_PSQ.ACTRefreshExecute(Sender: TObject);
 begin
-  if (not ACTRefresh.Enabled) or { Habilitado }
-     (not ACTRefresh.Visible) or { Visível    }
-     (ALockWindowUpdate) then    { Destravado }
-
-  Abort else
   oRefresh(Consulta);
 end;
 
 procedure TFrmSHE_DEF_PSQ.ACTSaidaExecute(Sender: TObject);
 begin
-  REC_SHE_PSQ.PSQ_OK := False;
+  if Consulta.State in [dsInsert,dsEdit] then
+  ACTMECancel.Execute else
   Close;
 end;
 
@@ -934,6 +1107,15 @@ procedure TFrmSHE_DEF_PSQ.ACTConsultaExecute(Sender: TObject);
 begin
   { INICIALIZAÇÃO DE TRANSAÇÕES }
   oOTransact(TConsulta); { Principal }
+
+  { TABELAS }
+end;
+
+procedure TFrmSHE_DEF_PSQ.ACTEdicaoExecute(Sender: TObject);
+begin
+  { INICIALIZAÇÃO DE TRANSAÇÕES }
+  { EDIÇÕES }
+  { PAGE CONTROL }
 end;
 
 procedure TFrmSHE_DEF_PSQ.ACTPesquisaExecute(Sender: TObject);
@@ -985,10 +1167,6 @@ begin
     FList := TStringList.Create else
     FList.Clear;
   end;
-
-  { INICIALIZA FORM SCREEN }
-  Screen.Cursor := crHourGlass;
-  ALockWindowUpdate := True;  { Habilita SQL INJECTION }
 end;
 
 procedure TFrmSHE_DEF_PSQ.ACTPesquisaOKExecute(Sender: TObject);
@@ -1031,59 +1209,84 @@ begin
   BEPSQ_CAD.SetFocus(False);
 end;
 
-procedure TFrmSHE_DEF_PSQ.BEPSQ_CADCurChange(Sender: TObject);
+procedure TFrmSHE_DEF_PSQ.ACTMPAppendExecute(Sender: TObject);
 begin
-  BEPSQ_CAD.Text := BEPSQ_CAD.CurText;
+  { nothing }
 end;
 
-procedure TFrmSHE_DEF_PSQ.BEPSQ_CADKeyDown(Sender: TObject; var Key: Word;
-  Shift: TShiftState);
+procedure TFrmSHE_DEF_PSQ.ACTMPEditExecute(Sender: TObject);
 begin
-  if key = vk_return then
-  begin
-    BEPSQ_CAD.Text := Trim(BEPSQ_CAD.Text);
-    with REC_SHE_PSQ do
-    begin
-      if oBSONumero(BEPSQ_CAD.Text) then
-      begin
-        PSQ_WHERE := ' = ';
-        PSQ_LKPK  := '''' ;
-        PSQ_LKFK  := '''' ;
-      end else
-      begin
-        PSQ_WHERE := ' LIKE ';
-        PSQ_LKPK  := '''' ;
-        PSQ_LKFK  := '%''';
-      end;
-    end;
-
-    ACTPesquisaOK.Execute;
-  end else
-
-  if key = VK_DOWN then
-  begin
-    if (ACTPesquisa.Enabled) and (BEPSQ_CAD.Enabled) and (DBGConsulta.Enabled) then
-    begin
-      PostMessage(TWinControl(DBGConsulta).Handle, WM_SETFOCUS, 0, 0);
-      TWinControl(DBGConsulta).SetFocus;
-    end;
-  end else
-
-  if key = vk_escape then
-  ACTSaida.Execute;
+  { nothing }
 end;
 
-procedure TFrmSHE_DEF_PSQ.BDPSQ_PER_INICurChange(Sender: TObject);
+procedure TFrmSHE_DEF_PSQ.ACTMPDeleteExecute(Sender: TObject);
 begin
-  BDPSQ_PER_INI.Date := BDPSQ_PER_INI.CurDate;
+  { nothing }
 end;
 
-procedure TFrmSHE_DEF_PSQ.BDPSQ_PER_FIMCurChange(Sender: TObject);
+procedure TFrmSHE_DEF_PSQ.ACTMPPostExecute(Sender: TObject);
 begin
-  BDPSQ_PER_FIM.Date := BDPSQ_PER_FIM.CurDate;
+  ACTCheckConstraints.Execute;
+  ACTCheckErrors.Execute;
 end;
 
 procedure TFrmSHE_DEF_PSQ.ACTMPValidateExecute(Sender: TObject);
+begin
+  ACTCheckConstraints.Execute;
+  ACTCheckErrors.Execute;
+end;
+
+procedure TFrmSHE_DEF_PSQ.ACTMPCancelExecute(Sender: TObject);
+begin
+  Close;
+end;
+
+procedure TFrmSHE_DEF_PSQ.ACTMEAppendExecute(Sender: TObject);
+begin
+  { nothing }
+end;
+
+procedure TFrmSHE_DEF_PSQ.ACTMEEditExecute(Sender: TObject);
+begin
+  { nothing }
+end;
+
+procedure TFrmSHE_DEF_PSQ.ACTMEDeleteExecute(Sender: TObject);
+begin
+  { nothing }
+end;
+
+procedure TFrmSHE_DEF_PSQ.ACTMEPostExecute(Sender: TObject);
+begin
+  { nothing }
+end;
+
+procedure TFrmSHE_DEF_PSQ.ACTMECancelExecute(Sender: TObject);
+begin
+  { nothing }
+end;
+
+procedure TFrmSHE_DEF_PSQ.ACTCheckConstraintsExecute(Sender: TObject);
+begin
+  ActiveControl := Nil;
+end;
+
+procedure TFrmSHE_DEF_PSQ.ACTCheckErrorsExecute(Sender: TObject);
+begin
+  { nothing }
+end;
+
+procedure TFrmSHE_DEF_PSQ.ACTRelatoriosExecute(Sender: TObject);
+begin
+  { nothing }
+end;
+
+procedure TFrmSHE_DEF_PSQ.ACTVisualizaExecute(Sender: TObject);
+begin
+  { nothing }
+end;
+
+procedure TFrmSHE_DEF_PSQ.ACTDashboardsExecute(Sender: TObject);
 begin
   { nothing }
 end;
@@ -1093,9 +1296,20 @@ begin
   { nothing }
 end;
 
-procedure TFrmSHE_DEF_PSQ.ACTDashboardsExecute(Sender: TObject);
+procedure TFrmSHE_DEF_PSQ.ACTEveRegisterExecute(Sender: TObject);
 begin
-  { nothing }
+  { UNREGISTER EVENTS }
+  { REGISTER EVENTS }
+end;
+
+procedure TFrmSHE_DEF_PSQ.ACTEveExecuteExecute(Sender: TObject);
+begin
+  { EXECUTE EVENTS }
+end;
+
+procedure TFrmSHE_DEF_PSQ.ACTEveExpressExecute(Sender: TObject);
+begin
+  { EXECUTE EVENTS }
 end;
 
 procedure TFrmSHE_DEF_PSQ.ConsultaBeforeOpen(DataSet: TDataSet);
@@ -1108,7 +1322,8 @@ procedure TFrmSHE_DEF_PSQ.ConsultaAfterOpen(DataSet: TDataSet);
 begin
   { FINALIZA FORM SCREEN }
   Screen.Cursor := crDefault;
-  REC_SHE_PSQ.FInitialize := False;
+
+  REC_SHE_PSQ.FInitialize := False; { Finaliza Inicialização }
 end;
 
 procedure TFrmSHE_DEF_PSQ.ConsultaBeforeClose(DataSet: TDataSet);
@@ -1131,15 +1346,111 @@ begin
   { nothing }
 end;
 
+procedure TFrmSHE_DEF_PSQ.ConsultaBeforeInsert(DataSet: TDataSet);
+begin
+  Consulta.Fields[0].Tag := Consulta.RecNo;
+end;
+
+procedure TFrmSHE_DEF_PSQ.ConsultaAfterInsert(DataSet: TDataSet);
+begin
+  if (Showing) then
+  if (DBGConsulta.Enabled) and (DBGConsulta.Visible) then
+  if (Consulta.RecNo > 0 ) then
+  oSetFocus(DBGConsulta);
+end;
+
+procedure TFrmSHE_DEF_PSQ.ConsultaNewRecord(DataSet: TDataSet);
+begin
+  { nothing }
+end;
+
+procedure TFrmSHE_DEF_PSQ.ConsultaBeforeEdit(DataSet: TDataSet);
+begin
+  Consulta.Fields[0].Tag := Consulta.RecNo;
+end;
+
+procedure TFrmSHE_DEF_PSQ.ConsultaAfterEdit(DataSet: TDataSet);
+begin
+  if (Showing) then
+  if (DBGConsulta.Enabled) and (DBGConsulta.Visible) then
+  if (Consulta.RecNo > 0 ) then
+  oSetFocus(DBGConsulta);
+end;
+
+procedure TFrmSHE_DEF_PSQ.ConsultaBeforeDelete(DataSet: TDataSet);
+begin
+  if oYesNo(Handle,'Confirma Exclusão ?') = mrNo then
+  Abort;
+end;
+
+procedure TFrmSHE_DEF_PSQ.ConsultaAfterDelete(DataSet: TDataSet);
+begin
+  oRefresh(Consulta);
+end;
+
+procedure TFrmSHE_DEF_PSQ.ConsultaBeforePost(DataSet: TDataSet);
+begin
+  { nothing }
+end;
+
+procedure TFrmSHE_DEF_PSQ.ConsultaAfterPost(DataSet: TDataSet);
+begin
+  if not ALockWindowUpdate then { SQL Injection Enabled }
+  begin
+    oRefresh(Consulta);
+  end;
+end;
+
+procedure TFrmSHE_DEF_PSQ.ConsultaBeforeCancel(DataSet: TDataSet);
+begin
+  if Consulta.Fields[0].Tag = 0 then
+  begin
+    Consulta.Close;
+    Consulta.Open;
+
+    ABORT;
+  end;
+end;
+
+procedure TFrmSHE_DEF_PSQ.ConsultaAfterCancel(DataSet: TDataSet);
+begin
+  { nothing }
+end;
+
+procedure TFrmSHE_DEF_PSQ.ConsultaUpdateError(DataSet: TDataSet;
+  E: EDatabaseError; UpdateKind: TUpdateKind;
+  var UpdateAction: TIBUpdateAction);
+begin
+  DataBaseError(oFBException(E.Message));
+end;
+
+procedure TFrmSHE_DEF_PSQ.ConsultaEditError(DataSet: TDataSet; E: EDatabaseError;
+  var Action: TDataAction);
+begin
+  DataBaseError(oFBException(E.Message));
+end;
+
+procedure TFrmSHE_DEF_PSQ.ConsultaDeleteError(DataSet: TDataSet;
+  E: EDatabaseError; var Action: TDataAction);
+begin
+  DataBaseError(oFBException(E.Message));
+end;
+
+procedure TFrmSHE_DEF_PSQ.ConsultaPostError(DataSet: TDataSet; E: EDatabaseError;
+  var Action: TDataAction);
+begin
+  DataBaseError(oFBException(E.Message));
+end;
+
 procedure TFrmSHE_DEF_PSQ.ConsultaCalcFields(DataSet: TDataSet);
 begin
   Consulta.FieldByName('C_ID').Value := Consulta.RecNo;
 end;
 
-procedure TFrmSHE_DEF_PSQ.DTSConsultaDataChange(Sender: TObject;
-  Field: TField);
+procedure TFrmSHE_DEF_PSQ.DTSConsultaDataChange(Sender: TObject; Field: TField);
 begin
-  { nothing }
+  if ALockWindowUpdate then  { SQL Injection Enabled }
+  Exit;
 end;
 
 procedure TFrmSHE_DEF_PSQ.DTSConsultaStateChange(Sender: TObject);
@@ -1204,15 +1515,15 @@ begin
   end;
 end;
 
-procedure TFrmSHE_DEF_PSQ.DBGConsultaKeyDown(Sender: TObject;
-  var Key: Word; Shift: TShiftState);
+procedure TFrmSHE_DEF_PSQ.DBGConsultaKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
 begin
   if key = vk_return then
   if Consulta.RecNo > 0 then
   begin
     REC_SHE_PSQ.PSQ_OK := True;
     Close;
-  end;  
+  end;
 end;
 
 end.

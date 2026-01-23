@@ -257,9 +257,9 @@ begin
   inherited;
   frmPesquisa := TfrmPesquisa.Create(Nil);
   try
-    frmPesquisa.Tag          := 6;
-    frmPesquisa.cbCAMPO.Text := 'Nota Fiscal';
-    frmPesquisa.cbDATA.Text  := 'Emissão';
+    frmPesquisa.Tag          := 11;
+    frmPesquisa.cbCAMPO.Text := 'Nº Nota Fiscal';
+    frmPesquisa.cbDATA.Text  := '';
     frmPesquisa.ShowModal;
 
     if frmPesquisa.editado then

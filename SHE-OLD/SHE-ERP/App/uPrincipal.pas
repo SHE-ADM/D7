@@ -18,16 +18,25 @@ type
   TRunProcessThread = class(TThread)
   protected
     procedure Execute; override;
-    procedure _SyncEvent;
+    procedure SyncEvent;
 
   public
-    ATHR_TBPK: String;
-    ATHR_IDEP,
-    ATHR_IDPK: Variant;
-    ATHR_DEPK: String;
-    FIDPK: String;
+    ATHR_TB_PK: String;
+    ATHR_EP_ID,
+    ATHR_PK_ID,
 
-    constructor Create(const VTHR_TBPK: String; VTHR_IDEP,VTHR_IDPK: Variant; VTHR_DEPK: String; VIDPK: String = 'IDPK');
+    FTHR_EP_ID,
+    FTHR_PK_ID,
+    FTHR_CP_ID: String;
+
+    constructor Create(const ATB_PK: String;
+                             AEP_ID,
+                             APK_ID: Variant;
+
+                             FEP_ID,
+                             FPK_ID,
+                             FCP_ID: String);
+
     destructor  Destroy; override;
   end;
 
@@ -372,21 +381,20 @@ type
   end;
 
 { MAIN PROCEDURES }
-procedure uSP_CAD_PRO_EST_LAN_UPD (ATHR_TBPK: String;
-                                   ATHR_IDEP,
-                                   ATHR_IDPK: Variant;
-                                   ATHR_DEPK,
-                                   FIDPK: String); STDCALL;
+procedure uSP_CAD_PRO_EST_LAN_UPD (ATHR_TB_PK: String;
+                                   ATHR_EP_ID,
+                                   ATHR_PK_ID: Variant;
+
+                                   FTHR_EP_ID,
+                                   FTHR_PK_ID,
+                                   FTHR_CP_ID: String); STDCALL;
 
 { OLD PROCEDURE }
 procedure uConstrucao(ACaption: String = ''); STDCall;
 procedure uFrmCreate(AOwner: TComponent;AFClass: TFormClass; var AInstance); STDCall;
 
 procedure uPSQ_CAD_PAD(var AREC_SHE_DEF: TREC_SHE_DEF); STDCALL;
-procedure uPSQ_CAD_PRO(var AREC_SHE_DEF: TREC_SHE_DEF); STDCALL;
-
-procedure uPSQ_CAD_PRO_TMP(var AREC_SHE_PSQ: TREC_SHE_PSQ); STDCALL;
-
+procedure uPSQ_CAD_PRO(var AREC_SHE_PSQ: TREC_SHE_PSQ); STDCALL;
 
 procedure uPSQCAD(var ARECPedido : TRECPedidos); STDCall; { Cadastros: Clientes, Fornecedores, Transportadoras, Compradores, Vendedores, Representantes e Agenda; }
 procedure uPSQEND(var ARECEndereco: TRECPedidos;AForceShowModal: Boolean = False); STDCall;
@@ -462,7 +470,7 @@ uses bPrincipal, pSobre, pLogin, psenha, pImpressoras, pProduto, pPSQEND,
   pEXP_SEP_MAN, pctr_prc, pctr_prg, ptab_nat, ptab_pag, pctr_nfe, pven_nfd,
   pcad_con, pProduto_Custo_Importado, pfin_rec_con, pfin_dup, ppag_com,
   pProduto_Segmento, pCAD_PRO_PSQ, pven_nfe, pcad_cli, pcad_rep, pcad_for,
-  pcad_tra;
+  pcad_tra, pCAD_PRO_EST_ETQ;
 
 {$R *.dfm}
 
@@ -484,38 +492,55 @@ begin
   end;
 end;
 
-procedure uSP_CAD_PRO_EST_LAN_UPD (ATHR_TBPK: String;
-                                   ATHR_IDEP,
-                                   ATHR_IDPK: Variant;
-                                   ATHR_DEPK,
-                                   FIDPK: String); STDCALL;
+procedure uSP_CAD_PRO_EST_LAN_UPD (ATHR_TB_PK: String;
+                                   ATHR_EP_ID,
+                                   ATHR_PK_ID: Variant;
+
+                                   FTHR_EP_ID,
+                                   FTHR_PK_ID,
+                                   FTHR_CP_ID: String); STDCALL;
 var
   Thread: TRunProcessThread;
 begin
-  if (ATHR_TBPK <> EmptyStr) and (ATHR_IDEP <> EmptyStr)  and (ATHR_IDPK <> EmptyStr) then
-        with FrmPrincipal do
-        begin
-          Thread := TRunProcessThread.Create(ATHR_TBPK,ATHR_IDEP,ATHR_IDPK,ATHR_DEPK,FIDPK);             //Create(AnsiQuotedStr(EDDEPK.Text, #34)) - "ricardo"
+  if (ATHR_TB_PK <> EmptyStr) and (ATHR_EP_ID <> EmptyStr)  and (ATHR_PK_ID <> EmptyStr) then
 
-          Thread.OnTerminate := _DoneEvent;
-          Thread.Priority    := tpTimeCritical;
-          Thread.Resume;
-        end;
+  with FrmPrincipal do
+  begin
+    Thread := TRunProcessThread.Create(ATHR_TB_PK,
+                                       ATHR_EP_ID,
+                                       ATHR_PK_ID,
+
+                                       FTHR_EP_ID,
+                                       FTHR_PK_ID,
+                                       FTHR_CP_ID);
+
+    Thread.OnTerminate := _DoneEvent;
+    Thread.Priority    := tpTimeCritical;
+    Thread.Resume;
+  end;
 end;
 
-constructor TRunProcessThread.Create(const VTHR_TBPK: String; VTHR_IDEP,VTHR_IDPK: Variant; VTHR_DEPK: String; VIDPK: String = 'IDPK');
+constructor TRunProcessThread.Create(const ATB_PK: String;
+                                           AEP_ID,
+                                           APK_ID: Variant;
+
+                                           FEP_ID,
+                                           FPK_ID,
+                                           FCP_ID: String);
+
 begin
   oOTransact(FBird.TFBConsulta);
   inherited Create(True);
 
   FreeOnTerminate := True;
 
-  ATHR_TBPK := VTHR_TBPK;
-  ATHR_IDEP := VTHR_IDEP;
-  ATHR_IDPK := VTHR_IDPK;
-  ATHR_DEPK := VTHR_DEPK;
+  ATHR_TB_PK := ATB_PK;
+  ATHR_EP_ID := AEP_ID;
+  ATHR_PK_ID := APK_ID;
 
-  FIDPK := VIDPK;
+  FTHR_EP_ID := FEP_ID;
+  FTHR_PK_ID := FPK_ID;
+  FTHR_CP_ID := FCP_ID;
 end;
 
 destructor TRunProcessThread.Destroy;
@@ -524,7 +549,7 @@ begin
   inherited;
 end;
 
-procedure TRunProcessThread._SyncEvent;
+procedure TRunProcessThread.SyncEvent;
 begin
   if   ATHR_ITEM > 1 then
   with Frmprincipal do
@@ -552,14 +577,16 @@ begin
       begin
         Close;
         SQL.Clear;
-        SQL.Add('SELECT   PK.IDEP,PK.IDCP,PK.SKU,PK.DGCP,MAX(PK.ITEM) AS ITEM');
-        SQL.Add('FROM ' + ATHR_TBPK + ' AS PK');
+        SQL.Add('SELECT CP.SKU');
 
-        SQL.Add('WHERE    PK.IDEP  = ''' + ATHR_IDEP + '''');
-        SQL.Add('AND '  + FIDPK + '= ''' + ATHR_IDPK + '''');
+        SQL.Add('FROM ' + ATHR_TB_PK + ' AS PK');
+        SQL.Add('JOIN CAD_PRO AS CP ON (CP.CP_ID = PK.' + FTHR_CP_ID + ')');
 
-        SQL.Add('GROUP BY 1,2,3,4');
-        SQL.Add('ORDER BY 5');
+        SQL.Add('WHERE ' + 'PK.' + FTHR_EP_ID + ' = ''' + ATHR_EP_ID + '''');
+        SQL.Add('AND '   + 'PK.' + FTHR_PK_ID + ' = ''' + ATHR_PK_ID + '''');
+
+        SQL.Add('GROUP BY 1');
+        SQL.Add('ORDER BY 1');
         ExecQuery;
       end;
 
@@ -569,14 +596,19 @@ begin
           oOTransact(TFBEdicao);
 
           SPFBEdicao.Close;
-          SPFBEdicao.StoredProcName := 'SP_CAD_PRO_EST_LAN';
+          SPFBEdicao.StoredProcName := 'SP_CAD_PRO_EST_LAN_UPD';
           SPFBEdicao.Prepare;
 
           for i := 0 to SPFBEdicao.ParamCount - 1 do
           SPFBEdicao.Params[i].Value := Null;
 
-          SPFBEdicao.ParamByName('AEP_ID').Value := SQLFBConsulta.Current.ByName('IDEP').AsInteger;
-          SPFBEdicao.ParamByName('ACP_ID').Value := SQLFBConsulta.Current.ByName('IDCP').AsInteger;
+          SPFBEdicao.ParamByName('ATABELA').Value := ATHR_TB_PK;
+          SPFBEdicao.ParamByName('AIDEP'  ).Value := ATHR_EP_ID;
+          SPFBEdicao.ParamByName('AIDPK'  ).Value := ATHR_PK_ID;
+
+          SPFBEdicao.ParamByName('FIDEP').Value := FTHR_EP_ID;
+          SPFBEdicao.ParamByName('FIDPK').Value := FTHR_PK_ID;
+          SPFBEdicao.ParamByName('FIDCP').Value := FTHR_CP_ID;
           SPFBEdicao.ExecProc;
 
           oCTransact(TFBEdicao);
@@ -585,12 +617,10 @@ begin
         end;
 
         INC(ATHR_ITEM);
-        ATHR_SYNC := 'Atualizando Estoque ...   ' +
-                     'Pedido Nº: ' + ATHR_DEPK    + ' - ' +
-                     'Produto: '   + oStrZero(SQLFBConsulta.Current.ByName('ITEM').AsInteger,5) + '   ' +
-                                              SQLFBConsulta.Current.ByName('SKU' ).AsString     + '   ' +
-                                              SQLFBConsulta.Current.ByName('DGCP').AsString;
-        Synchronize(_SyncEvent);
+        ATHR_SYNC := 'Atualizando Estoque ... ' +
+                     'Produto: ' + SQLFBConsulta.Current.ByName('SKU').AsString;
+
+        Synchronize(SyncEvent);
         SQLFBConsulta.Next;
       end;
     end;
@@ -649,7 +679,7 @@ procedure uPSQ_CAD_PAD(var AREC_SHE_DEF: TREC_SHE_DEF); STDCALL;
 begin
 end;
 
-procedure uPSQ_CAD_PRO_TMP(var AREC_SHE_PSQ: TREC_SHE_PSQ); STDCALL;
+procedure uPSQ_CAD_PRO(var AREC_SHE_PSQ: TREC_SHE_PSQ); STDCALL;
 begin
   AREC_SHE_PSQ.PSQ_OK := False;
 
@@ -719,107 +749,7 @@ begin
       SQL.Add('WITH RECURSIVE PK');
       SQL.Add('AS (');
 
-      SQL.Add('SELECT PK.ID   ,PK.EP_ID,PK.EP_NO,PK.EP_NO_ABREV,PK.EP_NO_SIGLA,PK.EP_GP_NO,PK.EP_GC,PK.EP_GV,PK.EP_GE,PK.EP_GR,PK.EP_GF,');
-      SQL.Add('       PK.CF_ID,PK.CF_NO,PK.CF_NO_ABREV,PK.CF_NO_SIGLA,PK.CF_RZ_NO,PK.CF_GP_NO,');
-
-      SQL.Add('       PK.IDEV,PK.CDEV,PK.DTEV,PK.DEEV,');
-      SQL.Add('       PK.IDCA,PK.IDED,PK.IDST,');
-      SQL.Add('       PK.CDST,PK.REST,PK.DEST,PK.ST_NO_ABREV,');
-
-      SQL.Add('       PK.AK_ID,PK.ARTIGO,');
-      SQL.Add('       PK.CP_ID,PK.IMG_ID,PK.EK_ID,PK.SKU,PK.CEAN,PK.CF_SKU,PK.CF_CEAN,');
-      SQL.Add('       PK.FIS_NCM,PK.FIS_PIPI,PK.FIS_EXTIPI,PK.FIS_CEST,');
-
-      SQL.Add('       PK.CP_NO ,PK.CP_NO_TLO,');
-      SQL.Add('       PK.CMP_NO,');
-
-      SQL.Add('       PK.GRD_ID,PK.GRD_NO,PK.GRD_NO_SIGLA,');
-      SQL.Add('       PK.COR_ID,PK.COR_CD,PK.COR_RF,PK.COR_NO,PK.COR_NO_SIGLA,');
-      SQL.Add('       PK.COR_SISTEMA,PK.COR_ESCALA ,');
-      SQL.Add('       PK.VAR_ID,PK.VAR_CD,PK.VAR_RF,PK.VAR_NO,PK.VAR_NO_SIGLA,');
-
-      SQL.Add('       PK.UCOM ,PK.UTRIB,PK.UCON,');
-      SQL.Add('       PK.UCDBE,PK.UCDBE_NO,');
-      SQL.Add('       PK.UQTDE,PK.UQTDE_EST_MIN,PK.UQTDE_VEN_MIN,PK.UQTDE_VEN_MUL,');
-      SQL.Add('       PK.UQVOL,PK.UESP,');
-      SQL.Add('       PK.UPSBR,PK.UPSLQ,PK.UPSCN,');
-
-      SQL.Add('       PK.PPSBR,PK.MPESO,');
-
-      SQL.Add('       PK.MMETRO ,PK.MMETRO2 ,PK.MMETRO3,');
-      SQL.Add('       PK.MGRAMA,PK.MGRAMA_NO,PK.MREND  ,');
-
-      SQL.Add('       PK.MLGRU,PK.MLGRT,');
-      SQL.Add('       PK.MELAL,PK.MELAC,PK.MELA_NO,');
-
-      SQL.Add('       PK.MENCL,PK.MENCC,PK.MENC_NO,');
-      SQL.Add('       PK.MABNT_NO,');
-
-      SQL.Add('       PK.MESP ,PK.MESP_NO,');
-      SQL.Add('       PK.MCALT,PK.MCLGR,PK.MCCTO,PK.MCPVM,');
-
-      SQL.Add('       PK.LJV_UCOM ,PK.LJV_UCON,');
-      SQL.Add('       PK.LJV_UCDBE,PK.LJV_UCDBE_NO,');
-      SQL.Add('       PK.LJV_UQTDE,PK.LJV_UQTDE_EST_MIN,PK.LJV_UQTDE_VEN_MIN,PK.LJV_UQTDE_VEN_MUL,');
-      SQL.Add('       PK.LJV_UQVOL,PK.LJV_UESP,');
-      SQL.Add('       PK.LJV_UPSBR,PK.LJV_UPSLQ,PK.LJV_UPSCN,');
-
-      SQL.Add('       PK.LJV_MPESO,');
-      SQL.Add('       PK.LJV_MMETRO,PK.LJV_MMETRO2  ,PK.LJV_MMETRO3,');
-      SQL.Add('       PK.LJV_MGRAMA,PK.LJV_MGRAMA_NO,PK.LJV_MREND  ,');
-
-      SQL.Add('       PK.LJV_MLGRU,PK.LJV_MLGRT,');
-      SQL.Add('       PK.LJV_MELAL,PK.LJV_MELAC,PK.LJV_MELA_NO,');
-      SQL.Add('       PK.LJV_MENCL,PK.LJV_MENCC,PK.LJV_MENC_NO,');
-      SQL.Add('       PK.LJV_MABNT_NO,');
-
-      SQL.Add('       PK.LJV_MESP ,PK.LJV_MESP_NO,');
-      SQL.Add('       PK.LJV_MCALT,PK.LJV_MCLGR,PK.LJV_MCCTO,PK.LJV_MCPVM,');
-
-      SQL.Add('       PK.VPRC_PAD_INI,PK.VPRC_PAD_FIM,');
-      SQL.Add('       PK.VPRC_ORIG,');
-
-      SQL.Add('       PK.VPRC_PAD,PK.VPRC_PRZ,PK.VPRC_PRO,PK.VPRC_MKP,');
-      SQL.Add('       PK.VPRC_DSC,PK.VPRC_ACR,');
-
-      SQL.Add('       PK.ATJ_VPRC_PAD,PK.ATJ_VPRC_PRZ,PK.ATJ_VPRC_PRO,PK.ATJ_VPRC_MKP,');
-      SQL.Add('       PK.ATJ_VPRC_DSC,PK.ATJ_VPRC_ACR,');
-
-      SQL.Add('       PK.LJV_VPRC_PAD,PK.LJV_VPRC_PRZ,PK.LJV_VPRC_PRO,PK.LJV_VPRC_MKP,');
-      SQL.Add('       PK.LJV_VPRC_DSC,PK.LJV_VPRC_ACR,');
-
-      SQL.Add('       PK.REP_VPRC_PAD,PK.REP_VPRC_PRZ,PK.REP_VPRC_PRO,PK.REP_VPRC_MKP,');
-      SQL.Add('       PK.REP_VPRC_DSC,PK.REP_VPRC_ACR,');
-
-      SQL.Add('       PK.VAR_VPRC_PAD,PK.VAR_VPRC_PRZ,PK.VAR_VPRC_PRO,PK.VAR_VPRC_MKP,');
-      SQL.Add('       PK.VAR_VPRC_DSC,PK.VAR_VPRC_ACR,');
-
-      SQL.Add('       PK.CF_VPRC_ORIG,PK.CF_VPRC_PAD,PK.CF_VPRC_MKP,');
-
-      SQL.Add('       PK.COL_ID,PK.COL_NO,PK.SEG_ID,PK.SEG_NO,');
-      SQL.Add('       PK.GRP_ID,PK.GRP_NO,PK.SGP_ID,PK.SGP_NO,');
-      SQL.Add('       PK.CAT_ID,PK.CAT_NO,PK.SCT_ID,PK.SCT_NO,');
-
-      SQL.Add('       PK.MKP_MLV_ID,PK.MKP_MSP_ID,PK.MKP_MPG_ID,PK.MKP_SHP_ID,PK.MKP_AMZ_ID,');
-      SQL.Add('       PK.MKP_BLG_ID,PK.MKP_TRY_ID,');
-
-      SQL.Add('       PK.CDNS_NO,');
-      SQL.Add('       PK.CTFI_NO,');
-      SQL.Add('       PK.CACB_NO,');
-
-      SQL.Add('       PK.FIN_CAD_ID,');
-      SQL.Add('       PK.FIN_EST_ID,');
-
-      SQL.Add('       PK.FIS_ORIG ,PK.FIS_XORIG,PK.FIS_FPAIS,');
-      SQL.Add('       PK.FIS_CPAIS,PK.FIS_XPAIS,');
-
-      SQL.Add('       PK.INFADCAD,');
-      SQL.Add('       PK.INFADTEC,');
-      SQL.Add('       PK.INFADPRN,');
-
-      SQL.Add('       PK.IP ,');
-      SQL.Add('       PK.HOST');
-
+      SQL.Add('SELECT PK.*');
       SQL.Add('FROM   VW_PSQ_CAD_PRO AS PK');
 
       SQL.Add('),'); { RECURSIVE FIM }
@@ -836,49 +766,49 @@ begin
       SQL.Add('SELECT DISTINCT PK.*,');
 
       SQL.Add('       -- Estoque Pronta Entrega');
-      SQL.Add('       COALESCE(CAST(SUM(TB_EST.EPE_QTDE) OVER(PARTITION BY PK.CP_ID) AS NUMERIC(12,2)),0) AS EPE_QTDE,COALESCE(CAST(SUM(TB_EST.EPE_QTRL) OVER(PARTITION BY PK.CP_ID) AS INTEGER),0) AS EPE_QTRL,');
-      SQL.Add('       COALESCE(CAST(SUM(TB_EST.EST_QTDE) OVER(PARTITION BY PK.CP_ID) AS NUMERIC(12,2)),0) AS EST_QTDE,COALESCE(CAST(SUM(TB_EST.EST_QTRL) OVER(PARTITION BY PK.CP_ID) AS INTEGER),0) AS EST_QTRL,');
+      SQL.Add('       COALESCE(CAST(SUM(EF.EPE_QTDE) OVER(PARTITION BY PK.CP_ID) AS NUMERIC(12,2)),0) AS EPE_QTDE,COALESCE(CAST(SUM(EF.EPE_QTRL) OVER(PARTITION BY PK.CP_ID) AS INTEGER),0) AS EPE_QTRL,');
+      SQL.Add('       COALESCE(CAST(SUM(EF.EST_QTDE) OVER(PARTITION BY PK.CP_ID) AS NUMERIC(12,2)),0) AS EST_QTDE,COALESCE(CAST(SUM(EF.EST_QTRL) OVER(PARTITION BY PK.CP_ID) AS INTEGER),0) AS EST_QTRL,');
 
       SQL.Add('       -- Estoque Antecipado');
-      SQL.Add('       COALESCE(CAST(SUM(TB_EST.EAT_QTDE) OVER(PARTITION BY PK.CP_ID) AS NUMERIC(12,2)),0) AS EAT_QTDE,COALESCE(CAST(SUM(TB_EST.EAT_QTRL) OVER(PARTITION BY PK.CP_ID) AS INTEGER),0) AS EAT_QTRL,');
+      SQL.Add('       COALESCE(CAST(SUM(EF.EAT_QTDE) OVER(PARTITION BY PK.CP_ID) AS NUMERIC(12,2)),0) AS EAT_QTDE,COALESCE(CAST(SUM(EF.EAT_QTRL) OVER(PARTITION BY PK.CP_ID) AS INTEGER),0) AS EAT_QTRL,');
 
       SQL.Add('       -- Estoque Revisado');
-      SQL.Add('       COALESCE(CAST(SUM(TB_EST.ERV_QTDE) OVER(PARTITION BY PK.CP_ID) AS NUMERIC(12,2)),0) AS ERV_QTDE,COALESCE(CAST(SUM(TB_EST.ERV_QTRL) OVER(PARTITION BY PK.CP_ID) AS INTEGER),0) AS ERV_QTRL,');
-      SQL.Add('       COALESCE(CAST(SUM(TB_EST.EAA_QTDE) OVER(PARTITION BY PK.CP_ID) AS NUMERIC(12,2)),0) AS EAA_QTDE,COALESCE(CAST(SUM(TB_EST.EAA_QTRL) OVER(PARTITION BY PK.CP_ID) AS INTEGER),0) AS EAA_QTRL,');
-      SQL.Add('       COALESCE(CAST(SUM(TB_EST.EA_QTDE ) OVER(PARTITION BY PK.CP_ID) AS NUMERIC(12,2)),0) AS EA_QTDE ,COALESCE(CAST(SUM(TB_EST.EA_QTRL ) OVER(PARTITION BY PK.CP_ID) AS INTEGER),0) AS EA_QTRL ,');
-      SQL.Add('       COALESCE(CAST(SUM(TB_EST.EB_QTDE ) OVER(PARTITION BY PK.CP_ID) AS NUMERIC(12,2)),0) AS EB_QTDE ,COALESCE(CAST(SUM(TB_EST.EB_QTRL ) OVER(PARTITION BY PK.CP_ID) AS INTEGER),0) AS EB_QTRL ,');
-      SQL.Add('       COALESCE(CAST(SUM(TB_EST.EC_QTDE ) OVER(PARTITION BY PK.CP_ID) AS NUMERIC(12,2)),0) AS EC_QTDE ,COALESCE(CAST(SUM(TB_EST.EC_QTRL ) OVER(PARTITION BY PK.CP_ID) AS INTEGER),0) AS EC_QTRL ,');
+      SQL.Add('       COALESCE(CAST(SUM(EF.ERV_QTDE) OVER(PARTITION BY PK.CP_ID) AS NUMERIC(12,2)),0) AS ERV_QTDE,COALESCE(CAST(SUM(EF.ERV_QTRL) OVER(PARTITION BY PK.CP_ID) AS INTEGER),0) AS ERV_QTRL,');
+      SQL.Add('       COALESCE(CAST(SUM(EF.EAA_QTDE) OVER(PARTITION BY PK.CP_ID) AS NUMERIC(12,2)),0) AS EAA_QTDE,COALESCE(CAST(SUM(EF.EAA_QTRL) OVER(PARTITION BY PK.CP_ID) AS INTEGER),0) AS EAA_QTRL,');
+      SQL.Add('       COALESCE(CAST(SUM(EF.EA_QTDE ) OVER(PARTITION BY PK.CP_ID) AS NUMERIC(12,2)),0) AS EA_QTDE ,COALESCE(CAST(SUM(EF.EA_QTRL ) OVER(PARTITION BY PK.CP_ID) AS INTEGER),0) AS EA_QTRL ,');
+      SQL.Add('       COALESCE(CAST(SUM(EF.EB_QTDE ) OVER(PARTITION BY PK.CP_ID) AS NUMERIC(12,2)),0) AS EB_QTDE ,COALESCE(CAST(SUM(EF.EB_QTRL ) OVER(PARTITION BY PK.CP_ID) AS INTEGER),0) AS EB_QTRL ,');
+      SQL.Add('       COALESCE(CAST(SUM(EF.EC_QTDE ) OVER(PARTITION BY PK.CP_ID) AS NUMERIC(12,2)),0) AS EC_QTDE ,COALESCE(CAST(SUM(EF.EC_QTRL ) OVER(PARTITION BY PK.CP_ID) AS INTEGER),0) AS EC_QTRL ,');
 
       SQL.Add('       -- Pilotagem');
-      SQL.Add('       COALESCE(CAST(SUM(TB_EST.EPI_QTDE) OVER(PARTITION BY PK.CP_ID) AS NUMERIC(12,2)),0) AS EPI_QTDE,COALESCE(CAST(SUM(TB_EST.EPI_QTRL) OVER(PARTITION BY PK.CP_ID) AS INTEGER),0) AS EPI_QTRL,');
+      SQL.Add('       COALESCE(CAST(SUM(EF.EPI_QTDE) OVER(PARTITION BY PK.CP_ID) AS NUMERIC(12,2)),0) AS EPI_QTDE,COALESCE(CAST(SUM(EF.EPI_QTRL) OVER(PARTITION BY PK.CP_ID) AS INTEGER),0) AS EPI_QTRL,');
 
       SQL.Add('       -- Estoque Substituto');
-      SQL.Add('       COALESCE(CAST(SUM(TB_EST.ESU_QTDE_ENT) OVER(PARTITION BY PK.CP_ID) AS NUMERIC(12,2)),0) AS ESU_QTDE_ENT,COALESCE(CAST(SUM(TB_EST.ESU_QTRL_ENT) OVER(PARTITION BY PK.CP_ID) AS INTEGER),0) AS ESU_QTRL_ENT,');
-      SQL.Add('       COALESCE(CAST(SUM(TB_EST.ESU_QTDE_SAI) OVER(PARTITION BY PK.CP_ID) AS NUMERIC(12,2)),0) AS ESU_QTDE_SAI,COALESCE(CAST(SUM(TB_EST.ESU_QTRL_SAI) OVER(PARTITION BY PK.CP_ID) AS INTEGER),0) AS ESU_QTRL_SAI,');
+      SQL.Add('       COALESCE(CAST(SUM(EF.ESU_QTDE_ENT) OVER(PARTITION BY PK.CP_ID) AS NUMERIC(12,2)),0) AS ESU_QTDE_ENT,COALESCE(CAST(SUM(EF.ESU_QTRL_ENT) OVER(PARTITION BY PK.CP_ID) AS INTEGER),0) AS ESU_QTRL_ENT,');
+      SQL.Add('       COALESCE(CAST(SUM(EF.ESU_QTDE_SAI) OVER(PARTITION BY PK.CP_ID) AS NUMERIC(12,2)),0) AS ESU_QTDE_SAI,COALESCE(CAST(SUM(EF.ESU_QTRL_SAI) OVER(PARTITION BY PK.CP_ID) AS INTEGER),0) AS ESU_QTRL_SAI,');
 
       SQL.Add('       -- Compras');
-      SQL.Add('       COALESCE(CAST(SUM(TB_EST.EPC_QTDE) OVER(PARTITION BY PK.CP_ID) AS NUMERIC(12,2)),0) AS EPC_QTDE,COALESCE(CAST(SUM(TB_EST.EPC_QTRL) OVER(PARTITION BY PK.CP_ID) AS INTEGER),0) AS EPC_QTRL,');
-      SQL.Add('       MAX(TB_EST.EPC_CTNR) OVER(PARTITION BY PK.CP_ID) AS EPC_CTNR,');
+      SQL.Add('       COALESCE(CAST(SUM(EF.EPC_QTDE) OVER(PARTITION BY PK.CP_ID) AS NUMERIC(12,2)),0) AS EPC_QTDE,COALESCE(CAST(SUM(EF.EPC_QTRL) OVER(PARTITION BY PK.CP_ID) AS INTEGER),0) AS EPC_QTRL,');
+      SQL.Add('       MAX(EF.EPC_CTNR) OVER(PARTITION BY PK.CP_ID) AS EPC_CTNR,');
 
       SQL.Add('       -- Vendas Programadas');
-      SQL.Add('       COALESCE(CAST(SUM(TB_EST.EPP_QTDE     ) OVER(PARTITION BY PK.CP_ID) AS NUMERIC(12,2)),0) AS EPP_QTDE     ,COALESCE(CAST(SUM(TB_EST.EPP_QTRL     ) OVER(PARTITION BY PK.CP_ID) AS INTEGER),0) AS EPP_QTRL     ,');
-      SQL.Add('       COALESCE(CAST(SUM(TB_EST.EPP_QTDE_CTNR) OVER(PARTITION BY PK.CP_ID) AS NUMERIC(12,2)),0) AS EPP_QTDE_CTNR,COALESCE(CAST(SUM(TB_EST.EPP_QTRL_CTNR) OVER(PARTITION BY PK.CP_ID) AS INTEGER),0) AS EPP_QTRL_CTNR,');
-      SQL.Add('       COALESCE(CAST(SUM(TB_EST.EEP_QTDE     ) OVER(PARTITION BY PK.CP_ID) AS NUMERIC(12,2)),0) AS EEP_QTDE     ,COALESCE(CAST(SUM(TB_EST.EEP_QTRL     ) OVER(PARTITION BY PK.CP_ID) AS INTEGER),0) AS EEP_QTRL     ,');
+      SQL.Add('       COALESCE(CAST(SUM(EF.EPP_QTDE     ) OVER(PARTITION BY PK.CP_ID) AS NUMERIC(12,2)),0) AS EPP_QTDE     ,COALESCE(CAST(SUM(EF.EPP_QTRL     ) OVER(PARTITION BY PK.CP_ID) AS INTEGER),0) AS EPP_QTRL     ,');
+      SQL.Add('       COALESCE(CAST(SUM(EF.EPP_QTDE_CTNR) OVER(PARTITION BY PK.CP_ID) AS NUMERIC(12,2)),0) AS EPP_QTDE_CTNR,COALESCE(CAST(SUM(EF.EPP_QTRL_CTNR) OVER(PARTITION BY PK.CP_ID) AS INTEGER),0) AS EPP_QTRL_CTNR,');
+      SQL.Add('       COALESCE(CAST(SUM(EF.EEP_QTDE     ) OVER(PARTITION BY PK.CP_ID) AS NUMERIC(12,2)),0) AS EEP_QTDE     ,COALESCE(CAST(SUM(EF.EEP_QTRL     ) OVER(PARTITION BY PK.CP_ID) AS INTEGER),0) AS EEP_QTRL     ,');
 
       SQL.Add('       -- Vendas Pronta Entrega');
-      SQL.Add('       COALESCE(CAST(SUM(TB_EST.EPV_QTDE) OVER(PARTITION BY PK.CP_ID) AS NUMERIC(12,2)),0) AS EPV_QTDE,');
-      SQL.Add('       COALESCE(CAST(SUM(TB_EST.EPV_QTRL) OVER(PARTITION BY PK.CP_ID) AS INTEGER      ),0) AS EPV_QTRL,');
+      SQL.Add('       COALESCE(CAST(SUM(EF.EPV_QTDE) OVER(PARTITION BY PK.CP_ID) AS NUMERIC(12,2)),0) AS EPV_QTDE,');
+      SQL.Add('       COALESCE(CAST(SUM(EF.EPV_QTRL) OVER(PARTITION BY PK.CP_ID) AS INTEGER      ),0) AS EPV_QTRL,');
 
       SQL.Add('       -- Vendas Separadas');
-      SQL.Add('       COALESCE(CAST(SUM(TB_EST.ESP_QTDE) OVER(PARTITION BY PK.CP_ID) AS NUMERIC(12,2)),0) AS ESP_QTDE,');
-      SQL.Add('       COALESCE(CAST(SUM(TB_EST.EPV_QTRL) OVER(PARTITION BY PK.CP_ID) AS INTEGER      ),0) AS ESP_QTRL ');
+      SQL.Add('       COALESCE(CAST(SUM(EF.ESP_QTDE) OVER(PARTITION BY PK.CP_ID) AS NUMERIC(12,2)),0) AS ESP_QTDE,');
+      SQL.Add('       COALESCE(CAST(SUM(EF.EPV_QTRL) OVER(PARTITION BY PK.CP_ID) AS INTEGER      ),0) AS ESP_QTRL ');
 
+                                              
+      SQL.Add('FROM     CTE_PSQ AS PK');
+      SQL.Add('LEFT     JOIN VW_PSQ_CAD_PRO_EST_SLD_NEW AS EF ON (EF.CP_ID = PK.CP_ID AND EF.EP_LG = :EP_LG)');
+      SQL.Add('ORDER BY PK.ARTIGO,PK.GRD_NO');
 
-      SQL.Add('FROM CTE_PSQ AS PK');
-      SQL.Add('LEFT JOIN VW_PSQ_CAD_PRO_EST_SLD_NEW AS TB_EST ON (TB_EST.CP_ID = PK.CP_ID AND TB_EST.EP_VW = :VW_EP_ID)');
-      SQL.Add('ORDER BY PK.EP_NO');
-
-      ParamByName('VW_EP_ID').Value := RECParametros.EP_ID;
+      ParamByName('EP_LG').Value := RECParametros.EP_ID;
       Prepare;
       ExecQuery;
 
@@ -922,9 +852,11 @@ begin
       end;
 
       oOTransact(FrmCAD_PRO_PSQ.TConsulta);
+
       FrmCAD_PRO_PSQ.Consulta.Close;
       FrmCAD_PRO_PSQ.Consulta.SQL.Clear;
       FrmCAD_PRO_PSQ.Consulta.SQL.Assign(AREC_SHE_PSQ.FB_SQL.SQL);
+      
       FrmCAD_PRO_PSQ.Consulta.Prepare;
       FrmCAD_PRO_PSQ.Consulta.Open;
 
@@ -938,7 +870,7 @@ begin
         AREC_SHE_PSQ.PSQ_TFD_PK   := 'PK.CP_ID';
         AREC_SHE_PSQ.PSQ_TVD_PK   := IntToStr(FrmCAD_PRO_PSQ.ConsultaCP_ID.AsInteger);
 
-        uPSQ_CAD_PRO_tmp(AREC_SHE_PSQ);
+        uPSQ_CAD_PRO(AREC_SHE_PSQ);
       end;
     end else
 
@@ -975,259 +907,6 @@ begin
   begin
     AREC_SHE_PSQ.FB_SQL.Close;
     AREC_SHE_PSQ.FB_SQL := Nil;
-  end;}
-end;
-
-procedure uPSQ_CAD_PRO(var AREC_SHE_DEF: TREC_SHE_DEF); STDCALL;
-begin
-  AREC_SHE_DEF.PSQ_OK := False;
-
-  if AREC_SHE_DEF.FWinControl <> Nil then
-  begin
-    AREC_SHE_DEF.FB_FD_ED_PK := EmptyStr;
-    AREC_SHE_DEF.FB_VD_ED_PK := EmptyStr;
-    AREC_SHE_DEF.FPoint      := AREC_SHE_DEF.FWinControl.ClientToScreen(Point(0,0));
-
-    if AREC_SHE_DEF.FWinControl.ClassType = TdxEdit then
-    begin
-      AREC_SHE_DEF.FB_FD_ED_PK := TdxEdit(AREC_SHE_DEF.FWinControl).HelpKeyword;
-      AREC_SHE_DEF.FB_VD_ED_PK := TdxEdit(AREC_SHE_DEF.FWinControl).Text;
-    end else
-
-    if AREC_SHE_DEF.FWinControl.ClassType = TdxMaskEdit then
-    begin
-      AREC_SHE_DEF.FB_FD_ED_PK := TdxMaskEdit(AREC_SHE_DEF.FWinControl).HelpKeyword;
-      AREC_SHE_DEF.FB_VD_ED_PK := TdxMaskEdit(AREC_SHE_DEF.FWinControl).Text;
-    end else
-
-    if AREC_SHE_DEF.FWinControl.ClassType = TdxCurrencyEdit then
-    begin
-      AREC_SHE_DEF.FB_FD_ED_PK := TdxCurrencyEdit(AREC_SHE_DEF.FWinControl).HelpKeyword;
-      AREC_SHE_DEF.FB_VD_ED_PK := TdxCurrencyEdit(AREC_SHE_DEF.FWinControl).Text;
-    end else
-
-    if AREC_SHE_DEF.FWinControl.ClassType = TdxButtonEdit then
-    begin
-      AREC_SHE_DEF.FB_FD_ED_PK := TdxButtonEdit(AREC_SHE_DEF.FWinControl).HelpKeyword;
-      AREC_SHE_DEF.FB_VD_ED_PK := TdxButtonEdit(AREC_SHE_DEF.FWinControl).Text;
-    end else
-
-    if AREC_SHE_DEF.FWinControl.ClassType = TdxDBGridMaskColumn then
-    begin
-      AREC_SHE_DEF.FB_FD_ED_PK := TdxDBGridMaskColumn(AREC_SHE_DEF.FWinControl).FieldName;
-      AREC_SHE_DEF.FB_VD_ED_PK := TdxDBGridMaskColumn(AREC_SHE_DEF.FWinControl).Field.AsString;
-    end;
-  end;
-
-  if  (AREC_SHE_DEF.FB_VD_ED_PK <> EmptyStr) and (AREC_SHE_DEF.FB_FD_ED_PK <> EmptyStr) then
-  begin
-    AREC_SHE_DEF.FException := 'Produto não Encontrado !';
-
-    IF Pos('ID',AREC_SHE_DEF.FB_FD_ED_PK) > 0 then
-    begin
-      AREC_SHE_DEF.FB_PSQ_WHERE := ' = ';
-      AREC_SHE_DEF.FB_PSQ_LKPK := '''';
-      AREC_SHE_DEF.FB_PSQ_LKFK := '''';
-    end else
-    begin
-      AREC_SHE_DEF.FB_PSQ_WHERE := ' LIKE ';
-      AREC_SHE_DEF.FB_PSQ_LKPK := '''' ;
-      AREC_SHE_DEF.FB_PSQ_LKFK := '%''';
-    end;
-
-    if not AREC_SHE_DEF.FB_SQL.Transaction.InTransaction then
-    oOTransact(AREC_SHE_DEF.FB_SQL.Transaction);
-
-    with AREC_SHE_DEF.FB_SQL do
-    begin
-      Close;
-      SQL.Clear;
-      SQL.Add('SELECT   DISTINCT');
-      SQL.Add('         PK.ID,PK.EP_ID,PK.EP_NO,PK.CF_ID,PK.CF_NO,');
-
-      SQL.Add('         PK.IDEV,PK.DTEV,');
-      SQL.Add('         PK.IDCA,PK.DTCA,');
-      SQL.Add('         PK.IDED,PK.DTED,');
-      SQL.Add('         PK.IDST,PK.DTST,PK.CDST,PK.REST,PK.DEST,');
-      SQL.Add('         PK.STA_NO_ABREV,');
-
-      SQL.Add('         PK.AK_ID ,PK.ARTIGO,');
-      SQL.Add('         PK.CP_ID ,PK.SKU,PK.CF_SKU,');
-      SQL.Add('         PK.CEAN  ,');
-
-      SQL.Add('         PK.EK_ID ,');
-      SQL.Add('         PK.IMG_ID,');
-
-      SQL.Add('         PK.FIS_NCM ,PK.FIS_CEST  ,');
-      SQL.Add('         PK.FIS_PIPI,PK.FIS_EXTIPI,');
-
-      SQL.Add('         PK.CP_NO    ,PK.CP_NO_GRD,PK.GRD_SG,');
-      SQL.Add('         PK.CP_NO_TLO,PK.CP_NO_CMP,');
-
-      SQL.Add('         PK.UCOM ,PK.UTRIB,');
-      SQL.Add('         PK.UCON ,');
-      SQL.Add('         PK.UCDBE,PK.UQTDE,PK.UQTDE_VEN_MIN,PK.UQTDE_VEN_MUL,');
-      SQL.Add('         PK.LJV_UCOM,PK.LJV_UCON,PK.LJV_UQTDE,');
-
-      SQL.Add('         PK.UPSBR,PK.UPSLQ ,PK.UPSCN,');
-      SQL.Add('         PK.MPESO,PK.MMETRO,PK.MGRAMA,PK.MREND,');
-
-      SQL.Add('         PK.VPRC_PAD,PK.VPRC_PRZ,PK.VPRC_PRO,');
-      SQL.Add('         PK.LJV_VPRC_PAD,PK.LJV_VPRC_PRZ,PK.LJV_VPRC_PRO,');
-      SQL.Add('         PK.ATJ_VPRC_PAD,PK.ATJ_VPRC_PRZ,PK.ATJ_VPRC_PRO,');
-      SQL.Add('         PK.REP_VPRC_PAD,PK.REP_VPRC_PRZ,PK.REP_VPRC_PRO,');
-      SQL.Add('         PK.VAR_VPRC_PAD,PK.VAR_VPRC_PRZ,PK.VAR_VPRC_PRO,');
-      SQL.Add('         TRIM(CAST(IIF(PK.FIS_ORIG = 1,''USD'',''R$'') AS VARCHAR(3))) AS CF_VPRC_PAD_ORI,');
-      SQL.Add('         PK.CF_VPRC_PAD,');
-
-      SQL.Add('         PK.COL_ID,PK.COL_NO,PK.SEG_ID,PK.SEG_NO,');
-      SQL.Add('         PK.GRP_ID,PK.GRP_NO,PK.SGP_ID,PK.SGP_NO,');
-      SQL.Add('         PK.CAT_ID,PK.CAT_NO,PK.SCT_ID,PK.SCT_NO,');
-      SQL.Add('         TB_SCT.SCT_NO AS D_SCT_NO,');
-
-      SQL.Add('         PK.FIS_ORIG ,PK.FIS_XORIG,');
-      SQL.Add('         PK.FIS_CPAIS,PK.FIS_XPAIS,PK.FIS_FPAIS,');
-
-      SQL.Add('         PK.INFADCAD,');
-
-      SQL.Add('         MAX(E.DTEV) OVER(PARTITION BY PK.CP_ID) AS E_DTEV, -- Evento');
-
-      SQL.Add('         -- Estoque Pronta Entrega');
-      SQL.Add('         COALESCE(CAST(SUM(E.EPE_QTDE) OVER(PARTITION BY PK.CP_ID) AS NUMERIC(12,2)),0) AS EPE_QTDE,COALESCE(CAST(SUM(E.EPE_QTRL) OVER(PARTITION BY PK.CP_ID) AS INTEGER),0) AS EPE_QTRL,');
-      SQL.Add('         COALESCE(CAST(SUM(E.EST_QTDE) OVER(PARTITION BY PK.CP_ID) AS NUMERIC(12,2)),0) AS EST_QTDE,COALESCE(CAST(SUM(E.EST_QTRL) OVER(PARTITION BY PK.CP_ID) AS INTEGER),0) AS EST_QTRL,');
-      SQL.Add('         COALESCE(CAST(SUM(E.EAA_QTDE) OVER(PARTITION BY PK.CP_ID) AS NUMERIC(12,2)),0) AS EAA_QTDE,COALESCE(CAST(SUM(E.EAA_QTRL) OVER(PARTITION BY PK.CP_ID) AS INTEGER),0) AS EAA_QTRL,');
-
-      SQL.Add('         -- Estoque Antecipado');
-      SQL.Add('         COALESCE(CAST(SUM(E.EAT_QTDE) OVER(PARTITION BY PK.CP_ID) AS NUMERIC(12,2)),0) AS EAT_QTDE,COALESCE(CAST(SUM(E.EAT_QTRL) OVER(PARTITION BY PK.CP_ID) AS INTEGER),0) AS EAT_QTRL,');
-
-      SQL.Add('         -- Estoque Revisado');
-      SQL.Add('         COALESCE(CAST(SUM(E.ERV_QTDE) OVER(PARTITION BY PK.CP_ID) AS NUMERIC(12,2)),0) AS ERV_QTDE,COALESCE(CAST(SUM(E.ERV_QTRL) OVER(PARTITION BY PK.CP_ID) AS INTEGER),0) AS ERV_QTRL,');
-      SQL.Add('         COALESCE(CAST(SUM(E.EA_QTDE ) OVER(PARTITION BY PK.CP_ID) AS NUMERIC(12,2)),0) AS EA_QTDE ,COALESCE(CAST(SUM(E.EA_QTRL ) OVER(PARTITION BY PK.CP_ID) AS INTEGER),0) AS EA_QTRL ,');
-      SQL.Add('         COALESCE(CAST(SUM(E.EB_QTDE ) OVER(PARTITION BY PK.CP_ID) AS NUMERIC(12,2)),0) AS EB_QTDE ,COALESCE(CAST(SUM(E.EB_QTRL ) OVER(PARTITION BY PK.CP_ID) AS INTEGER),0) AS EB_QTRL ,');
-      SQL.Add('         COALESCE(CAST(SUM(E.EC_QTDE ) OVER(PARTITION BY PK.CP_ID) AS NUMERIC(12,2)),0) AS EC_QTDE ,COALESCE(CAST(SUM(E.EC_QTRL ) OVER(PARTITION BY PK.CP_ID) AS INTEGER),0) AS EC_QTRL ,');
-
-      SQL.Add('         -- Pilotagem');
-      SQL.Add('         COALESCE(CAST(SUM(E.EPI_QTDE) OVER(PARTITION BY PK.CP_ID) AS NUMERIC(12,2)),0) AS EPI_QTDE,COALESCE(CAST(SUM(E.EPI_QTRL) OVER(PARTITION BY PK.CP_ID) AS INTEGER),0) AS EPI_QTRL,');
-
-      SQL.Add('         -- Estoque Substituto');
-      SQL.Add('         COALESCE(CAST(SUM(E.ESU_QTDE_ENT) OVER(PARTITION BY PK.CP_ID) AS NUMERIC(12,2)),0) AS ESU_QTDE_ENT,COALESCE(CAST(SUM(E.ESU_QTRL_ENT) OVER(PARTITION BY PK.CP_ID) AS INTEGER),0) AS ESU_QTRL_ENT,');
-      SQL.Add('         COALESCE(CAST(SUM(E.ESU_QTDE_SAI) OVER(PARTITION BY PK.CP_ID) AS NUMERIC(12,2)),0) AS ESU_QTDE_SAI,COALESCE(CAST(SUM(E.ESU_QTRL_SAI) OVER(PARTITION BY PK.CP_ID) AS INTEGER),0) AS ESU_QTRL_SAI,');
-
-      SQL.Add('         -- Compras');
-      SQL.Add('         COALESCE(CAST(SUM(E.EPC_QTDE) OVER(PARTITION BY PK.CP_ID) AS NUMERIC(12,2)),0) AS EPC_QTDE,COALESCE(CAST(SUM(E.EPC_QTRL) OVER(PARTITION BY PK.CP_ID) AS INTEGER),0) AS EPC_QTRL,');
-      SQL.Add('         MAX(E.EPC_CTNR) OVER(PARTITION BY PK.CP_ID) AS EPC_CTNR,');
-
-      SQL.Add('         -- Vendas Programadas');
-      SQL.Add('         COALESCE(CAST(SUM(E.EPP_QTDE     ) OVER(PARTITION BY PK.CP_ID) AS NUMERIC(12,2)),0) AS EPP_QTDE     ,COALESCE(CAST(SUM(E.EPP_QTRL     ) OVER(PARTITION BY PK.CP_ID) AS INTEGER),0) AS EPP_QTRL     ,');
-      SQL.Add('         COALESCE(CAST(SUM(E.EPP_QTDE_CTNR) OVER(PARTITION BY PK.CP_ID) AS NUMERIC(12,2)),0) AS EPP_QTDE_CTNR,COALESCE(CAST(SUM(E.EPP_QTRL_CTNR) OVER(PARTITION BY PK.CP_ID) AS INTEGER),0) AS EPP_QTRL_CTNR,');
-      SQL.Add('         COALESCE(CAST(SUM(E.EEP_QTDE     ) OVER(PARTITION BY PK.CP_ID) AS NUMERIC(12,2)),0) AS EEP_QTDE     ,COALESCE(CAST(SUM(E.EEP_QTRL     ) OVER(PARTITION BY PK.CP_ID) AS INTEGER),0) AS EEP_QTRL     ,');
-
-      SQL.Add('         -- Vendas Pronta Entrega');
-      SQL.Add('         COALESCE(CAST(SUM(E.EPV_QTDE) OVER(PARTITION BY PK.CP_ID) AS NUMERIC(12,2)),0) AS EPV_QTDE,');
-      SQL.Add('         COALESCE(CAST(SUM(E.EPV_QTRL) OVER(PARTITION BY PK.CP_ID) AS INTEGER      ),0) AS EPV_QTRL,');
-
-      SQL.Add('         -- Vendas Separadas');
-      SQL.Add('         COALESCE(CAST(SUM(E.ESP_QTDE) OVER(PARTITION BY PK.CP_ID) AS NUMERIC(12,2)),0) AS ESP_QTDE,');
-      SQL.Add('         COALESCE(CAST(SUM(E.EPV_QTRL) OVER(PARTITION BY PK.CP_ID) AS INTEGER      ),0) AS ESP_QTRL ');
-
-      SQL.Add('FROM      VW_PSQ_CAD_PRO     AS PK');
-      SQL.Add('LEFT JOIN VW_PSQ_CAD_PRO_SCT AS TB_SCT ON (TB_SCT.AK_ID = PK.AK_ID)');
-      SQL.Add('LEFT JOIN SP_PSQ_CAD_PRO_EST_SLD(4,PK.CP_ID) AS E ON (1 = 1)');
-
-
-      SQL.Add('WHERE ' + AREC_SHE_DEF.FB_FD_ED_PK + AREC_SHE_DEF.FB_PSQ_WHERE + AREC_SHE_DEF.FB_PSQ_LKPK + AREC_SHE_DEF.FB_VD_ED_PK + AREC_SHE_DEF.FB_PSQ_LKFK);
-
-      { Situações
-      SQL.Add('AND PK.CDST <> 43');
-      SQL.Add('AND PK.CDST <> 85');
-
-      { Apenas Ativos
-      if AREC_SHE_DEF.PSQ_CDST_30 then
-      SQL.Add('AND      PK.CDST = 30'); }
-      SQL.Add('ORDER BY PK.ARTIGO,PK.CP_NO_GRD');
-
-//      ParamByName('LG_IDEP').Value := RECParametros.EP_ID;
-      Prepare;
-      ExecQuery;
-
-      if Eof then
-      if AREC_SHE_DEF.FWinControl.ClassType = TdxDBGridMaskColumn then oException(Nil,AREC_SHE_DEF.FException) else
-      if AREC_SHE_DEF.FWinControl.Showing                         then oException(AREC_SHE_DEF.FWinControl,AREC_SHE_DEF.FException) else
-                                                                       oErro     (Application.Handle,AREC_SHE_DEF.FException);
-    end;
-
-    if oLast(AREC_SHE_DEF.FB_SQL) > 1 then
-//    try
-//      if Assigned(FrmCAD_PRO_PSQ) then FrmCAD_PRO_PSQ.BringToFront else
-//      begin
-//        TFrmCAD_PRO_PSQ._ExecForm(
-//                    Application, { Owner }
-//                    FrmCAD_PRO_PSQ, { Form }
-//                    0 , { Código    Principal }
-//                    '', { Descrição Principal }
-//
-//                    0 , { Código Evento }
-//                    1 , { Tipo   Evento }
-//                    False, { inicia pela pesquisa }
-//                    fsStayOnTop, { Style }
-//
-//
-//                    AREC_SHE_DEF.FB_SQL_TAB); { Tabela }
-//
-//         if AREC_SHE_DEF.FWinControl <> Nil then
-//         begin
-//           FrmCAD_PRO_PSQ.REC_SHE_DEF.FTop  := AREC_SHE_DEF.FPoint.Y + AREC_SHE_DEF.FWinControl.Height;
-//           FrmCAD_PRO_PSQ.REC_SHE_DEF.FLeft := AREC_SHE_DEF.FPoint.X;
-//         end;
-//
-//         FrmCAD_PRO_PSQ.Consulta.Close;
-//         FrmCAD_PRO_PSQ.Consulta.SQL.Clear;
-//         FrmCAD_PRO_PSQ.Consulta.SQL.Assign(AREC_SHE_DEF.FB_SQL.SQL);
-//         FrmCAD_PRO_PSQ.ShowModal;
-//       end;
-//    finally
-//      if FrmCAD_PRO_PSQ.REC_SHE_DEF.PSQ_OK then
-//      begin
-//        AREC_SHE_DEF.FWinControl := Nil;
-//        AREC_SHE_DEF.FB_FD_ED_PK   := 'PK.CP_ID';
-//        AREC_SHE_DEF.FB_VD_ED_PK   := IntToStr(FrmCAD_PRO_PSQ.ConsultaCP_ID.AsInteger);
-//
-//        uPSQ_CAD_PRO(AREC_SHE_DEF);
-//      end;
-//    end else
-//    AREC_SHE_DEF.PSQ_OK := True;
-  end;
-
-  if AREC_SHE_DEF.FWinControl <> Nil then
-  begin
-    if not AREC_SHE_DEF.PSQ_OK then
-    begin
-      if AREC_SHE_DEF.FWinControl.ClassType = TdxEdit then
-      TdxEdit(AREC_SHE_DEF.FWinControl).Reset else
-
-      if AREC_SHE_DEF.FWinControl.ClassType = TdxMaskEdit then
-      TdxMaskEdit(AREC_SHE_DEF.FWinControl).Reset else
-
-      if AREC_SHE_DEF.FWinControl.ClassType = TdxCurrencyEdit then
-      TdxCurrencyEdit(AREC_SHE_DEF.FWinControl).Reset else
-
-      if AREC_SHE_DEF.FWinControl.ClassType = TdxButtonEdit then
-      TdxButtonEdit(AREC_SHE_DEF.FWinControl).Reset else
-
-      if AREC_SHE_DEF.FWinControl.ClassType = TdxMemo then
-      TdxMemo(AREC_SHE_DEF.FWinControl).Reset;
-
-      if (AREC_SHE_DEF.FWinControl.Showing) and (AREC_SHE_DEF.FWinControl.Enabled) then
-      TWinControl(AREC_SHE_DEF.FWinControl).SetFocus;
-    end;
-
-    AREC_SHE_DEF.FWinControl := Nil;
-  end;
-
-{  if AREC_SHE_DEF.FB_SQL <> Nil then
-  begin
-    AREC_SHE_DEF.FB_SQL.Close;
-    AREC_SHE_DEF.FB_SQL := Nil;
   end;}
 end;
 
@@ -3906,6 +3585,7 @@ end;
 procedure TFrmPrincipal.ACTCAD_PRO_EST_ETQExecute(Sender: TObject);
 begin
   uFrmCreate(Application,Tfrmeti_pro,frmeti_pro);
+//  TFrmCAD_PRO_EST_ETQ._ExecForm(Application,FrmCAD_PRO_EST_ETQ);
 end;
 
 procedure TFrmPrincipal.ACTCAD_PRO_EST_DEFExecute(Sender: TObject);

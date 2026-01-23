@@ -1024,12 +1024,6 @@ begin
   inherited;
   
   if FKCadastro.State = dsInactive then FKCadastro.Open;
-
-  if Showing then
-  begin
-    DBGConsulta.SetFocus;
-    DBGConsultaDEPK.Field.FocusControl;
-  end;
 end;
 
 procedure Tfrmctr_prg.FKCadastroAfterOpen(DataSet: TDataSet);
@@ -1280,14 +1274,19 @@ begin
   DBGFKCadastro.Filter.Clear;
 
   DBGConsultaDEPK.Field.FocusControl;
-  DBGConsulta.SetFocus;
+
+  if (Showing) then
+  if (PNLDBG.Enabled) and (PNLDBG.Visible) then
+  if (GBDET.Enabled ) and (GBDET.Visible ) then
+  if (DBGConsulta.Enabled) and (DBGConsulta.Visible) then
+  if (Cadastro.RecNo > 0) then
+  oSetFocus(DBGConsulta);
 end;
 
 procedure Tfrmctr_prg.FormActivate(Sender: TObject);
 begin
   inherited;
   DBGConsultaDEPK.Field.FocusControl;
-  DBGConsulta.SetFocus;
 end;
 
 end.

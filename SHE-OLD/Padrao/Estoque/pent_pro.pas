@@ -957,7 +957,17 @@ begin
   SIMEtiquetaReduzida.Enabled := True;
   SIMRelatorios.Enabled       := True;
 
-  ACTExecEvent.Execute;
+  { ATUALIZA ESTOQUE }
+  uSP_CAD_PRO_EST_LAN_UPD(REC_SHE_DEF.FB_TB_PK,
+                          RECParametros.EP_ID ,
+                          CECDRO.Text,
+
+                          'EP_ID',
+                          'CDRO' ,
+                          'CP_ID');
+
+  { EVENTO }
+  ACTExecEvent.Execute; { Executa }
 end;
 
 procedure Tfrment_pro.SIMNovoClick(Sender: TObject);
@@ -2244,15 +2254,15 @@ end;
 
 procedure Tfrment_pro._CAD_PRO_PSQ(AValue: TdxCurrencyEdit);
 var
-  AREC_CAD_PRO_PSQ: TREC_SHE_DEF;
+  AREC_CAD_PRO_PSQ: TREC_SHE_PSQ;
   nRecNo: Integer;
 begin
-  oIREC_SHE_DEF(AREC_CAD_PRO_PSQ);
+  oIREC_SHE_PSQ(AREC_CAD_PRO_PSQ);
   AREC_CAD_PRO_PSQ.FWinControl := Nil;
   AREC_CAD_PRO_PSQ.FB_SQL      := SQLPKConsulta;
-  AREC_CAD_PRO_PSQ.FB_FD_ED_PK   := IFThen(Pos(IECampo.Text,'Etiquetas') > 0,'PK.SKU',
+  AREC_CAD_PRO_PSQ.PSQ_TFD_PK  := IFThen(Pos(IECampo.Text,'Etiquetas') > 0,'PK.SKU',
                                   IFThen(Pos(IECampo.Text,'Artigos'  ) > 0,'PK.ARTIGO','PK.SKU'));
-  AREC_CAD_PRO_PSQ.FB_VD_ED_PK   := PETexto.Text;
+  AREC_CAD_PRO_PSQ.PSQ_TVD_PK  := PETexto.Text;
 
   if (oEmpty(AValue.Value)) and (IECampo.Text <> 'Zerar') then
   begin
@@ -2262,25 +2272,27 @@ begin
   end;
 
   if oEmpty(PETexto.Text) then
-     oException(PETexto,'Produto não Informado !');
+  oException(PETexto,'Produto não Informado !');
 
   if IECDTP.Text = '0' then
-     oException(IECDTP,'Tipo de Estoque não Informado !');
+  oException(IECDTP,'Tipo de Estoque não Informado !');
 
   if IECDOP.Text = '0' then
-     oException(IECDOP,'Tipo de Operação não Informado !');
+  oException(IECDOP,'Tipo de Operação não Informado !');
 
   if (IECTNR.Tag = 0) and (IECampo.Text = 'Container') then
-      oException(IECTNR,'Container não Informado !' +#13 +
-                        'Favor selecionar um número de container válido.');
+  oException(IECTNR,'Container não Informado !' +#13 +
+                    'Favor selecionar um número de container válido.');
 
   if (IECTNR.Tag > 0) and ((RECEdicao.DEPK = EmptyStr) or (PEDEPK.Text = EmptyStr)) then
-      oException(PEDEPK,'Pedido de Compra não Informado !');
+  oException(PEDEPK,'Pedido de Compra não Informado !');
 
   if Edicao.State in [dsEdit,dsInsert] then
-     if not oEmpty(EdicaoQTDE.AsFloat) then Edicao.Post else Edicao.Cancel;
+  if not oEmpty(EdicaoQTDE.AsFloat) then Edicao.Post else Edicao.Cancel;
 
-  try uPSQ_CAD_PRO(AREC_CAD_PRO_PSQ);
+  { RICARDO }
+  try
+    uPSQ_CAD_PRO(AREC_CAD_PRO_PSQ);
   finally
     if   AREC_CAD_PRO_PSQ.PSQ_OK then
     with AREC_CAD_PRO_PSQ.FB_SQL do
@@ -2319,9 +2331,9 @@ begin
           EdicaoArtigo.Value := Current.ByName('Artigo').AsString;
           EdicaoSKU.Value    := Current.ByName('SKU').AsString;
 
-          EdicaoDECP.Value    := Current.ByName('CP_NO').AsString;
-          EdicaoDGCP.Value    := Current.ByName('CP_NO_GRD').AsString;
-          EdicaoCMP_PAD.Value := Current.ByName('CP_NO_CMP').AsString;
+          EdicaoDECP.Value    := Current.ByName('CP_NO' ).AsString;
+          EdicaoDGCP.Value    := Current.ByName('GRD_NO').AsString;
+          EdicaoCMP_PAD.Value := Current.ByName('CMP_NO').AsString;
 
           EdicaoUCOM.Value := Current.ByName('UCOM').AsString;
           EdicaoUCON.Value := Current.ByName('UCON').AsString;
@@ -2339,16 +2351,16 @@ begin
             EdicaoCOL_ID.Value := StrToInt(IECOL_ID.Text);
             EdicaoCOL_NO.Value := IECOL_ID.Descriptions[IECOL_ID.Values.IndexOf(IECOL_ID.Text)];
 
-            EdicaoCF_VPRC_PAD_ORI.Value := Current.ByName('CF_VPRC_PAD_ORI').AsString;
-            EdicaoCF_VPRC_PAD.Value     := Current.ByName('CF_VPRC_PAD').AsCurrency; //IFThen(Current.ByName('FPAIS.AsString = 'PRODUTO IMPORTADO',VPRC_COM_IMP,VPRC_COM_NAC);
+            EdicaoCF_VPRC_PAD_ORI.Value := Current.ByName('CF_VPRC_ORIG').AsString;
+            EdicaoCF_VPRC_PAD.Value     := Current.ByName('CF_VPRC_PAD' ).AsCurrency; //IFThen(Current.ByName('FPAIS.AsString = 'PRODUTO IMPORTADO',VPRC_COM_IMP,VPRC_COM_NAC);
             EdicaoCF_VPRC_COM.Value     := EdicaoCF_VPRC_PAD.AsFloat;
           end else
           begin
             EdicaoCOL_ID.Value := 0;
             EdicaoCOL_NO.Value := EmptyStr;
 
-            EdicaoCF_VPRC_PAD_ORI.Value := Current.ByName('CF_VPRC_PAD_ORI').AsString;
-            EdicaoCF_VPRC_PAD.Value     := Current.ByName('CF_VPRC_PAD').AsCurrency; //IFThen(Current.ByName('FPAIS.AsString = 'PRODUTO IMPORTADO',VPRC_COM_IMP,VPRC_COM_NAC);
+            EdicaoCF_VPRC_PAD_ORI.Value := Current.ByName('CF_VPRC_ORIG').AsString;
+            EdicaoCF_VPRC_PAD.Value     := Current.ByName('CF_VPRC_PAD' ).AsCurrency; //IFThen(Current.ByName('FPAIS.AsString = 'PRODUTO IMPORTADO',VPRC_COM_IMP,VPRC_COM_NAC);
             EdicaoCF_VPRC_COM.Value     := EdicaoCF_VPRC_PAD.AsFloat;
           end;
 
@@ -2448,6 +2460,7 @@ begin
     CEQTDE.Value := 0;
     CEQTRL.Value := 0;
   end else
+
   if CEQTRL.Value = 0 then
      CEQTRL.SetFocus else CEQTDE.SetFocus;
 
@@ -2457,7 +2470,7 @@ end;
 procedure Tfrment_pro.PETextoKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 var
-  AREC_CAD_PRO_PSQ: TREC_SHE_DEF;
+  AREC_CAD_PRO_PSQ: TREC_SHE_PSQ;
 begin
   if key = vk_return then
   begin
@@ -2562,12 +2575,12 @@ begin
          end
        end;
 
-       oIREC_SHE_DEF(AREC_CAD_PRO_PSQ);
+       oIREC_SHE_PSQ(AREC_CAD_PRO_PSQ);
        AREC_CAD_PRO_PSQ.FWinControl := Nil;
        AREC_CAD_PRO_PSQ.FB_SQL      := SQLPKConsulta;
-       AREC_CAD_PRO_PSQ.FB_FD_ED_PK   := IFThen(Pos(IECampo.Text,'Etiquetas') > 0,'PK.SKU',
+       AREC_CAD_PRO_PSQ.PSQ_TFD_PK  := IFThen(Pos(IECampo.Text,'Etiquetas') > 0,'PK.SKU',
                                        IFThen(Pos(IECampo.Text,'Artigos'  ) > 0,'PK.ARTIGO','PK.SKU'));
-       AREC_CAD_PRO_PSQ.FB_VD_ED_PK   := PETexto.Text;
+       AREC_CAD_PRO_PSQ.PSQ_TVD_PK  := PETexto.Text;
 
        try uPSQ_CAD_PRO(AREC_CAD_PRO_PSQ);
        finally
@@ -2650,7 +2663,7 @@ begin
              end;
 
              { Grade }
-             LADGCP.Caption := Current.ByName('CP_NO_GRD').AsString;
+             LADGCP.Caption := Current.ByName('GRD_NO').AsString;
              LADGCP.Refresh;
 
              { Coleção }
@@ -2659,8 +2672,8 @@ begin
                 IECOL_ID.Font.Style := [];
 
              { Preço Fornecedor }
-             IECF_VPRC_PAD_ORI.Text := SQLPKConsulta.Current.ByName('CF_VPRC_PAD_ORI').AsString;
-             CECF_VPRC_PAD.Value    := SQLPKConsulta.Current.ByName('CF_VPRC_PAD').AsCurrency;
+             IECF_VPRC_PAD_ORI.Text := SQLPKConsulta.Current.ByName('CF_VPRC_ORIG').AsString;
+             CECF_VPRC_PAD.Value    := SQLPKConsulta.Current.ByName('CF_VPRC_PAD' ).AsCurrency;
 
              if CECF_VPRC_PAD.Value > 0 then
                 IECF_VPRC_PAD_ORI.Font.Style := [fsBold] else
@@ -2745,8 +2758,6 @@ begin
                                    E.Message              + '.');
        end;
      end;
-
-  uSP_CAD_PRO_EST_LAN_UPD(REC_SHE_DEF.FB_TB_PK,INTTOSTR(RECParametros.EP_ID),CECDRO.Text,CECDRO.Text,'PK.CDRO');
 end;
 
 end.

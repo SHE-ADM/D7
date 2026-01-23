@@ -1,8 +1,8 @@
 inherited FrmCAD_PRO_PSQ: TFrmCAD_PRO_PSQ
-  Left = 241
-  Top = 134
+  Left = 409
+  Top = 139
   Caption = 'FrmCAD_PRO_PSQ'
-  ClientHeight = 766
+  ClientHeight = 769
   ClientWidth = 1154
   FormStyle = fsStayOnTop
   Position = poDesigned
@@ -10,155 +10,154 @@ inherited FrmCAD_PRO_PSQ: TFrmCAD_PRO_PSQ
   PixelsPerInch = 96
   TextHeight = 15
   inherited DSPrincipal: TdxDockSite
-    Left = 28
-    Width = 1126
-    Height = 678
+    Width = 1130
+    Height = 691
     DockType = 0
-    OriginalWidth = 1126
-    OriginalHeight = 678
+    OriginalWidth = 1130
+    OriginalHeight = 691
     inherited LDSSubMenu5: TdxLayoutDockSite
-      Width = 1126
-      Height = 678
+      Width = 1130
+      Height = 691
       DockType = 1
       OriginalWidth = 300
       OriginalHeight = 200
       inherited LDSSubMenu4: TdxLayoutDockSite
-        Width = 1126
-        Height = 678
+        Width = 1130
+        Height = 691
         DockType = 1
         OriginalWidth = 300
         OriginalHeight = 200
         inherited LDSSubMenu3: TdxLayoutDockSite
-          Width = 1126
-          Height = 678
+          Width = 1130
+          Height = 691
           DockType = 1
           OriginalWidth = 300
           OriginalHeight = 200
           inherited LDSSubMenu2: TdxLayoutDockSite
-            Width = 1126
-            Height = 678
+            Width = 1130
+            Height = 691
             DockType = 1
             OriginalWidth = 300
             OriginalHeight = 200
             inherited LDSSubMenu1: TdxLayoutDockSite
-              Width = 1126
-              Height = 678
+              Width = 1130
+              Height = 691
               DockType = 1
               OriginalWidth = 300
               OriginalHeight = 200
               inherited LDSMenu: TdxLayoutDockSite
-                Width = 1126
-                Height = 678
+                Width = 1130
+                Height = 691
                 DockType = 1
                 OriginalWidth = 300
                 OriginalHeight = 200
                 inherited LDSPrincipal1: TdxLayoutDockSite
-                  Width = 1126
-                  Height = 678
+                  Width = 1130
+                  Height = 691
                   DockType = 1
                   OriginalWidth = 300
                   OriginalHeight = 200
                 end
                 inherited TCDSPrincipal: TdxTabContainerDockSite
-                  Width = 1126
-                  Height = 678
+                  Width = 1130
+                  Height = 691
                   DockType = 1
                   OriginalWidth = 185
                   OriginalHeight = 140
                   inherited DPPrincipal1: TdxDockPanel
-                    Width = 1126
-                    Height = 678
+                    Width = 1130
+                    Height = 691
                     DockType = 1
                     OriginalWidth = 185
                     OriginalHeight = 140
                     inherited PNLPrincipal1: TPanel
-                      Width = 1122
-                      Height = 674
+                      Width = 1126
+                      Height = 687
                       inherited DSPrincipal1: TdxDockSite
-                        Width = 1122
-                        Height = 674
+                        Width = 1126
+                        Height = 687
                         DockType = 0
-                        OriginalWidth = 1122
-                        OriginalHeight = 674
+                        OriginalWidth = 1126
+                        OriginalHeight = 687
                         inherited LDSPrincipal1Titulo: TdxLayoutDockSite
-                          Width = 1122
-                          Height = 674
+                          Width = 1126
+                          Height = 687
                           DockType = 1
                           OriginalWidth = 300
                           OriginalHeight = 200
                           inherited LDSPrincipal1INFADCPL: TdxLayoutDockSite
-                            Width = 1122
-                            Height = 674
+                            Width = 1126
+                            Height = 687
                             DockType = 1
                             OriginalWidth = 300
                             OriginalHeight = 200
                             inherited LDSPrincipal1LD: TdxLayoutDockSite
-                              Width = 1122
-                              Height = 674
+                              Width = 1126
+                              Height = 687
                               DockType = 1
                               OriginalWidth = 300
                               OriginalHeight = 200
                               inherited LDSPrincipal1LE: TdxLayoutDockSite
-                                Width = 1122
-                                Height = 674
+                                Width = 1126
+                                Height = 687
                                 DockType = 1
                                 OriginalWidth = 300
                                 OriginalHeight = 200
                                 inherited LDSPrincipal1ConsultaINFADCAD: TdxLayoutDockSite
                                   Tag = 394
                                   Top = 280
-                                  Width = 1122
-                                  Height = 394
+                                  Width = 1126
+                                  Height = 407
                                   DockType = 1
                                   OriginalWidth = 300
                                   OriginalHeight = 200
                                   inherited LDSPrincipal1INFADCAD: TdxLayoutDockSite
-                                    Width = 1122
-                                    Height = 364
+                                    Width = 1126
+                                    Height = 377
                                     DockType = 1
                                     OriginalWidth = 300
                                     OriginalHeight = 200
                                     inherited LDSPrincipal1Rodape1: TdxLayoutDockSite
                                       Tag = 1
                                       Left = 400
-                                      Width = 722
-                                      Height = 364
+                                      Width = 726
+                                      Height = 377
                                       DockType = 1
                                       OriginalWidth = 300
                                       OriginalHeight = 200
                                       inherited LDSPrincipal1RodapeTitulo: TdxLayoutDockSite
                                         Tag = 1
-                                        Width = 722
-                                        Height = 364
+                                        Width = 726
+                                        Height = 377
                                         DockType = 1
                                         OriginalWidth = 300
                                         OriginalHeight = 200
                                         inherited LDSPrincipal1RodapeLE: TdxLayoutDockSite
                                           Tag = 1
-                                          Width = 722
-                                          Height = 284
+                                          Width = 726
+                                          Height = 287
                                           DockType = 1
                                           OriginalWidth = 300
                                           OriginalHeight = 200
                                           inherited LDSPrincipal1Rodape2: TdxLayoutDockSite
-                                            Width = 722
-                                            Height = 284
+                                            Width = 726
+                                            Height = 287
                                             DockType = 1
                                             OriginalWidth = 300
                                             OriginalHeight = 200
                                           end
                                           inherited TCDSPrincipal1Rodape: TdxTabContainerDockSite
                                             Tag = 1
-                                            Width = 722
-                                            Height = 284
+                                            Width = 726
+                                            Height = 287
                                             ActiveChildIndex = 0
                                             DockType = 1
                                             OriginalWidth = 185
                                             OriginalHeight = 140
                                             inherited DPPrincipal1Rodape1: TdxDockPanel
                                               Tag = 1
-                                              Width = 722
-                                              Height = 284
+                                              Width = 726
+                                              Height = 287
                                               Caption = 'Ficha T'#233'cnica'
                                               DockType = 1
                                               OriginalWidth = 185
@@ -166,8 +165,8 @@ inherited FrmCAD_PRO_PSQ: TFrmCAD_PRO_PSQ
                                               object PNLDBGCAD_PRO_FIC: TPanel
                                                 Left = 0
                                                 Top = 0
-                                                Width = 718
-                                                Height = 255
+                                                Width = 722
+                                                Height = 258
                                                 Align = alClient
                                                 BevelOuter = bvNone
                                                 BorderWidth = 10
@@ -175,8 +174,8 @@ inherited FrmCAD_PRO_PSQ: TFrmCAD_PRO_PSQ
                                                 object DBGCAD_PRO_FIC: TdxDBGrid
                                                   Left = 10
                                                   Top = 10
-                                                  Width = 698
-                                                  Height = 235
+                                                  Width = 702
+                                                  Height = 238
                                                   Cursor = crHandPoint
                                                   Hint = 'Ficha t'#233'cnica de produtos'
                                                   Bands = <
@@ -422,16 +421,16 @@ inherited FrmCAD_PRO_PSQ: TFrmCAD_PRO_PSQ
                                               end
                                             end
                                             inherited DPPrincipal1Rodape2: TdxDockPanel
-                                              Width = 722
-                                              Height = 284
+                                              Width = 726
+                                              Height = 287
                                               Visible = False
                                               DockType = 1
                                               OriginalWidth = 185
                                               OriginalHeight = 140
                                             end
                                             inherited DPPrincipal1Rodape3: TdxDockPanel
-                                              Width = 722
-                                              Height = 284
+                                              Width = 726
+                                              Height = 287
                                               Visible = False
                                               DockType = 1
                                               OriginalWidth = 185
@@ -440,19 +439,19 @@ inherited FrmCAD_PRO_PSQ: TFrmCAD_PRO_PSQ
                                           end
                                         end
                                         inherited DPPrincipal1Rodape: TdxDockPanel
-                                          Tag = 80
-                                          Top = 284
-                                          Width = 722
-                                          Height = 80
+                                          Tag = 90
+                                          Top = 287
+                                          Width = 726
+                                          Height = 90
                                           Caption = 'Informa'#231#245'es Adicionais'
                                           DockType = 5
                                           OriginalWidth = 185
-                                          OriginalHeight = 80
+                                          OriginalHeight = 90
                                           object DBCAD_PRO_INF: TdxDBMemo
                                             Tag = 90
                                             Left = 0
                                             Top = 0
-                                            Width = 718
+                                            Width = 722
                                             Cursor = crHandPoint
                                             Hint = 'Previs'#245'es ...'
                                             Align = alClient
@@ -472,13 +471,13 @@ inherited FrmCAD_PRO_PSQ: TFrmCAD_PRO_PSQ
                                             DataSource = DTSCAD_PRO_FIC
                                             ReadOnly = True
                                             ScrollBars = ssBoth
-                                            Height = 51
+                                            Height = 61
                                             StoredValues = 64
                                           end
                                         end
                                       end
                                       inherited DPPrincipal1RodapeTitulo: TdxDockPanel
-                                        Width = 722
+                                        Width = 726
                                         DockType = 3
                                         OriginalWidth = 185
                                         OriginalHeight = 30
@@ -487,31 +486,31 @@ inherited FrmCAD_PRO_PSQ: TFrmCAD_PRO_PSQ
                                     inherited VCDSPrincipal1RodapeLE: TdxVertContainerDockSite
                                       Tag = 400
                                       Width = 400
-                                      Height = 364
+                                      Height = 377
                                       DockType = 2
                                       OriginalWidth = 400
                                       OriginalHeight = 140
                                       inherited TCDSPrincipal1RodapeLE: TdxTabContainerDockSite
                                         Tag = 400
                                         Width = 400
-                                        Height = 279
+                                        Height = 282
                                         ActiveChildIndex = 0
                                         DockType = 3
                                         OriginalWidth = 400
-                                        OriginalHeight = 279
+                                        OriginalHeight = 282
                                         inherited DPPrincipal1RodapeLE1: TdxDockPanel
                                           Tag = 400
                                           Width = 400
-                                          Height = 279
+                                          Height = 282
                                           Caption = 'Imagem do Produto'
                                           DockType = 1
                                           OriginalWidth = 400
-                                          OriginalHeight = 279
+                                          OriginalHeight = 282
                                           object IMG_PAD: TImage
                                             Left = 0
                                             Top = 0
                                             Width = 396
-                                            Height = 250
+                                            Height = 253
                                             Cursor = crHandPoint
                                             Hint = 'Amostragem do Produto'#13#10'Click para visualizar tela inteira'
                                             Align = alClient
@@ -522,22 +521,22 @@ inherited FrmCAD_PRO_PSQ: TFrmCAD_PRO_PSQ
                                         end
                                         inherited DPPrincipal1RodapeLE2: TdxDockPanel
                                           Width = 400
-                                          Height = 279
+                                          Height = 282
                                           Visible = False
                                           DockType = 1
                                           OriginalWidth = 350
-                                          OriginalHeight = 279
+                                          OriginalHeight = 282
                                         end
                                       end
                                       inherited DPPrincipal1RodapeLEB: TdxDockPanel
                                         Tag = 90
-                                        Top = 279
+                                        Top = 282
                                         Width = 400
-                                        Height = 85
+                                        Height = 95
                                         Caption = 'Instru'#231#245'es de Lavagem'
                                         DockType = 3
                                         OriginalWidth = 400
-                                        OriginalHeight = 85
+                                        OriginalHeight = 95
                                         object BVILA_BMP1: TBevel
                                           Left = 5
                                           Top = 5
@@ -774,7 +773,7 @@ inherited FrmCAD_PRO_PSQ: TFrmCAD_PRO_PSQ
                                     end
                                   end
                                   inherited DPPrincipal1INFADCAD: TdxDockPanel
-                                    Width = 1122
+                                    Width = 1126
                                     DockType = 3
                                     OriginalWidth = 185
                                     OriginalHeight = 30
@@ -782,28 +781,28 @@ inherited FrmCAD_PRO_PSQ: TFrmCAD_PRO_PSQ
                                 end
                                 inherited HCDSPrincipal1Consulta: TdxHorizContainerDockSite
                                   Tag = 280
-                                  Width = 1122
+                                  Width = 1126
                                   Height = 280
                                   DockType = 3
                                   OriginalWidth = 185
                                   OriginalHeight = 280
                                   inherited TCDSPrincipal1Consulta: TdxTabContainerDockSite
-                                    Width = 1021
+                                    Width = 1023
                                     Height = 280
                                     DockType = 2
-                                    OriginalWidth = 1021
+                                    OriginalWidth = 1023
                                     OriginalHeight = 280
                                     inherited DPPrincipal1Consulta1: TdxDockPanel
-                                      Width = 1021
+                                      Width = 1023
                                       Height = 280
                                       DockType = 1
-                                      OriginalWidth = 1021
+                                      OriginalWidth = 1023
                                       OriginalHeight = 280
                                       inherited PNLDBGConsulta: TPanel
-                                        Width = 1017
+                                        Width = 1019
                                         Height = 251
                                         inherited DBGConsulta: TdxDBGrid
-                                          Width = 997
+                                          Width = 999
                                           Height = 231
                                           Bands = <
                                             item
@@ -825,17 +824,17 @@ inherited FrmCAD_PRO_PSQ: TFrmCAD_PRO_PSQ
                                             SummaryFooterField = 'ID'
                                             SummaryFooterFormat = '0'
                                           end
-                                          object DBGConsultaCP_NO: TdxDBGridMaskColumn
-                                            Width = 250
-                                            BandIndex = 0
-                                            RowIndex = 0
-                                            FieldName = 'CP_NO'
-                                          end
                                           object DBGConsultaGRD_NO: TdxDBGridMaskColumn
                                             Width = 150
                                             BandIndex = 0
                                             RowIndex = 0
                                             FieldName = 'GRD_NO'
+                                          end
+                                          object DBGConsultaCP_NO: TdxDBGridMaskColumn
+                                            Width = 250
+                                            BandIndex = 0
+                                            RowIndex = 0
+                                            FieldName = 'CP_NO'
                                           end
                                           object DBGConsultaST_NO_ABREV: TdxDBGridMaskColumn
                                             Width = 100
@@ -864,62 +863,62 @@ inherited FrmCAD_PRO_PSQ: TFrmCAD_PRO_PSQ
                                       end
                                     end
                                     inherited DPPrincipal1Consulta2: TdxDockPanel
-                                      Width = 1021
+                                      Width = 1023
                                       Height = 280
                                       DockType = 1
-                                      OriginalWidth = 1021
+                                      OriginalWidth = 1023
                                       OriginalHeight = 329
                                     end
                                   end
                                   inherited TCDSPrincipal1ConsultaLD: TdxTabContainerDockSite
-                                    Left = 1021
-                                    Width = 101
+                                    Left = 1023
+                                    Width = 103
                                     Height = 280
                                     DockType = 2
-                                    OriginalWidth = 101
+                                    OriginalWidth = 103
                                     OriginalHeight = 280
                                     inherited DPPrincipal1ConsultaLD1: TdxDockPanel
-                                      Width = 97
+                                      Width = 99
                                       Height = 220
                                       DockType = 1
-                                      OriginalWidth = 101
+                                      OriginalWidth = 103
                                       OriginalHeight = 280
                                     end
                                     inherited DPPrincipal1ConsultaLD2: TdxDockPanel
-                                      Width = 97
+                                      Width = 99
                                       Height = 220
                                       DockType = 1
-                                      OriginalWidth = 101
+                                      OriginalWidth = 103
                                       OriginalHeight = 280
                                     end
                                   end
                                 end
                               end
                               inherited DPPrincipal1LE: TdxDockPanel
-                                Height = 674
+                                Height = 687
                                 DockType = 2
                                 OriginalWidth = 60
                                 OriginalHeight = 140
                               end
                             end
                             inherited DPPrincipal1LD: TdxDockPanel
-                              Left = 1122
-                              Height = 674
+                              Left = 1126
+                              Height = 687
                               DockType = 4
                               OriginalWidth = 60
                               OriginalHeight = 140
                             end
                           end
                           inherited DPPrincipal1INFADCPL: TdxDockPanel
-                            Top = 674
-                            Width = 1122
+                            Top = 687
+                            Width = 1126
                             DockType = 5
                             OriginalWidth = 185
                             OriginalHeight = 0
                           end
                         end
                         inherited DPPrincipal1Titulo: TdxDockPanel
-                          Width = 1122
+                          Width = 1126
                           DockType = 3
                           OriginalWidth = 185
                           OriginalHeight = 30
@@ -928,8 +927,8 @@ inherited FrmCAD_PRO_PSQ: TFrmCAD_PRO_PSQ
                     end
                   end
                   inherited DPPrincipal2: TdxDockPanel
-                    Width = 1126
-                    Height = 678
+                    Width = 1130
+                    Height = 691
                     DockType = 1
                     OriginalWidth = 185
                     OriginalHeight = 140
@@ -937,12 +936,12 @@ inherited FrmCAD_PRO_PSQ: TFrmCAD_PRO_PSQ
                 end
               end
               inherited DPMenu: TdxDockPanel
-                Height = 678
+                Height = 691
                 DockType = 2
                 OriginalWidth = 100
                 OriginalHeight = 140
                 inherited SBPrincipal: TdxSideBar
-                  Height = 649
+                  Height = 662
                   Groups = <
                     item
                       Caption = 'Edi'#231#227'o'
@@ -1022,40 +1021,40 @@ inherited FrmCAD_PRO_PSQ: TFrmCAD_PRO_PSQ
               end
             end
             inherited DPSubMenu1: TdxDockPanel
-              Left = 1126
-              Height = 678
+              Left = 1130
+              Height = 691
               DockType = 4
               OriginalWidth = 120
               OriginalHeight = 140
             end
           end
           inherited DPSubMenu2: TdxDockPanel
-            Left = 1126
-            Height = 678
+            Left = 1130
+            Height = 691
             DockType = 4
             OriginalWidth = 120
             OriginalHeight = 140
           end
         end
         inherited DPSubMenu3: TdxDockPanel
-          Left = 1126
-          Height = 678
+          Left = 1130
+          Height = 691
           DockType = 4
           OriginalWidth = 120
           OriginalHeight = 140
         end
       end
       inherited DPSubMenu4: TdxDockPanel
-        Left = 1126
-        Height = 678
+        Left = 1130
+        Height = 691
         DockType = 4
         OriginalWidth = 120
         OriginalHeight = 140
       end
     end
     inherited DPSubMenu5: TdxDockPanel
-      Left = 1126
-      Height = 678
+      Left = 1130
+      Height = 691
       DockType = 4
       OriginalWidth = 120
       OriginalHeight = 140
@@ -1065,6 +1064,7 @@ inherited FrmCAD_PRO_PSQ: TFrmCAD_PRO_PSQ
     Bars = <
       item
         AllowQuickCustomizing = False
+        BorderStyle = bbsNone
         Caption = 'Menu Principal'
         Color = clHighlightText
         DockedDockingStyle = dsTop
@@ -1093,6 +1093,7 @@ inherited FrmCAD_PRO_PSQ: TFrmCAD_PRO_PSQ
       end
       item
         AllowQuickCustomizing = False
+        BorderStyle = bbsNone
         Caption = 'Menu Sistema'
         Color = clHighlightText
         DockedDockingStyle = dsTop
@@ -1122,6 +1123,7 @@ inherited FrmCAD_PRO_PSQ: TFrmCAD_PRO_PSQ
       end
       item
         AllowQuickCustomizing = False
+        BorderStyle = bbsNone
         Caption = 'Sub Menu'
         DockedDockingStyle = dsLeft
         DockedLeft = 0
@@ -1142,10 +1144,11 @@ inherited FrmCAD_PRO_PSQ: TFrmCAD_PRO_PSQ
       end
       item
         AllowQuickCustomizing = False
+        BorderStyle = bbsNone
         Caption = 'Pesquisa Cadastro'
         DockedDockingStyle = dsTop
         DockedLeft = 0
-        DockedTop = 38
+        DockedTop = 34
         DockingStyle = dsTop
         FloatLeft = 532
         FloatTop = 262
@@ -1177,10 +1180,11 @@ inherited FrmCAD_PRO_PSQ: TFrmCAD_PRO_PSQ
       end
       item
         AllowQuickCustomizing = False
+        BorderStyle = bbsNone
         Caption = 'Pesquisa Per'#237'odo'
         DockedDockingStyle = dsTop
         DockedLeft = 855
-        DockedTop = 38
+        DockedTop = 34
         DockingStyle = dsTop
         FloatLeft = 532
         FloatTop = 262
@@ -1214,6 +1218,7 @@ inherited FrmCAD_PRO_PSQ: TFrmCAD_PRO_PSQ
       end
       item
         AllowQuickCustomizing = False
+        BorderStyle = bbsNone
         Caption = 'ProgressBar'
         DockedDockingStyle = dsBottom
         DockedLeft = 0
@@ -1266,10 +1271,10 @@ inherited FrmCAD_PRO_PSQ: TFrmCAD_PRO_PSQ
       True
       True)
     DockControlHeights = (
-      28
+      24
       0
-      66
-      22)
+      58
+      20)
     inherited BLBMAppend: TdxBarLargeButton
       ImageIndex = -1
     end
@@ -1278,206 +1283,15 @@ inherited FrmCAD_PRO_PSQ: TFrmCAD_PRO_PSQ
     SQL.Strings = (
       'WITH RECURSIVE PK'
       'AS ('
-      
-        'SELECT PK.ID   ,PK.EP_ID,PK.EP_NO,PK.EP_NO_ABREV,PK.EP_NO_SIGLA,' +
-        'PK.EP_GP_NO,PK.EP_GC,PK.EP_GV,PK.EP_GE,PK.EP_GR,PK.EP_GF,'
-      
-        '       PK.CF_ID,PK.CF_NO,PK.CF_NO_ABREV,PK.CF_NO_SIGLA,PK.CF_RZ_' +
-        'NO,PK.CF_GP_NO,'
-      ''
-      '       PK.IDEV,PK.CDEV,PK.DTEV,PK.DEEV,'
-      '       PK.IDCA,'
-      '       PK.IDED,'
-      '       PK.IDST,'
-      ''
-      '       PK.CDST,PK.REST,PK.DEST,PK.ST_NO_ABREV,'
-      ''
-      '       PK.AK_ID,PK.ARTIGO,'
-      
-        '       PK.CP_ID,PK.IMG_ID,PK.EK_ID,PK.SKU,PK.CEAN,PK.CF_SKU,PK.C' +
-        'F_CEAN,'
-      '       PK.FIS_NCM,PK.FIS_PIPI,PK.FIS_EXTIPI,PK.FIS_CEST,'
-      ''
-      '       PK.CP_NO ,PK.CP_NO_TLO,'
-      '       PK.CMP_NO,'
-      ''
-      '       PK.GRD_ID,PK.GRD_NO,PK.GRD_NO_SIGLA,'
-      '       PK.COR_ID,PK.COR_CD,PK.COR_RF,PK.COR_NO,PK.COR_NO_SIGLA,'
-      '       PK.COR_SISTEMA,PK.COR_ESCALA,'
-      '       PK.VAR_ID,PK.VAR_CD,PK.VAR_RF,PK.VAR_NO,PK.VAR_NO_SIGLA,'
-      ''
-      '       PK.UCOM ,PK.UTRIB,PK.UCON,'
-      '       PK.UCDBE,PK.UCDBE_NO,'
-      
-        '       PK.UQTDE,PK.UQTDE_EST_MIN,PK.UQTDE_VEN_MIN,PK.UQTDE_VEN_M' +
-        'UL,'
-      '       PK.UQVOL,PK.UESP,'
-      '       PK.UPSBR,PK.UPSLQ,PK.UPSCN,'
-      ''
-      '       PK.PPSBR,'
-      '       PK.MPESO,'
-      ''
-      '       PK.MMETRO ,'
-      '       PK.MMETRO2,'
-      '       PK.MMETRO3,'
-      '       '
-      '       PK.MGRAMA,'
-      '       PK.MGRAMA_NO,'
-      '       PK.MREND,'
-      '       '
-      '       PK.MLGRU,'
-      '       PK.MLGRT,'
-      '       '
-      '       PK.MELAL,'
-      '       PK.MELAC,'
-      '       PK.MELA_NO,'
-      ''
-      '       PK.MENCL,'
-      '       PK.MENCC,'
-      '       PK.MENC_NO,'
-      ''
-      '       PK.MABNT_NO,'
-      '       '
-      '       PK.MESP,'
-      '       PK.MESP_NO,'
-      '       '
-      '       PK.MCALT,'
-      '       PK.MCLGR,'
-      '       PK.MCCTO,'
-      '       PK.MCPVM,'
-      ''
-      '       PK.LJV_UCOM ,PK.LJV_UCON,'
-      '       PK.LJV_UCDBE,PK.LJV_UCDBE_NO,'
-      
-        '       PK.LJV_UQTDE,PK.LJV_UQTDE_EST_MIN,PK.LJV_UQTDE_VEN_MIN,PK' +
-        '.LJV_UQTDE_VEN_MUL,'
-      '       PK.LJV_UQVOL,PK.LJV_UESP,'
-      '       PK.LJV_UPSBR,PK.LJV_UPSLQ,PK.LJV_UPSCN,'
-      ''
-      '       PK.LJV_MPESO,'
-      ''
-      '       PK.LJV_MMETRO ,'
-      '       PK.LJV_MMETRO2,'
-      '       PK.LJV_MMETRO3,'
-      '       '
-      '       PK.LJV_MGRAMA,'
-      '       PK.LJV_MGRAMA_NO,'
-      '       PK.LJV_MREND,'
-      '       '
-      '       PK.LJV_MLGRU,'
-      '       PK.LJV_MLGRT,'
-      '       '
-      '       PK.LJV_MELAL,'
-      '       PK.LJV_MELAC,'
-      '       PK.LJV_MELA_NO,'
-      ''
-      '       PK.LJV_MENCL,'
-      '       PK.LJV_MENCC,'
-      '       PK.LJV_MENC_NO,'
-      ''
-      '       PK.LJV_MABNT_NO,'
-      '       '
-      '       PK.LJV_MESP,'
-      '       PK.LJV_MESP_NO,'
-      '       '
-      '       PK.LJV_MCALT,'
-      '       PK.LJV_MCLGR,'
-      '       PK.LJV_MCCTO,'
-      '       PK.LJV_MCPVM,'
-      ''
-      '       PK.VPRC_PAD_INI,'
-      '       PK.VPRC_PAD_FIM,'
-      ''
-      '       PK.VPRC_ORIG,'
-      ''
-      '       PK.VPRC_PAD,'
-      '       PK.VPRC_PRZ,'
-      '       PK.VPRC_PRO,'
-      '       PK.VPRC_MKP,'
-      '       PK.VPRC_DSC,'
-      '       PK.VPRC_ACR,'
-      ''
-      '       PK.ATJ_VPRC_PAD,'
-      '       PK.ATJ_VPRC_PRZ,'
-      '       PK.ATJ_VPRC_PRO,'
-      '       PK.ATJ_VPRC_MKP,'
-      '       PK.ATJ_VPRC_DSC,'
-      '       PK.ATJ_VPRC_ACR,'
-      ''
-      '       PK.LJV_VPRC_PAD,'
-      '       PK.LJV_VPRC_PRZ,'
-      '       PK.LJV_VPRC_PRO,'
-      '       PK.LJV_VPRC_MKP,'
-      '       PK.LJV_VPRC_DSC,'
-      '       PK.LJV_VPRC_ACR,'
-      ''
-      '       PK.REP_VPRC_PAD,'
-      '       PK.REP_VPRC_PRZ,'
-      '       PK.REP_VPRC_PRO,'
-      '       PK.REP_VPRC_MKP,'
-      '       PK.REP_VPRC_DSC,'
-      '       PK.REP_VPRC_ACR,'
-      ''
-      '       PK.VAR_VPRC_PAD,'
-      '       PK.VAR_VPRC_PRZ,'
-      '       PK.VAR_VPRC_PRO,'
-      '       PK.VAR_VPRC_MKP,'
-      '       PK.VAR_VPRC_DSC,'
-      '       PK.VAR_VPRC_ACR,'
-      ''
-      '       PK.CF_VPRC_ORIG,'
-      ''
-      '       PK.CF_VPRC_PAD,'
-      '       PK.CF_VPRC_MKP,'
-      ''
-      '       PK.COL_ID,PK.COL_NO,'
-      '       PK.SEG_ID,PK.SEG_NO,'
-      '       PK.GRP_ID,PK.GRP_NO,'
-      '       PK.SGP_ID,PK.SGP_NO,'
-      '       PK.CAT_ID,PK.CAT_NO,'
-      '       PK.SCT_ID,PK.SCT_NO,'
-      ''
-      '       PK.MKP_MLV_ID, '
-      '       PK.MKP_MSP_ID, '
-      '       PK.MKP_MPG_ID, '
-      '       PK.MKP_SHP_ID, '
-      '       PK.MKP_AMZ_ID, '
-      ''
-      '       PK.MKP_BLG_ID, '
-      '       PK.MKP_TRY_ID,'
-      ''
-      '       PK.CDNS_NO,'
-      '       PK.CTFI_NO,'
-      '       PK.CACB_NO,'
-      ''
-      '       PK.FIN_CAD_ID,'
-      '       PK.FIN_EST_ID,'
-      ''
-      '       PK.FIS_ORIG ,'
-      '       PK.FIS_XORIG,'
-      '       PK.FIS_FPAIS,'
-      ''
-      '       PK.FIS_CPAIS,'
-      '       PK.FIS_XPAIS,'
-      ''
-      '       PK.INFADCAD,'
-      '       PK.INFADTEC,'
-      '       PK.INFADPRN,'
-      ''
-      '       PK.IP,  '
-      '       PK.HOST'
-      ''
+      'SELECT PK.*'
       'FROM   VW_PSQ_CAD_PRO AS PK'
-      ''
       '),'
       'CTE_PSQ'
       'AS ('
       'SELECT PK.* FROM PK'
-      'WHERE  PK.SKU LIKE '#39'AU.%'#39
+      'WHERE PK.SKU LIKE '#39'ZN.03%'#39
       ')'
-      ''
       'SELECT DISTINCT PK.*,'
-      ''
       '       -- Estoque Pronta Entrega'
       
         '       COALESCE(CAST(SUM(TB_EST.EPE_QTDE) OVER(PARTITION BY PK.C' +
@@ -1489,14 +1303,12 @@ inherited FrmCAD_PRO_PSQ: TFrmCAD_PRO_PSQ
         'P_ID) AS NUMERIC(12,2)),0) AS EST_QTDE,COALESCE(CAST(SUM(TB_EST.' +
         'EST_QTRL) OVER(PARTITION BY PK.CP_ID) AS INTEGER),0) AS EST_QTRL' +
         ','
-      ''
       '       -- Estoque Antecipado'
       
         '       COALESCE(CAST(SUM(TB_EST.EAT_QTDE) OVER(PARTITION BY PK.C' +
         'P_ID) AS NUMERIC(12,2)),0) AS EAT_QTDE,COALESCE(CAST(SUM(TB_EST.' +
         'EAT_QTRL) OVER(PARTITION BY PK.CP_ID) AS INTEGER),0) AS EAT_QTRL' +
         ','
-      ''
       '       -- Estoque Revisado'
       
         '       COALESCE(CAST(SUM(TB_EST.ERV_QTDE) OVER(PARTITION BY PK.C' +
@@ -1523,14 +1335,12 @@ inherited FrmCAD_PRO_PSQ: TFrmCAD_PRO_PSQ
         'P_ID) AS NUMERIC(12,2)),0) AS EC_QTDE ,COALESCE(CAST(SUM(TB_EST.' +
         'EC_QTRL ) OVER(PARTITION BY PK.CP_ID) AS INTEGER),0) AS EC_QTRL ' +
         ','
-      ''
       '       -- Pilotagem'
       
         '       COALESCE(CAST(SUM(TB_EST.EPI_QTDE) OVER(PARTITION BY PK.C' +
         'P_ID) AS NUMERIC(12,2)),0) AS EPI_QTDE,COALESCE(CAST(SUM(TB_EST.' +
         'EPI_QTRL) OVER(PARTITION BY PK.CP_ID) AS INTEGER),0) AS EPI_QTRL' +
         ','
-      ''
       '       -- Estoque Substituto'
       
         '       COALESCE(CAST(SUM(TB_EST.ESU_QTDE_ENT) OVER(PARTITION BY ' +
@@ -1542,7 +1352,6 @@ inherited FrmCAD_PRO_PSQ: TFrmCAD_PRO_PSQ
         'PK.CP_ID) AS NUMERIC(12,2)),0) AS ESU_QTDE_SAI,COALESCE(CAST(SUM' +
         '(TB_EST.ESU_QTRL_SAI) OVER(PARTITION BY PK.CP_ID) AS INTEGER),0)' +
         ' AS ESU_QTRL_SAI,'
-      ''
       '       -- Compras'
       
         '       COALESCE(CAST(SUM(TB_EST.EPC_QTDE) OVER(PARTITION BY PK.C' +
@@ -1552,7 +1361,6 @@ inherited FrmCAD_PRO_PSQ: TFrmCAD_PRO_PSQ
       
         '       MAX(TB_EST.EPC_CTNR) OVER(PARTITION BY PK.CP_ID) AS EPC_C' +
         'TNR,'
-      ''
       '       -- Vendas Programadas'
       
         '       COALESCE(CAST(SUM(TB_EST.EPP_QTDE     ) OVER(PARTITION BY' +
@@ -1569,7 +1377,6 @@ inherited FrmCAD_PRO_PSQ: TFrmCAD_PRO_PSQ
         ' PK.CP_ID) AS NUMERIC(12,2)),0) AS EEP_QTDE     ,COALESCE(CAST(S' +
         'UM(TB_EST.EEP_QTRL     ) OVER(PARTITION BY PK.CP_ID) AS INTEGER)' +
         ',0) AS EEP_QTRL     ,'
-      ''
       '       -- Vendas Pronta Entrega'
       
         '       COALESCE(CAST(SUM(TB_EST.EPV_QTDE) OVER(PARTITION BY PK.C' +
@@ -1577,25 +1384,22 @@ inherited FrmCAD_PRO_PSQ: TFrmCAD_PRO_PSQ
       
         '       COALESCE(CAST(SUM(TB_EST.EPV_QTRL) OVER(PARTITION BY PK.C' +
         'P_ID) AS INTEGER      ),0) AS EPV_QTRL,'
-      ''
       '       -- Vendas Separadas'
       
         '       COALESCE(CAST(SUM(TB_EST.ESP_QTDE) OVER(PARTITION BY PK.C' +
         'P_ID) AS NUMERIC(12,2)),0) AS ESP_QTDE,'
       
         '       COALESCE(CAST(SUM(TB_EST.EPV_QTRL) OVER(PARTITION BY PK.C' +
-        'P_ID) AS INTEGER      ),0) AS ESP_QTRL'
-      ''
-      ''
+        'P_ID) AS INTEGER      ),0) AS ESP_QTRL '
       'FROM CTE_PSQ AS PK'
       
         'LEFT JOIN VW_PSQ_CAD_PRO_EST_SLD_NEW AS TB_EST ON (TB_EST.CP_ID ' +
-        '= PK.CP_ID AND TB_EST.EP_VW = :VW_IDEP)'
-      'ORDER BY  PK.ARTIGO,PK.GRD_NO')
+        '= PK.CP_ID AND TB_EST.EP_LG = :EP_LG)'
+      'ORDER BY PK.EP_NO')
     ParamData = <
       item
         DataType = ftUnknown
-        Name = 'VW_IDEP'
+        Name = 'EP_LG'
         ParamType = ptUnknown
       end>
     object ConsultaID: TLargeintField
@@ -2837,7 +2641,7 @@ inherited FrmCAD_PRO_PSQ: TFrmCAD_PRO_PSQ
       ''
       'FROM   VW_PSQ_CAD_PRO  AS CP'
       'WHERE  CP.AK_ID = :AK_ID')
-    Left = 336
+    Left = 304
     Top = 232
     ParamData = <
       item
@@ -2996,7 +2800,7 @@ inherited FrmCAD_PRO_PSQ: TFrmCAD_PRO_PSQ
   object DTSCAD_PRO_FIC: TDataSource
     AutoEdit = False
     DataSet = CAD_PRO_FIC
-    Left = 368
+    Left = 336
     Top = 232
   end
   object CAD_PRO_IMG: TIBQuery
@@ -3018,7 +2822,7 @@ inherited FrmCAD_PRO_PSQ: TFrmCAD_PRO_PSQ
         '.ILA_INS8,CDN.D_ILA_INS8'
       'FROM   VW_PSQ_CAD_PRO_IMG AS CDN'
       'WHERE  CDN.CP_ID = :CP_ID')
-    Left = 336
+    Left = 304
     Top = 264
     ParamData = <
       item
@@ -3208,7 +3012,7 @@ inherited FrmCAD_PRO_PSQ: TFrmCAD_PRO_PSQ
     AutoEdit = False
     DataSet = CAD_PRO_IMG
     OnDataChange = DTSCAD_PRO_IMGDataChange
-    Left = 368
+    Left = 336
     Top = 264
   end
 end
