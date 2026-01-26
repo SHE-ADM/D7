@@ -1,6 +1,6 @@
 object FrmPadr2: TFrmPadr2
-  Left = 472
-  Top = 85
+  Left = 601
+  Top = 213
   ActiveControl = DBGConsulta
   BorderIcons = []
   BorderStyle = bsSingle

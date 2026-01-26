@@ -11693,4 +11693,22 @@ object FrmPrincipal: TFrmPrincipal
       end
     end
   end
+  object TEdicao: TIBTransaction
+    AllowAutoStart = False
+    DefaultDatabase = FBird.DBERP
+    DefaultAction = TARollbackRetaining
+    Params.Strings = (
+      'read_committed'
+      'rec_version'
+      'nowait')
+    AutoStopAction = saRollback
+    Left = 656
+    Top = 296
+  end
+  object SPEdicao: TIBStoredProc
+    Database = FBird.DBERP
+    Transaction = TEdicao
+    Left = 656
+    Top = 344
+  end
 end

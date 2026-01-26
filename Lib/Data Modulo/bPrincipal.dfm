@@ -7,6 +7,7 @@ object FBird: TFBird
   Height = 588
   Width = 1117
   object DBERP: TIBDatabase
+    Connected = True
     DatabaseName = 'C:\Sheild\FBird\Otimotex.FDB'
     Params.Strings = (
       'user_name=sysdba'
@@ -39,30 +40,6 @@ object FBird: TFBird
     AutoStopAction = saRollback
     Left = 352
     Top = 56
-  end
-  object TFBEdicao: TIBTransaction
-    AllowAutoStart = False
-    DefaultDatabase = DBERP
-    DefaultAction = TARollbackRetaining
-    Params.Strings = (
-      'read_committed'
-      'rec_version'
-      'nowait')
-    AutoStopAction = saRollback
-    Left = 168
-    Top = 64
-  end
-  object SQLFBEdicao: TIBSQL
-    Database = DBERP
-    Transaction = TFBEdicao
-    Left = 168
-    Top = 160
-  end
-  object SPFBEdicao: TIBStoredProc
-    Database = DBERP
-    Transaction = TFBEdicao
-    Left = 168
-    Top = 112
   end
   object DBEvent: TIBEvents
     AutoRegister = False
@@ -133,7 +110,7 @@ object FBird: TFBird
   end
   object FBBAI_FINANCEIRO: TIBQuery
     Database = DBERP
-    Transaction = TFBEdicao
+    Transaction = TFBEvent
     SQL.Strings = (
       
         'SELECT    PK.CDPV,PK.DEPV,PK.CTNR,PK.CDRO,PK.CDNF AS PV_CDNF,PK.' +
@@ -270,7 +247,7 @@ object FBird: TFBird
   end
   object FBBAI_CAIXA: TIBQuery
     Database = DBERP
-    Transaction = TFBEdicao
+    Transaction = TFBEvent
     SQL.Strings = (
       
         'SELECT   (SELECT ID FROM CAI_TSR WHERE CAI_DESC = '#39'CAIXA INICIAL' +
@@ -1365,36 +1342,6 @@ object FBird: TFBird
     Left = 40
     Top = 368
   end
-  object TFBETQEdicao: TIBTransaction
-    AllowAutoStart = False
-    DefaultDatabase = DBERP
-    DefaultAction = TARollbackRetaining
-    Params.Strings = (
-      'read_committed'
-      'rec_version'
-      'nowait')
-    AutoStopAction = saRollback
-    Left = 168
-    Top = 272
-  end
-  object SPFBETQEdicao: TIBStoredProc
-    Database = DBERP
-    Transaction = TFBETQEdicao
-    Left = 168
-    Top = 320
-  end
-  object SQLFBETQEdicao: TIBSQL
-    Database = DBERP
-    Transaction = TFBETQEdicao
-    Left = 168
-    Top = 368
-  end
-  object SQLFBFKEdicao: TIBSQL
-    Database = DBERP
-    Transaction = TFBEdicao
-    Left = 168
-    Top = 216
-  end
   object DBB2B: TIBDatabase
     DatabaseName = '198.50.189.229:C:\dbFirebird\LebiancoB2B.fdb'
     Params.Strings = (
@@ -2079,5 +2026,22 @@ object FBird: TFBird
     LoginPrompt = False
     Left = 464
     Top = 152
+  end
+  object TFBEdicao: TIBTransaction
+    DefaultDatabase = DBERP
+    Left = 168
+    Top = 72
+  end
+  object SQLFBEdicao: TIBSQL
+    Database = DBERP
+    Transaction = TFBEdicao
+    Left = 168
+    Top = 120
+  end
+  object SPFBEdicao: TIBStoredProc
+    Database = DBERP
+    Transaction = TFBEdicao
+    Left = 168
+    Top = 168
   end
 end

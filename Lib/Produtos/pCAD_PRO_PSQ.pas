@@ -254,8 +254,6 @@ type
     DBGConsultaCP_NO: TdxDBGridMaskColumn;
     DBGConsultaGRD_NO: TdxDBGridMaskColumn;
     DBGConsultaUCOM: TdxDBGridMaskColumn;
-    DBGConsultaEPE_QTDE: TdxDBGridCurrencyColumn;
-    DBGConsultaEPE_QTRL: TdxDBGridMaskColumn;
     CAD_PRO_FIC: TIBQuery;
     CAD_PRO_FICCP_ID: TLargeintField;
     CAD_PRO_FICUCOM: TIBStringField;
@@ -342,12 +340,19 @@ type
     DBILA_BMP7: TDBImage;
     DBILA_BMP8: TDBImage;
     DBCAD_PRO_INF: TdxDBMemo;
+    ConsultaC_EST_QTDE: TFloatField;
+    ConsultaC_EST_QTRL: TIntegerField;
+    DBGConsultaC_EST_QTDE: TdxDBGridMaskColumn;
+    DBGConsultaC_EST_QTRL: TdxDBGridMaskColumn;
+    DBGConsultaEPE_QTDE: TdxDBGridCurrencyColumn;
+    DBGConsultaEPE_QTRL: TdxDBGridMaskColumn;
     procedure FormCreate(Sender: TObject);
     procedure ACTPesquisaExecute(Sender: TObject);
     procedure ConsultaBeforeClose(DataSet: TDataSet);
     procedure ConsultaAfterOpen(DataSet: TDataSet);
     procedure DTSCAD_PRO_IMGDataChange(Sender: TObject; Field: TField);
     procedure FormPaint(Sender: TObject);
+    procedure ConsultaCalcFields(DataSet: TDataSet);
   private
     { Private declarations }
   public
@@ -559,6 +564,26 @@ begin
   inherited;
   _SetDockControl(DPPrincipal1RodapeLEB,DPPrincipal1RodapeLEB.Tag,lVertical,True,True);
   _SetDockControl(DPPrincipal1Rodape,DPPrincipal1Rodape.Tag,lVertical);
+end;
+
+procedure TFrmCAD_PRO_PSQ.ConsultaCalcFields(DataSet: TDataSet);
+begin
+  inherited;
+  if REC_SHE_PSQ.PSQ_TFD_TP = 'EPC' then
+  begin
+    ConsultaC_EST_QTDE.Value := ConsultaEEP_QTDE.AsFloat;
+    ConsultaC_EST_QTRL.Value := ConsultaEEP_QTRL.AsInteger;
+  end else
+
+  if REC_SHE_PSQ.PSQ_TFD_TP = 'EPP' then
+  begin
+    ConsultaC_EST_QTDE.Value := ConsultaEPP_QTDE.AsFloat;
+    ConsultaC_EST_QTRL.Value := ConsultaEPP_QTRL.AsInteger;
+  end else
+  begin
+    ConsultaC_EST_QTDE.Value := ConsultaEPE_QTDE.AsFloat;
+    ConsultaC_EST_QTRL.Value := ConsultaEPE_QTRL.AsInteger;
+  end;
 end;
 
 end.

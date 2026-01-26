@@ -3,61 +3,61 @@ inherited FrmCAD_PRO_EST_DEL: TFrmCAD_PRO_EST_DEL
   Top = 191
   ActiveControl = CECDRO
   Caption = 'Cancelamento de Estoque'
-  ClientHeight = 457
+  ClientHeight = 485
   ClientWidth = 690
   Position = poDesktopCenter
   PixelsPerInch = 96
   TextHeight = 13
   inherited SBRodape: TdxStatusBar
-    Top = 439
+    Top = 467
     Width = 690
   end
   inherited PNLPrincipal: TPanel
     Top = 68
     Width = 666
-    Height = 371
+    Height = 399
     inherited PCPrincipal: TdxPageControl
       Width = 666
-      Height = 371
+      Height = 399
       inherited TSPrincipal: TdxTabSheet
         inherited PNLConsulta: TPanel
           Width = 666
-          Height = 371
+          Height = 399
           inherited PNLPKConsulta: TPanel
             Width = 656
-            Height = 361
+            Height = 389
             inherited PNLDSConsulta: TPanel
               Width = 656
-              Height = 361
+              Height = 389
               inherited DSConsulta: TdxDockSite
                 Width = 656
-                Height = 361
+                Height = 389
                 DockType = 0
                 OriginalWidth = 1738
                 OriginalHeight = 784
                 inherited LDSConsulta: TdxLayoutDockSite
                   Width = 656
-                  Height = 361
+                  Height = 389
                   DockType = 1
                   OriginalWidth = 1136
                   OriginalHeight = 200
                 end
                 inherited DPConsulta: TdxDockPanel
                   Width = 656
-                  Height = 361
+                  Height = 389
                   Caption = 'Selecione o produto que deseja excluir do estoque'
                   DockType = 1
                   OriginalWidth = 1136
                   OriginalHeight = 140
                   object PNLCDRO: TPanel
                     Left = 0
-                    Top = 26
+                    Top = 52
                     Width = 652
                     Height = 26
                     Align = alTop
                     BevelOuter = bvNone
                     BorderWidth = 2
-                    TabOrder = 1
+                    TabOrder = 2
                     object SHCDRO: TShape
                       Left = 2
                       Top = 2
@@ -87,7 +87,7 @@ inherited FrmCAD_PRO_EST_DEL: TFrmCAD_PRO_EST_DEL
                       Width = 300
                       TabOrder = 0
                       StyleController = StyleController
-                      OnChange = IEIDEPChange
+                      OnChange = IEEP_IDChange
                       DecimalPlaces = 0
                       DisplayFormat = '0'
                       StoredValues = 0
@@ -95,13 +95,13 @@ inherited FrmCAD_PRO_EST_DEL: TFrmCAD_PRO_EST_DEL
                   end
                   object PNLSKU: TPanel
                     Left = 0
-                    Top = 130
+                    Top = 156
                     Width = 652
                     Height = 26
                     Align = alTop
                     BevelOuter = bvNone
                     BorderWidth = 2
-                    TabOrder = 5
+                    TabOrder = 6
                     object SHSKU: TShape
                       Left = 2
                       Top = 2
@@ -138,18 +138,18 @@ inherited FrmCAD_PRO_EST_DEL: TFrmCAD_PRO_EST_DEL
                       ParentFont = False
                       TabOrder = 0
                       StyleController = StyleController
-                      OnChange = IEIDEPChange
+                      OnChange = IEEP_IDChange
                     end
                   end
                   object PNLCOL_ID: TPanel
                     Left = 0
-                    Top = 182
+                    Top = 208
                     Width = 652
                     Height = 26
                     Align = alTop
                     BevelOuter = bvNone
                     BorderWidth = 2
-                    TabOrder = 7
+                    TabOrder = 8
                     object SHCOL_ID: TShape
                       Left = 2
                       Top = 2
@@ -186,7 +186,7 @@ inherited FrmCAD_PRO_EST_DEL: TFrmCAD_PRO_EST_DEL
                       TabOrder = 0
                       Text = '0'
                       StyleController = StyleController
-                      OnChange = IEIDEPChange
+                      OnChange = IEEP_IDChange
                       Descriptions.Strings = (
                         '')
                       ImageIndexes.Strings = (
@@ -197,13 +197,13 @@ inherited FrmCAD_PRO_EST_DEL: TFrmCAD_PRO_EST_DEL
                   end
                   object PNLCDET_INI: TPanel
                     Left = 0
-                    Top = 52
+                    Top = 78
                     Width = 652
                     Height = 26
                     Align = alTop
                     BevelOuter = bvNone
                     BorderWidth = 2
-                    TabOrder = 2
+                    TabOrder = 3
                     object Shape3: TShape
                       Left = 2
                       Top = 2
@@ -233,13 +233,13 @@ inherited FrmCAD_PRO_EST_DEL: TFrmCAD_PRO_EST_DEL
                       Width = 300
                       TabOrder = 0
                       StyleController = StyleController
-                      OnChange = IEIDEPChange
+                      OnChange = IEEP_IDChange
                       DecimalPlaces = 0
                       DisplayFormat = '0'
                       StoredValues = 0
                     end
                   end
-                  object PNLIDEP: TPanel
+                  object PNLEP_ID: TPanel
                     Left = 0
                     Top = 0
                     Width = 652
@@ -248,7 +248,7 @@ inherited FrmCAD_PRO_EST_DEL: TFrmCAD_PRO_EST_DEL
                     BevelOuter = bvNone
                     BorderWidth = 2
                     TabOrder = 0
-                    object SHIDEP: TShape
+                    object SHEP_ID: TShape
                       Left = 2
                       Top = 2
                       Width = 648
@@ -256,7 +256,7 @@ inherited FrmCAD_PRO_EST_DEL: TFrmCAD_PRO_EST_DEL
                       Align = alClient
                       Pen.Color = clHighlightText
                     end
-                    object LAIDEP: TLabel
+                    object LAEP_ID: TLabel
                       Left = 15
                       Top = 4
                       Width = 45
@@ -271,7 +271,7 @@ inherited FrmCAD_PRO_EST_DEL: TFrmCAD_PRO_EST_DEL
                       ParentColor = False
                       ParentFont = False
                     end
-                    object IEIDEP: TdxImageEdit
+                    object IEEP_ID: TdxImageEdit
                       Left = 345
                       Top = 2
                       Width = 300
@@ -284,7 +284,7 @@ inherited FrmCAD_PRO_EST_DEL: TFrmCAD_PRO_EST_DEL
                       TabOrder = 0
                       Text = '0'
                       StyleController = StyleController
-                      OnChange = IEIDEPChange
+                      OnChange = IEEP_IDChange
                       Descriptions.Strings = (
                         'TODOS')
                       ImageIndexes.Strings = (
@@ -295,13 +295,13 @@ inherited FrmCAD_PRO_EST_DEL: TFrmCAD_PRO_EST_DEL
                   end
                   object PNLGRP_ID: TPanel
                     Left = 0
-                    Top = 234
+                    Top = 260
                     Width = 652
                     Height = 26
                     Align = alTop
                     BevelOuter = bvNone
                     BorderWidth = 2
-                    TabOrder = 9
+                    TabOrder = 10
                     object SHGRP_ID: TShape
                       Left = 2
                       Top = 2
@@ -338,7 +338,7 @@ inherited FrmCAD_PRO_EST_DEL: TFrmCAD_PRO_EST_DEL
                       TabOrder = 0
                       Text = '0'
                       StyleController = StyleController
-                      OnChange = IEIDEPChange
+                      OnChange = IEEP_IDChange
                       Descriptions.Strings = (
                         '')
                       ImageIndexes.Strings = (
@@ -349,13 +349,13 @@ inherited FrmCAD_PRO_EST_DEL: TFrmCAD_PRO_EST_DEL
                   end
                   object PNLCAT_ID: TPanel
                     Left = 0
-                    Top = 286
+                    Top = 312
                     Width = 652
                     Height = 26
                     Align = alTop
                     BevelOuter = bvNone
                     BorderWidth = 2
-                    TabOrder = 11
+                    TabOrder = 12
                     object SHCAT_ID: TShape
                       Left = 2
                       Top = 2
@@ -392,7 +392,7 @@ inherited FrmCAD_PRO_EST_DEL: TFrmCAD_PRO_EST_DEL
                       TabOrder = 0
                       Text = '0'
                       StyleController = StyleController
-                      OnChange = IEIDEPChange
+                      OnChange = IEEP_IDChange
                       Descriptions.Strings = (
                         '')
                       ImageIndexes.Strings = (
@@ -403,13 +403,13 @@ inherited FrmCAD_PRO_EST_DEL: TFrmCAD_PRO_EST_DEL
                   end
                   object PNLSGP_ID: TPanel
                     Left = 0
-                    Top = 260
+                    Top = 286
                     Width = 652
                     Height = 26
                     Align = alTop
                     BevelOuter = bvNone
                     BorderWidth = 2
-                    TabOrder = 10
+                    TabOrder = 11
                     object SHSGP_ID: TShape
                       Left = 2
                       Top = 2
@@ -446,7 +446,7 @@ inherited FrmCAD_PRO_EST_DEL: TFrmCAD_PRO_EST_DEL
                       TabOrder = 0
                       Text = '0'
                       StyleController = StyleController
-                      OnChange = IEIDEPChange
+                      OnChange = IEEP_IDChange
                       Descriptions.Strings = (
                         '')
                       ImageIndexes.Strings = (
@@ -457,13 +457,13 @@ inherited FrmCAD_PRO_EST_DEL: TFrmCAD_PRO_EST_DEL
                   end
                   object PNLSEG_ID: TPanel
                     Left = 0
-                    Top = 208
+                    Top = 234
                     Width = 652
                     Height = 26
                     Align = alTop
                     BevelOuter = bvNone
                     BorderWidth = 2
-                    TabOrder = 8
+                    TabOrder = 9
                     object SHSEG_ID: TShape
                       Left = 2
                       Top = 2
@@ -500,7 +500,7 @@ inherited FrmCAD_PRO_EST_DEL: TFrmCAD_PRO_EST_DEL
                       TabOrder = 0
                       Text = '0'
                       StyleController = StyleController
-                      OnChange = IEIDEPChange
+                      OnChange = IEEP_IDChange
                       Descriptions.Strings = (
                         '')
                       ImageIndexes.Strings = (
@@ -511,13 +511,13 @@ inherited FrmCAD_PRO_EST_DEL: TFrmCAD_PRO_EST_DEL
                   end
                   object PNLNCM: TPanel
                     Left = 0
-                    Top = 156
+                    Top = 182
                     Width = 652
                     Height = 26
                     Align = alTop
                     BevelOuter = bvNone
                     BorderWidth = 2
-                    TabOrder = 6
+                    TabOrder = 7
                     object SHNCM: TShape
                       Left = 2
                       Top = 2
@@ -554,18 +554,18 @@ inherited FrmCAD_PRO_EST_DEL: TFrmCAD_PRO_EST_DEL
                       ParentFont = False
                       TabOrder = 0
                       StyleController = StyleController
-                      OnChange = IEIDEPChange
+                      OnChange = IEEP_IDChange
                     end
                   end
                   object PNLSCT_ID: TPanel
                     Left = 0
-                    Top = 310
+                    Top = 338
                     Width = 652
                     Height = 26
                     Align = alBottom
                     BevelOuter = bvNone
                     BorderWidth = 2
-                    TabOrder = 12
+                    TabOrder = 13
                     object SHSCT_ID: TShape
                       Left = 2
                       Top = 2
@@ -602,7 +602,7 @@ inherited FrmCAD_PRO_EST_DEL: TFrmCAD_PRO_EST_DEL
                       TabOrder = 0
                       Text = '0'
                       StyleController = StyleController
-                      OnChange = IEIDEPChange
+                      OnChange = IEEP_IDChange
                       Descriptions.Strings = (
                         '')
                       ImageIndexes.Strings = (
@@ -613,13 +613,13 @@ inherited FrmCAD_PRO_EST_DEL: TFrmCAD_PRO_EST_DEL
                   end
                   object PNLARTIGO: TPanel
                     Left = 0
-                    Top = 104
+                    Top = 130
                     Width = 652
                     Height = 26
                     Align = alTop
                     BevelOuter = bvNone
                     BorderWidth = 2
-                    TabOrder = 4
+                    TabOrder = 5
                     object SHARTIGO: TShape
                       Left = 2
                       Top = 2
@@ -656,18 +656,18 @@ inherited FrmCAD_PRO_EST_DEL: TFrmCAD_PRO_EST_DEL
                       ParentFont = False
                       TabOrder = 0
                       StyleController = StyleController
-                      OnChange = IEIDEPChange
+                      OnChange = IEEP_IDChange
                     end
                   end
                   object PNLCDET_FIM: TPanel
                     Left = 0
-                    Top = 78
+                    Top = 104
                     Width = 652
                     Height = 26
                     Align = alTop
                     BevelOuter = bvNone
                     BorderWidth = 2
-                    TabOrder = 3
+                    TabOrder = 4
                     object Shape11: TShape
                       Left = 2
                       Top = 2
@@ -697,10 +697,65 @@ inherited FrmCAD_PRO_EST_DEL: TFrmCAD_PRO_EST_DEL
                       Width = 300
                       TabOrder = 0
                       StyleController = StyleController
-                      OnChange = IEIDEPChange
+                      OnChange = IEEP_IDChange
                       DecimalPlaces = 0
                       DisplayFormat = '0'
                       StoredValues = 0
+                    end
+                  end
+                  object PNLCDTP: TPanel
+                    Left = 0
+                    Top = 26
+                    Width = 652
+                    Height = 26
+                    Align = alTop
+                    BevelOuter = bvNone
+                    BorderWidth = 2
+                    TabOrder = 1
+                    object SHCDTP: TShape
+                      Left = 2
+                      Top = 2
+                      Width = 648
+                      Height = 22
+                      Align = alClient
+                      Pen.Color = clHighlightText
+                    end
+                    object LACDTP: TLabel
+                      Left = 15
+                      Top = 4
+                      Width = 85
+                      Height = 15
+                      Caption = 'Tipo de Estoque'
+                      Color = clHighlightText
+                      Font.Charset = ANSI_CHARSET
+                      Font.Color = clGrayText
+                      Font.Height = -12
+                      Font.Name = 'Segoe UI'
+                      Font.Style = []
+                      ParentColor = False
+                      ParentFont = False
+                    end
+                    object IECDTP: TdxImageEdit
+                      Left = 345
+                      Top = 2
+                      Width = 300
+                      Font.Charset = ANSI_CHARSET
+                      Font.Color = clBlack
+                      Font.Height = -11
+                      Font.Name = 'Tahoma'
+                      Font.Style = []
+                      ParentFont = False
+                      TabOrder = 0
+                      Text = '0'
+                      StyleController = StyleController
+                      OnChange = IEEP_IDChange
+                      DropDownRows = 15
+                      Descriptions.Strings = (
+                        'TODOS')
+                      ImageIndexes.Strings = (
+                        '0')
+                      Values.Strings = (
+                        '0')
                     end
                   end
                 end
@@ -714,13 +769,13 @@ inherited FrmCAD_PRO_EST_DEL: TFrmCAD_PRO_EST_DEL
       Width = 666
     end
     inherited PNLBOT: TPanel
-      Top = 371
+      Top = 399
       Width = 666
     end
   end
   inherited DMPrincipal: TdxDockingManager
-    Left = 392
-    Top = 48
+    Left = 352
+    Top = 8
   end
   inherited BMPrincipal: TdxBarManager
     Bars = <
@@ -749,10 +804,6 @@ inherited FrmCAD_PRO_EST_DEL: TFrmCAD_PRO_EST_DEL
         ItemLinks = <
           item
             Item = BLBConfirma
-            Visible = True
-          end
-          item
-            Item = BLBMCancel
             Visible = True
           end>
         MultiLine = True
@@ -34484,68 +34535,71 @@ inherited FrmCAD_PRO_EST_DEL: TFrmCAD_PRO_EST_DEL
       True
       True
       True)
-    Left = 424
-    Top = 48
+    Left = 384
+    Top = 8
     DockControlHeights = (
       24
       0
       68
       0)
+    inherited BLBMCancel: TdxBarLargeButton
+      Visible = ivNever
+    end
   end
   inherited ALPrincipal: TActionList
-    Left = 456
-    Top = 48
+    Left = 416
+    Top = 8
   end
   inherited TConsulta: TIBTransaction
-    Left = 104
-    Top = 48
+    Left = 64
+    Top = 8
   end
   inherited SQLConsulta: TIBSQL
-    Left = 136
-    Top = 48
+    Left = 96
+    Top = 8
   end
   inherited Consulta: TIBQuery
-    Left = 104
-    Top = 80
+    Left = 64
+    Top = 40
   end
   inherited TEdicao: TIBTransaction
-    Left = 168
-    Top = 48
+    Left = 128
+    Top = 8
   end
   inherited SQLEdicao: TIBSQL
-    Left = 200
-    Top = 48
+    Left = 160
+    Top = 8
   end
   inherited SPEdicao: TIBStoredProc
-    Left = 232
-    Top = 48
+    Left = 192
+    Top = 8
   end
   inherited TEvent: TIBTransaction
-    Left = 264
-    Top = 48
+    Left = 224
+    Top = 8
   end
   inherited SQLEvent: TIBSQL
-    Left = 296
-    Top = 48
+    Left = 256
+    Top = 8
   end
   inherited SPEvent: TIBStoredProc
-    Left = 328
-    Top = 48
+    Left = 288
+    Top = 8
   end
   inherited EEvent: TIBEvents
-    Left = 360
-    Top = 48
+    Left = 320
+    Top = 8
   end
   inherited ILEdicao: TImageList
-    Left = 520
-    Top = 80
+    Left = 480
+    Top = 40
   end
   inherited ILMenu: TImageList
-    Left = 520
-    Top = 48
+    Left = 480
+    Top = 8
   end
   inherited StyleController: TdxEditStyleController
-    Left = 488
-    Top = 48
+    Left = 448
+    Top = 8
   end
 end

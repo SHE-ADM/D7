@@ -322,7 +322,6 @@ type
     SQLPKConsulta: TIBSQL;
     ALPrincipal: TActionList;
     ACTRefresh: TAction;
-    ACTExecEvent: TAction;
     ACTPesquisa: TAction;
     ACTRelatorios: TAction;
     ACTEAppend: TAction;
@@ -339,6 +338,9 @@ type
     ACTPSQ_OK: TAction;
     ACTPSQ_FOCUS: TAction;
     EEventAdmin: TIBEvents;
+    ACTEveRegister: TAction;
+    ACTEveExecute: TAction;
+    ACTEveExpress: TAction;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word;
@@ -408,9 +410,11 @@ type
     procedure DTSCAD_PRO_IMG_CDNDataChange(Sender: TObject; Field: TField);
     procedure EdicaoAfterScroll(DataSet: TDataSet);
     procedure IECDIChange(Sender: TObject);
-    procedure ACTExecEventExecute(Sender: TObject);
     procedure PETextoKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
+    procedure ACTEveRegisterExecute(Sender: TObject);
+    procedure ACTEveExecuteExecute(Sender: TObject);
+    procedure ACTEveExpressExecute(Sender: TObject);
   private
     REC_SHE_DEF  : TREC_SHE_DEF;
     REC_SHE_EDI  : TREC_SHE_EDI;
@@ -450,8 +454,25 @@ begin
 
   oIREC_SHE_DEF(REC_SHE_DEF);
   REC_SHE_DEF.EP_ID    := RECParametros.EP_ID;
-  REC_SHE_DEF.FB_TB_PK := 'CAD_PRO_ENI';
-  REC_SHE_DEF.FB_Event := 'CAD_PRO_EST';
+
+  { ADMIN MANAGER }
+  //DBGConsultaIDPK.Visible := (RECUsuarios.ID = 0); { Código Pedido }
+
+  { FORM SCREEN }
+  REC_SHE_DEF.FPosition := Self.Position; { Posição }
+
+  REC_SHE_DEF.FMainArea := False; { Aplicativo }
+  REC_SHE_DEF.FWorkArea := False; { Windows    }
+
+  { ACCESS MANAGER }
+  REC_SHE_DEF.FB_Event := 'CAD_PRO_EST'; { Eventos }
+  REC_SHE_DEF.FB_TB_PK := 'CAD_PRO_ENI'; { Tabelas }
+
+  { GRANT USER }
+  REC_SHE_DEF.GDescricao  := 'Estoque';
+  REC_SHE_DEF.GReferencia := 'Produtos';
+  REC_SHE_DEF.GRegra      := 'Permissões Gerais';
+  oUSER(REC_SHE_DEF);
 
   try
     oOTransact(TConsulta,ltRead_Only);
@@ -562,58 +583,11 @@ begin
   Exit;
 
   { EVENTOS }
-  try
-    { Limpa Eventos }
-    REC_SHE_DEF.FB_EVE_ADM := EmptyStr; { Admin    }
-    REC_SHE_DEF.FB_EVE_CTR := EmptyStr; { Controle }
-    REC_SHE_DEF.FB_EVE_PAD := EmptyStr; { Login    }
+  ACTEveRegister.Execute; { Registro }
 
-    try
-      { Addmin }
-      EEventAdmin.UnregisterEvents;
-      EEventAdmin.Events.Clear;
-
-      { Padrão }
-      EEvent.UnregisterEvents;
-      EEvent.Events.Clear;
-
-      { Registra Eventos }
-      if REC_SHE_DEF.FB_Event <> EmptyStr then
-      begin
-        { Admin }
-        REC_SHE_DEF.FB_EVE_ADM := REC_SHE_DEF.FB_Event + '-' + oStrZero(RECParametros.EP_ID,3) + '-ADM';
-        EEventAdmin.Events.Add(REC_SHE_DEF.FB_EVE_ADM);
-        EEventAdmin.RegisterEvents;
-
-        if not RECUsuarios.IS_EVE_ADM then
-        begin
-          { Padrão }
-          REC_SHE_DEF.FB_EVE_PAD := REC_SHE_DEF.FB_Event + '-' + oStrZero(RECParametros.EP_ID,3) + '-' + oStrZero(RECUsuarios.ID,3);
-          EEvent.Events.Add(REC_SHE_DEF.FB_EVE_PAD);
-          EEvent.RegisterEvents;
-        end;  
-      end;
-    except
-      on E: Exception do
-      begin
-        { Limpa Eventos }
-        REC_SHE_DEF.FB_EVE_ADM := EmptyStr; { Admin    }
-        REC_SHE_DEF.FB_EVE_CTR := EmptyStr; { Controle }
-        REC_SHE_DEF.FB_EVE_PAD := EmptyStr; { Login    }
-
-        oErro(Application.Handle,'Falha ao tentar executar evento !' + #13 +
-                                  REC_SHE_DEF.FB_Event   + '.' + #13 + #13 +
-                                  E.Message              + '.' + #13 + #13 +
-                                 'Favor entrar em contato com o administrador do sistema.');
-      end;
-    end;
-
-  finally
-    oUnLockWindowUpdate; { Desbloqueia Tela }
-
-    Screen.Cursor := crDefault;
-    Tag := 0;
-  end;
+  Screen.Cursor := crDefault;
+  oUnLockWindowUpdate; { Desbloqueia Tela }
+  Tag := 0;
 end;
 
 procedure Tfrment_pro.FormCloseQuery(Sender: TObject;
@@ -621,7 +595,7 @@ procedure Tfrment_pro.FormCloseQuery(Sender: TObject;
 begin
   if Edicao.State in [dsEdit,dsInsert] then
      if not oEmpty(EdicaoQTDE.AsFloat) then Edicao.Post else Edicao.Cancel;
-                                   
+
   if SIMSalva.Enabled then
      case MessageBox(handle,'Existem Alterações Pendentes !'+#13+
                             'Deseja Salvar ?',
@@ -957,6 +931,9 @@ begin
   SIMEtiquetaReduzida.Enabled := True;
   SIMRelatorios.Enabled       := True;
 
+  { EVENTO }
+  ACTEveExecute.Execute; { Executa }
+
   { ATUALIZA ESTOQUE }
   uSP_CAD_PRO_EST_LAN_UPD(REC_SHE_DEF.FB_TB_PK,
                           RECParametros.EP_ID ,
@@ -965,9 +942,6 @@ begin
                           'EP_ID',
                           'CDRO' ,
                           'CP_ID');
-
-  { EVENTO }
-  ACTExecEvent.Execute; { Executa }
 end;
 
 procedure Tfrment_pro.SIMNovoClick(Sender: TObject);
@@ -1497,10 +1471,7 @@ begin
   IECTNRChange(Self); { Containers }
 
   { Acessos }
-  REC_SHE_DEF.GDescricao := 'Produtos'; REC_SHE_DEF.GReferencia := 'Estoque'; REC_SHE_DEF.GRegra := IECDOP.Descriptions[IECDOP.Values.IndexOf(IECDOP.Text)];
-  oUSER(REC_SHE_DEF);
-
-  if not (REC_SHE_DEF.PSQ_OK) and (IECDOP.Text <> '237') and (IECDOP.Text <> '238') then
+  if not (REC_SHE_DEF.GControl) and (IECDOP.Text <> '237') and (IECDOP.Text <> '238') then
   begin
     IECDTP.Enabled := False;
     IECDTP.Text    := '99';
@@ -2263,6 +2234,7 @@ begin
   AREC_CAD_PRO_PSQ.PSQ_TFD_PK  := IFThen(Pos(IECampo.Text,'Etiquetas') > 0,'PK.SKU',
                                   IFThen(Pos(IECampo.Text,'Artigos'  ) > 0,'PK.ARTIGO','PK.SKU'));
   AREC_CAD_PRO_PSQ.PSQ_TVD_PK  := PETexto.Text;
+  AREC_CAD_PRO_PSQ.PSQ_TFD_TP  := 'EPE';
 
   if (oEmpty(AValue.Value)) and (IECampo.Text <> 'Zerar') then
   begin
@@ -2581,6 +2553,7 @@ begin
        AREC_CAD_PRO_PSQ.PSQ_TFD_PK  := IFThen(Pos(IECampo.Text,'Etiquetas') > 0,'PK.SKU',
                                        IFThen(Pos(IECampo.Text,'Artigos'  ) > 0,'PK.ARTIGO','PK.SKU'));
        AREC_CAD_PRO_PSQ.PSQ_TVD_PK  := PETexto.Text;
+       AREC_CAD_PRO_PSQ.PSQ_TFD_TP  := 'EPE';
 
        try uPSQ_CAD_PRO(AREC_CAD_PRO_PSQ);
        finally
@@ -2717,47 +2690,101 @@ begin
       end;
     end;
 end;
-    
-procedure Tfrment_pro.ACTExecEventExecute(Sender: TObject);
+
+procedure Tfrment_pro.ACTEveRegisterExecute(Sender: TObject);
+begin
+  { UNREGISTER EVENTS }
+  if EEvent.Registered then
+
+  try
+    EEvent.UnregisterEvents;
+    EEvent.Events.Clear;
+
+    REC_SHE_DEF.FB_EVE_ADM := EmptyStr; { Admin  }
+    REC_SHE_DEF.FB_EVE_PAD := EmptyStr; { Padrão }
+  except
+    on E: Exception do
+    begin
+      oErro(Handle,'Falha ao tentar limpar evento Padrão !' + #13 +
+                   'Erro: ' + E.Message + '.');
+    end;
+  end;
+
+  { REGISTER EVENTS }
+  REC_SHE_DEF.FB_Event := TRIM(REC_SHE_DEF.FB_Event);
+  if REC_SHE_DEF.FB_Event <> EmptyStr then
+
+  try
+    { ADMIN }
+    REC_SHE_DEF.FB_EVE_ADM := REC_SHE_DEF.FB_Event + '-' + oStrZero(RECParametros.EP_ID,3) + '-ADM';
+    EEvent.Events.Add(REC_SHE_DEF.FB_EVE_ADM);
+
+    { PADRÃO }
+    if not RECUsuarios.IS_EVE_ADM then
+    begin
+      REC_SHE_DEF.FB_EVE_PAD := REC_SHE_DEF.FB_Event + '-' + oStrZero(RECParametros.EP_ID,3) + '-' + oStrZero(RECUsuarios.ID,3);
+      EEvent.Events.Add(REC_SHE_DEF.FB_EVE_PAD);
+    end;
+
+    { EDIÇÃO }
+    if REC_SHE_DEF.FB_EVE_EDT <> EmptyStr then
+    begin
+      if ACTEveRegister.Tag > 0 then
+      REC_SHE_DEF.FB_EVE_EDT := REC_SHE_DEF.FB_EVE_EDT + '-' + oStrZero(RECParametros.EP_ID,3) + '-' + oStrZero(ACTEveRegister.Tag,3) else
+      REC_SHE_DEF.FB_EVE_EDT := REC_SHE_DEF.FB_EVE_EDT + '-' + oStrZero(RECParametros.EP_ID,3) + '-' + oStrZero(RECUsuarios.ID,3);
+
+      EEvent.Events.Add(REC_SHE_DEF.FB_EVE_EDT);
+      ACTEveRegister.Tag := 0;
+    end;
+
+    EEvent.RegisterEvents;
+  except
+    on E: Exception do
+    begin
+      oErro(Application.Handle,'Falha ao tentar registrar evento !' + #13 +
+                               'Erro: '   + E.Message + '.');
+    end;
+  end;
+end;
+
+procedure Tfrment_pro.ACTEveExecuteExecute(Sender: TObject);
 var
   i: word;
 begin
   if REC_SHE_DEF.FB_Event <> EmptyStr then
-     try
-       oOTransact(TEvent);
 
-       { Admin }
-       SPEvent.Close;
-       SPEvent.StoredProcName := 'SP_SHE_EVE_ADM';
-       SPEvent.Prepare;
+  try
+    oOTransact(TEvent);
 
-       for i := 0 to SPEvent.ParamCount - 1 do
-       SPEvent.Params[i].Value := Null;
+    { ADMIN }
+    SPEvent.Close;
+    SPEvent.StoredProcName := 'SP_SHE_EVE';
+    SPEvent.Prepare;
 
-       SPEvent.Params[0].Value := REC_SHE_DEF.FB_EVE_ADM;
-       SPEvent.ExecProc;
+    for i := 0 to SPEvent.ParamCount - 1 do
+    SPEvent.Params[i].Value := Null;
 
-       { Padrão }
-       SPEvent.Close;
-       SPEvent.StoredProcName := 'SP_SHE_EVE_PAD';
-       SPEvent.Prepare;
+    SPEvent.Params[0].Value := REC_SHE_DEF.FB_EVE_ADM;
+    SPEvent.Params[1].Value := REC_SHE_DEF.FB_EVE_PAD;
+    SPEvent.Params[2].Value := REC_SHE_DEF.FB_EVE_EDT;
+    SPEvent.ExecProc;
 
-       for i := 0 to SPEvent.ParamCount - 1 do
-       SPEvent.Params[i].Value := Null;
+    oCTransact(TEvent);
+  except
+    on E: Exception do
+    begin
+      oCTransact(TEvent,ltRollback);
+      oErro(Application.Handle,'Falha ao tentar executar evento !' + #13 +
+                                REC_SHE_DEF.FB_Event   + '.' + #13 + #13 +
+                                E.Message              + '.');
+    end;
+  end;
+end;
 
-       SPEvent.Params[0].Value := REC_SHE_DEF.FB_EVE_PAD;
-       SPEvent.ExecProc;
-
-       oCTransact(TEvent);
-     except
-       on E: Exception do
-       begin
-         oCTransact(TEvent,ltRollback);
-         oErro(Application.Handle,'Falha ao tentar executar evento !' + #13 +
-                                   REC_SHE_DEF.FB_Event   + '.' + #13 + #13 +
-                                   E.Message              + '.');
-       end;
-     end;
+procedure Tfrment_pro.ACTEveExpressExecute(Sender: TObject);
+begin
+  ACTEveRegister.Execute;
+  ACTEveExecute.Execute;
 end;
 
 end.

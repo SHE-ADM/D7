@@ -25,9 +25,9 @@ type
     PNLCDET_INI: TPanel;
     Shape3: TShape;
     LACDET_INI: TLabel;
-    PNLIDEP: TPanel;
-    SHIDEP: TShape;
-    LAIDEP: TLabel;
+    PNLEP_ID: TPanel;
+    SHEP_ID: TShape;
+    LAEP_ID: TLabel;
     PNLGRP_ID: TPanel;
     SHGRP_ID: TShape;
     LAGRP_ID: TLabel;
@@ -47,7 +47,7 @@ type
     PNLSCT_ID: TPanel;
     SHSCT_ID: TShape;
     LASCT_ID: TLabel;
-    IEIDEP: TdxImageEdit;
+    IEEP_ID: TdxImageEdit;
     CECDRO: TdxCurrencyEdit;
     PNLARTIGO: TPanel;
     SHARTIGO: TShape;
@@ -64,8 +64,12 @@ type
     IESGP_ID: TdxImageEdit;
     IECAT_ID: TdxImageEdit;
     IESCT_ID: TdxImageEdit;
+    PNLCDTP: TPanel;
+    SHCDTP: TShape;
+    LACDTP: TLabel;
+    IECDTP: TdxImageEdit;
     procedure FormCreate(Sender: TObject);
-    procedure IEIDEPChange(Sender: TObject);
+    procedure IEEP_IDChange(Sender: TObject);
     procedure ACTMPostExecute(Sender: TObject);
   private
     { Private declarations }
@@ -90,16 +94,28 @@ begin
     { Empresas }
     Close;
     SQL.Clear;
-    SQL.Add('SELECT   PK.LG_IDEP,FK.FANTASIA');
-    SQL.Add('FROM     TAB_PAR_SIS_EST_EMP AS PK');
-    SQL.Add('JOIN     TAB_PAR_SIS         AS FK ON (FK.ID = PK.LG_IDEP)');
-    SQL.Add('WHERE    PK.ID = ''' + RECParametros.EP_ID + '''');
-    SQL.Add('ORDER BY PK.ID');
+    SQL.Add('SELECT   PK.EP_ID,FK.FANTASIA');
+    SQL.Add('FROM     TAB_PAR_SIS_EST_LOG AS PK');
+    SQL.Add('JOIN     TAB_PAR_SIS         AS FK ON (FK.ID = PK.EP_ID)');
+    SQL.Add('WHERE    PK.EP_LG = ''' + RECParametros.EP_ID + '''');
+    SQL.Add('ORDER BY PK.EP_LG');
     ExecQuery;
     while not eof do
     begin
-      IEIDEP.Descriptions.Add(Current.Vars[1].AsString);
-      IEIDEP.Values.Add(Current.Vars[0].AsString);
+      IEEP_ID.Descriptions.Add(Current.Vars[1].AsString);
+      IEEP_ID.Values.Add(Current.Vars[0].AsString);
+      next;
+    end;
+
+    { Tipo de Estoque }
+    Close;
+    SQL.Clear;
+    SQL.Add('SELECT PK.ID,PK.DESCRICAO FROM TAB_TPO_EST AS PK WHERE PK.CDST = 30 AND PK.EST_CDTP = 1 ORDER BY PK.DESCRICAO');
+    ExecQuery;
+    while not eof do
+    begin
+      IECDTP.Values.Add(Current.Vars[0].AsString);
+      IECDTP.Descriptions.Add(Current.Vars[1].AsString);
       next;
     end;
 
@@ -188,7 +204,7 @@ begin
   inherited;
 end;
 
-procedure TFrmCAD_PRO_EST_DEL.IEIDEPChange(Sender: TObject);
+procedure TFrmCAD_PRO_EST_DEL.IEEP_IDChange(Sender: TObject);
 begin
   REC_SHE_DEF.Editing := True;
 end;
@@ -229,8 +245,9 @@ begin
     for i := 0 to SPEdicao.ParamCount - 1 do
     SPEdicao.Params[i].Value := Null;
 
-    SPEdicao.ParamByName('AEL_IDEP').Value := RECParametros.EP_ID;
-    SPEdicao.ParamByName('AEF_IDEP').Value := IEIDEP.Text;
+    SPEdicao.ParamByName('AEP_LG').Value := RECParametros.EP_ID;
+    SPEdicao.ParamByName('AEP_ID').Value := IEEP_ID.Text;
+    SPEdicao.ParamByName('ACDTP' ).Value := IECDTP.Text;
 
     SPEdicao.ParamByName('ASKU'   ).Value := EDSKU.Text;
     SPEdicao.ParamByName('AARTIGO').Value := EDARTIGO.Text;
@@ -259,19 +276,24 @@ begin
     end;
   end;
 
-  if RNRecNo > 0 then
-     case messageBox(handle,PChar(INTTOSTR(RNRecNo)  + ' registro(s) encontrado(s) !' + #13 +
-                           'Confirma Exclusão ?'),
-                            PChar(Caption),MB_ICONQUESTION+MB_YESNOCANCEL) of
+  if RNRecNo = 0 then
+  oErro(Application.Handle,'Nenhum lançamento encontrado para cancelamento !') else
 
-          mrYes   : begin
-                      oCTransact(TEdicao);
-                      ACTExecEvent.Execute;
-                    end;
+  case messageBox(handle,PChar(INTTOSTR(RNRecNo)  + ' registro(s) encontrado(s) !' + #13 +
+                        'Confirma Exclusão ?'),
+                         PChar(Caption),MB_ICONQUESTION+MB_YESNOCANCEL) of
 
-          mrCancel: Abort;
-          mrNo    : Abort;
-     end;
+       mrYes   : begin
+                   oCTransact(TEdicao);
+                   ACTExecEvent.Execute;
+                 end;
+
+       mrCancel,
+       mrNo    : begin
+                   oCTransact(TEdicao,ltRollback);
+                   Abort;
+                 end;
+  end;
 
   REC_SHE_DEF.Editing := False;
   Close;

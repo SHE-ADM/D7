@@ -83,6 +83,9 @@ type
     PNLRIGHT: TPanel;
     PNLLEFT: TPanel;
     EEventAdmin: TIBEvents;
+    ACTEveRegister: TAction;
+    ACTEveExecute: TAction;
+    ACTEveExpress: TAction;
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure FormActivate(Sender: TObject);
@@ -112,11 +115,13 @@ type
     procedure ConsultaAfterOpen(DataSet: TDataSet);
 
     procedure EEventEventAlert(Sender: TObject; EventName: String; EventCount: Integer; var CancelAlerts: Boolean);
-    procedure ACTExecEventExecute(Sender: TObject);
     procedure EEventAdminEventAlert(Sender: TObject; EventName: String;
       EventCount: Integer; var CancelAlerts: Boolean);
     procedure FormKeyPress(Sender: TObject; var Key: Char);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
+    procedure ACTEveRegisterExecute(Sender: TObject);
+    procedure ACTEveExecuteExecute(Sender: TObject);
+    procedure ACTEveExpressExecute(Sender: TObject);
   private
     { Private declarations }
     FCurrentEvent,
@@ -222,50 +227,7 @@ end;
 procedure TFrmDefault._WM_ACTIVATE(var Msg: TMessage);
 begin
   { EVENTOS }
-  { Limpa Eventos }
-  REC_SHE_DEF.FB_EVE_ADM := EmptyStr; { Admin    }
-  REC_SHE_DEF.FB_EVE_CTR := EmptyStr; { Controle }
-  REC_SHE_DEF.FB_EVE_PAD := EmptyStr; { Login    }
-
-  try
-    { Addmin }
-    EEventAdmin.UnregisterEvents;
-    EEventAdmin.Events.Clear;
-
-    { Padrão }
-    EEvent.UnregisterEvents;
-    EEvent.Events.Clear;
-
-    { Registra Eventos }
-    if REC_SHE_DEF.FB_Event <> EmptyStr then
-    begin
-      { Admin }
-      REC_SHE_DEF.FB_EVE_ADM := REC_SHE_DEF.FB_Event + '-' + oStrZero(RECParametros.EP_ID,3) + '-ADM';
-      EEventAdmin.Events.Add(REC_SHE_DEF.FB_EVE_ADM);
-      EEventAdmin.RegisterEvents;
-
-      if not RECUsuarios.IS_EVE_ADM then
-      begin
-        { Padrão }
-        REC_SHE_DEF.FB_EVE_PAD := REC_SHE_DEF.FB_Event + '-' + oStrZero(RECParametros.EP_ID,3) + '-' + oStrZero(RECUsuarios.ID,3);
-        EEvent.Events.Add(REC_SHE_DEF.FB_EVE_PAD);
-        EEvent.RegisterEvents;
-      end;
-    end;
-  except
-    on E: Exception do
-    begin
-      { Limpa Eventos }
-      REC_SHE_DEF.FB_EVE_ADM := EmptyStr; { Admin    }
-      REC_SHE_DEF.FB_EVE_CTR := EmptyStr; { Controle }
-      REC_SHE_DEF.FB_EVE_PAD := EmptyStr; { Login    }
-
-      oErro(Application.Handle,'Falha ao tentar executar evento !' + #13 +
-                                REC_SHE_DEF.FB_Event   + '.' + #13 + #13 +
-                                E.Message              + '.' + #13 + #13 +
-                               'Favor entrar em contato com o administrador do sistema.');
-    end;
-  end;
+  ACTEveRegister.Execute; { Registro }
 end;
 
 procedure TFrmDefault._SW_SHOWNOACTIVATE(var Msg: TMessage);
@@ -883,46 +845,100 @@ begin
   oRefresh(Consulta);
 end;
 
-procedure TFrmDefault.ACTExecEventExecute(Sender: TObject);
+procedure TFrmDefault.ACTEveRegisterExecute(Sender: TObject);
+begin
+  { UNREGISTER EVENTS }
+  if EEvent.Registered then
+
+  try
+    EEvent.UnregisterEvents;
+    EEvent.Events.Clear;
+
+    REC_SHE_DEF.FB_EVE_ADM := EmptyStr; { Admin  }
+    REC_SHE_DEF.FB_EVE_PAD := EmptyStr; { Padrão }
+  except
+    on E: Exception do
+    begin
+      oErro(Handle,'Falha ao tentar limpar evento Padrão !' + #13 +
+                   'Erro: ' + E.Message + '.');
+    end;
+  end;
+
+  { REGISTER EVENTS }
+  REC_SHE_DEF.FB_Event := TRIM(REC_SHE_DEF.FB_Event);
+  if REC_SHE_DEF.FB_Event <> EmptyStr then
+
+  try
+    { ADMIN }
+    REC_SHE_DEF.FB_EVE_ADM := REC_SHE_DEF.FB_Event + '-' + oStrZero(RECParametros.EP_ID,3) + '-ADM';
+    EEvent.Events.Add(REC_SHE_DEF.FB_EVE_ADM);
+
+    { PADRÃO }
+    if not RECUsuarios.IS_EVE_ADM then
+    begin
+      REC_SHE_DEF.FB_EVE_PAD := REC_SHE_DEF.FB_Event + '-' + oStrZero(RECParametros.EP_ID,3) + '-' + oStrZero(RECUsuarios.ID,3);
+      EEvent.Events.Add(REC_SHE_DEF.FB_EVE_PAD);
+    end;
+
+    { EDIÇÃO }
+    if REC_SHE_DEF.FB_EVE_EDT <> EmptyStr then
+    begin
+      if ACTEveRegister.Tag > 0 then
+      REC_SHE_DEF.FB_EVE_EDT := REC_SHE_DEF.FB_EVE_EDT + '-' + oStrZero(RECParametros.EP_ID,3) + '-' + oStrZero(ACTEveRegister.Tag,3) else
+      REC_SHE_DEF.FB_EVE_EDT := REC_SHE_DEF.FB_EVE_EDT + '-' + oStrZero(RECParametros.EP_ID,3) + '-' + oStrZero(RECUsuarios.ID,3);
+
+      EEvent.Events.Add(REC_SHE_DEF.FB_EVE_EDT);
+      ACTEveRegister.Tag := 0;
+    end;
+
+    EEvent.RegisterEvents;
+  except
+    on E: Exception do
+    begin
+      oErro(Application.Handle,'Falha ao tentar registrar evento !' + #13 +
+                               'Erro: '   + E.Message + '.');
+    end;
+  end;
+end;
+
+procedure TFrmDefault.ACTEveExecuteExecute(Sender: TObject);
 var
   i: word;
 begin
   if REC_SHE_DEF.FB_Event <> EmptyStr then
-     try
-       oOTransact(TEvent);
 
-       { Admin }
-       SPEvent.Close;
-       SPEvent.StoredProcName := 'SP_SHE_EVE_ADM';
-       SPEvent.Prepare;
+  try
+    oOTransact(TEvent);
 
-       for i := 0 to SPEvent.ParamCount - 1 do
-       SPEvent.Params[i].Value := Null;
+    { ADMIN }
+    SPEvent.Close;
+    SPEvent.StoredProcName := 'SP_SHE_EVE';
+    SPEvent.Prepare;
 
-       SPEvent.Params[0].Value := REC_SHE_DEF.FB_EVE_ADM;
-       SPEvent.ExecProc;
+    for i := 0 to SPEvent.ParamCount - 1 do
+    SPEvent.Params[i].Value := Null;
 
-       { Padrão }
-       SPEvent.Close;
-       SPEvent.StoredProcName := 'SP_SHE_EVE_PAD';
-       SPEvent.Prepare;
+    SPEvent.Params[0].Value := REC_SHE_DEF.FB_EVE_ADM;
+    SPEvent.Params[1].Value := REC_SHE_DEF.FB_EVE_PAD;
+    SPEvent.Params[2].Value := REC_SHE_DEF.FB_EVE_EDT;
+    SPEvent.ExecProc;
 
-       for i := 0 to SPEvent.ParamCount - 1 do
-       SPEvent.Params[i].Value := Null;
+    oCTransact(TEvent);
+  except
+    on E: Exception do
+    begin
+      oCTransact(TEvent,ltRollback);
+      oErro(Application.Handle,'Falha ao tentar executar evento !' + #13 +
+                                REC_SHE_DEF.FB_Event   + '.' + #13 + #13 +
+                                E.Message              + '.');
+    end;
+  end;
+end;
 
-       SPEvent.Params[0].Value := REC_SHE_DEF.FB_EVE_PAD;
-       SPEvent.ExecProc;
-
-       oCTransact(TEvent);
-     except
-       on E: Exception do
-       begin
-         oCTransact(TEvent,ltRollback);
-         oErro(Application.Handle,'Falha ao tentar executar evento !' + #13 +
-                                   REC_SHE_DEF.FB_Event   + '.' + #13 + #13 +
-                                   E.Message              + '.');
-       end;
-     end;
+procedure TFrmDefault.ACTEveExpressExecute(Sender: TObject);
+begin
+  ACTEveRegister.Execute;
+  ACTEveExecute.Execute;
 end;
 
 end.
