@@ -10,7 +10,7 @@ uses
   dxBar, dxBarExtItems, dxDockControl, dxPageControl, dxDockPanel,
   cxGraphics, cxControls, dxStatusBar, IBEvents, IBStoredProc, DB,
   IBCustomDataSet, IBQuery, IBSQL, IBDatabase, rxSpeedbar,
-  IDGlobal, DSiWin32, dxsbar, ComCtrls, DBCtrls, dxDBTLCl, dxGrClms;
+  IDGlobal, dxsbar, ComCtrls, DBCtrls, dxDBTLCl, dxGrClms;
 
 type
   TFrmCAD_PRO_ADM = class(TForm)
@@ -45,24 +45,6 @@ type
     SSIMDelete: TdxStoredSideItem;
     PMPSQ_CAD: TdxBarPopupMenu;
     PMPSQ_PER: TdxBarPopupMenu;
-    ALPrincipal: TActionList;
-    ACTRefresh: TAction;
-    ACTExecEvent: TAction;
-    ACTPesquisa: TAction;
-    ACTRelatorios: TAction;
-    ACTEAppend: TAction;
-    ACTEEdit: TAction;
-    ACTEDelete: TAction;
-    ACTEPost: TAction;
-    ACTECancel: TAction;
-    ACTMAppend: TAction;
-    ACTMEdit: TAction;
-    ACTMDelete: TAction;
-    ACTMPost: TAction;
-    ACTMCancel: TAction;
-    ACTSaida: TAction;
-    ACTPSQ_OK: TAction;
-    ACTPSQ_FOCUS: TAction;
     ILMenu: TImageList;
     ILEdicao: TImageList;
     StyleController: TdxEditStyleController;
@@ -830,6 +812,34 @@ type
     DBCAD_PRO_IMG_ILA6: TDBImage;
     DBCAD_PRO_IMG_ILA7: TDBImage;
     DBCAD_PRO_IMG_ILA8: TDBImage;
+    ALPrincipal: TActionList;
+    ACTPesquisa: TAction;
+    ACTConsulta: TAction;
+    ACTRefresh: TAction;
+    ACTEveRegister: TAction;
+    ACTEveExecute: TAction;
+    ACTRelatorios: TAction;
+    ACTMEAppend: TAction;
+    ACTMEEdit: TAction;
+    ACTMEDelete: TAction;
+    ACTMEPost: TAction;
+    ACTMECancel: TAction;
+    ACTMPAppend: TAction;
+    ACTMPEdit: TAction;
+    ACTMPDelete: TAction;
+    ACTMPPost: TAction;
+    ACTMPValidate: TAction;
+    ACTMPCancel: TAction;
+    ACTEveExpress: TAction;
+    ACTProgressBar: TAction;
+    ACTDashboards: TAction;
+    ACTCheckConstraints: TAction;
+    ACTCheckErrors: TAction;
+    ACTSaida: TAction;
+    ACTEdicao: TAction;
+    ACTVisualiza: TAction;
+    ACTPesquisaOK: TAction;
+    ACTPesquisaFocusControl: TAction;
 
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -838,7 +848,6 @@ type
 
     procedure FormKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
-    procedure FormKeyPress(Sender: TObject; var Key: Char);
 
     procedure FormPaint(Sender: TObject);
     procedure FormResize(Sender: TObject);
@@ -852,34 +861,13 @@ type
     procedure TCDSPrincipal1RodapeUpdateDockZones(
       Sender: TdxCustomDockControl; AZones: TList);
 
-    procedure ACTRefreshExecute(Sender: TObject);
-    procedure ACTMAppendExecute(Sender: TObject);
-    procedure ACTMEditExecute(Sender: TObject);
-    procedure ACTMDeleteExecute(Sender: TObject);
-    procedure ACTMPostExecute(Sender: TObject);
-    procedure ACTMCancelExecute(Sender: TObject);
-
-    procedure ACTEAppendExecute(Sender: TObject);
-    procedure ACTEEditExecute(Sender: TObject);
-    procedure ACTEDeleteExecute(Sender: TObject);
-    procedure ACTEPostExecute(Sender: TObject);
-    procedure ACTECancelExecute(Sender: TObject);
-
-    procedure ACTExecEventExecute(Sender: TObject);
-    procedure ACTSaidaExecute(Sender: TObject);
-
     procedure ACTPesquisaExecute(Sender: TObject);
     procedure BEPSQ_CADKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
-    procedure ACTPSQ_FOCUSExecute(Sender: TObject);
-    procedure ACTPSQ_OKExecute(Sender: TObject);
 
     procedure BEPSQ_CADCurChange(Sender: TObject);
     procedure BDPSQ_PER_INICurChange(Sender: TObject);
     procedure BDPSQ_PER_FIMCurChange(Sender: TObject);
-
-    procedure EEventEventAlert(Sender: TObject; EventName: String;
-      EventCount: Integer; var CancelAlerts: Boolean);
     procedure DBGConsultaCustomDrawCell(Sender: TObject; ACanvas: TCanvas;
       ARect: TRect; ANode: TdxTreeListNode; AColumn: TdxTreeListColumn;
       ASelected, AFocused, ANewItemRow: Boolean; var AText: String;
@@ -1006,51 +994,63 @@ type
     procedure DTSEST_EPPDataChange(Sender: TObject; Field: TField);
     procedure DTSEST_ESPDataChange(Sender: TObject; Field: TField);
     procedure DTSEST_EPEDataChange(Sender: TObject; Field: TField);
+    procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
   private
     { Private declarations }
-    FCurrentEvent: String;
+    FCurrentEvent,
+    FCurrentAlert: String;
     FForceClose  : Boolean;
-
-    FDockControl: TdxCustomDockControl;
-    FDockControlPrincipal1RodapeLE: Integer;
 
     { método para atribuição\validação de valor }
     procedure _SetCurrentEvent(const AValue: String);
+    procedure _SetCurrentAlert(const AValue: String);
     procedure _SetForceClose  (const AValue: Boolean);
     procedure _SetDockControl (const AValue: TdxCustomDockControl; AXYPos: Integer = 0; ADirection: TDirection = lNone; ARepeat: boolean = False; AUpdateZones: Boolean = False);
   public
     { Public declarations }
     REC_SHE_DEF: TREC_SHE_DEF;
+    FDockControl: TdxCustomDockControl;
+    FDockControlPrincipal1RodapeLE: Integer;
+
+    property _GetCurrentAlert: String  read FCurrentAlert write _SetCurrentAlert;
+    property _GetCurrentEvent: String  read FCurrentEvent write _SetCurrentEvent;
+    property _GetForceClose  : Boolean read FForceClose   write _SetForceClose;
 
     procedure _WM_CREATE(var Msg: TMessage); message WM_CREATE;
-    procedure _SW_SHOWNOACTIVATE(var Msg: TMessage); message SW_SHOWNOACTIVATE;
+    procedure _WM_AFTER_CREATE(var Msg: TMessage); message WM_AFTER_CREATE;
+
     procedure _WM_ACTIVATE(var Msg: TMessage); message WM_ACTIVATE;
-    procedure _WM_BEFORE_RESIZE(var Message: TMessage); message WM_ENTERSIZEMOVE;
+    procedure _SW_SHOWNOACTIVATE(var Msg: TMessage); message SW_SHOWNOACTIVATE;
+
+    procedure _WM_SHOW(var Msg: TMessage); message WM_SHOW;
+    procedure _WM_AFTER_SHOW(var Msg: TMessage); message WM_AFTER_SHOW;
+
+    procedure _WM_RESIZE(var Message: TMessage); message WM_ENTERSIZEMOVE;
     procedure _WM_AFTER_RESIZE(var Message: TMessage); message WM_EXITSIZEMOVE;
 
-    property CurrentEvent: String  read FCurrentEvent write _SetCurrentEvent;
-    property ForceClose  : Boolean read FForceClose   write _SetForceClose;
-
-
     Constructor Create(AOwner: TComponent;
-                  const AIDEP: Integer;
-                        AIDPK: LongInt;
-                        AIDEV: LongInt;
-                        ACDEV: Word;
-                        AFBEV: String;
-                        ATPEV: String); reintroduce; overload;
+                 const AIDPK : LongInt = 0 ;
+                       ADEPK : String  = '';
+                       AIDEV : LongInt = 0 ;
+                       ACDEV : Word    = 0 ;
+                       ATPEV : Word    = 0 ;
+
+                       AFB_SQL_TAB: String = '';
+                       AFB_SQL_GET: String = ''); reintroduce; overload;
 
     class procedure _ExecForm(AOwner: TComponent;var AForm; AFormPesquisa: Boolean = False; AFormStyle: TFormStyle = fsMDIChild;
-                              AIDEP: Integer = 0;
-                              AIDPK: LongInt = 0;
-                              AIDEV: LongInt = 0;
-                              ACDEV: Word    = 0;
-                              AFBEV: String  = '';
-                              ATPEV: String  = '');
+                              AIDPK : LongInt = 0 ;
+                              ADEPK : String  = '';
+                              AIDEV : LongInt = 0 ;
+                              ACDEV : Word    = 0 ;
+                              ATPEV : Word    = 0 ;
+
+                              AFB_SQL_TAB: String = '';
+                              AFB_SQL_GET: String = '');
 
     Destructor  Destroy; override;
   end;
-
+  
 var
   FrmCAD_PRO_ADM: TFrmCAD_PRO_ADM;
 
@@ -1059,13 +1059,19 @@ var
 
 implementation
 
-uses uPrincipal, bPrincipal, pCAD_PRO_EDI;
+uses uPrincipal, bPrincipal,
+  pCAD_PRO_EDI;
 
 {$R *.dfm}
 
 procedure TFrmCAD_PRO_ADM._SetCurrentEvent(const AValue: String);
 begin
   FCurrentEvent := AValue;
+end;
+
+procedure TFrmCAD_PRO_ADM._SetCurrentAlert(const AValue: String);
+begin
+  FCurrentAlert := AValue;
 end;
 
 procedure TFrmCAD_PRO_ADM._SetForceClose(const AValue: Boolean);
@@ -1075,12 +1081,31 @@ end;
 
 procedure TFrmCAD_PRO_ADM._WM_CREATE(var Msg: TMessage);
 begin
+  { INICIALIZA }
+  Screen.Cursor := crAppStart;  { Cursor }
+  //SetCursorPos(500,Self.Top); { Posição Inicial }
+  Randomize;
+
+  { INICIALIZAÇÃO DOS OBJETOS DECLARADOS }
   DPSUBMENU1.Visible := False;
   DPSUBMENU1.Width   := 0;
 
   DPSUBMENU2.Visible := False;
   DPSUBMENU2.Width   := 0;
 
+  { INICIALIZAÇÃO DOS COMPONENTES }
+  oPRN_EXE(Application.Handle,'Relatórios');
+end;
+
+procedure TFrmCAD_PRO_ADM._WM_AFTER_CREATE(var Msg: TMessage);
+begin
+  { FORM }
+  REC_SHE_DEF.FMainArea := (REC_SHE_DEF.FMainArea) and (Screen.Width >= 1360) and (Screen.Width <= 1366); { Aplicativo }
+  REC_SHE_DEF.FWorkArea := (REC_SHE_DEF.FWorkArea) and (Screen.Width <= 1280); { Desktop }
+
+  { CAPTION }
+  if FCurrentEvent  = EmptyStr then
+  _GetCurrentEvent := Self.Caption;
 
   { PRINCIPAL DOCK MANAGER }
   { Largura }
@@ -1171,6 +1196,11 @@ begin
   end;
 end;
 
+procedure TFrmCAD_PRO_ADM._WM_ACTIVATE(var Msg: TMessage);
+begin
+  { EVENTOS }
+  ACTEveRegister.Execute; { Registro }
+end;
 
 procedure TFrmCAD_PRO_ADM._SW_SHOWNOACTIVATE(var Msg: TMessage);
           procedure _ProcessPaintMessages; // << not tested, pulled out of code
@@ -1184,86 +1214,64 @@ begin
   _ProcessPaintMessages;
 end;
 
-procedure TFrmCAD_PRO_ADM._WM_ACTIVATE(var Msg: TMessage);
+procedure TFrmCAD_PRO_ADM._WM_SHOW(var Msg: TMessage);
 begin
-  { Limpa Eventos }
-  REC_SHE_DEF.FB_Event000 := EmptyStr; { Login ou Sistema }
-  REC_SHE_DEF.FB_Event001 := EmptyStr; { Sistema }
-  REC_SHE_DEF.FB_Event002 := EmptyStr; { Usuário }
+  { BEFORE SHOWNING }
+  Screen.Cursor := crHourGlass; { Cursor }
+  REC_SHE_DEF.FResize := 0;     { Form Resize }
+  ALockWindowUpdate   := True;  { SQL Injection Enabled }
 
-  EEvent.UnregisterEvents;
-  EEvent.Events.Clear;
-
-  { Registra Eventos }
-  if REC_SHE_DEF.FB_Event <> EmptyStr then
-     with EEvent do
-     try
-       { Sistema }
-       if RECUsuarios.AIS_Event then
-       begin
-         REC_SHE_DEF.FB_Event000 := oREPZero(REC_SHE_DEF.FB_Event,'_',RECParametros.ID,3);
-         EEvent.Events.Add(REC_SHE_DEF.FB_Event000);
-       end else
-
-       { Login }
-       begin
-         REC_SHE_DEF.FB_Event000 := REC_SHE_DEF.FB_Event + '_' + oStrZero(RECUsuarios.ID,3);
-         EEvent.Events.Add(REC_SHE_DEF.FB_Event000);
-       end;
-
-       RegisterEvents;
-     except
-       on E: Exception do
-       begin
-         oErro(Application.Handle,'Falha ao tentar executar evento !' + #13 +
-                                   REC_SHE_DEF.FB_Event   + '.' + #13 + #13 +
-                                   E.Message              + '.' + #13 + #13 +
-                                  'Favor entrar em contato com o administrador do sistema.');
-       end;
-     end;
-
-  { Produtos }
-  REC_SHE_DEF.GDescricao := 'Produtos'; REC_SHE_DEF.GReferencia := 'Cadastro'; REC_SHE_DEF.GRegra := 'Etiquetas de Estoque';
-  REC_SHE_DEF.GFB_FLD    := 'VISUALIZA';
-
-  oUSER(REC_SHE_DEF);
-  DBGEST_EFIEST_CDET.Visible := REC_SHE_DEF.GView;
+  ACTConsulta.Execute; { Tabelas }
+  ACTEdicao.Execute;   { Edições }
 end;
 
-procedure TFrmCAD_PRO_ADM._WM_BEFORE_RESIZE(var Message: TMessage);
+procedure TFrmCAD_PRO_ADM._WM_AFTER_SHOW(var Msg: TMessage);
+begin
+  { INICIALIZAÇÃO DOS COMPONENTES }
+  try
+    Screen.Cursor := crAppStart;
+    PNLPrincipal1.Enabled := False;
+
+    { AFTER SHOWNING }
+    ACTPesquisa.Execute; { Pesquisa Principal }
+
+  finally
+    Screen.Cursor := crDefault;
+    PNLPrincipal1.Enabled := True;
+    ALockWindowUpdate := False;  { SQL Injection Disabled }
+
+    { INICIALIZAÇÃO }
+    REC_SHE_DEF.FInitialize := False; { Finaliza }
+  end;
+end;
+
+procedure TFrmCAD_PRO_ADM._WM_RESIZE(var Message: TMessage);
 begin
   { Before Resize }
-  DSPrincipal.Tag := DSPrincipal.Tag + 1;
+  REC_SHE_DEF.FResize := REC_SHE_DEF.FResize + 1;
 
-  { VER TAM TELA }
-  REC_SHE_DEF.FWorkArea := not ((REC_SHE_DEF.FWorkArea) and (Screen.Width > 1024));
-  REC_SHE_DEF.FMainArea := not ((REC_SHE_DEF.FMainArea) and (Screen.Width > 1366));
-
-  if (REC_SHE_DEF.FWorkArea) or (REC_SHE_DEF.FMainArea) then
+  { FORM SCREEN }
+  if REC_SHE_DEF.FMainArea then {MainArea, mas sem desabilitar botões }
   begin
-    HelpKeyword := '3';
-    REC_SHE_DEF.FrmPosition := poDefault;
+    REC_SHE_DEF.FPosition := poDefault;
+    REC_SHE_DEF.FWorkArea := False;
   end else
 
-  { Posição Padrão }
-  if (HelpKeyword = '5') and (Screen.Width >= 1360) and (Screen.Width <= 1366) then {MainArea, mas sem desabilitar botões }
+  if REC_SHE_DEF.FWorkArea then
   begin
-    REC_SHE_DEF.FrmPosition := poDefault;
+    REC_SHE_DEF.FPosition := poDefault;
+    REC_SHE_DEF.FMainArea := False;
   end;
 
   { VER DIM TELA }
   REC_SHE_DEF.FHeight := Self.Height;
   REC_SHE_DEF.FWidth  := Self.Width ;
-
-  if RECUsuarios.Id = 0 then
-  if Pos('APP',Self.Caption) = 0 then
-  Self.Caption := 'Dimensões: Monitor = ' + IntToStr(Screen.Width) + ' x ' + IntToStr(Screen.Height) + ' - APP = ' + IntToStr(REC_SHE_DEF.FWidth)  + ' x ' + IntToStr(REC_SHE_DEF.FHeight) + '. ' + Self.Caption;
 end;
 
 procedure TFrmCAD_PRO_ADM._WM_AFTER_RESIZE(var Message: TMessage);
 begin
   { After Resize }
-  if DSPrincipal.Tag >= 2 then
+  if REC_SHE_DEF.FResize >= 2 then
      try
        TCDSPrincipal.Height := DPPrincipal1.Height - 1;
        TCDSPrincipal.Width  := DPPrincipal1.Width  - 1;
@@ -1301,86 +1309,83 @@ begin
        oResize(DBGConsulta);
        Paint;
      finally
-       DSPrincipal.Tag := 0; { zera controle }
-
-       { Focused }
-       if (BEPSQ_CAD.Visible <> ivNever) and (_FormPesquisa) then
-           BEPSQ_CAD.SetFocus(False);
-
-       { Pesquisa }
-       ACTPesquisa.Execute;
+       Screen.Cursor := crDefault;
+       REC_SHE_DEF.FResize := 0;
      end;
 end;
 
-Class procedure TFrmCAD_PRO_ADM._ExecForm(AOwner: TComponent;var AForm; AFormPesquisa: Boolean = False; AFormStyle: TFormStyle = fsMDIChild;
-                                          AIDEP : Integer = 0;
-                                          AIDPK : LongInt = 0;
-                                          AIDEV : LongInt = 0;
-                                          ACDEV : Word    = 0;
-                                          AFBEV : String  = '';
-                                          ATPEV : String  = '');
+Constructor TFrmCAD_PRO_ADM.Create(AOwner: TComponent;
+                         const AIDPK : LongInt = 0 ;
+                               ADEPK : String  = '';
+                               AIDEV : LongInt = 0 ;
+                               ACDEV : Word    = 0 ;
+                               ATPEV : Word    = 0 ;
+
+                               AFB_SQL_TAB: String = '';
+                               AFB_SQL_GET: String = '');
+begin
+  oIREC_SHE_DEF(REC_SHE_DEF);
+
+  REC_SHE_DEF.IDPK := INTTOSTR(AIDPK);
+  REC_SHE_DEF.DEPK := TRIM(ADEPK);
+
+  REC_SHE_DEF.IDEV := INTTOSTR(AIDEV);
+  REC_SHE_DEF.CDEV := INTTOSTR(ACDEV);
+  REC_SHE_DEF.TPEV := INTTOSTR(ATPEV);
+
+  REC_SHE_DEF.FB_SQL_TAB := TRIM(AFB_SQL_TAB);
+  REC_SHE_DEF.FB_SQL_GET := TRIM(AFB_SQL_GET);
+
+  inherited Create(AOwner);
+end;
+
+Class procedure TFrmCAD_PRO_ADM._ExecForm(AOwner : TComponent;var AForm; AFormPesquisa: Boolean = False; AFormStyle: TFormStyle = fsMDIChild;
+                                      AIDPK : LongInt = 0 ;
+                                      ADEPK : String  = '';
+                                      AIDEV : LongInt = 0 ;
+                                      ACDEV : Word    = 0 ;
+                                      ATPEV : Word    = 0 ;
+
+                                      AFB_SQL_TAB: String = '';
+                                      AFB_SQL_GET: String = '');
 var
   idxForm: Integer;
 begin
-  oLockWindowUpdate;
-  
   if not Assigned(_Form) then
   begin
     _Form := TStringList.Create;
     _Form.Sorted := True;
   end;
 
-  { Inicia pela pesquisa }
-  _FormPesquisa := AFormPesquisa;
-
   if not _Form.Find(ClassName,idxForm) then
   idxForm := _Form.Add(ClassName);
 
   if ((TForm(AForm) = Nil) or (ACDEV = 1)) then
-  TForm(AForm) := Self.Create (AOwner,
-                               AIDEP ,
-                               AIDPK ,
-                               AIDEV ,
-                               ACDEV ,
-                               AFBEV ,
-                               ATPEV);
+  TForm(AForm) := Self.Create (AOwner    ,
+                               AIDPK     ,
+                               ADEPK     ,
+                               AIDEV     ,
+                               ACDEV     ,
+                               ATPEV     ,
+                               AFB_SQL_TAB ,
+                               AFB_SQL_GET);
 
   _Form.Objects[idxForm] := TObject(@AForm);
 
-  TForm(AForm).FormStyle   := AFormStyle;
-  if TForm(AForm).FormStyle = fsNormal then
+  if AFormStyle <> fsStayOnTop then
   begin
-    TForm(AForm).Visible := False;
-    TForm(AForm).ShowModal;
-  end else
-  begin
-    TForm(AForm).Visible := True;
-    TForm(AForm).Show;
+    TForm(AForm).FormStyle := AFormStyle;
+
+    if TForm(AForm).FormStyle = fsNormal then
+    begin
+      TForm(AForm).Visible := False;
+      TForm(AForm).ShowModal;
+    end else
+    begin
+      TForm(AForm).Visible := True;
+      TForm(AForm).Show;
+    end;
   end;
-end;
-
-Constructor TFrmCAD_PRO_ADM.Create(AOwner: TComponent;
-                              const AIDEP: Integer;
-                                    AIDPK: LongInt;
-                                    AIDEV: LongInt;
-                                    ACDEV: Word;
-                                    AFBEV: String;
-                                    ATPEV: String);
-begin
-  oIREC_SHE_DEF(REC_SHE_DEF);
-
-  REC_SHE_DEF.AIDEP := INTTOSTR(AIDEP);
-  REC_SHE_DEF.AIDPK := INTTOSTR(AIDPK);
-
-  REC_SHE_DEF.AIDEV := INTTOSTR(AIDEV);
-  REC_SHE_DEF.ACDEV := INTTOSTR(ACDEV);
-
-  REC_SHE_DEF.AFBEV := Trim(AFBEV);
-  REC_SHE_DEF.ATPEV := Trim(ATPEV);
-
-  REC_SHE_DEF.FForceCaixa := False; { Caixa }
-
-  inherited Create(AOwner);
 end;
 
 Destructor TFrmCAD_PRO_ADM.Destroy;
@@ -1389,71 +1394,63 @@ type
 var
   idxForm: Integer;
 begin
+  Screen.Cursor := crAppStart;
   try
     if TForm(Self).Name <> EmptyStr then
     if Assigned(_Form) and _Form.Find(ClassName,idxForm) and (_Form.Objects[idxForm] <> Nil) then
-       try
-         { Eventos }
-         try
-           try
-             EEvent.UnRegisterEvents;
-           except
-             on E: Exception do
-             begin
-               oErro(Application.Handle,'Falha ao tentar fechar eventos !'+#13+#13+
-                                        'Error Code: '+E.Message+'.'      +#13+
-                                         Caption+'.');
-             end;
-           end;
 
-         finally
-           try
-             { Transação Principal }
-             try
-               oFTransact(TConsulta);
-             except
-               on E: Exception do
-               begin
-                 oErro(Application.Handle,'Falha ao tentar fechar tabelas !'+#13+#13+
-                                          'Error Code: '+E.Message+'.'      +#13+
-                                           Caption+'.');
-               end;
-             end;
+    try
+      { Eventos }
+      try
+        try
+          EEvent.UnRegisterEvents;
+        except
+          on E: Exception do
+          begin
+            oErro(Application.Handle,'Falha ao tentar fechar eventos !'+#13+#13+
+                                     'Error Code: '+E.Message+'.'      +#13+
+                                      Caption+'.');
+          end;
+        end;
 
-           finally
-             { record e afins }
-             try
-               Finalize(REC_SHE_DEF);
-               FillChar(REC_SHE_DEF,SizeOf(REC_SHE_DEF),0);
-             except
-               on E: Exception do
-               begin
-                oErro(Application.Handle,'Falha ao tentar esvaziar memória !'+#13+#13+
-                                         'Error Code: '+E.Message+'.'        +#13+
-                                          Caption+'.');
-               end;
-             end;
+      finally
+        try
+          { Transação Principal }
+          try
+            oFTransact(TConsulta); { Consultas }
+            oFTransact(TEvent   ); { Eventos }
+          except
+            on E: Exception do
+            begin
+              oErro(Application.Handle,'Falha ao tentar fechar tabelas !'+#13+#13+
+                                       'Error Code: '+E.Message+'.'      +#13+
+                                        Caption+'.');
+            end;
+          end;
 
-             { record e afins }
-             try
-               oFREC_SHE_DEF(REC_SHE_DEF);
-             except
-               on E: Exception do
-               begin
-                oErro(Application.Handle,'Falha ao tentar esvaziar memória !'+#13+#13+
-                                         'Error Code: '+E.Message+'.'        +#13+
-                                          Caption+'.');
-               end;
-             end;
+        finally
+          { record e afins }
+          try
+            oFREC_SHE_DEF(REC_SHE_DEF);
+          except
+            on E: Exception do
+            begin
+             oErro(Application.Handle,'Falha ao tentar esvaziar memória !'+#13+#13+
+                                      'Error Code: '+E.Message+'.'        +#13+
+                                       Caption+'.');
+            end;
+          end;
 
-           end;
-         end;
+        end;
+      end;
 
-       finally
-         PtrForm(_Form.Objects[idxForm])^ := Nil;
-         _Form.Objects[idxForm] := Nil;
-       end;
+    finally
+      PtrForm(_Form.Objects[idxForm])^ := Nil;
+      _Form.Objects[idxForm] := Nil;
+    end;
+
   finally
+    Screen.Cursor := crDefault;
     inherited;
   end;
 end;
@@ -1464,81 +1461,131 @@ begin
   DBGConsultaAK_ID.Visible := (RECUsuarios.ID = 0);
   DBGEST_EPECP_ID.Visible  := (RECUsuarios.ID = 0);
 
-  { FORM MANAGER }
-  REC_SHE_DEF.FrmPosition := Self.Position; { Página }
+  { FORM SCREEN }
+  REC_SHE_DEF.FPosition := Self.Position; { Posição }
   SetCursorPos(500,Self.Top); { Cursor }
+
+  REC_SHE_DEF.FMainArea := False; { Aplicativo }
+  REC_SHE_DEF.FWorkArea := False; { Windows    }
 
   { BAR MANAGER }
   BMPrincipal.Bars[1].BorderStyle := bbsNone; { Sistema }
   BMPrincipal.Bars[4].BorderStyle := bbsNone; { Pesquisa Período }
 
-  { GRANT }
-  REC_SHE_DEF.FB_Event    := 'CAD_PRO';
-  REC_SHE_DEF.GDescricao  := 'Produtos';
-  REC_SHE_DEF.GReferencia := 'Cadastro';
-  REC_SHE_DEF.GRegra      := 'Permissões Gerais';
+   { VALIDATE GRANT USER }
+  REC_SHE_DEF.GAppend   := (RECUsuarios.Grupo = 'DEV') or (REC_SHE_DEF.GAdmin);
+  REC_SHE_DEF.GEdit     := (RECUsuarios.Grupo = 'DEV') or (REC_SHE_DEF.GAdmin);
+  REC_SHE_DEF.GDelete   := (RECUsuarios.Grupo = 'DEV') or (REC_SHE_DEF.GAdmin);
 
-  if ((REC_SHE_DEF.GDescricao = EmptyStr) and (REC_SHE_DEF.GReferencia = EmptyStr) and (REC_SHE_DEF.GRegra = EmptyStr)) or
-      (REC_SHE_DEF.GAdmin) then
+  REC_SHE_DEF.GPost     := (RECUsuarios.Grupo = 'DEV') or (REC_SHE_DEF.GAdmin);
+  REC_SHE_DEF.GValidate := (RECUsuarios.Grupo = 'DEV') or (REC_SHE_DEF.GAdmin);
+  REC_SHE_DEF.GCancel   := (RECUsuarios.Grupo = 'DEV') or (REC_SHE_DEF.GAdmin);
+
+  REC_SHE_DEF.GView     := (RECUsuarios.Grupo = 'DEV') or (REC_SHE_DEF.GAdmin);
+  REC_SHE_DEF.GPrint    := (RECUsuarios.Grupo = 'DEV') or (REC_SHE_DEF.GAdmin);
+
+  REC_SHE_DEF.GControl  := (RECUsuarios.Grupo = 'DEV') or (REC_SHE_DEF.GAdmin);
+  REC_SHE_DEF.GAdmin    := (RECUsuarios.Grupo = 'DEV') or (REC_SHE_DEF.GAdmin);
+
+  if not REC_SHE_DEF.GAdmin then
   begin
-    REC_SHE_DEF.GAppend := True;
-    REC_SHE_DEF.GEdit   := True;
-    REC_SHE_DEF.GDelete := True;
-    REC_SHE_DEF.GView   := True;
-    REC_SHE_DEF.GPrint  := True;
-  end else
-  begin
+    { SET GRANT USERT }
     oUSER(REC_SHE_DEF);
+
+    { MANAGER ACCESS }
+    ACTMPAppend.Enabled   := (REC_SHE_DEF.GPost and REC_SHE_DEF.GAppend);
+    ACTMPEdit.Enabled     := (REC_SHE_DEF.GPost and REC_SHE_DEF.GEdit  );
+    ACTMPDelete.Enabled   := (REC_SHE_DEF.GPost and REC_SHE_DEF.GDelete);
+
+    ACTMPPost.Enabled     := (REC_SHE_DEF.GPost    );
+    ACTMPValidate.Enabled := (REC_SHE_DEF.GValidate);
+    ACTMPCancel.Enabled   := (REC_SHE_DEF.GCancel  );
+
+    ACTRelatorios.Enabled := (REC_SHE_DEF.GPrint);
+  end;
+  
+  if not REC_SHE_DEF.GView then
+  _GetForceClose := True else
+
+  if (FForceClose) and (RECParametros.STCX = 'Caixa Aberto') then
+  _GetForceClose := False;
+
+  { ACCESS DENIED }
+  if (FForceClose) and (RECParametros.STCX <> 'Caixa Aberto') then
+  begin
+    _GetCurrentAlert := FCurrentEvent    + #13 + #13 +
+                       'ACESSO NEGADO !' + #13 +
+                        RECParametros.STCX ;
+  end else
+
+  if (FForceClose) and (RECParametros.STCX = 'Caixa Aberto') then
+  begin
+    _GetCurrentAlert := FCurrentEvent    + #13 + #13 +
+                       'ACESSO NEGADO !' + #13 +
+                       'Usuário não Autorizado';
   end;
 
-  { VER FEC }
-  if not ForceClose then
-  ForceClose := (not REC_SHE_DEF.GView); { Apenas quando parâmetro não setado }
-
-  REC_SHE_DEF.FForceClose := ForceClose;
-  REC_SHE_DEF.FAlert      := 'Usuário não Autorizado.' + #13 +
-                             'Favor entrar em contato com o administrador do sistema.';
-
-  { DEF FEC }
-  if (not REC_SHE_DEF.FForceClose) and (REC_SHE_DEF.FForceCaixa) and (REC_SHE_DEF.AIDEV = 0) and
-     (RECParametros.STCX <> 'Caixa Aberto') then
+  { ACCESS ABORT }
+  if FForceClose then
   begin
-    ForceClose := True;
-    REC_SHE_DEF.FForceClose := ForceClose;
-    REC_SHE_DEF.FAlert      := 'Caixa não Aberto.' + #13 +
-                               'Favor entrar em contato com o administrador do sistema.';
-  end;
-
-  if (REC_SHE_DEF.FForceClose) or (not REC_SHE_DEF.GView) then
-  begin
-    oErro(Application.Handle,'ACESSO NEGADO !' + #13 + #13 +
-                              REC_SHE_DEF.FAlert);
+    oErro(Application.Handle,FCurrentAlert);
 
     Self.Visible := False;
     Self.Height  := 0;
     Self.Width   := 0;
 
     PostMessage(Handle, WM_CLOSE, 0, 0);
+    Exit;
   end else
-  PostMessage( Handle, WM_CREATE, 0, 0);
+  PostMessage( Handle, WM_AFTER_CREATE, 0, 0);
 end;
 
 procedure TFrmCAD_PRO_ADM.FormShow(Sender: TObject);
 begin
   OnShow := Nil;
-  if REC_SHE_DEF.FForceClose then
+  if FForceClose then
   Exit;
 
-  PostMessage(Handle, SW_SHOWNOACTIVATE, 0, 0 );
+  PostMessage(Handle, WM_ACTIVATE      , 0, 0);
+  PostMessage(Handle, SW_SHOWNOACTIVATE, 0, 0);
 end;
 
 procedure TFrmCAD_PRO_ADM.FormActivate(Sender: TObject);
 begin
   OnActivate := Nil;
-  if REC_SHE_DEF.FForceClose then
+  if FForceClose then
   Exit;
 
-  PostMessage(Handle, WM_ACTIVATE, 0, 0 );
+  PostMessage(Handle, WM_SHOW      , 0, 0);
+  PostMessage(Handle, WM_AFTER_SHOW, 0, 0);
+end;
+
+procedure TFrmCAD_PRO_ADM.FormCloseQuery(Sender: TObject;
+  var CanClose: Boolean);
+begin
+  { VER ANTES DE SAIR }
+  if Consulta.State in [dsInsert,dsEdit] then
+     Consulta.Post;
+
+  if ((Consulta.RecNo > 0) and (REC_SHE_DEF.Editing)) or (REC_SHE_DEF.Editing) then
+
+  Case messageBox(handle,'Existem Alterações Pendentes !'+#13+
+                         'Sair mesmo assim ?',
+                          PChar(Caption)  ,
+                          MB_ICONQUESTION + MB_YESNOCANCEL) of
+       mrCancel,
+       mrNo : Abort;
+       mrYes: begin
+                if ACTMPPost.Enabled then
+                   ACTMPPost.Execute else
+
+                if ACTMPValidate.Enabled then
+                   ACTMPValidate.Execute;
+
+                if ACTMEPost.Enabled then
+                   ACTMEPost.Execute;
+              end;
+  end;
 end;
 
 procedure TFrmCAD_PRO_ADM.FormClose(Sender: TObject;
@@ -1552,135 +1599,122 @@ procedure TFrmCAD_PRO_ADM.FormKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   case key of
-       vk_escape: Close; //ACTCancela.Execute;
-       vk_return: if (not (ActiveControl is TdxDBGrid) and
-                      not (ActiveControl is TdxDBMemo) and
-                      not (ActiveControl is TdxMemo)   and
-                      not (ActiveControl is TListBox)) then
-                      SelectNext (ActiveControl,True,True);
+       vk_return: if (not (ActiveControl is TdxDBGrid)    and
+                      not (ActiveControl is TdxDBMemo)    and
+                      not (ActiveControl is TdxMemo)      and
+                      not (ActiveControl is TMemo)) then
+                  SelectNext (ActiveControl, True, True);
 
-       38       : if (not (ActiveControl is TdxDBGrid) and
-                      not (ActiveControl is TdxDBMemo) and
-                      not (ActiveControl is TdxMemo)   and
-                      not (ActiveControl is TListBox)) then
-                      SelectNext(ActiveControl,False,True);
+       40       : if (not (ActiveControl is TdxDBGrid)    and
+                      not (ActiveControl is TdxDBMemo)    and
+                      not (ActiveControl is TdxMemo)      and
+                      not (ActiveControl is TMemo))       and
+                      not (ActiveControl is TdxImageEdit) and
+                      not (ActiveControl is TdxPickEdit)  and
+                      not (ActiveControl is TComboBox)    and
+                      not (ActiveControl is TListBox)     then
+                  SelectNext (ActiveControl, True, True);
 
-       40       : if (not (ActiveControl is TdxDBGrid) and
-                      not (ActiveControl is TdxDBMemo) and
-                      not (ActiveControl is TdxMemo)   and
-                      not (ActiveControl is TListBox)) then
-                      SelectNext (ActiveControl,True,True);
+       38       : if (not (ActiveControl is TdxDBGrid)    and
+                      not (ActiveControl is TdxDBMemo)    and
+                      not (ActiveControl is TdxMemo)      and
+                      not (ActiveControl is TMemo))       and
+                      not (ActiveControl is TdxImageEdit) and
+                      not (ActiveControl is TdxPickEdit)  and
+                      not (ActiveControl is TComboBox)    and
+                      not (ActiveControl is TListBox)     then
+                  SelectNext(ActiveControl, False, True);
   end;
-end;
-
-procedure TFrmCAD_PRO_ADM.FormKeyPress(Sender: TObject; var Key: Char);
-begin
-  if key = #5 then
-  {[Ctrl+E]} else
-  if key = #8 then
-  {[Ctrl+H]} else
-  if key = #9 then
-  {[Ctrl+I]} else
-  if key = #16 then
-  ACTRelatorios.Execute else
-  if key = #19 then
-  {[Ctrl+S]} else
-  if key = #22 then
-  {[Ctrl+V]};
 end;
 
 procedure TFrmCAD_PRO_ADM.FormPaint(Sender: TObject);
 var
   AMainFormScreen: TRect;
-  FHeight,
-  FWidth ,
-  H,
-  T,
-  B,
-  L,R: Word;
+  i: Word;
 begin
-  if (not Showing) or (REC_SHE_DEF.FForceClose) then
+  if (not Showing) or (FForceClose) then
   Exit;
 
   { Ajusta o Form para o tamanho da area livre do MainForm }
   GetWindowRect(FrmPrincipal.ClientHandle,AMainFormScreen);
 
-  T := AMainFormScreen.Top;
-  B := AMainFormScreen.Bottom;
-  L := AMainFormScreen.Left;
-  R := AMainFormScreen.Right;
-  H := B;
+  REC_SHE_DEF.FTop    := AMainFormScreen.Top;
+  REC_SHE_DEF.FBottom := AMainFormScreen.Bottom;
+  REC_SHE_DEF.FLeft   := AMainFormScreen.Left;
+  REC_SHE_DEF.FRight  := AMainFormScreen.Right;
+  REC_SHE_DEF.FHeight := AMainFormScreen.Bottom;
 
-  if REC_SHE_DEF.FrmPosition = poDesigned then
+  if REC_SHE_DEF.FPosition = poDesigned then
   begin
     if (HelpContext = 0) then { % da altura }
     if (AMainFormScreen.Bottom - AMainFormScreen.Top < Self.Height) then { Área livre menor que página }
-    HelpContext := 95; { % }
+    Self.HelpContext := 95; { % }
 
-    FHeight := IFThen(HelpContext     > 0,Trunc((H-T) * (HelpContext     / 100)),0);
-    FWidth  := IFThen(AlphaBlendValue > 0,Trunc((R-L) * (AlphaBlendValue / 100)),0);
+    REC_SHE_DEF.FMainHeight := IFThen(Self.HelpContext     > 0,Trunc((REC_SHE_DEF.FHeight - REC_SHE_DEF.FTop ) * (Self.HelpContext     / 100)),0);
+    REC_SHE_DEF.FMainWidth  := IFThen(Self.AlphaBlendValue > 0,Trunc((REC_SHE_DEF.FRight  - REC_SHE_DEF.FLeft) * (Self.AlphaBlendValue / 100)),0);
 
-    if (REC_SHE_DEF.FTop > 0) and (REC_SHE_DEF.FLeft > 0) then
+    if (REC_SHE_DEF.FMainTop > 0) and (REC_SHE_DEF.FMainLeft > 0) then
     begin
-      Top    := REC_SHE_DEF.FTop;
-      Left   := REC_SHE_DEF.FLeft;
+      Self.Top  := REC_SHE_DEF.FTop + 5;
+      Self.Left := REC_SHE_DEF.FLeft;
 
-      if Top + Height > B then
+      if Self.Top + Self.Height > REC_SHE_DEF.FBottom then
       begin
-        Top := Top - ((Top + Height) - B);
+        Self.Top := Self.Top - ((Self.Top + Self.Height) - REC_SHE_DEF.FBottom);
       end;
 
-      if Left + Width > R then
+      if Self.Left + Self.Width > REC_SHE_DEF.FRight then
       begin
-        Left := Left - ((Left + Width) - R);
+        Self.Left := Self.Left - ((Self.Left + Self.Width) - REC_SHE_DEF.FRight);
       end;
 
     end else
     begin
-      if FHeight > 0 then Height := FHeight;
-      if FWidth  > 0 then Width  := FWidth;
+      if REC_SHE_DEF.FMainHeight > 0 then Self.Height := REC_SHE_DEF.FMainHeight;
+      if REC_SHE_DEF.FMainWidth  > 0 then Self.Width  := REC_SHE_DEF.FMainWidth;
 
       if FormStyle = fsNormal then
       begin
-        //if FHeight > 0 then
-        Top := (T  + (H - Height)) div 2;
-
-        //if FWidth > 0 then
-        Left := ((R + L) - Width )  div 2;
+        Self.Top  := ( REC_SHE_DEF.FTop   + (REC_SHE_DEF.FHeight - Self.Height)) div 2;
+        Self.Left := ((REC_SHE_DEF.FRight +  REC_SHE_DEF.FLeft)  - Self.Width)   div 2;
       end else
       //if (FHeight > 0) or (FWidth  > 0) then
       begin
-        Top  := ((B - T ) - Height) div 2;
-        Left := ((R - L)  - Width ) div 2;
+        Self.Top  := ((REC_SHE_DEF.FBottom - REC_SHE_DEF.FTop ) - Self.Height) div 2;
+        Self.Left := ((REC_SHE_DEF.FRight  - REC_SHE_DEF.FLeft) - Self.Width ) div 2;
       end;
     end;
   end else
   if (REC_SHE_DEF.FWorkArea) and (FormStyle = fsNormal) then
   begin
-    Top    := Screen.WorkAreaTop;
-    Left   := Screen.WorkAreaLeft;
-    Width  := Screen.WorkAreaWidth;
-    Height := Screen.WorkAreaHeight;
+    Self.Top    := Screen.WorkAreaTop;
+    Self.Left   := Screen.WorkAreaLeft;
+    Self.Width  := Screen.WorkAreaWidth;
+    Self.Height := Screen.WorkAreaHeight;
   end else
   if (REC_SHE_DEF.FMainArea) and (FormStyle = fsNormal) then
   begin
-    Top    := 0;
-    Left   := 0;
-    Width  := R - L - 5;
-    Height := H - T - 5;
+    Self.Top    := 0;
+    Self.Left   := 0;
+    Self.Width  := REC_SHE_DEF.FRight  - REC_SHE_DEF.FLeft - 5;
+    Self.Height := REC_SHE_DEF.FHeight - REC_SHE_DEF.FTop  - 5;
   end else
-  if REC_SHE_DEF.FrmPosition = poDefault then
+  if REC_SHE_DEF.FPosition = poDefault then
   begin
-    Top    := IFThen(FormStyle = fsNormal,T,0);
-    Left   := IFThen(FormStyle = fsNormal,L,0);
-    Width  := IFThen(REC_SHE_DEF.FrmPosition = poDefault,R - L - 5,0);
-    Height := IFThen(REC_SHE_DEF.FrmPosition = poDefault,H - T - 5,0);
+    Self.Top    := IFThen(FormStyle = fsNormal,REC_SHE_DEF.FTop ,0);
+    Self.Left   := IFThen(FormStyle = fsNormal,REC_SHE_DEF.FLeft,0);
+    Self.Width  := IFThen(REC_SHE_DEF.FPosition = poDefault,REC_SHE_DEF.FRight  - REC_SHE_DEF.FLeft - 5,0);
+    Self.Height := IFThen(REC_SHE_DEF.FPosition = poDefault,REC_SHE_DEF.FHeight - REC_SHE_DEF.FTop  - 5,0);
   end;
+
+  { SCREEN CAPTION }
+  if RECUsuarios.Id = 0 then
+  Self.Caption := 'Dimensões: Monitor = ' + IntToStr(Screen.Width) + ' x ' + IntToStr(Screen.Height) + ' - APP = ' + IntToStr(REC_SHE_DEF.FMainWidth)  + ' x ' + IntToStr(REC_SHE_DEF.FMainHeight) + '. ' + Self.Caption;
 end;
 
 procedure TFrmCAD_PRO_ADM.FormResize(Sender: TObject);
 begin
-  if (not Showing) or (REC_SHE_DEF.FForceClose) then
+  if (not Showing) or (FForceClose) then
   Exit;
 
   { Risize }
@@ -1811,164 +1845,6 @@ begin
   end;
 end;
 
-procedure TFrmCAD_PRO_ADM.ACTRefreshExecute(Sender: TObject);
-begin
-  if (not ACTRefresh.Enabled) or { Habilitado }
-     (not ACTRefresh.Visible) or { Visível    }
-     (ALockWindowUpdate) then    { Destravado }
-
-  Abort else
-  oRefresh(Consulta);
-end;
-
-procedure TFrmCAD_PRO_ADM.ACTMAppendExecute(Sender: TObject);
-begin
-  if (not ACTMAppend.Enabled) or { Habilitado }
-     (not ACTMAppend.Visible) or { Visível    }
-     (ALockWindowUpdate) then    { Destravado }
-
-  Abort;
-end;
-
-procedure TFrmCAD_PRO_ADM.ACTMEditExecute(Sender: TObject);
-begin
-  if (not ACTMEdit.Enabled) or { Habilitado }
-     (not ACTMEdit.Visible) or { Visível    }
-     (ALockWindowUpdate) then  { Destravado }
-
-  Abort;
-end;
-
-procedure TFrmCAD_PRO_ADM.ACTMDeleteExecute(Sender: TObject);
-begin
-  if (not ACTMDelete.Enabled) or { Habilitado }
-     (not ACTMDelete.Visible) or { Visível    }
-     (ALockWindowUpdate) then    { Destravado }
-
-  Abort;
-end;
-
-procedure TFrmCAD_PRO_ADM.ACTMPostExecute(Sender: TObject);
-begin
-  if (not ACTMPost.Enabled) or { Habilitado }
-     (not ACTMPost.Visible) or { Visível    }
-     (ALockWindowUpdate) then  { Destravado }
-
-  Abort;
-end;
-
-procedure TFrmCAD_PRO_ADM.ACTMCancelExecute(Sender: TObject);
-begin
-  REC_SHE_DEF.Edited := False;
-  Close;
-end;
-
-procedure TFrmCAD_PRO_ADM.ACTSaidaExecute(Sender: TObject);
-begin
-  REC_SHE_DEF.PSQ_OK := False;
-  Close;
-end;
-
-procedure TFrmCAD_PRO_ADM.ACTEAppendExecute(Sender: TObject);
-begin
-  if (not ACTEAppend.Enabled) or (not ACTEAppend.Visible) then
-  Abort;
-
-  ActiveControl := Nil;
-end;
-
-procedure TFrmCAD_PRO_ADM.ACTEEditExecute(Sender: TObject);
-begin
-  if (not ACTEEdit.Enabled) or { Habilitado }
-     (not ACTEEdit.Visible) or { Visível    }
-     (ALockWindowUpdate) then  { Destravado }
-
-  Abort;
-
-  //TFrmCAD_PRO_EDI._ExecForm(Self,FrmCAD_PRO_EDI,False,ConsultaIDAK.AsInteger);
-
-  if (not ACTEEdit.Enabled) or (not ACTEEdit.Visible) or
-     (Consulta.RecNo = 0  )then
-  Abort;
-
-  FrmCAD_PRO_EDI := TFrmCAD_PRO_EDI.Create(Self,
-                                           ConsultaEP_ID.AsInteger,
-                                           ConsultaAK_ID.AsInteger,
-                                           0,
-                                           3,
-                                           EmptyStr,
-                                           EmptyStr);
-
-  FrmCAD_PRO_EDI.ShowModal;
-
-  FreeAndNil(FrmCAD_PRO_EDI);
-
-end;
-
-procedure TFrmCAD_PRO_ADM.ACTEDeleteExecute(Sender: TObject);
-begin
-  if (not ACTEDelete.Enabled) or (not ACTEDelete.Visible) then
-  Abort;
-
-  ActiveControl := Nil;
-end;
-
-procedure TFrmCAD_PRO_ADM.ACTEPostExecute(Sender: TObject);
-begin
-  if (not ACTEPost.Enabled) or (not ACTEPost.Visible) then
-  Abort;
-
-  ActiveControl := Nil;
-end;
-
-procedure TFrmCAD_PRO_ADM.ACTECancelExecute(Sender: TObject);
-begin
-  if (not ACTECancel.Enabled) or (not ACTECancel.Visible) then
-  Abort;
-
-  ActiveControl := Nil;
-end;
-
-procedure TFrmCAD_PRO_ADM.ACTPSQ_OKExecute(Sender: TObject);
-begin
-  if ACTPesquisa.Enabled then
-  begin
-    if Sender.ClassType = TdxBarLargeButton then
-    begin
-      BLBPSQ_CAD_MENU.Description := TdxBarLargeButton(Sender).Description;
-      BLBPSQ_CAD_MENU.Caption     := TdxBarLargeButton(Sender).Caption;
-      BLBPSQ_CAD_MENU.Hint        := TdxBarLargeButton(Sender).Hint;
-      BLBPSQ_CAD_MENU.Tag         := TdxBarLargeButton(Sender).Tag;
-
-      BEPSQ_CAD.SetFocus(False);
-    end;
-
-    if Sender.ClassType = TdxBarButton then
-    begin
-      BBPSQ_PER_MENU.Description := TdxBarButton(Sender).Description;
-      BBPSQ_PER_MENU.Caption     := TdxBarButton(Sender).Caption;
-      BBPSQ_PER_MENU.Hint        := TdxBarButton(Sender).Hint;
-      BBPSQ_PER_MENU.Tag         := TdxBarButton(Sender).Tag;
-    end;
-
-    if ((BEPSQ_CAD.Text = EmptyStr) and
-       ((BDPSQ_PER_INI.Date <= 0  ) or (BDPSQ_PER_FIM.Date <= 0))) then
-    Abort;
-
-    if BDPSQ_PER_FIM.Date > 0 then
-    if BDPSQ_PER_INI.Date > BDPSQ_PER_FIM.Date then
-       oException(Nil,'DATA INICIAL não pode ser maior que DATA FINAL !');
-
-    ACTPesquisa.Execute;
-  end;
-end;
-
-procedure TFrmCAD_PRO_ADM.ACTPSQ_FOCUSExecute(Sender: TObject);
-begin
-  if (ACTPesquisa.Enabled) and (BEPSQ_CAD.Enabled) then
-  BEPSQ_CAD.SetFocus(False);
-end;
-
 procedure TFrmCAD_PRO_ADM.BEPSQ_CADKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
@@ -1990,7 +1866,7 @@ begin
       end;
     end;
 
-    ACTPSQ_OK.Execute;
+    ACTPesquisaOK.Execute;
   end else
 
   if key = VK_DOWN then
@@ -2019,924 +1895,6 @@ end;
 procedure TFrmCAD_PRO_ADM.BDPSQ_PER_FIMCurChange(Sender: TObject);
 begin
   BDPSQ_PER_FIM.Date := BDPSQ_PER_FIM.CurDate;
-end;
-
-procedure TFrmCAD_PRO_ADM.ACTExecEventExecute(Sender: TObject);
-var
-  i: word;
-begin
-  try
-    if REC_SHE_DEF.FB_Event <> EmptyStr then
-       try
-         { Set }
-         REC_SHE_DEF.FB_Event000 := REC_SHE_DEF.FB_Event + '_' + oStrZero(RECUsuarios.ID  ,3); { Login   }
-         REC_SHE_DEF.FB_Event001 := oREPZero(REC_SHE_DEF.FB_Event, '_' ,RECParametros.ID  ,3); { Sistema }
-         REC_SHE_DEF.FB_Event002 := REC_SHE_DEF.FB_Event + '_' + oStrZero(ACTExecEvent.Tag,3); { Usuário }
-
-         oOTransact(TEvent);
-
-         SPEvent.Close;
-         SPEvent.StoredProcName := 'SP_EVE_ERP';
-         SPEvent.Prepare;
-
-         for i := 0 to SPEvent.ParamCount - 1 do
-         SPEvent.Params[i].Value := Null;
-
-         SPEvent.Params[0].Value := REC_SHE_DEF.FB_Event000;
-         SPEvent.Params[1].Value := REC_SHE_DEF.FB_Event001;
-         SPEvent.Params[2].Value := REC_SHE_DEF.FB_Event002;
-         SPEvent.ExecProc;
-
-         oCTransact(TEvent);
-       except
-         on E: Exception do
-         begin
-           oCTransact(TEvent,ltRollback);
-           oErro(Application.Handle,'Falha ao tentar executar evento !' + #13 +
-                                     REC_SHE_DEF.FB_Event   + '.' + #13 + #13 +
-                                     E.Message              + '.');
-         end;
-       end;
-  finally
-    ACTExecEvent.Tag := 0;
-  end;
-end;
-
-procedure TFrmCAD_PRO_ADM.EEventEventAlert(Sender: TObject;
-  EventName: String; EventCount: Integer; var CancelAlerts: Boolean);
-begin
-  oRefresh(Consulta);
-end;
-
-procedure TFrmCAD_PRO_ADM.ACTPesquisaExecute(Sender: TObject);
-var
-  i: Integer;
-begin
-  { RESET TRANSACTION }
-  oCTransact(TConsulta);
-  oOTransact(TConsulta);
-
-  { RESET FILTER DEFAULT }
-  DBGConsulta.Filter.Clear; { Consulta }
-
-  { DIVERSOS }
-  REC_SHE_DEF.PSQ_FB_SC := False; { Sub Query }
-  REC_SHE_DEF.PSQ_FB_PD := True;  { Padrão }
-
-  { Texto Pesquisa }
-  REC_SHE_DEF.PSQ_FB_FD := BLBPSQ_CAD_MENU.Description; { Campo }
-  REC_SHE_DEF.PSQ_FB_VD := BEPSQ_CAD.Text;
-  REC_SHE_DEF.PSQ_FB_PK := BEPSQ_CAD.Text;
-  REC_SHE_DEF.PSQ_FB_FK := EmptyStr;
-
-  { ÂNCORAS PRINCIPAIS }
-  { Situações }
-  REC_SHE_DEF.PSQ_FB_DEST       := EmptyStr; { Descrição }
-  REC_SHE_DEF.PSQ_FB_STFI := EmptyStr; { Descrição Abreviada }
-
-  { Empresas }
-  REC_SHE_DEF.PSQ_FB_EP := EmptyStr; { Empresa }
-  REC_SHE_DEF.PSQ_FB_CF := EmptyStr; { Fabricante }
-
-  { Produtos }
-  REC_SHE_DEF.PSQ_FB_CP_ARTIGO := EmptyStr; { Artigo }
-  REC_SHE_DEF.PSQ_FB_CP_SKU    := EmptyStr; { SKU }
-  REC_SHE_DEF.PSQ_FB_CP_NCM    := EmptyStr; { NCM }
-  REC_SHE_DEF.PSQ_FB_CP_DGCP   := EmptyStr; { Grade }
-  REC_SHE_DEF.PSQ_FB_CP_DECP   := EmptyStr; { Nome / Descrição }
-  REC_SHE_DEF.PSQ_FB_CP_DCCP   := EmptyStr; { Composição }
-
-  { Lista Digitada }
-  if REC_SHE_DEF.PSQ_FB_SL_PK = Nil then
-  REC_SHE_DEF.PSQ_FB_SL_PK := TStringList.Create else
-  REC_SHE_DEF.PSQ_FB_SL_PK.Clear;
-
-  if (REC_SHE_DEF.PSQ_FB_VD <> EmptyStr) and (REC_SHE_DEF.PSQ_FB_VD <> '0') then
-  begin
-    { SEARCH DEFAULT }
-    REC_SHE_DEF.PSQ_FB_PD := False; { Padrão }
-
-    { Capturar as palavras separadamente }
-    While Length(REC_SHE_DEF.PSQ_FB_VD) > 0 do
-    begin
-      REC_SHE_DEF.PSQ_FB_FK := Trim(Fetch(REC_SHE_DEF.PSQ_FB_VD    ,' '));
-      REC_SHE_DEF.PSQ_FB_FK := oStrTran(REC_SHE_DEF.PSQ_FB_FK, '+' ,' ');
-      REC_SHE_DEF.PSQ_FB_SL_PK.Add(REC_SHE_DEF.PSQ_FB_FK);
-
-      with SQLConsulta do
-      begin
-        { Descrição Situação }
-        if (REC_SHE_DEF.PSQ_FB_DEST = EmptyStr) and (REC_SHE_DEF.PSQ_FB_FK <> EmptyStr) then
-        begin
-          Close;
-          SQL.Clear;
-          SQL.Add('SELECT FIRST 1 FK.ID FROM TAB_STA_PED AS FK');
-          SQL.Add('WHERE  FK.DESCRICAO LIKE ''' + REC_SHE_DEF.PSQ_FB_FK + '%''');
-          ExecQuery;
-
-          if not Eof then
-          begin
-            REC_SHE_DEF.PSQ_FB_DEST := REC_SHE_DEF.PSQ_FB_FK; { Campo }
-
-            { Descarte }
-            REC_SHE_DEF.PSQ_FB_PK := oStrTran(REC_SHE_DEF.PSQ_FB_PK, '+' ,' '); { Concatenado }
-            REC_SHE_DEF.PSQ_FB_PK := oStrTran(REC_SHE_DEF.PSQ_FB_PK,REC_SHE_DEF.PSQ_FB_FK,'' ); { Pesquisa Principal }
-
-            REC_SHE_DEF.PSQ_FB_SL_PK.Delete(REC_SHE_DEF.PSQ_FB_SL_PK.IndexOf(REC_SHE_DEF.PSQ_FB_FK)); { Array }
-            REC_SHE_DEF.PSQ_FB_FK := EmptyStr; { Sub Pesquisa }
-          end;
-        end;
-
-        { Grade }
-        if (REC_SHE_DEF.PSQ_FB_CP_DGCP = EmptyStr) and (Length(REC_SHE_DEF.PSQ_FB_FK) > 3) then
-        begin
-          Close;
-          SQL.Clear;
-          SQL.Add('SELECT   FIRST 1 FK.ID FROM CAD_PRO AS FK');
-          SQL.Add('WHERE    FK.DGCP CONTAINING ''' + REC_SHE_DEF.PSQ_FB_FK + '''');
-          SQL.Add('ORDER BY FK.DTEV DESC');
-          ExecQuery;
-
-          if not Eof then
-          begin
-            REC_SHE_DEF.PSQ_FB_SC      := True; { Sub Query }
-            REC_SHE_DEF.PSQ_FB_CP_DGCP := REC_SHE_DEF.PSQ_FB_FK; { Campo }
-
-            { Descarte }
-            REC_SHE_DEF.PSQ_FB_PK := oStrTran(REC_SHE_DEF.PSQ_FB_PK, '+' ,' '); { Concatenado }
-            REC_SHE_DEF.PSQ_FB_PK := oStrTran(REC_SHE_DEF.PSQ_FB_PK,REC_SHE_DEF.PSQ_FB_FK,'' ); { Pesquisa Principal }
-
-            REC_SHE_DEF.PSQ_FB_SL_PK.Delete(REC_SHE_DEF.PSQ_FB_SL_PK.IndexOf(REC_SHE_DEF.PSQ_FB_FK)); { Array }
-            REC_SHE_DEF.PSQ_FB_FK := EmptyStr; { Sub Pesquisa }
-          end;
-        end;
-      end;
-    end;
-  end;
-
-  { Pesquisa }
-  try
-    oLockWindowUpdate; { Trava }
-
-    { Pronta Entrega }
-    with EST_EPE do
-    begin
-      Close;
-      SQL.Clear;
-      SQL.Add('SELECT    GEN_ID(IDG_SEQ_PRO,1) AS ID,');
-      SQL.Add('          E.EF_IDEP,E.EF_SGEP,');
-      SQL.Add('          E.CDEV   ,E.DEEV   ,PK.REST,');
-
-      SQL.Add('          PK.IDCP,PK.SKU,PK.CEAN   ,PK.CF_SKU,PK.CF_NCM,PK.CF_CEAN,');
-      SQL.Add('          PK.DGCP,PK.GRD_SG AS DSCP,');
-
-      SQL.Add('          NULLIF(E.EPE_QTDE,0) AS EPE_QTDE,NULLIF(E.EPE_QTRL,0) AS EPE_QTRL,');
-      SQL.Add('          NULLIF(E.EEP_QTDE,0) AS EEP_QTDE,NULLIF(E.EEP_QTRL,0) AS EEP_QTRL,');
-      SQL.Add('          E.EPC_CTNR');
-
-      SQL.Add('FROM      CAD_PRO AS PK');
-      SQL.Add('LEFT JOIN VW_PSQ_CAD_PRO_EST_SLD_NEW AS E ON (E.IDCP = PK.IDCP AND E.LG_IDEP = :VW_IDEP)');
-      SQL.Add('WHERE     PK.IDAK = :IDAK');
-
-      { Grade }
-      if REC_SHE_DEF.PSQ_FB_CP_DGCP <> EmptyStr then
-      SQL.Add('AND PK.DGCP LIKE ''' + REC_SHE_DEF.PSQ_FB_CP_DGCP + '%''');
-
-      { Situação }
-      if REC_SHE_DEF.PSQ_FB_DEST <> EmptyStr then
-      begin
-        SQL.Add(IFThen(Pos('WHERE',EST_EPE.SQL.Text) = 0,'WHERE','AND'));
-        SQL.Add('PK.DEST LIKE ''' + REC_SHE_DEF.PSQ_FB_DEST + '%''');
-      end else
-      begin
-        SQL.Add(IFThen(Pos('WHERE',EST_EPE.SQL.Text) = 0,'WHERE','AND'));
-        SQL.Add('PK.CDST <> 43 AND PK.CDST <> 85');
-      end;
-      SQL.Add('ORDER BY E.DTEV DESC');
-
-      { Empresa Logada }
-      ParamByName('VW_IDEP').Value := RECParametros.ID;
-      Open;
-    end;
-
-    { Físico }
-    with EST_EFI do
-    begin
-      Close;
-      SQL.Clear;
-      SQL.Add('SELECT PK.ID  ,PK.IDEP,PK.SGEP,PK.DTEV,');
-      SQL.Add('       PK.LGCA,PK.DTCA,');
-
-      SQL.Add('       PK.EST_CDRO,EST_DSRO,PK.EST_DERO,PK.EST_DECE,');
-
-      SQL.Add('       PK.EST_CDET,PK.EST_CTNR,PK.EST_LOTE,');
-      SQL.Add('       PK.IDCP,PK.SKU ,PK.DGCP,PK.DSCP,');
-      SQL.Add('       PK.QTDE,PK.QTRL,');
-      SQL.Add('       PK.INFADCAD');
-
-      SQL.Add('FROM   VW_PSQ_CAD_PRO_EST_EFI AS PK');
-      SQL.Add('WHERE  PK.IDEP    = :VW_IDEP');
-      SQL.Add('AND    PK.IDAK    = :IDAK');
-      SQL.Add('AND    PK.EST_EFI = 1');
-
-      { Grade }
-      if REC_SHE_DEF.PSQ_FB_CP_DGCP <> EmptyStr then
-      SQL.Add('AND      PK.DGCP  LIKE ''' + REC_SHE_DEF.PSQ_FB_CP_DGCP + '%''');
-      SQL.Add('ORDER BY PK.DTEV DESC');
-
-      { Empresa Logada }
-      ParamByName('VW_IDEP').Value := RECParametros.ID;
-      Open;
-    end;
-
-    { Antecipado }
-    with EST_EAT do
-    begin
-      Close;
-      SQL.Clear;
-      SQL.Add('SELECT PK.ID  ,PK.IDEP,PK.SGEP,PK.DTEV,');
-      SQL.Add('       PK.LGCA,PK.DTCA,');
-
-      SQL.Add('       PK.EST_CDRO,EST_DSRO,PK.EST_DERO,PK.EST_DECE,');
-
-      SQL.Add('       PK.EST_CDET,PK.EST_CTNR,PK.EST_LOTE,');
-      SQL.Add('       PK.IDCP,PK.SKU ,PK.DGCP,PK.DSCP,');
-      SQL.Add('       PK.QTDE,PK.QTRL,');
-      SQL.Add('       PK.INFADCAD');
-
-      SQL.Add('FROM   VW_PSQ_CAD_PRO_EST_EFI AS PK');
-      SQL.Add('WHERE  PK.IDEP    = :VW_IDEP');
-      SQL.Add('AND    PK.IDAK    = :IDAK');
-      SQL.Add('AND    PK.EST_EAT = 1');
-
-      { Grade }
-      if REC_SHE_DEF.PSQ_FB_CP_DGCP <> EmptyStr then
-      SQL.Add('AND      PK.DGCP  LIKE ''' + REC_SHE_DEF.PSQ_FB_CP_DGCP + '%''');
-      SQL.Add('ORDER BY PK.DTEV DESC');
-
-      { Empresa Logada }
-      ParamByName('VW_IDEP').Value := RECParametros.ID;
-      Open;
-    end;
-
-    { Substituto }
-    with EST_ESU do
-    begin
-      Close;
-      SQL.Clear;
-      SQL.Add('SELECT PK.ID  ,PK.IDEP,PK.SGEP,PK.DTEV,');
-      SQL.Add('       PK.LGCA,PK.DTCA,');
-
-      SQL.Add('       PK.EST_CDRO,EST_DSRO,PK.EST_DERO,PK.EST_DECE,');
-
-      SQL.Add('       PK.EST_CDET,PK.EST_CTNR,PK.EST_LOTE,');
-      SQL.Add('       PK.IDCP,PK.SKU ,PK.DGCP,PK.DSCP,');
-      SQL.Add('       PK.QTDE,PK.QTRL,');
-      SQL.Add('       PK.INFADCAD');
-
-      SQL.Add('FROM   VW_PSQ_CAD_PRO_EST_EFI AS PK');
-      SQL.Add('WHERE  PK.IDEP    = :VW_IDEP');
-      SQL.Add('AND    PK.IDAK    = :IDAK');
-      SQL.Add('AND    PK.EST_ESU = 1');
-      SQL.Add('AND    PK.EST_EFI = 0');
-
-      { Grade }
-      if REC_SHE_DEF.PSQ_FB_CP_DGCP <> EmptyStr then
-      SQL.Add('AND      PK.DGCP  LIKE ''' + REC_SHE_DEF.PSQ_FB_CP_DGCP + '%''');
-      SQL.Add('ORDER BY PK.DTEV DESC');
-
-      { Empresa Logada }
-      ParamByName('VW_IDEP').Value := RECParametros.ID;
-      Open;
-    end;
-
-    { Piloto }
-    with EST_EPI do
-    begin
-      Close;
-      SQL.Clear;
-      SQL.Add('SELECT PK.ID  ,PK.IDEP,PK.SGEP,PK.DTEV,');
-      SQL.Add('       PK.LGCA,PK.DTCA,');
-
-      SQL.Add('       PK.EST_CDRO,EST_DSRO,PK.EST_DERO,PK.EST_DECE,');
-
-      SQL.Add('       PK.EST_CDET,PK.EST_CTNR,PK.EST_LOTE,');
-      SQL.Add('       PK.IDCP,PK.SKU ,PK.DGCP,PK.DSCP,');
-      SQL.Add('       PK.QTDE,PK.QTRL,');
-      SQL.Add('       PK.INFADCAD');
-
-      SQL.Add('FROM   VW_PSQ_CAD_PRO_EST_EFI AS PK');
-      SQL.Add('WHERE  PK.IDEP    = :VW_IDEP');
-      SQL.Add('AND    PK.IDAK    = :IDAK');
-      SQL.Add('AND    PK.EST_EPI = 1');
-
-      { Grade }
-      if REC_SHE_DEF.PSQ_FB_CP_DGCP <> EmptyStr then
-      SQL.Add('AND      PK.DGCP  LIKE ''' + REC_SHE_DEF.PSQ_FB_CP_DGCP + '%''');
-      SQL.Add('ORDER BY PK.DTEV DESC');
-
-      { Empresa Logada }
-      ParamByName('VW_IDEP').Value := RECParametros.ID;
-      Open;
-    end;
-
-    { Revisado }
-    with EST_ERV do
-    begin
-      Close;
-      SQL.Clear;
-      SQL.Add('SELECT PK.ID  ,PK.IDEP,PK.SGEP,PK.DTEV,');
-      SQL.Add('       PK.LGCA,PK.DTCA,');
-
-      SQL.Add('       PK.EST_CDRO,EST_DSRO,PK.EST_DERO,PK.EST_DECE,');
-
-      SQL.Add('       PK.EST_CDET,PK.EST_CTNR,PK.EST_LOTE,');
-      SQL.Add('       PK.IDCP,PK.SKU ,PK.DGCP,PK.DSCP,');
-      SQL.Add('       PK.QTDE,PK.QTRL,');
-      SQL.Add('       PK.INFADCAD');
-
-      SQL.Add('FROM   VW_PSQ_CAD_PRO_EST_EFI AS PK');
-      SQL.Add('WHERE  PK.IDEP    = :VW_IDEP');
-      SQL.Add('AND    PK.IDAK    = :IDAK');
-      SQL.Add('AND    PK.EST_EPI = 1');
-      SQL.Add('AND    PK.EST_ERV = 1'); 
-
-      { Grade }
-      if REC_SHE_DEF.PSQ_FB_CP_DGCP <> EmptyStr then
-      SQL.Add('AND      PK.DGCP  LIKE ''' + REC_SHE_DEF.PSQ_FB_CP_DGCP + '%''');
-      SQL.Add('ORDER BY PK.DTEV DESC');
-
-      { Empresa Logada }
-      ParamByName('VW_IDEP').Value := RECParametros.ID;
-      Open;
-    end;
-
-    { Compras Abertas }
-    with EST_CPA do
-    begin
-      Close;
-      SQL.Clear;
-      SQL.Add('SELECT PK.ID  ,PK.IDEP,PK.SGEP,PK.DTEV,');
-      SQL.Add('       PK.IDPK,PK.DEPK,PK.DSPK,');
-      SQL.Add('       PK.EST_CTNR    ,PK.CTNR_PPRD,PK.CTNR_PEMB,PK.CTNR_PDSB,PK.CTNR_PCHP,');
-      SQL.Add('       PK.DECD,PK.GPCD,');
-      SQL.Add('       PK.ABCR,PK.DECV,');
-
-      SQL.Add('       PK.IDCP,PK.SKU ,PK.DGCP,PK.DSCP,');
-      SQL.Add('       PK.QTDE,PK.QTRL,');
-      SQL.Add('       PK.QTSP,PK.RLSP,');
-      SQL.Add('       PK.CF_VPRC_PAD_ORI,PK.CF_VPRC_COM,');
-
-      SQL.Add('       PK.STPD,PK.D_STCO,');
-      SQL.Add('       PK.STFI,PK.BQST');
-
-      SQL.Add('FROM   VW_PSQ_CAD_PRO_EST_EPC AS PK');
-      SQL.Add('WHERE  PK.IDEP = :VW_IDEP');
-      SQL.Add('AND    PK.IDAK = :IDAK');
-
-      { Grade }
-      if REC_SHE_DEF.PSQ_FB_CP_DGCP <> EmptyStr then
-      SQL.Add('AND PK.DGCP LIKE ''' + REC_SHE_DEF.PSQ_FB_CP_DGCP + '%''');
-
-      { Situação }
-      if REC_SHE_DEF.PSQ_FB_DEST <> EmptyStr then
-      SQL.Add('AND      PK.DEST LIKE ''' + REC_SHE_DEF.PSQ_FB_DEST + '%''');
-      SQL.Add('ORDER BY PK.DTEV DESC');
-
-      { Empresa Logada }
-      ParamByName('VW_IDEP').Value := RECParametros.ID;
-      Open;
-    end;
-
-    { Compras Fechadas }
-    with EST_CPF do
-    begin
-      Close;
-      SQL.Clear;
-      SQL.Add('SELECT PK.ID  ,PK.IDEP,EP.FANTASIA_SIGLA AS SGEP,PK.DTEV,');
-      SQL.Add('       PK.IDPK AS IDPK,PK.DEPK AS DEPK ,PK.DTCA AS  DSPK,');
-      SQL.Add('       PK.CTNR AS PED_CTNR,PK.CTNR_RPRD,PK.CTNR_REMB,PK.CTNR_RDSB,PK.CTNR_RCHP,');
-      SQL.Add('       CD.FANTASIA AS DECD      ,CD.GRUPO AS GPCD,');
-      SQL.Add('       CR.FANTASIA_ABREV AS ABCR,CV.LOGIN AS DECV,');
-
-      SQL.Add('       FK.IDCP,FK.SKU ,FK.DGCP,CP.GRD_SG AS DSCP,');
-      SQL.Add('       FK.QTDE,FK.QTRL,');
-      SQL.Add('       FK.QTSP,FK.RLSP,');
-      SQL.Add('       TRIM(CAST(IIF(FK.ORIG = 1,''USD'',''R$'') AS VARCHAR(3))) AS VPRC_PAD_ORI,');
-      SQL.Add('       FK.VPRC_COM,');
-
-      SQL.Add('       PK.STPD,PK.STCO AS D_STCO,');
-      SQL.Add('       PK.STFI,PK.BQST');
-
-      SQL.Add('FROM ' + oREPZero('PED_COM_CAB','_',RECParametros.VW_IDEP,3) + ' AS PK');
-      SQL.Add('JOIN ' + oREPZero('PED_COM_ITE','_',RECParametros.VW_IDEP,3) + ' AS FK ON (FK.IDPK = PK.IDPK)');
-
-      SQL.Add('JOIN   TAB_PAR_SIS AS EP ON (EP.ID   = PK.IDEP)');
-
-      SQL.Add('JOIN   CAD_FOR  AS CD ON (CD.IDCD = PK.IDCD)');
-      SQL.Add('JOIN   TAB_USER AS CV ON (CV.IDLG = PK.IDCV)');
-      SQL.Add('JOIN   CAD_REP  AS CR ON (CR.IDCR = PK.IDCR)');
-      SQL.Add('JOIN   CAD_PRO  AS CP ON (CP.IDCP = FK.IDCP)');
-
-      SQL.Add('WHERE  FK.IDAK = :IDAK');
-      SQL.Add('AND    FK.REST LIKE ''FIM%''');
-
-      { Grade }
-      if REC_SHE_DEF.PSQ_FB_CP_DGCP <> EmptyStr then
-      SQL.Add('AND      FK.DGCP LIKE ''' + REC_SHE_DEF.PSQ_FB_CP_DGCP + '%''');
-      SQL.Add('ORDER BY FK.DTEV DESC');
-      Open;
-    end;
-
-    { Vends Pronta Entrega }
-    with EST_EPV do
-    begin
-      Close;
-      SQL.Clear;
-      SQL.Add('SELECT PK.ID  ,PK.IDEP,PK.SGEP,PK.DTEV,');
-      SQL.Add('       PK.IDPK,PK.DEPK,PK.DSPK,');
-      SQL.Add('       PK.DECD,PK.GPCD,');
-      SQL.Add('       PK.ABCR,PK.DECV,');
-
-      SQL.Add('       PK.IDCP,PK.SKU ,PK.DGCP,PK.DSCP,');
-      SQL.Add('       PK.QTDE,PK.QTRL,');
-      SQL.Add('       PK.QTSP,PK.RLSP,');
-      SQL.Add('       PK.VPRC_COM    ,');
-
-      SQL.Add('       PK.STPD,PK.D_STCO,');
-      SQL.Add('       PK.STFI,PK.BQST');
-
-      SQL.Add('FROM   VW_PSQ_CAD_PRO_EST_EPV AS PK');
-      SQL.Add('WHERE  PK.IDEP = :VW_IDEP');
-      SQL.Add('AND    PK.IDAK = :IDAK');
-
-      { Grade }
-      if REC_SHE_DEF.PSQ_FB_CP_DGCP <> EmptyStr then
-      SQL.Add('AND PK.DGCP LIKE ''' + REC_SHE_DEF.PSQ_FB_CP_DGCP + '%''');
-
-      { Situação }
-      if REC_SHE_DEF.PSQ_FB_DEST <> EmptyStr then
-      SQL.Add('AND      PK.DEST    LIKE ''' + REC_SHE_DEF.PSQ_FB_DEST + '%''');
-      SQL.Add('ORDER BY PK.DTEV DESC');
-
-      { Empresa Logada }
-      ParamByName('VW_IDEP').Value := RECParametros.ID;
-      Open;
-    end;
-
-    { Vendas Separadas }
-    with EST_ESP do
-    begin
-      Close;
-      SQL.Clear;
-      SQL.Add('SELECT PK.ID  ,PK.IDEP,PK.SGEP,PK.DTEV,');
-      SQL.Add('       PK.IDPK,PK.DEPK,PK.DSPK,');
-      SQL.Add('       PK.LGSP,PK.DSSP,');
-      SQL.Add('       PK.DECD,PK.GPCD,');
-      SQL.Add('       PK.ABCR,PK.DECV,');
-
-      SQL.Add('       PK.ITEM,PK.EST_CDET,PK.EST_LOTE,PK.EST_MAPA,PK.EST_CDI,PK.EST_CTNR,');
-
-      SQL.Add('       PK.IDCP,PK.SKU ,PK.DGCP,PK.DSCP,');
-      SQL.Add('       PK.QTDE,PK.QTRL,');
-      SQL.Add('       PK.QTSP,PK.RLSP,');
-      SQL.Add('       PK.VPRC_COM    ,');
-
-      SQL.Add('       PK.STPD,PK.D_STCO,');
-      SQL.Add('       PK.STFI,PK.BQST');
-
-      SQL.Add('FROM   VW_PSQ_CAD_PRO_EST_ESP AS PK ');
-      SQL.Add('WHERE  PK.IDEP = :VW_IDEP');
-      SQL.Add('AND    PK.IDAK = :IDAK');
-
-      { Grade }
-      if REC_SHE_DEF.PSQ_FB_CP_DGCP <> EmptyStr then
-      SQL.Add('AND PK.DGCP LIKE ''' + REC_SHE_DEF.PSQ_FB_CP_DGCP + '%''');
-
-      { Situação }
-      if REC_SHE_DEF.PSQ_FB_DEST <> EmptyStr then
-      SQL.Add('AND      PK.DEST LIKE ''' + REC_SHE_DEF.PSQ_FB_DEST + '%''');
-      SQL.Add('ORDER BY PK.DTEV DESC');
-
-      { Empresa Logada }
-      ParamByName('VW_IDEP').Value := RECParametros.VW_IDEP;
-      Open;
-    end;
-
-    { Vendas Programadas }
-    with EST_EPP do
-    begin
-      Close;
-      SQL.Clear;
-      SQL.Add('SELECT PK.ID  ,PK.IDEP,PK.SGEP,PK.DTEV,');
-      SQL.Add('       PK.IDPK,PK.DEPK,PK.DSPK,');
-      SQL.Add('       PK.DECD,PK.GPCD,');
-      SQL.Add('       PK.ABCR,PK.DECV,');
-
-      SQL.Add('       PK.EST_CTNR,');
-      SQL.Add('       PK.IDCP,PK.SKU ,PK.DGCP,PK.DSCP,');
-      SQL.Add('       PK.QTDE,PK.QTRL,');
-      SQL.Add('       PK.QTSP,PK.RLSP,');
-      SQL.Add('       PK.VPRC_COM,    ');
-
-      SQL.Add('       PK.STPD,PK.D_STCO,');
-      SQL.Add('       PK.STFI,PK.BQST');
-
-      SQL.Add('FROM   VW_PSQ_CAD_PRO_EST_EPP AS PK');
-      SQL.Add('WHERE  PK.IDEP = :VW_IDEP');
-      SQL.Add('AND    PK.IDAK = :IDAK');
-
-      { Grade }
-      if REC_SHE_DEF.PSQ_FB_CP_DGCP <> EmptyStr then
-      SQL.Add('AND PK.DGCP LIKE ''' + REC_SHE_DEF.PSQ_FB_CP_DGCP + '%''');
-
-      { Situação }
-      if REC_SHE_DEF.PSQ_FB_DEST <> EmptyStr then
-      SQL.Add('AND      PK.DEST    LIKE ''' + REC_SHE_DEF.PSQ_FB_DEST + '%''');
-      SQL.Add('ORDER BY PK.DTEV DESC');
-
-      { Empresa Logada }
-      ParamByName('VW_IDEP').Value := RECParametros.ID;
-      Open;
-    end;
-
-    { Ficha Técnica }
-    with CAD_PRO_FIC do
-    begin
-      Close;
-      SQL.Clear;
-      SQL.Add('SELECT FIRST 1');
-      SQL.Add('       PK.IDCP,PK.UCOM,');
-
-      SQL.Add('       NULLIF(PK.MPESO ,0) AS MPESO ,NULLIF(PK.MPSCN ,0) AS MPSCN ,NULLIF(PK.MPSBR,0) AS MPSBR,');
-      SQL.Add('       NULLIF(PK.MMETRO,0) AS MMETRO,NULLIF(PK.MGRAMA,0) AS MGRAMA,NULLIF(PK.MREND,0) AS MREND,');
-      SQL.Add('       NULLIF(PK.MLGRT ,0) AS MLGRT ,NULLIF(PK.MLGRU ,0) AS MLGRU ,');
-      SQL.Add('       NULLIF(PK.MELAL ,0) AS MELAL ,NULLIF(PK.MELAC ,0) AS MELAC ,');
-      SQL.Add('       NULLIF(PK.MENCL ,0) AS MENCL ,NULLIF(PK.MENCC ,0) AS MENCC ,');
-
-      SQL.Add('       ''('' || PK.UCOM || '') '' || PK.UCDBE_NO AS UCDBE_NO,');
-      SQL.Add('       NULLIF(PK.UQTDE,0) AS UQTDE,NULLIF(PK.UQTDE_VEN_MUL,0) AS UQTDE_VEN_MUL,');
-      SQL.Add('       PK.MABNT_NO,');
-
-      SQL.Add('       NULLIF(TRIM(CAST(');
-
-      SQL.Add('       ASCII_CHAR(13) || ASCII_CHAR(10) ||');
-
-      SQL.Add('       ''Composição Têxtil ...: '' || COALESCE(PK.DCCP     ,'''') || ASCII_CHAR(13) || ASCII_CHAR(10) || ASCII_CHAR(13)  || ASCII_CHAR(10) ||');
-
-      SQL.Add('       ''Gramatura ...: ''         || COALESCE(PK.MGRAMA_NO,'''') || ASCII_CHAR(13) || ASCII_CHAR(10) ||');
-      SQL.Add('       ''Encolhimento ...: ''      || COALESCE(PK.MENC_NO  ,'''') || ASCII_CHAR(13) || ASCII_CHAR(10) ||');
-      SQL.Add('       ''Norma Técnica ...: ''     || COALESCE(PK.MABNT_NO ,'''') || ASCII_CHAR(13) || ASCII_CHAR(10) || ASCII_CHAR(13)  || ASCII_CHAR(10) ||');
-
-      SQL.Add('       ''Conteúdo ...: ''          || COALESCE(PK.UCON     ,'''')');
-
-      SQL.Add('       AS VARCHAR(512))),'''') AS INFADCPL,');
-      SQL.Add('       PK.INFADCAD');
-
-      SQL.Add('FROM   VW_PSQ_CAD_PRO  AS PK ');
-      SQL.Add('WHERE  PK.IDAK = :IDAK');
-      Open;
-    end;
-
-    { Consulta Principal }
-    with Consulta do
-    begin
-      Close;
-      SQL.Clear;
-
-      { RECURSIVE INI }
-      SQL.Add('WITH RECURSIVE PK');
-      SQL.Add('AS (');
-
-      SQL.Add('SELECT PK.IDAK,PK.IDEP,PK.DEEP,PK.IDCF,PK.DECF,');
-      SQL.Add('       PK.DTEV,PK.REST,');
-
-      SQL.Add('       PK.ARTIGO,PK.CEAN,PK.CF_SKU,PK.CF_CEAN,');
-      SQL.Add('       PK.FIS_NCM,PK.FIS_PIPI ,');
-      SQL.Add('       PK.DECP,PK.DCCP,PK.DSCP,');
-
-      SQL.Add('       PK.COL_NO,PK.SEG_NO,');
-      SQL.Add('       PK.GRP_NO,PK.SGP_NO,');
-      SQL.Add('       PK.CAT_NO,PK.SCT_NO,');
-
-      SQL.Add('       PK.FIS_ORIG ,PK.FIS_XORIG,');
-      SQL.Add('       PK.FIS_XPAIS,PK.FIS_FPAIS,');
-      SQL.Add('       PK.INFADCAD');
-
-      SQL.Add('FROM   VW_PSQ_CAD_PRO AS PK');
-
-      { Inicialização }
-      if REC_SHE_DEF.PSQ_FB_PD then { Padrão }
-      begin
-        SQL.Add('WHERE PK.IDCP = 0');
-      end;
-
-      { Situação }
-      if REC_SHE_DEF.PSQ_FB_DEST <> EmptyStr then
-      begin
-        SQL.Add(IFThen(Pos('WHERE',Consulta.SQL.Text) = 0,'WHERE','AND'));
-        SQL.Add('PK.DEST LIKE ''' + REC_SHE_DEF.PSQ_FB_DEST + '%''');
-      end;
-
-      { Situação Abreviada }
-      if REC_SHE_DEF.PSQ_FB_STFI <> EmptyStr then
-      begin
-        SQL.Add(IFThen(Pos('WHERE',Consulta.SQL.Text) = 0,'WHERE','AND'));
-        SQL.Add('PK.STFI LIKE ''' + REC_SHE_DEF.PSQ_FB_STFI + '%''');
-      end;
-
-      { Período }
-      if (BDPSQ_PER_INI.Date > 0) and (BDPSQ_PER_FIM.Date > 0) then
-      begin
-        SQL.Add(IFThen(Pos('WHERE',Consulta.SQL.Text) = 0,'WHERE','AND'));
-        SQL.Add(BBPSQ_PER_MENU.Description + ' BETWEEN ''' + FormatDateTime('mm/dd/yy',BDPSQ_PER_INI.Date) +  ''' AND ''' + FormatDateTime('mm/dd/yy',BDPSQ_PER_FIM.Date) + '''');
-      end;
-
-      SQL.Add('),'); { RECURSIVE FIM }
-
-      { CTE INI }
-      SQL.Add('CTE_PSQ');
-      SQL.Add('AS    (');
-
-      if REC_SHE_DEF.PSQ_FB_SL_PK.Count = 0 then
-         SQL.Add('SELECT PK.* FROM PK') else
-      begin
-        { Âncora Principal }
-        { Pedido }
-        SQL.Add('SELECT PK.* FROM PK');
-        SQL.Add('WHERE  PK.ARTIGO LIKE ''' + REC_SHE_DEF.PSQ_FB_SL_PK.Strings[0] + '%''');
-
-        for i := 0 to REC_SHE_DEF.PSQ_FB_SL_PK.Count - 1 do
-        begin
-          { Apenas Números }
-          if oBSONumero(REC_SHE_DEF.PSQ_FB_SL_PK.Strings[i]) then
-          begin
-            { NCM }
-            SQL.Add('UNION  ALL');
-            SQL.Add('SELECT PK.* FROM PK');
-            SQL.Add('WHERE  PK.NCM = ''' + REC_SHE_DEF.PSQ_FB_SL_PK.Strings[i] + '''');
-
-            { EAN-13 }
-            SQL.Add('UNION  ALL');
-            SQL.Add('SELECT PK.* FROM PK');
-            SQL.Add('WHERE  PK.CEAN = ''' + REC_SHE_DEF.PSQ_FB_SL_PK.Strings[i] + '''');
-          end else
-
-          begin
-            { Descrição }
-            SQL.Add('UNION  ALL');
-            SQL.Add('SELECT PK.* FROM PK');
-            SQL.Add('WHERE  PK.DECP CONTAINING ''' + REC_SHE_DEF.PSQ_FB_SL_PK.Strings[i] + '''');
-
-            { Composição }
-            SQL.Add('UNION  ALL');
-            SQL.Add('SELECT PK.* FROM PK');
-            SQL.Add('WHERE  PK.DCCP LIKE ''' + REC_SHE_DEF.PSQ_FB_SL_PK.Strings[i] + '%''');
-          end;
-        end;
-      end;
-
-      SQL.Add(')'); { CTE FIM }
-
-      { CTE SELECT }
-      SQL.Add('SELECT     DISTINCT');
-      SQL.Add('           PK.IDAK   ,PK.IDEP,PK.DEEP,PK.IDCF,PK.DECF,');
-      SQL.Add('           PK.ARTIGO ,PK.DECP,');
-      SQL.Add('           PK.FIS_NCM,PK.FIS_PIPI,');
-
-      SQL.Add('           NULLIF(TRIM(CAST(ASCII_CHAR(13) || ASCII_CHAR(10) ||');
-      SQL.Add('           ''Origem da Mercadoria ...: ''  || PK.FIS_XPAIS   || IIF(PK.FIS_ORIG < 2,'''','' - '' || PK.FIS_XORIG) || '' - ''  || PK.FIS_FPAIS || ASCII_CHAR(13) || ASCII_CHAR(10) || ASCII_CHAR(13) || ASCII_CHAR(10) ||');
-
-      SQL.Add('           ''Coleções ...: ''      || COALESCE(PK.COL_NO    ,'''') || ASCII_CHAR(13) || ASCII_CHAR(10) ||');
-      SQL.Add('           ''Segmentos ...: ''     || COALESCE(PK.SEG_NO    ,'''') || ASCII_CHAR(13) || ASCII_CHAR(10) ||');
-
-      SQL.Add('           ''Grupos ...: ''        || COALESCE(PK.GRP_NO    ,'''') || IIF(PK.SGP_NO     IS NOT NULL,'', '' || PK.SGP_NO    ,'''') || ASCII_CHAR(13) || ASCII_CHAR(10) ||');
-      SQL.Add('           ''Categorias ...: ''    || COALESCE(PK.CAT_NO    ,'''') || IIF(TB_SCT.SCT_NO IS NOT NULL,'', '' || TB_SCT.SCT_NO,'''') || ASCII_CHAR(13) || ASCII_CHAR(10) ||');
-      SQL.Add('           ''Market Places ...: '' || COALESCE(TB_MKP.MKP_NO,'''')');
-
-      SQL.Add('           AS VARCHAR(812))),'''') AS INFADCAD,');
-
-      SQL.Add('           MIN(PK.REST) OVER(PARTITION BY PK.IDAK) AS REST');
-
-      SQL.Add('FROM       CTE_PSQ AS PK');
-      SQL.Add('LEFT  JOIN VW_PSQ_CAD_PRO_SCT AS TB_SCT ON (TB_SCT.IDAK = PK.IDAK)');
-      SQL.Add('LEFT  JOIN VW_PSQ_CAD_PRO_MKP AS TB_MKP ON (TB_MKP.IDAK = PK.IDAK)');
-
-
-      { Sub Query }
-      if REC_SHE_DEF.PSQ_FB_SC then
-      begin
-        SQL.Add('WHERE EXISTS');
-        SQL.Add('(');
-
-        SQL.Add('SELECT FK.IDPK FROM CAD_PRO AS FK');
-        SQL.Add('WHERE  FK.IDAK = PK.IDAK');
-
-        { Grade }
-        if REC_SHE_DEF.PSQ_FB_CP_DGCP <> EmptyStr then
-           SQL.Add('AND FK.DGCP CONTAINING ''' + REC_SHE_DEF.PSQ_FB_CP_DGCP + '''');
-
-        SQL.Add(')');
-      end;
-
-      SQL.Add('ORDER BY  PK.DTEV DESC');
-      Prepare;
-      Open;
-    end;
-  finally
-    HCDSPrincipal1Consulta.Tag    := IFThen(Screen.Height > 864,350,250) + DPPrincipal1Titulo.Height;
-    HCDSPrincipal1Consulta.Height := HCDSPrincipal1Consulta.Tag + IFThen(CAD_PRO_FICMABNT_NO.AsString <> EmptyStr,45,0);
-
-
-    { DOCK MANAGER }
-    { Rodapé }
-    FDockControlPrincipal1RodapeLE := VCDSPrincipal1RodapeLE.Tag; { EST_EPE }
-    VCDSPrincipal1RodapeLE.Tag     := DBGEST_EPESKU.Width       + DBGEST_EPEEF_SGEP.Width  + 5 + { Produtos }
-                                      DBGEST_EPEEPE_QTDE.Width  + DBGEST_EPEEPE_QTRL.Width + 5 + { Saldo Disponível }
-
-    IFThen(DBGEST_EPEREST.Visible,DBGEST_EPEREST.Width,0)       + 5 + { Situação }
-    IFThen(DBGEST_EPE.Bands[1].Visible,DBGEST_EPEDSCP.Width   + DBGEST_EPEDGCP.Width  ,00) + 5 + { Grade }
-    IFThen(DBGEST_EPE.Bands[3].Visible,DBGEST_EPEEEP_QTDE.Width + DBGEST_EPEEEP_QTRL.Width,45) + 5 ; { Saldo Programado }
-//    IFThen(DBGEST_EPE.Bands[4].Visible,120,0); { Eventos }
-
-    VCDSPrincipal1RodapeLE.Tag := IFThen(VCDSPrincipal1RodapeLE.Tag < 400,400,VCDSPrincipal1RodapeLE.Tag);
-
-    if FDockControlPrincipal1RodapeLE <> VCDSPrincipal1RodapeLE.Tag then
-    begin
-      VCDSPrincipal1RodapeLE.HelpContext := 0;
-      _SetDockControl(VCDSPrincipal1RodapeLE,VCDSPrincipal1RodapeLE.Tag,lHorizontal,True ,True);
-
-      TCDSPrincipal1RodapeLE.HelpContext := 0;
-      _SetDockControl(TCDSPrincipal1RodapeLE,VCDSPrincipal1RodapeLE.Tag,lHorizontal,False,True);
-
-
-      DPPrincipal1RodapeLEB.HelpContext := 0;
-      _SetDockControl(DPPrincipal1RodapeLEB,DPPrincipal1RodapeLEB.Tag ,lVertical  ,True ,True);
-    end;
-
-    { CONSULTA }
-    DBGConsulta.Filter.Clear; { Filters }
-    DBGConsultaDECP.Field.FocusControl; { Focused }
-
-    { Estoque Pronta Entrega }
-    DBGEST_EPE.Filter.Clear; { Filters }
-    if EST_EPEDGCP.AsString <> EmptyStr then { Focused }
-    DBGEST_EPEDGCP.Field.FocusControl else { Grade }
-    DBGEST_EPESKU.Field.FocusControl; { SKU }
-
-    { Estoque Físico }
-    DBGEST_EFI.Filter.Clear; { Filters }
-    if EST_EFIDGCP.AsString <> EmptyStr then { Focused }
-    DBGEST_EFIDGCP.Field.FocusControl else { Grade }
-    DBGEST_EFISKU.Field.FocusControl; { SKU }
-
-    { Estoque Antecipado }
-    DBGEST_EAT.Filter.Clear; { Filters }
-    if EST_EATDGCP.AsString <> EmptyStr then { Focused }
-    DBGEST_EATDGCP.Field.FocusControl else { Grade }
-    DBGEST_EATSKU.Field.FocusControl; { SKU }
-
-    { Estoque Substituto }
-    DBGEST_ESU.Filter.Clear; { Filters }
-    if EST_ESUDGCP.AsString <> EmptyStr then { Focused }
-    DBGEST_ESUDGCP.Field.FocusControl else { Grade }
-    DBGEST_ESUSKU.Field.FocusControl; { SKU }
-
-    { Estoque Piloto }
-    DBGEST_EPI.Filter.Clear; { Filters }
-    if EST_EPIDGCP.AsString <> EmptyStr then { Focused }
-    DBGEST_EPIDGCP.Field.FocusControl else { Grade }
-    DBGEST_EPISKU.Field.FocusControl; { SKU }
-
-    { Estoque Revisado }
-    DBGEST_ERV.Filter.Clear; { Filters }
-    if EST_ERVDGCP.AsString <> EmptyStr then { Focused }
-    DBGEST_ERVDGCP.Field.FocusControl else { Grade }
-    DBGEST_ERVSKU.Field.FocusControl; { SKU }
-
-    { Compras Abertas }
-    DBGEST_CPA.Filter.Clear; { Filters }
-    if EST_CPADGCP.AsString <> EmptyStr then { Focused }
-    DBGEST_CPADGCP.Field.FocusControl else { Grade }
-    DBGEST_CPASKU.Field.FocusControl; { SKU }
-
-    { Compras Fechadas }
-    DBGEST_CPF.Filter.Clear; { Filters }
-    if EST_CPFDGCP.AsString <> EmptyStr then { Focused }
-    DBGEST_CPFDGCP.Field.FocusControl else { Grade }
-    DBGEST_CPFSKU.Field.FocusControl; { SKU }
-
-    { Vendas Pronta Entrega }
-    DBGEST_EPV.Filter.Clear; { Filters }
-    if EST_EPVDGCP.AsString <> EmptyStr then { Focused }
-    DBGEST_EPVDGCP.Field.FocusControl else { Grade }
-    DBGEST_EPVSKU.Field.FocusControl; { SKU }
-
-    { Vendas Separadas }
-    DBGEST_ESP.Filter.Clear; { Filters }
-    if EST_ESPDGCP.AsString <> EmptyStr then { Focused }
-    DBGEST_ESPDGCP.Field.FocusControl else { Grade }
-    DBGEST_ESPSKU.Field.FocusControl; { SKU }
-
-    { Vendas Programadas }
-    DBGEST_EPP.Filter.Clear; { Filters }
-    if EST_EPPDGCP.AsString <> EmptyStr then { Focused }
-    DBGEST_EPPDGCP.Field.FocusControl else { Grade }
-    DBGEST_EPPSKU.Field.FocusControl; { SKU }
-
-    if Consulta.RecNo > 0 then
-    begin
-      { PAGES MANAGER }
-      { Estoque }
-      if EST_EPECDEV.AsInteger = 8 then
-      begin
-        TCDSPrincipal1Rodape.ActiveChildIndex := 0; 
-        TCDSEST_EFI.ActiveChildIndex := 1; { Antecipado }
-      end else
-
-      if EST_EPECDEV.AsInteger = 10 then
-      begin
-        TCDSPrincipal1Rodape.ActiveChildIndex := 0; 
-        TCDSEST_EFI.ActiveChildIndex := 2; { Substituto }
-      end else
-
-      if EST_EPECDEV.AsInteger = 12 then
-      begin
-        TCDSPrincipal1Rodape.ActiveChildIndex := 0; 
-        TCDSEST_EFI.ActiveChildIndex := 3; { Piloto }
-      end else
-
-      if EST_EPECDEV.AsInteger = 16 then
-      begin
-        TCDSPrincipal1Rodape.ActiveChildIndex := 0;
-        TCDSEST_EFI.ActiveChildIndex := 4; { Revisado }
-      end else
-
-      if EST_EPECDEV.AsInteger = 17 then
-      begin
-        TCDSPrincipal1Rodape.ActiveChildIndex := 0;
-        TCDSEST_EFI.ActiveChildIndex := 4; { Defeito }
-      end else
-
-      { Vendas }
-      if EST_EPECDEV.AsInteger = 26 then
-      begin
-        TCDSPrincipal1Rodape.ActiveChildIndex := 1; 
-        TCDSEST_PDV.ActiveChildIndex := 0; { Pronta Entrega }
-      end else
-
-      if EST_EPECDEV.AsInteger = 27 then
-      begin
-        TCDSPrincipal1Rodape.ActiveChildIndex := 1;
-        TCDSEST_PDV.ActiveChildIndex := 1; { Separadas }
-      end else
-
-      if EST_EPECDEV.AsInteger = 24 then
-      begin
-        TCDSPrincipal1Rodape.ActiveChildIndex := 1;
-        TCDSEST_PDV.ActiveChildIndex := 2; { Programadas }
-      end else
-
-      if EST_EPECDEV.AsInteger = 25 then
-      begin
-        TCDSPrincipal1Rodape.ActiveChildIndex := 1;
-        TCDSEST_PDV.ActiveChildIndex := 2; { Reserva de Containers }
-      end else
-
-      { Compras }
-      if EST_EPECDEV.AsInteger = 23 then
-      begin
-        TCDSPrincipal1Rodape.ActiveChildIndex := 2;
-        if EST_CPFDTEV.AsDateTime > EST_CPADTEV.AsDateTime then
-        TCDSEST_PDC.ActiveChildIndex := 1 else
-        TCDSEST_PDC.ActiveChildIndex := 0;
-      end else
-
-      { Físico }
-      begin
-        TCDSPrincipal1Rodape.ActiveChildIndex := 0;
-        TCDSEST_EFI.ActiveChildIndex := 0;
-      end;
-
-      { Estoque Pronta Entrega }
-      TCDSPrincipal1RodapeLE.ActiveChildIndex := 0;
-      PostMessage(TWinControl(DBGEST_EPE).Handle, WM_SETFOCUS, 0, 0);
-      TWinControl(DBGEST_EPE).SetFocus;
-    end else
-    begin
-      { Pesquisa }
-      DPPrincipal1Consulta1.Caption := 'Registro(s) não Encontrado(s)';
-      BEPSQ_CAD.SetFocus(False);
-    end;
-
-    if TCDSPrincipal.Tag = 0 then
-    begin
-      TCDSPrincipal1Rodape.HelpContext := 0;
-      _SetDockControl(TCDSPrincipal1Rodape,DSPrincipal1.Width - VCDSPrincipal1RodapeLE.Tag,lHorizontal,False,True);
-    end;
-
-    oUnLockWindowUpdate; { Destrava }
-  end;
 end;
 
 procedure TFrmCAD_PRO_ADM.ConsultaBeforeClose(DataSet: TDataSet);
@@ -3055,13 +2013,13 @@ begin
   begin
     { VER TAM TELA }
     { Largura }
-    DBGConsultaDECP.MinWidth := IFThen(Screen.Width > 864,400,200); { Descrição }
+//    DBGConsultaCP_NO.MinWidth := IFThen(Screen.Width > 864,400,200); { Descrição }
 
     { FIT }
-    DBGConsulta.ApplyBestFit(DBGConsultaARTIGO); { Artigos }
-    DBGConsulta.ApplyBestFit(DBGConsultaDECP  ); { Descrição }
-    DBGConsulta.ApplyBestFit(DBGConsultaDECF  ); { Fabricante }
-    DBGConsulta.ApplyBestFit(DBGConsultaDEEP  ); { Revendedor }
+//    DBGConsulta.ApplyBestFit(DBGConsultaARTIGO); { Artigos }
+//    DBGConsulta.ApplyBestFit(DBGConsultaDECP  ); { Descrição }
+//    DBGConsulta.ApplyBestFit(DBGConsultaDECF  ); { Fabricante }
+//    DBGConsulta.ApplyBestFit(DBGConsultaDEEP  ); { Revendedor }
   end;
 end;
 
@@ -3179,17 +2137,17 @@ end;
 
 procedure TFrmCAD_PRO_ADM.DBGConsultaDblClick(Sender: TObject);
 begin
-  ACTEEdit.Execute;
+  ACTMEEdit.Execute;
 end;
 
 procedure TFrmCAD_PRO_ADM.DBGConsultaKeyDown(Sender: TObject;
   var Key: Word; Shift: TShiftState);
 begin
   case key of
-       VK_insert: ACTEAppend.Execute;
-       vk_return: ACTEEdit.Execute;
-       VK_delete: ACTEDelete.Execute;
-       VK_escape: ACTECancel.Execute;
+       VK_insert: ACTMEAppend.Execute;
+       vk_return: ACTMEEdit.Execute;
+       VK_delete: ACTMEDelete.Execute;
+       VK_escape: ACTMECancel.Execute;
   end;
 end;
 
@@ -3228,28 +2186,7 @@ end;
 procedure TFrmCAD_PRO_ADM.DTSCAD_PRO_IMGDataChange(Sender: TObject;
   Field: TField);
 begin
-  if Consulta.State <> dsInactive then
-  begin
-    PNLCAD_PRO_IMG_PIX.Caption := _oLoadJPG(CAD_PRO_IMGIMG_ID,CAD_PRO_IMGIMG_PAD,IMGCAD_PRO_IMG_PAD,True); { True - força visualização }
-
-    DBCAD_PRO_IMG_ILA1.Hint := CAD_PRO_IMGD_ILA_INS1.AsString;
-    DBCAD_PRO_IMG_ILA2.Hint := CAD_PRO_IMGD_ILA_INS2.AsString;
-    DBCAD_PRO_IMG_ILA3.Hint := CAD_PRO_IMGD_ILA_INS3.AsString;
-    DBCAD_PRO_IMG_ILA4.Hint := CAD_PRO_IMGD_ILA_INS4.AsString;
-    DBCAD_PRO_IMG_ILA5.Hint := CAD_PRO_IMGD_ILA_INS5.AsString;
-    DBCAD_PRO_IMG_ILA6.Hint := CAD_PRO_IMGD_ILA_INS6.AsString;
-    DBCAD_PRO_IMG_ILA7.Hint := CAD_PRO_IMGD_ILA_INS7.AsString;
-    DBCAD_PRO_IMG_ILA8.Hint := CAD_PRO_IMGD_ILA_INS8.AsString;
-
-    BVCAD_PRO_IMG_ILA1.Hint := DBCAD_PRO_IMG_ILA1.Hint;
-    BVCAD_PRO_IMG_ILA2.Hint := DBCAD_PRO_IMG_ILA2.Hint;
-    BVCAD_PRO_IMG_ILA3.Hint := DBCAD_PRO_IMG_ILA3.Hint;
-    BVCAD_PRO_IMG_ILA4.Hint := DBCAD_PRO_IMG_ILA4.Hint;
-    BVCAD_PRO_IMG_ILA5.Hint := DBCAD_PRO_IMG_ILA5.Hint;
-    BVCAD_PRO_IMG_ILA6.Hint := DBCAD_PRO_IMG_ILA6.Hint;
-    BVCAD_PRO_IMG_ILA7.Hint := DBCAD_PRO_IMG_ILA7.Hint;
-    BVCAD_PRO_IMG_ILA8.Hint := DBCAD_PRO_IMG_ILA8.Hint;
-  end;
+//ricardo
 end;
 
 procedure TFrmCAD_PRO_ADM.EST_EPEBeforeOpen(DataSet: TDataSet);

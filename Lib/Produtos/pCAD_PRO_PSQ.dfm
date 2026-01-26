@@ -815,38 +815,70 @@ inherited FrmCAD_PRO_PSQ: TFrmCAD_PRO_PSQ
                                           KeyField = 'ID'
                                           ShowSummaryFooter = True
                                           Filter.Criteria = {00000000}
+                                          inherited DBGConsultaC_ID: TdxDBGridColumn
+                                            DisableEditor = True
+                                          end
                                           object DBGConsultaSKU: TdxDBGridMaskColumn
+                                            DisableEditor = True
                                             Width = 72
                                             BandIndex = 0
                                             RowIndex = 0
                                             FieldName = 'SKU'
                                             SummaryFooterType = cstCount
                                             SummaryFooterField = 'ID'
-                                            SummaryFooterFormat = '0'
+                                            SummaryFooterFormat = ',##,0'
                                           end
                                           object DBGConsultaGRD_NO: TdxDBGridMaskColumn
+                                            DisableEditor = True
                                             Width = 150
                                             BandIndex = 0
                                             RowIndex = 0
                                             FieldName = 'GRD_NO'
                                           end
                                           object DBGConsultaCP_NO: TdxDBGridMaskColumn
+                                            DisableEditor = True
                                             Width = 250
                                             BandIndex = 0
                                             RowIndex = 0
                                             FieldName = 'CP_NO'
                                           end
                                           object DBGConsultaST_NO_ABREV: TdxDBGridMaskColumn
+                                            DisableEditor = True
                                             Width = 100
                                             BandIndex = 0
                                             RowIndex = 0
                                             FieldName = 'ST_NO_ABREV'
                                           end
                                           object DBGConsultaUCOM: TdxDBGridMaskColumn
+                                            DisableEditor = True
                                             Width = 67
                                             BandIndex = 1
                                             RowIndex = 0
                                             FieldName = 'UCOM'
+                                          end
+                                          object DBGConsultaC_EST_QTDE: TdxDBGridMaskColumn
+                                            DisableEditor = True
+                                            HeaderAlignment = taRightJustify
+                                            Width = 90
+                                            BandIndex = 1
+                                            RowIndex = 0
+                                            FieldName = 'C_EST_QTDE'
+                                            SummaryFooterType = cstSum
+                                            SummaryFooterField = 'C_EST_QTDE'
+                                            SummaryFooterFormat = ',##,0.00'
+                                            DisableFilter = True
+                                          end
+                                          object DBGConsultaC_EST_QTRL: TdxDBGridMaskColumn
+                                            DisableEditor = True
+                                            HeaderAlignment = taRightJustify
+                                            Width = 50
+                                            BandIndex = 1
+                                            RowIndex = 0
+                                            FieldName = 'C_EST_QTRL'
+                                            SummaryFooterType = cstSum
+                                            SummaryFooterField = 'C_EST_QTRL'
+                                            SummaryFooterFormat = ',##,0'
+                                            DisableFilter = True
                                           end
                                           object DBGConsultaEPE_QTDE: TdxDBGridCurrencyColumn
                                             BandIndex = 1
@@ -2582,6 +2614,20 @@ inherited FrmCAD_PRO_PSQ: TFrmCAD_PRO_PSQ
     object ConsultaESP_QTRL: TIntegerField
       FieldName = 'ESP_QTRL'
       ProviderFlags = []
+    end
+    object ConsultaC_EST_QTDE: TFloatField
+      DisplayLabel = 'Quantidade'
+      FieldKind = fkCalculated
+      FieldName = 'C_EST_QTDE'
+      DisplayFormat = ',##,0.00'
+      Calculated = True
+    end
+    object ConsultaC_EST_QTRL: TIntegerField
+      DisplayLabel = 'Pe'#231'as'
+      FieldKind = fkCalculated
+      FieldName = 'C_EST_QTRL'
+      DisplayFormat = ',##,0'
+      Calculated = True
     end
   end
   object CAD_PRO_FIC: TIBQuery

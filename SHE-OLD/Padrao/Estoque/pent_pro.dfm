@@ -3,6 +3,7 @@ object frment_pro: Tfrment_pro
   Top = 58
   HelpContext = 1
   ActiveControl = PETexto
+  AlphaBlendValue = 0
   BorderIcons = []
   BorderStyle = bsSingle
   Caption = 'Lan'#231'amentos de Estoque'
@@ -7275,11 +7276,6 @@ object frment_pro: Tfrment_pro
       ImageIndex = 0
       ShortCut = 116
     end
-    object ACTExecEvent: TAction
-      Category = 'Eventos'
-      Caption = 'ACTExecEvent'
-      OnExecute = ACTExecEventExecute
-    end
     object ACTPesquisa: TAction
       Tag = 1
       Category = 'Pesquisa'
@@ -7366,6 +7362,21 @@ object frment_pro: Tfrment_pro
       Category = 'Pesquisa'
       Caption = 'ACTPSQ_FOCUS'
       ShortCut = 118
+    end
+    object ACTEveRegister: TAction
+      Category = 'Eventos'
+      Caption = 'ACTEveRegister'
+      OnExecute = ACTEveRegisterExecute
+    end
+    object ACTEveExecute: TAction
+      Category = 'Eventos'
+      Caption = 'ACTEveExecute'
+      OnExecute = ACTEveExecuteExecute
+    end
+    object ACTEveExpress: TAction
+      Category = 'Eventos'
+      Caption = 'ACTEveExpress'
+      OnExecute = ACTEveExpressExecute
     end
   end
   object EEventAdmin: TIBEvents

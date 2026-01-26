@@ -193,6 +193,7 @@ type
     procedure DBGConsultaKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
   private
+    { Private declarations }
     FCurrentEvent,
     FCurrentAlert: String;
     FForceClose  : Boolean;

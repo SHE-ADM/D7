@@ -285,6 +285,8 @@ type
     RSBCAD_PRO_EST_LCT: TRxSpeedButton;
     RSBFIS_NFE_LCT: TRxSpeedButton;
     ACTFIS_NFE_LCT: TAction;
+    TEdicao: TIBTransaction;
+    SPEdicao: TIBStoredProc;
 
     procedure _DoneEvent(Sender: TObject);
 
@@ -529,7 +531,6 @@ constructor TRunProcessThread.Create(const ATB_PK: String;
                                            FCP_ID: String);
 
 begin
-  oOTransact(FBird.TFBConsulta);
   inherited Create(True);
 
   FreeOnTerminate := True;
@@ -541,11 +542,14 @@ begin
   FTHR_EP_ID := FEP_ID;
   FTHR_PK_ID := FPK_ID;
   FTHR_CP_ID := FCP_ID;
+
+  oCTransact(FBird.TFBEdicao);
+  oOTransact(FBird.TFBEdicao);
 end;
 
 destructor TRunProcessThread.Destroy;
 begin
-  oCTransact(FBird.TFBConsulta);
+  oCTransact(FBird.TFBEdicao);
   inherited;
 end;
 
@@ -566,67 +570,56 @@ var
   i: Word;
 begin
   inherited;
+  with FrmPrincipal do
   try
-    with FrmPrincipal,
-         FBird do
+    ATHR_ITEM := 0;
+    ATHR_SYNC := EmptyStr;
+
+    with FBird.SQLFBEdicao do
     begin
-      ATHR_ITEM := 0;
-      ATHR_SYNC := EmptyStr;
+      Close;
+      SQL.Clear;
+      SQL.Add('SELECT CP.SKU');
 
-      with SQLFBConsulta do
-      begin
-        Close;
-        SQL.Clear;
-        SQL.Add('SELECT CP.SKU');
+      SQL.Add('FROM ' + ATHR_TB_PK + ' AS PK');
+      SQL.Add('JOIN CAD_PRO AS CP ON (CP.CP_ID = PK.' + FTHR_CP_ID + ')');
 
-        SQL.Add('FROM ' + ATHR_TB_PK + ' AS PK');
-        SQL.Add('JOIN CAD_PRO AS CP ON (CP.CP_ID = PK.' + FTHR_CP_ID + ')');
+      SQL.Add('WHERE ' + 'PK.' + FTHR_EP_ID + ' = ''' + ATHR_EP_ID + '''');
+      SQL.Add('AND '   + 'PK.' + FTHR_PK_ID + ' = ''' + ATHR_PK_ID + '''');
 
-        SQL.Add('WHERE ' + 'PK.' + FTHR_EP_ID + ' = ''' + ATHR_EP_ID + '''');
-        SQL.Add('AND '   + 'PK.' + FTHR_PK_ID + ' = ''' + ATHR_PK_ID + '''');
+      SQL.Add('GROUP BY 1');
+      SQL.Add('ORDER BY 1');
+      ExecQuery;
+    end;
 
-        SQL.Add('GROUP BY 1');
-        SQL.Add('ORDER BY 1');
-        ExecQuery;
-      end;
+    while not FBird.SQLFBEdicao.Eof do
+    begin
+      FBird.SPFBEdicao.Close;
+      FBird.SPFBEdicao.StoredProcName := 'SP_CAD_PRO_EST_LAN_UPD';
+      FBird.SPFBEdicao.Prepare;
 
-      while not SQLFBConsulta.Eof do
-      begin
-        try
-          oOTransact(TFBEdicao);
+      for i := 0 to FBird.SPFBEdicao.ParamCount - 1 do
+      FBird.SPFBEdicao.Params[i].Value := Null;
 
-          SPFBEdicao.Close;
-          SPFBEdicao.StoredProcName := 'SP_CAD_PRO_EST_LAN_UPD';
-          SPFBEdicao.Prepare;
+      FBird.SPFBEdicao.ParamByName('ATABELA').Value := ATHR_TB_PK;
+      FBird.SPFBEdicao.ParamByName('AIDEP'  ).Value := ATHR_EP_ID;
+      FBird.SPFBEdicao.ParamByName('AIDPK'  ).Value := ATHR_PK_ID;
 
-          for i := 0 to SPFBEdicao.ParamCount - 1 do
-          SPFBEdicao.Params[i].Value := Null;
+      FBird.SPFBEdicao.ParamByName('FIDEP').Value := FTHR_EP_ID;
+      FBird.SPFBEdicao.ParamByName('FIDPK').Value := FTHR_PK_ID;
+      FBird.SPFBEdicao.ParamByName('FIDCP').Value := FTHR_CP_ID;
+      FBird.SPFBEdicao.ExecProc;
 
-          SPFBEdicao.ParamByName('ATABELA').Value := ATHR_TB_PK;
-          SPFBEdicao.ParamByName('AIDEP'  ).Value := ATHR_EP_ID;
-          SPFBEdicao.ParamByName('AIDPK'  ).Value := ATHR_PK_ID;
+      INC(ATHR_ITEM);
+      ATHR_SYNC := 'Atualizando Estoque ... ' +
+                   'Produto: ' + FBird.SQLFBEdicao.Current.ByName('SKU').AsString;
 
-          SPFBEdicao.ParamByName('FIDEP').Value := FTHR_EP_ID;
-          SPFBEdicao.ParamByName('FIDPK').Value := FTHR_PK_ID;
-          SPFBEdicao.ParamByName('FIDCP').Value := FTHR_CP_ID;
-          SPFBEdicao.ExecProc;
-
-          oCTransact(TFBEdicao);
-        except
-          oCTransact(TFBEdicao,ltRollback);
-        end;
-
-        INC(ATHR_ITEM);
-        ATHR_SYNC := 'Atualizando Estoque ... ' +
-                     'Produto: ' + SQLFBConsulta.Current.ByName('SKU').AsString;
-
-        Synchronize(SyncEvent);
-        SQLFBConsulta.Next;
-      end;
+      Synchronize(SyncEvent);
+      FBird.SQLFBEdicao.Next;
     end;
   except
-    oCTransact(FBird.TFBConsulta,ltRollback);
-  end
+    oCTransact(FBird.TFBEdicao,ltRollback);
+  end;
 end;
 
 procedure TFrmPrincipal._DoneEvent(Sender: TObject);
@@ -805,10 +798,9 @@ begin
 
                                               
       SQL.Add('FROM     CTE_PSQ AS PK');
-      SQL.Add('LEFT     JOIN VW_PSQ_CAD_PRO_EST_SLD_NEW AS EF ON (EF.CP_ID = PK.CP_ID AND EF.EP_LG = :EP_LG)');
+      SQL.Add('LEFT     JOIN VW_PSQ_CAD_PRO_EST_SLD_NEW AS EF ON (EF.CP_ID = PK.CP_ID AND EF.EP_LG = ''' + RECParametros.EP_ID + ''')');
       SQL.Add('ORDER BY PK.ARTIGO,PK.GRD_NO');
 
-      ParamByName('EP_LG').Value := RECParametros.EP_ID;
       Prepare;
       ExecQuery;
 
@@ -852,6 +844,8 @@ begin
       end;
 
       oOTransact(FrmCAD_PRO_PSQ.TConsulta);
+
+      FrmCAD_PRO_PSQ.REC_SHE_PSQ.PSQ_TFD_TP := AREC_SHE_PSQ.PSQ_TFD_TP;
 
       FrmCAD_PRO_PSQ.Consulta.Close;
       FrmCAD_PRO_PSQ.Consulta.SQL.Clear;
@@ -3732,13 +3726,13 @@ begin
       }
       end;
     end;
-    oCTransact(TFBETQConsulta);
+    oCTransact(TFBConsulta);
 
     try
-      oOTransact(TFBETQEdicao);
+      oOTransact(TFBEdicao);
 
       { GERAR PEDIDO }
-      with SQLFBETQEdicao do
+      with SQLFBEdicao do
       begin
         Close;
         SQL.Clear;
@@ -3750,7 +3744,7 @@ begin
 
       for  i := LOW(AEtiquetas) to HIGH(AEtiquetas) do
       begin
-        with SQLFBETQEdicao do
+        with SQLFBEdicao do
         begin
           Close;
           SQL.Clear;
@@ -3762,11 +3756,11 @@ begin
         end;
       end;
 
-      oCTransact(TFBETQEdicao);
+      oCTransact(TFBEdicao);
     except
       on E: Exception do
       begin
-        oCTransact(TFBETQEdicao,ltRollback);
+        oCTransact(TFBEdicao,ltRollback);
         oException(Nil,'Falha ao tentar salvar eventos de estoque !' + #13 + #13 +
                        'Evento: ' + AIDG_IDEV_PDV + '.' + #13 +
                         E.Message);
@@ -3774,9 +3768,9 @@ begin
     end;
 
     try
-      oOTransact(TFBETQEdicao);
+      oOTransact(TFBEdicao);
 
-      with SPFBETQEdicao do
+      with SPFBEdicao do
       begin
         Close;
         StoredProcName := 'SP_PED_PDV_CLD';
@@ -3791,19 +3785,19 @@ begin
         ExecProc;
       end;
 
-      oCTransact(TFBETQEdicao);
+      oCTransact(TFBEdicao);
       oAviso(Application.Handle,'Pedido Gerado com Sucesso !');
     except
       on E: Exception do
       begin
-        oCTransact(TFBETQEdicao,ltRollback);
+        oCTransact(TFBEdicao,ltRollback);
         oException(Nil,'Falha ao tentar salvar cabeçalho !'+#13+
                        'Favor entrar em contato com o administrador do sistema.'+#13+#13+
                        'Erro: '+E.Message);
       end;
     end;
   finally
-    oCTransact(TFBETQConsulta);
+    oCTransact(TFBConsulta);
   end;
 
   { Renomeia e move para a basta de backup }

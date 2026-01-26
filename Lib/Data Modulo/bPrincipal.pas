@@ -16,9 +16,6 @@ type
     DBERP: TIBDatabase;
     DBEDI: TIBDatabase;
     TFBEEdicao: TIBTransaction;
-    TFBEdicao: TIBTransaction;
-    SQLFBEdicao: TIBSQL;
-    SPFBEdicao: TIBStoredProc;
     DBEvent: TIBEvents;
     SPFBEvent: TIBStoredProc;
     TFBEvent: TIBTransaction;
@@ -254,10 +251,6 @@ type
     FBCAD_PROB2B_REC_SYNC_DATA: TDateTimeField;
     TFBETQConsulta: TIBTransaction;
     SQLFBETQConsulta: TIBSQL;
-    TFBETQEdicao: TIBTransaction;
-    SPFBETQEdicao: TIBStoredProc;
-    SQLFBETQEdicao: TIBSQL;
-    SQLFBFKEdicao: TIBSQL;
     DBB2B: TIBDatabase;
     SPB2BEdicao: TIBStoredProc;
     SQLB2BEdicao: TIBSQL;
@@ -384,6 +377,9 @@ type
     CDSFBTAB_USER_ADMPM_CREDITO: TBCDField;
     CDSFBTAB_USER_ADMIS_BLOQUEIO: TSmallintField;
     CDSFBTAB_USER_ADMADM: TSmallintField;
+    TFBEdicao: TIBTransaction;
+    SQLFBEdicao: TIBSQL;
+    SPFBEdicao: TIBStoredProc;
     procedure DataModuleCreate(Sender: TObject);
     procedure DataModuleDestroy(Sender: TObject);
     procedure DBEventEventAlert(Sender: TObject; EventName: String;
