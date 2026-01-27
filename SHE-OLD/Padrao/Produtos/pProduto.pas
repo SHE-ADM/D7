@@ -650,6 +650,10 @@ type
     LFSKU: TIBStringField;
     LFITDF: TIntegerField;
     ProdutosDTEV: TDateTimeField;
+    LFC_QTDE: TFloatField;
+    LFC_QTRL: TIntegerField;
+    LFCDTP: TSmallintField;
+    DBGLFC_QTDE: TdxDBGridColumn;
     procedure FormCreate(Sender: TObject);
     procedure BEPesquisaKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
@@ -759,6 +763,7 @@ type
       EventCount: Integer; var CancelAlerts: Boolean);
     procedure EEventAdminEventAlert(Sender: TObject; EventName: String;
       EventCount: Integer; var CancelAlerts: Boolean);
+    procedure LFCalcFields(DataSet: TDataSet);
   private
     { Private declarations }
     APSQ_DG: String;
@@ -1967,7 +1972,7 @@ begin
     SQL.Add('       PK.IDET  ,PK.DTET,PK.LGET,');
     SQL.Add('       PK.CDRO  ,PK.DTRO,PK.DEPD,PK.DTPD,PK.CDNF,PK.DTNF,PK.DECE,');
     SQL.Add('       PK.CDET  ,PK.CTNR,PK.LOTE,PK.CDI ,');
-    SQL.Add('       PK.D_DEOP,PK.DETP,');
+    SQL.Add('       PK.D_DEOP,PK.CDTP,PK.DETP,');
     SQL.Add('       PK.SKU   ,PK.DGCP,PK.QTDE,PK.QTRL,');
     SQL.Add('       COALESCE(CAST(IIF(PK.CDDF > 0,1,0) AS INTEGER),0) AS ITDF,PK.D_DEDF,PK.INFADCAD');
 
@@ -2370,6 +2375,12 @@ procedure TFrmProduto.EEventAdminEventAlert(Sender: TObject;
 begin
   if RECUsuarios.IS_EVE_ADM then
   oRefresh(Artigos);
+end;
+
+procedure TFrmProduto.LFCalcFields(DataSet: TDataSet);
+begin
+  LFC_QTDE.Value := LFQTDE.Value;
+  LFC_QTRL.Value := LFQTRL.Value;
 end;
 
 end.

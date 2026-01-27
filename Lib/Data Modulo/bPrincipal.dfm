@@ -7,7 +7,6 @@ object FBird: TFBird
   Height = 588
   Width = 1117
   object DBERP: TIBDatabase
-    Connected = True
     DatabaseName = 'C:\Sheild\FBird\Otimotex.FDB'
     Params.Strings = (
       'user_name=sysdba'
@@ -55,18 +54,6 @@ object FBird: TFBird
     Left = 240
     Top = 8
   end
-  object TFBEvent: TIBTransaction
-    AllowAutoStart = False
-    DefaultDatabase = DBERP
-    DefaultAction = TARollbackRetaining
-    Params.Strings = (
-      'read_committed'
-      'rec_version'
-      'nowait')
-    AutoStopAction = saRollback
-    Left = 168
-    Top = 8
-  end
   object TFBConsulta: TIBTransaction
     AllowAutoStart = False
     DefaultDatabase = DBERP
@@ -110,7 +97,7 @@ object FBird: TFBird
   end
   object FBBAI_FINANCEIRO: TIBQuery
     Database = DBERP
-    Transaction = TFBEvent
+    Transaction = TFBEdicao
     SQL.Strings = (
       
         'SELECT    PK.CDPV,PK.DEPV,PK.CTNR,PK.CDRO,PK.CDNF AS PV_CDNF,PK.' +
@@ -247,7 +234,7 @@ object FBird: TFBird
   end
   object FBBAI_CAIXA: TIBQuery
     Database = DBERP
-    Transaction = TFBEvent
+    Transaction = TFBEdicao
     SQL.Strings = (
       
         'SELECT   (SELECT ID FROM CAI_TSR WHERE CAI_DESC = '#39'CAIXA INICIAL' +
@@ -2043,5 +2030,17 @@ object FBird: TFBird
     Transaction = TFBEdicao
     Left = 168
     Top = 168
+  end
+  object TFBEvent: TIBTransaction
+    AllowAutoStart = False
+    DefaultDatabase = DBERP
+    DefaultAction = TARollbackRetaining
+    Params.Strings = (
+      'read_committed'
+      'rec_version'
+      'nowait')
+    AutoStopAction = saRollback
+    Left = 168
+    Top = 8
   end
 end

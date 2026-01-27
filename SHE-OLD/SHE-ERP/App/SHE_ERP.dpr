@@ -145,7 +145,10 @@ uses
   pcad_tra_edi in '..\..\Padrao\Cadastros\pcad_tra_edi.pas' {frmcad_tra_edi},
   pCAD_PRO_EST_ETQ in '..\..\Padrao\Estoque\pCAD_PRO_EST_ETQ.pas' {FrmCAD_PRO_EST_ETQ},
   pCAD_PRO_EST_DEL in '..\..\Padrao\Estoque\pCAD_PRO_EST_DEL.pas' {FrmCAD_PRO_EST_DEL},
-  DelphiZXingQRCode in '..\..\..\Lib\Default\DelphiZXIngQRCode.pas';
+  DelphiZXingQRCode in '..\..\..\Lib\Default\DelphiZXIngQRCode.pas',
+  qven_prg in '..\..\Padrao\Relatorios\qven_prg.pas' {qrpven_prg: TQuickRep},
+  qger_prg_pro_ger in '..\..\Padrao\Relatorios\qger_prg_pro_ger.pas' {qrpger_prg_pro_ger: TQuickRep},
+  pAviso_Reserva in '..\..\Padrao\Vendas\pAviso_Reserva.pas' {FrmAviso_Reserva};
 
 {$R *.res}
 

@@ -323,6 +323,7 @@ type
     procedure ACTPesquisaExecute(Sender: TObject);
     procedure ACTConsultaExecute(Sender: TObject);
     procedure FormActivate(Sender: TObject);
+    procedure ACTRelatoriosExecute(Sender: TObject);
   private
     { Private declarations }
      function RETORNA_STFI: string;
@@ -337,7 +338,7 @@ implementation
 
 uses uPrincipal, bPrincipal,
   pven_prg, pProduto_Devolucao_Cancelamento, pPesquisa,
-  pcad_cli_edi;
+  pcad_cli_edi, prelatorio_geral;
 
 {$R *.dfm}
 
@@ -1287,6 +1288,20 @@ procedure Tfrmctr_prg.FormActivate(Sender: TObject);
 begin
   inherited;
   DBGConsultaDEPK.Field.FocusControl;
+end;
+
+procedure Tfrmctr_prg.ACTRelatoriosExecute(Sender: TObject);
+begin
+  frmrelatorio_geral := TFrmrelatorio_geral.Create(Self);
+  try
+    frmrelatorio_geral.CDPD                 := cadastroID.AsString;
+    frmrelatorio_geral.CDRO                 := cadastroID.AsString;
+    frmrelatorio_geral.tsVEN_PRG.TabVisible := true;
+    frmrelatorio_geral.pcMAIN.ActivePage    := frmrelatorio_geral.tsVEN_PRG;
+    frmrelatorio_geral.ShowModal;
+  finally
+    freeAndNil(frmrelatorio_geral);
+  end;
 end;
 
 end.

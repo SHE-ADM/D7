@@ -324,14 +324,14 @@ begin
 
   RECEdicao.MSGMotivo := IFThen(CEQTCO.Value > 0,'Confirma inclusão do corte manual','Confirma alteração do estoque') + ' ?';
   if oYesNo(handle,RECEdicao.MSGMotivo) = mrno then
-     Abort;
+  Abort;
 
   if laeped.Caption = 'SEPARADO' then
-     oException(EDCDET,'Não é possível alterar etiqueta em separação.');
+  oException(EDCDET,'Não é possível alterar etiqueta em separação.');
 
   if laolan.Caption <> 'ENTRADA' then
-     oException(EDCDET,'Etiqueta inválida. '+#13+
-                       'Apenas etiquetas de entrada de estoque podem ser alteradas.');
+  oException(EDCDET,'Etiqueta inválida. '+#13+
+                    'Apenas etiquetas de entrada de estoque podem ser alteradas.');
 
   if EDCDET.Tag > 0 then
   with consulta do
@@ -345,12 +345,12 @@ begin
     Open;
 
     if Fields[3].AsInteger > 0 then
-       oException(EDCDET,'Etiqueta já Faturada !'+#13+
+    oException(EDCDET,'Etiqueta já Faturada !'+#13+
                          'Nota Fiscal Nº '+Fields[3].AsString+' de '+FormatDateTime('dd/mm/yy',Fields[4].AsDateTime));
 
     if Fields[0].AsInteger > 0 then
-       oException(EDCDET,'Etiqueta já Romaneada !'+#13+
-                           'Romaneio Nº '+Fields[1].AsString+' de '+FormatDateTime('dd/mm/yy hh:mm',Fields[2].AsDateTime));
+    oException(EDCDET,'Etiqueta já Romaneada !'+#13+
+                      'Romaneio Nº '+Fields[1].AsString+' de '+FormatDateTime('dd/mm/yy hh:mm',Fields[2].AsDateTime));
   end;
 
   try
@@ -380,13 +380,6 @@ begin
       SQL.Add('INFADCAD = '''+EMINFADETQ.Text+'''' );
 
       SQL.Add('WHERE CDET = '''+EDCDET.Text+'''');
-      ExecQuery;
-
-      Close;
-      SQL.Clear;
-      SQL.Add('EXECUTE PROCEDURE SP_CAD_PRO_EST_LAN(');
-      SQL.Add(''''+RECParametros.EP_ID       +''',');
-      SQL.Add(''''+IntToStr(lacpro.Tag)   +''')');
       ExecQuery;
     end;
 
@@ -506,15 +499,17 @@ begin
   end;
 
   PESQUISA_ETIQUETA;
+  if EDCDET.Enabled then
+     EDCDET.SetFocus;
 end;
 
 procedure Tfrmeti_pro.CANCELA_SEPARACAO;
 begin
   if oYesNo(Handle,'Confirma cancelamento da separação ?') = mrno then
-     Abort;
+  Abort;
 
   if laeped.Caption <> 'SEPARADO' then
-     oException(EDCDET,'Etiqueta não reservada para separação !');
+  oException(EDCDET,'Etiqueta não reservada para separação !');
 
   if EDCDET.Tag > 0 then
   with consulta do
@@ -528,12 +523,12 @@ begin
     Open;
 
     if Fields[3].AsInteger > 0 then
-       oException(EDCDET,'Etiqueta já Faturada !'+#13+
-                         'Nota Fiscal Nº '+Fields[3].AsString+' de '+FormatDateTime('dd/mm/yy',Fields[4].AsDateTime));
+    oException(EDCDET,'Etiqueta já Faturada !'+#13+
+                      'Nota Fiscal Nº '+Fields[3].AsString+' de '+FormatDateTime('dd/mm/yy',Fields[4].AsDateTime));
 
     if Fields[0].AsInteger > 0 then
-       oException(EDCDET,'Etiqueta já Romaneada !'+#13+
-                         'Romaneio Nº ' + Fields[1].AsString + ' de ' + FormatDateTime('dd/mm/yy hh:mm',Fields[2].AsDateTime));
+    oException(EDCDET,'Etiqueta já Romaneada !'+#13+
+                      'Romaneio Nº ' + Fields[1].AsString + ' de ' + FormatDateTime('dd/mm/yy hh:mm',Fields[2].AsDateTime));
   end;
 
   try
@@ -790,55 +785,41 @@ begin
     end;
   end;
 
-  LIMPA_ETIQUETA;
-  EDCDET.Text := EmptyStr;
-
+  PESQUISA_ETIQUETA;
   if EDCDET.Enabled then
-  EDCDET.SetFocus;
+     EDCDET.SetFocus;
 end;
 
 procedure Tfrmeti_pro.CANCELA_ETIQUETA;
 begin
   if oYesNo(Handle,'Confirma exclusão do estoque ?') = mrno then
-     Abort;
+  Abort;
 
   if laeped.Caption  = 'SEPARADO' then
-     oException(EDCDET,'Não é possível cancelar.'+#13+
-                       'Etiqueta em separação.');
+  oException(EDCDET,'Não é possível cancelar.'+#13+
+                    'Etiqueta em separação.');
 
   try
-    with Consulta do
+    with SQLEdicao do
     begin
       Close;
       SQL.Clear;
       SQL.Add('DELETE FROM CAD_PRO_EST');
       SQL.Add('WHERE  CDET = '''+EDCDET.Text+'''');
-      ExecSQL;
-
-      Close;
-      SQL.Clear;
-      SQL.Add('EXECUTE PROCEDURE SP_CAD_PRO_EST_LAN('   );
-      SQL.Add(''''+RECParametros.EP_ID       +''',');
-      SQL.Add(''''+IntToStr(lacpro.Tag)   +''')');
-      ExecSQL;
+      ExecQuery;
     end;
+    
     oRTransact(IBTra);
     oAviso(Handle,'Exclusão do estoque efetuado com sucesso !');
   except
     on E: Exception do
     begin
-      oRTransact(IBTra,ltRollbackRetaining);
+      oRTransact(IBTra,ltRollback);
       oException(Nil,'Falha ao tentar cancelar etiqueta !'+#13+
                      'Favor entrar em contato com o administrador do sistema.'+#13+#13+
                      'Erro: '+E.Message);
     end;
   end;
-
-  LIMPA_ETIQUETA;
-  EDCDET.Text := EmptyStr;
-
-  if EDCDET.Enabled then
-  EDCDET.SetFocus;
 end;
 
 procedure Tfrmeti_pro.LIMPA_ETIQUETA;
@@ -884,12 +865,12 @@ var
 begin
   LIMPA_ETIQUETA;
   if oEmpty(EDCDET.Text) then
-     Abort;
+  Abort;
 
   BRet := False;
   try
     if not oBSONumero(EDCDET.Text) then
-       oException(EDCDET,'Número da etiqueta inválido !');
+    oException(EDCDET,'Número da etiqueta inválido !');
 
     EDCDET.Text := oStrZero(strtoint(EDCDET.Text),10);
     with SQLConsulta do
@@ -901,7 +882,7 @@ begin
       ExecQuery;
 
       if Eof then
-         oException(EDCDET,'Número de etiqueta não encontrado !');
+      oException(EDCDET,'Número de etiqueta não encontrado !');
 
       EDCDET.Hint := EmptyStr;
 
@@ -933,10 +914,13 @@ begin
         if (lanped.Tag > 0) or (EDCDET.Tag > 0) then
         laeped.Caption := 'SEPARADO';
       end else
+
       if Current.ByName('REOP').AsString = 'S' then
       laolan.Caption := 'SAÍDA' else
+
       if Current.ByName('REOP').AsString = 'I' then
       laolan.Caption := 'INVENTÁRIO' else
+
       if Current.ByName('REOP').AsString = 'V' then
       begin
         label7.Hint := Current.ByName('DEPK').AsString;
@@ -968,17 +952,17 @@ begin
 
       if not fields[0].IsNull then
       begin
-        lanped.Caption := fields[1].AsString+' '  +formatDateTime('dd/mm/yy',fields[2].AsDateTime);
-        ladven.Caption := fields[4].AsString+' / '+fields[5].AsString;
+        lanped.Caption := fields[1].AsString + ' '   + formatDateTime('dd/mm/yy',fields[2].AsDateTime);
+        ladven.Caption := fields[4].AsString + ' / ' + fields[5].AsString;
         ladcli.Caption := fields[3].AsString;
 
         if laolan.Caption <> 'FATURADO' then
         begin
           SQL.Clear;
           SQL.Add('SELECT ID FROM CAD_PRO_RES');
-          SQL.Add('WHERE  IDEP = '''+RECParametros.EP_ID    +'''');
-          SQL.Add('AND    IDPK = '''+inttostr(lanped.Tag)+'''');
-          SQL.Add('AND    IDCP = '''+inttostr(lacpro.Tag)+'''');
+          SQL.Add('WHERE  IDEP = ''' + RECParametros.EP_ID  + '''');
+          SQL.Add('AND    IDPK = ''' + inttostr(lanped.Tag) + '''');
+          SQL.Add('AND    IDCP = ''' + inttostr(lacpro.Tag) + '''');
           Open;
         end;
       end;
@@ -1052,6 +1036,7 @@ begin
         Open;
       end;
     end;
+    
     BRet := True;
   finally
     if BRet then
@@ -1149,7 +1134,7 @@ end;
 procedure Tfrmeti_pro.siCANClick(Sender: TObject);
 begin
   if Length(EDCDET.Text) < 10 then
-     oException(EDCDET,'Número da etiqueta não informado !');
+  oException(EDCDET,'Número da etiqueta não informado !');
 
   CANCELA_ETIQUETA;
   ATUALIZA_ESTOQUE;
@@ -1174,24 +1159,18 @@ begin
 end;
 
 procedure TFrmeti_pro.ATUALIZA_ESTOQUE;
-var
-  i: word;
 begin
-  if PED_VEN_ITEIDCP.AsInteger > 0 then
+  with SQLEdicao do
   begin
-    IBSP.Close;
-    IBSP.StoredProcName := 'SP_CAD_PRO_EST_LAN_UPD_TMP';
-    IBSP.Prepare;
-
-    for i := 0 to IBSP.ParamCount - 1 do
-    IBSP.Params[i].Value := Null;
-
-    IBSP.Params[0].Value := RECParametros.EP_ID;
-    IBSP.Params[1].Value := PED_VEN_ITEIDCP.AsInteger;
-    IBSP.ExecProc;
+    Close;
+    SQL.Clear;
+    SQL.Add('EXECUTE PROCEDURE SP_CAD_PRO_EST_LAN(');
+    SQL.Add('''' + RECParametros.EP_ID  + ''',');
+    SQL.Add('''' + IntToStr(lacpro.Tag) + ''')');
+    ExecQuery;
 
     oRTransact(IBTRA);
-  end;  
+  end;
 end;
 
 end.

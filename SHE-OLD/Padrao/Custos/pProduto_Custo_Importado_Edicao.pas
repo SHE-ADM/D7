@@ -169,7 +169,9 @@ begin
   REC_SHE_DEF.GAdmin      := False;
   inherited;
 
+  oOTransact(TEdicao);
   _Edicao;
+
   try
     oOTransact(TConsulta);
     with SQLConsulta do

@@ -71,15 +71,14 @@ inherited FrmProduto: TFrmProduto
               OriginalHeight = 200
             end
             inherited DPEdicao: TdxDockPanel
-              Left = -100
-              Height = 907
+              Left = 1820
               CaptionButtons = []
               AutoHidePosition = 0
               DockType = 2
               OriginalWidth = 100
               OriginalHeight = 573
               inherited SBEdicao: TdxSideBar
-                Height = 548
+                Height = 885
                 Groups = <
                   item
                     Caption = 'Edicao'
@@ -735,6 +734,9 @@ inherited FrmProduto: TFrmProduto
                             BandIndex = 0
                             RowIndex = 0
                             FieldName = 'SKU'
+                            SummaryFooterType = cstCount
+                            SummaryFooterField = 'ID'
+                            SummaryFooterFormat = '0'
                           end
                           object DBGLFDGCP: TdxDBGridColumn
                             Color = clGray
@@ -761,8 +763,14 @@ inherited FrmProduto: TFrmProduto
                             RowIndex = 0
                             FieldName = 'QTDE'
                             SummaryFooterType = cstSum
-                            SummaryFooterField = 'QTDE'
+                            SummaryFooterField = 'C_QTDE'
                             SummaryFooterFormat = ',##,0.00;-,##,0.00'
+                          end
+                          object DBGLFC_QTDE: TdxDBGridColumn
+                            Visible = False
+                            BandIndex = 0
+                            RowIndex = 0
+                            FieldName = 'C_QTDE'
                           end
                           object DBGLFCDET: TdxDBGridColumn
                             Alignment = taRightJustify
@@ -777,9 +785,6 @@ inherited FrmProduto: TFrmProduto
                             BandIndex = 1
                             RowIndex = 0
                             FieldName = 'CDET'
-                            SummaryFooterType = cstCount
-                            SummaryFooterField = 'CDET'
-                            SummaryFooterFormat = 'ETQ 0'
                           end
                           object DBGLFCTNR: TdxDBGridMaskColumn
                             Color = clGrayText
@@ -8012,6 +8017,7 @@ inherited FrmProduto: TFrmProduto
     AfterOpen = LFAfterOpen
     AfterScroll = LFAfterScroll
     BeforeOpen = LFBeforeOpen
+    OnCalcFields = LFCalcFields
     BufferChunks = 4500
     DataSource = DTSArtigos
     SQL.Strings = (
@@ -8021,7 +8027,7 @@ inherited FrmProduto: TFrmProduto
         '         PK.CDRO  ,PK.DTRO,PK.DEPD,PK.DTPD,PK.CDNF,PK.DTNF,PK.DE' +
         'CE,'
       '         PK.CDET  ,PK.CTNR,PK.LOTE,PK.CDI ,'
-      '         PK.D_DEOP,PK.DETP,'
+      '         PK.D_DEOP,PK.CDTP,PK.DETP,'
       '         PK.SKU   ,PK.DGCP,PK.QTDE,PK.QTRL,'
       
         '         COALESCE(CAST(IIF(PK.CDDF > 0,1,0) AS INTEGER),0) AS IT' +
@@ -8171,6 +8177,10 @@ inherited FrmProduto: TFrmProduto
       Origin = '"VW_CAD_PRO_EST"."D_DEOP"'
       Size = 30
     end
+    object LFCDTP: TSmallintField
+      FieldName = 'CDTP'
+      Origin = '"VW_CAD_PRO_EST"."CDTP"'
+    end
     object LFDETP: TIBStringField
       DisplayLabel = 'Tipo'
       FieldName = 'DETP'
@@ -8225,6 +8235,16 @@ inherited FrmProduto: TFrmProduto
     object LFITDF: TIntegerField
       FieldName = 'ITDF'
       ProviderFlags = []
+    end
+    object LFC_QTDE: TFloatField
+      FieldKind = fkCalculated
+      FieldName = 'C_QTDE'
+      Calculated = True
+    end
+    object LFC_QTRL: TIntegerField
+      FieldKind = fkCalculated
+      FieldName = 'C_QTRL'
+      Calculated = True
     end
   end
   object DTSLF: TDataSource

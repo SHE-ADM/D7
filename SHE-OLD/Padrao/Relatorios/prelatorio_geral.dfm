@@ -8150,7 +8150,7 @@ object frmrelatorio_geral: Tfrmrelatorio_geral
         CalColors.TitleBackColor = clTeal
         CalColors.TitleTextColor = clBlack
         CalColors.TrailingTextColor = clSilver
-        Date = 0.836944479167868800
+        Date = 0.317452187497110600
         FirstDayOfWeek = dowSunday
         TabOrder = 0
         OnClick = dxDT1Click
@@ -8175,7 +8175,7 @@ object frmrelatorio_geral: Tfrmrelatorio_geral
         CalColors.TitleBackColor = clTeal
         CalColors.TitleTextColor = clBlack
         CalColors.TrailingTextColor = clSilver
-        Date = 0.836944479167868800
+        Date = 0.317452187497110600
         FirstDayOfWeek = dowSunday
         TabOrder = 0
         OnClick = dxDT1Click

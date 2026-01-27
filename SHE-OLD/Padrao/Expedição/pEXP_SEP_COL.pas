@@ -949,8 +949,14 @@ begin
     oOTransact(TSEdicao);
   end;
 
+  { ATUALIZA ESTOQUE }
+  uSP_CAD_PRO_EST_LAN_UPD(oREPZero('PED_VEN_ITE','_',RECParametros.EP_ID,3),
+                          RECParametros.EP_ID ,
+                          PedidosIDPK.AsString,
 
-//  uSP_CAD_PRO_EST_LAN_UPD('CAD_PRO_SEP',PedidosIDEP.AsString,PedidosIDPK.AsString,PedidosDEPK.AsString,'PK.IDPK');
+                          'EP_ID',
+                          'IDPK' ,
+                          'CP_ID');
   Close;
 end;
 

@@ -5,7 +5,7 @@ object FrmSobre: TFrmSobre
   BorderIcons = [biSystemMenu]
   BorderStyle = bsSingle
   Caption = 'Sobre o Sistema'
-  ClientHeight = 501
+  ClientHeight = 520
   ClientWidth = 434
   Color = clBlack
   Font.Charset = ANSI_CHARSET
@@ -259,14 +259,14 @@ object FrmSobre: TFrmSobre
     Left = 0
     Top = 0
     Width = 434
-    Height = 180
+    Height = 150
     Align = alTop
     TabOrder = 0
     object IFoto: TImage
       Left = 1
       Top = 1
       Width = 432
-      Height = 178
+      Height = 148
       Align = alClient
       Picture.Data = {
         0A544A504547496D616765EADF0000FFD8FFE000104A46494600010101006000
@@ -2066,7 +2066,7 @@ object FrmSobre: TFrmSobre
   end
   object PNLMemoria: TPanel
     Left = 0
-    Top = 452
+    Top = 471
     Width = 434
     Height = 49
     Align = alBottom
@@ -2146,7 +2146,7 @@ object FrmSobre: TFrmSobre
   end
   object PNL_1: TPanel
     Left = 0
-    Top = 180
+    Top = 150
     Width = 434
     Height = 5
     Align = alTop
@@ -2155,7 +2155,7 @@ object FrmSobre: TFrmSobre
   end
   object PNLEmpresa: TPanel
     Left = 0
-    Top = 421
+    Top = 440
     Width = 434
     Height = 26
     Align = alBottom
@@ -2179,7 +2179,7 @@ object FrmSobre: TFrmSobre
   end
   object PNL_3: TPanel
     Left = 0
-    Top = 447
+    Top = 466
     Width = 434
     Height = 5
     Align = alBottom
@@ -2188,9 +2188,9 @@ object FrmSobre: TFrmSobre
   end
   object PNLPrincipal: TPanel
     Left = 0
-    Top = 185
+    Top = 155
     Width = 434
-    Height = 236
+    Height = 285
     Align = alClient
     BevelOuter = bvNone
     Color = clInfoBk
@@ -2227,10 +2227,10 @@ object FrmSobre: TFrmSobre
     end
     object laLICE: TLabel
       Left = 15
-      Top = 94
-      Width = 40
+      Top = 142
+      Width = 43
       Height = 15
-      Caption = 'Licen'#231'a'
+      Caption = 'Licen'#231'a:'
       Color = clInfoBk
       Font.Charset = ANSI_CHARSET
       Font.Color = clWindowText
@@ -2242,10 +2242,10 @@ object FrmSobre: TFrmSobre
     end
     object laQUSU: TLabel
       Left = 15
-      Top = 110
-      Width = 45
+      Top = 158
+      Width = 48
       Height = 15
-      Caption = 'Usu'#225'rios'
+      Caption = 'Usu'#225'rios:'
       Color = clInfoBk
       Font.Charset = ANSI_CHARSET
       Font.Color = clWindowText
@@ -2257,7 +2257,7 @@ object FrmSobre: TFrmSobre
     end
     object laCOM: TLabel
       Left = 310
-      Top = 142
+      Top = 190
       Width = 47
       Height = 15
       Caption = 'Compras'
@@ -2272,7 +2272,7 @@ object FrmSobre: TFrmSobre
     end
     object laVEN: TLabel
       Left = 310
-      Top = 158
+      Top = 206
       Width = 38
       Height = 15
       Caption = 'Vendas'
@@ -2287,7 +2287,7 @@ object FrmSobre: TFrmSobre
     end
     object lbCOM: TLabel
       Left = 406
-      Top = 142
+      Top = 190
       Width = 12
       Height = 15
       Caption = '03'
@@ -2302,7 +2302,7 @@ object FrmSobre: TFrmSobre
     end
     object laFAT: TLabel
       Left = 310
-      Top = 174
+      Top = 222
       Width = 68
       Height = 15
       Caption = 'Faturamento'
@@ -2317,7 +2317,7 @@ object FrmSobre: TFrmSobre
     end
     object lbVEN: TLabel
       Left = 406
-      Top = 158
+      Top = 206
       Width = 12
       Height = 15
       Caption = '25'
@@ -2332,7 +2332,7 @@ object FrmSobre: TFrmSobre
     end
     object lbFAT: TLabel
       Left = 406
-      Top = 174
+      Top = 222
       Width = 12
       Height = 15
       Caption = '25'
@@ -2347,7 +2347,7 @@ object FrmSobre: TFrmSobre
     end
     object laFIN: TLabel
       Left = 310
-      Top = 190
+      Top = 238
       Width = 55
       Height = 15
       Caption = 'Financeiro'
@@ -2362,7 +2362,7 @@ object FrmSobre: TFrmSobre
     end
     object lbFIN: TLabel
       Left = 406
-      Top = 190
+      Top = 238
       Width = 12
       Height = 15
       Caption = '06'
@@ -2377,7 +2377,7 @@ object FrmSobre: TFrmSobre
     end
     object laOCA: TLabel
       Left = 310
-      Top = 126
+      Top = 174
       Width = 65
       Height = 15
       Caption = 'Or'#231'amentos'
@@ -2392,7 +2392,7 @@ object FrmSobre: TFrmSobre
     end
     object lbOCA: TLabel
       Left = 406
-      Top = 126
+      Top = 174
       Width = 12
       Height = 15
       Caption = '25'
@@ -2407,7 +2407,7 @@ object FrmSobre: TFrmSobre
     end
     object laPCP: TLabel
       Left = 310
-      Top = 94
+      Top = 142
       Width = 21
       Height = 15
       Caption = 'PCP'
@@ -2422,7 +2422,7 @@ object FrmSobre: TFrmSobre
     end
     object lbPCP: TLabel
       Left = 406
-      Top = 94
+      Top = 142
       Width = 12
       Height = 15
       Caption = '17'
@@ -2437,7 +2437,7 @@ object FrmSobre: TFrmSobre
     end
     object laETI: TLabel
       Left = 310
-      Top = 110
+      Top = 158
       Width = 48
       Height = 15
       Caption = 'Etiquetas'
@@ -2452,7 +2452,7 @@ object FrmSobre: TFrmSobre
     end
     object lbETI: TLabel
       Left = 406
-      Top = 110
+      Top = 158
       Width = 12
       Height = 15
       Caption = '15'
@@ -2485,7 +2485,7 @@ object FrmSobre: TFrmSobre
       Top = 20
       Width = 88
       Height = 15
-      Caption = '26/01/2026 14:55'
+      Caption = '27/01/2026 11:22'
       Color = clInfoBk
       Font.Charset = ANSI_CHARSET
       Font.Color = clWindowText
@@ -2497,7 +2497,7 @@ object FrmSobre: TFrmSobre
     end
     object lbLICE: TLabel
       Left = 70
-      Top = 94
+      Top = 142
       Width = 38
       Height = 15
       Caption = 'Mensal'
@@ -2512,7 +2512,7 @@ object FrmSobre: TFrmSobre
     end
     object lbQUSU: TLabel
       Left = 70
-      Top = 110
+      Top = 158
       Width = 18
       Height = 15
       Caption = '100'
@@ -2541,7 +2541,7 @@ object FrmSobre: TFrmSobre
     end
     object LABOL: TLabel
       Left = 310
-      Top = 206
+      Top = 254
       Width = 39
       Height = 15
       Caption = 'Boletos'
@@ -2556,7 +2556,7 @@ object FrmSobre: TFrmSobre
     end
     object LBBOL: TLabel
       Left = 406
-      Top = 206
+      Top = 254
       Width = 12
       Height = 15
       Caption = '03'
@@ -2571,7 +2571,7 @@ object FrmSobre: TFrmSobre
     end
     object PNL_2: TPanel
       Left = 0
-      Top = 226
+      Top = 275
       Width = 434
       Height = 10
       Align = alBottom
@@ -2579,10 +2579,10 @@ object FrmSobre: TFrmSobre
       TabOrder = 0
     end
     object MInf: TMemo
-      Left = 13
-      Top = 38
-      Width = 415
-      Height = 51
+      Left = 17
+      Top = 45
+      Width = 413
+      Height = 97
       BevelInner = bvNone
       BevelOuter = bvNone
       BorderStyle = bsNone
@@ -2593,7 +2593,12 @@ object FrmSobre: TFrmSobre
       Font.Name = 'Segoe UI Semibold'
       Font.Style = [fsBold, fsItalic]
       Lines.Strings = (
-        'Estoque: # SP_CAD_PRO_EST_LAN_DEL')
+        'Estoque: # SP_CAD_PRO_EST_LAN_DEL'
+        'Boletos: # Emiss'#227'o de duplicatas'
+        'PEdidos # Abatimentos e Devolu'#231#245'es'
+        'Programa'#231#245'es: # Emiss'#227'o de Relat'#243'rios'
+        'NFe:: # Baixa de boletos'
+        'Estoque: # Revis'#227'o, OK ')
       ParentFont = False
       TabOrder = 1
     end

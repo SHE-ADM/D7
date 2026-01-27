@@ -3996,7 +3996,8 @@ begin
     SPEdicao.ExecProc;
 
     { Cadastro de Produtos Importados }
-    oCTransact(TEdicao);
+    oRTransact(TEdicao);
+    ACTEDI_CAD_PRO.Execute;
 
     if Pos(SBRodape.Panels[5].Text,'110') > 0 then
     oAviso(handle,'Nota Fiscal Denegada !' + #13 +
@@ -4023,9 +4024,8 @@ begin
     end;
   end;
 
-  REC_SHE_DEF.Editing := False;
-  ACTEDI_CAD_PRO.Execute;
   ACTEveExecute.Execute;
+  REC_SHE_DEF.Editing := False;
 end;
 
 procedure TFrmVEN_NFE.ACTMPValidateExecute(Sender: TObject);
@@ -4033,6 +4033,7 @@ begin
   if oYesNo(handle,'Salvar sem transmitir ?' + #13 + #13 +
                    'Lembre-se que esse recurso é permitido apenas para duplicidades') = mrYes then
   begin
+    SBRodape.Panels[5].Text := '100';
     ACTMPPost.Execute;
     REC_SHE_DEF.Editing := False;
     oAviso(Handle,'Nota Fiscal salva com sucesso !');

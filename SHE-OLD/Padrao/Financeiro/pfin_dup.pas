@@ -245,7 +245,6 @@ begin
         Prepare;
       end;
       ACTExecEvent.Execute;
-      Close;
     end;
   finally
     FreeAndNil(frmfin_dup_edi);
@@ -311,7 +310,6 @@ end;
 
 procedure Tfrmfin_dup.ACTRelatoriosExecute(Sender: TObject);
 begin
-  inherited;
   frmrelatorio_geral := TFrmrelatorio_geral.Create(Nil);
   with consulta do
   begin
