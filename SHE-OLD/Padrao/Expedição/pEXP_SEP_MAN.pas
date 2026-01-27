@@ -985,9 +985,18 @@ begin
 
       oCTransact(TEdicao);
       oAviso(handle,'Pedido Separado com Sucesso !');
-      ACTExecEvent.Execute;
 
       SISav.Enabled := False;
+      ACTExecEvent.Execute;
+
+      { ATUALIZA ESTOQUE }
+      uSP_CAD_PRO_EST_LAN_UPD(oREPZero('PED_VEN_ITE','_',RECParametros.EP_ID,3),
+                              RECParametros.EP_ID ,
+                              PedidosIDPK.AsString,
+
+                              'EP_ID',
+                              'IDPK' ,
+                              'CP_ID');
     except
       on E: Exception do
       try     oException(Nil,'Erro: ' + oFBException(E.Message));
@@ -1011,10 +1020,6 @@ begin
   ActiveControl := Nil;
   if EDDEPK.Text = '' then
      Abort;
-
-//    uSP_CAD_PRO_EST_LAN_UPD(oREPZero('PED_VEN_ITE','_',RECParametros.EP_ID,3),PedidosIDEP.AsString,PedidosIDPK.AsString,PedidosDEPK.AsString,'PK.IDPK');
-     exit;
-
 
   if oYesNo(handle,'Confirma o cancelamento de toda a separação ?') = mrno then
      Abort;
@@ -1149,7 +1154,15 @@ begin
     end;
   end;
 
-//  uSP_CAD_PRO_EST_LAN_UPD(oREPZero('PED_VEN_ITE','_',RECParametros.EP_ID,3),PedidosIDEP.AsString,PedidosIDPK.AsString,PedidosDEPK.AsString,'PK.IDPK');
+  { ATUALIZA ESTOQUE }
+  uSP_CAD_PRO_EST_LAN_UPD(oREPZero('PED_VEN_ITE','_',RECParametros.EP_ID,3),
+                          RECParametros.EP_ID ,
+                          PedidosIDPK.AsString,
+
+                          'EP_ID',
+                          'IDPK' ,
+                          'CP_ID');
+
   SICAN.Enabled := False;
   Close;
 end;

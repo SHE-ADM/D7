@@ -664,6 +664,9 @@ type
     procedure PAG_COM_PAGAMENTO;
     procedure FIN_REC_TITULOS;
     procedure FIN_REC_CONTAS;
+    procedure VEN_PRG_PROGRAMACAO_VENDA;
+    procedure GER_PRG_PRO_GERAL;
+    procedure VEN_PED_PROGRAMACAO_SEMBAIXA;
     function CALCULA_DATA_MEDIA(cdbx: string): TDate;
   end;
 
@@ -677,7 +680,8 @@ uses uPrincipal, bPrincipal,
   qfin_dup, qfin_rec_ger, qfin_rec_ger_consolidado, qpag_com,
   qven_ped, qven_prc, 
   qsep_ped, qcob_ped, qcob_ped_oca, qrom_con_001, qcob_rom, qcob_rom_ref,
-   qPCOrdem, qPCConferencia, pfin_dup, qven_con;
+   qPCOrdem, qPCConferencia, pfin_dup, qven_con, qven_prg,
+  qger_prg_pro_ger;
 
 {$R *.dfm}
 
@@ -940,8 +944,8 @@ begin
   try
     oOTransact(qrpfin_dup.TCadastro);
     { Cabeçalho Página }
-//    oLoadJPG(RECParametros.IMG_JPG_REL,qrpfin_dup.QRITituloLogo.Picture);
- //   oLoadJPG(RECParametros.IMG_JPG_REL,qrpfin_dup.QRITituloLogo2.Picture);
+    qrpfin_dup.QRITituloLogo.Picture.Assign(RECParametros.IMG_JPG_REL.Picture);
+    qrpfin_dup.QRITituloLogo2.Picture.Assign(RECParametros.IMG_JPG_REL.Picture);
 
     qrpfin_dup.qrlraza1.Caption  := RECParametros.EP_NO_RZ;
     qrpfin_dup.qrllogr1.Caption  := RECParametros.LOG_TIPO+' '+RECParametros.LOG_NO+', '+RECParametros.LOG_NU;
@@ -2560,6 +2564,17 @@ begin
     end
     else if tsVEN_PRG.TabVisible then
     begin
+      if cbVEN_PRG_TREL.Text = 'PROGRAMAÇÃO DE VENDA' then
+      begin
+        if cdpd = '' then
+           raise exception.Create('Número do pedido não selecionado !');
+
+        VEN_PRG_PROGRAMACAO_VENDA;
+      end else
+      if cbVEN_PRG_TREL.Text = 'PROGRAMAÇÕES DE VENDAS DE PRODUTOS - GERAL' then
+      begin
+        GER_PRG_PRO_GERAL;
+      end;
     end
     else if tsROM_CAB.TabVisible then
     begin
@@ -3763,6 +3778,288 @@ begin
       cbFIN_REC_DATA.Text := 'DATA PAGAMENTO' else
   if (Pos(LeftStr(cbFIN_REC_STFI.Text,5),'BAIXAPROTECARTÓRECUPNÃO P') > 0) and (cbFIN_REC_DATA.Text <> 'DATA BAIXA') then
       cbFIN_REC_DATA.Text := 'DATA BAIXA';
+end;
+
+procedure Tfrmrelatorio_geral.VEN_PRG_PROGRAMACAO_VENDA;
+begin
+  oPRN_EXE(Application.Handle,'Pedidos');
+
+  if qrpven_prg = nil then
+     qrpven_prg := Tqrpven_prg.Create(Self);
+  try
+    oOTransact(qrpven_prg.TCadastro);
+    with qrpven_prg.roman do
+    begin
+      SQL.Clear;
+      SQL.Add('SELECT   PED_PRG_CAB.*,CAD_CLI.CLI_FANT,CAD_USU.USU_DUSU,CAD_REP.REP_FANT,PAG_DPAG');
+      SQL.Add('FROM     CAD_CLI,CAD_USU,CAD_REP,TAB_PAG,'+SLPrincipal.Values['ped_prg_cab']+' "PED_PRG_CAB"');
+      SQL.Add('WHERE    PED_PRG_CAB.ROM_CCLI = CAD_CLI.ID');
+      SQL.Add('AND      PED_PRG_CAB.ROM_CVEN = CAD_USU.USU_CUSU');
+      SQL.Add('AND      PED_PRG_CAB.ROM_CREP = CAD_REP.ID');
+      SQL.Add('AND      PED_PRG_CAB.ROM_CPAG = TAB_PAG.ID');
+      SQL.Add('AND      PED_PRG_CAB.ID = '''+cdpd+'''');
+      SQL.Add('ORDER BY PED_PRG_CAB.ID DESC');
+      Open;
+    end;
+
+    with qrpven_prg.ven_efe do
+    begin
+      SQL.Clear;
+      SQL.Add('SELECT   CAD_PRO.PRO_CART,CAD_PRO.PRO_CPRO,CAD_PRO.PRO_DCOR,CAD_PRO.PRO_DUNI,');
+      SQL.Add('         PED_PRG_ITE.ROM_DUNI,PED_PRG_ITE.ID,PED_PRG_ITE.ROM_ITEM,PED_PRG_ITE.ROM_DCOR,PED_PRG_ITE.ROM_DPRO,PED_PRG_ITE.ROM_QTDE,PED_PRG_ITE.ROM_UNIT,PED_PRG_ITE.ROM_TOTA');
+      SQL.Add('FROM     CAD_PRO,'+SLPrincipal.Values['ped_prg_ite']+' "PED_PRG_ITE"');
+      SQL.Add('WHERE    PED_PRG_ITE.ROM_CPRO = CAD_PRO.ID');
+      SQL.Add('AND      PED_PRG_ITE.ROM_CCAB = '''+cdpd+'''');
+      SQL.Add('ORDER BY PED_PRG_ITE.ROM_ITEM');
+      Open;
+    end;
+
+    { Cabeçalho Página }
+    _Report(qrpven_prg,qrpven_prg.ReportTitle);
+
+    qrpven_prg.qrlcli.Caption  := '('+oStrZero(qrpven_prg.romanROM_CCLI.AsInteger,5)+') '+qrpven_prg.romanCLI_FANT.AsString;
+    qrpven_prg.qrlven.Caption  := qrpven_prg.romanUSU_DUSU.AsString;
+    qrpven_prg.qrlrep.Caption  := qrpven_prg.romanREP_FANT.AsString;
+
+    if qrpven_prg.romanROM_TDSC.AsString = '%' then
+    qrpven_prg.qrldesc.Caption := 'Desconto (%)'
+    else
+    qrpven_prg.qrldesc.Caption  := 'Desconto ($)';
+
+    qrpven_prg.qrlpagina.Caption := 'Página: '+qrpven_prg.romanROM_CONC.AsString;
+
+    with QConsulta do
+    begin
+      SQL.Clear;
+      SQL.Add('SELECT PAG_PARC,PAG_DPAG FROM TAB_PAG');
+      SQL.Add('WHERE  ID = '''+IntToStr(qrpven_prg.romanROM_CPAG.AsInteger)+'''');
+      Open;
+
+      qrpven_prg.qrlparc.Caption  := '('+oStrZero(fields[0].AsInteger,2)+')';
+      qrpven_prg.qrlpag.Caption   := fields[1].AsString;
+    end;
+
+    qrpven_prg.lanpa1.Caption  := '';
+    qrpven_prg.ladpa1.Caption  := '';
+    qrpven_prg.lavpa1.Caption  := '';
+    qrpven_prg.lanpa2.Caption  := '';
+    qrpven_prg.ladpa2.Caption  := '';
+    qrpven_prg.lavpa2.Caption  := '';
+    qrpven_prg.lanpa3.Caption  := '';
+    qrpven_prg.ladpa3.Caption  := '';
+    qrpven_prg.lavpa3.Caption  := '';
+    qrpven_prg.lanpa4.Caption  := '';
+    qrpven_prg.ladpa4.Caption  := '';
+    qrpven_prg.lavpa4.Caption  := '';
+    qrpven_prg.lanpa5.Caption  := '';
+    qrpven_prg.ladpa5.Caption  := '';
+    qrpven_prg.lavpa5.Caption  := '';
+    qrpven_prg.lanpa6.Caption  := '';
+    qrpven_prg.ladpa6.Caption  := '';
+    qrpven_prg.lavpa6.Caption  := '';
+    qrpven_prg.lanpa7.Caption  := '';
+    qrpven_prg.ladpa7.Caption  := '';
+    qrpven_prg.lavpa7.Caption  := '';
+    qrpven_prg.lanpa8.Caption  := '';
+    qrpven_prg.ladpa8.Caption  := '';
+    qrpven_prg.lavpa8.Caption  := '';
+    qrpven_prg.lanpa9.Caption  := '';
+    qrpven_prg.ladpa9.Caption  := '';
+    qrpven_prg.lavpa9.Caption  := '';
+    qrpven_prg.lanpa10.Caption := '';
+    qrpven_prg.ladpa10.Caption := '';
+    qrpven_prg.lavpa10.Caption := '';
+
+    VEN_PED_PROGRAMACAO_SEMBAIXA;
+
+    qrpven_prg.Prepare;
+
+    if tag = 0 then
+       qrpven_prg.PreviewModal
+    else if tag = 1 then
+       qrpven_prg.Print
+    else if tag = 2 then
+    begin
+      qrpven_prg.ExportToFilter(
+                  TQRPDFDocumentFilter.Create(PChar(frmarquivo_geral.cblfile.Text+'\'+frmarquivo_geral.edfile.Text+'.PDF')));
+    end
+    else if tag = 3 then
+    begin
+      qrpven_prg.ExportToFilter(
+                  TQRXLSFilter.Create(PChar(frmarquivo_geral.cblfile.Text+'\'+frmarquivo_geral.edfile.Text+'.XLS')));
+    end
+    else if tag = 4 then
+    begin
+      qrpven_prg.ExportToFilter(
+                  TQRRTFExportFilter.Create(PChar(frmarquivo_geral.cblfile.Text+'\'+frmarquivo_geral.edfile.Text+'.DOC')));
+    end;
+  finally
+    oCTransact(qrpven_prg.TCadastro);
+    freeAndNil(qrpven_prg);
+  end;
+end;
+
+procedure Tfrmrelatorio_geral.VEN_PED_PROGRAMACAO_SEMBAIXA;
+var
+  i: word;
+  valo: double;
+begin
+  with QConsulta do
+  begin
+    valo := qrpven_prg.romanROM_TCDE.AsFloat;
+
+    SQL.Clear;
+    SQL.Add('SELECT PAG_PARC,PAG_D001,PAG_D002,PAG_D003,PAG_D004,PAG_D005,PAG_D006,PAG_D007,PAG_D008,PAG_D009,');
+    SQL.Add('       PAG_D010,PAG_D011,PAG_D012,PAG_D013,PAG_D014,PAG_D015,PAG_D016,PAG_D017,PAG_D018');
+    SQL.Add('FROM   TAB_PAG');
+    SQL.Add('WHERE  ID = '''+IntToStr(qrpven_prg.romanROM_CPAG.AsInteger)+'''');
+    Open;
+  end;
+
+  for i := 1 to QConsulta.Fields[0].AsInteger do
+  begin
+    case i of
+        1: begin
+             qrpven_prg.lanpa1.Caption  := '01)';
+             qrpven_prg.ladpa1.Caption  := formatDateTime('dd/mm/yy',uRETDTVencimento(incDay(qrpven_prg.romanROM_DROM.AsDateTime,QConsulta.fields[1].Value)));
+             qrpven_prg.lavpa1.Caption  := formatFloat('R$ #,0.00',roundto(valo/QConsulta.Fields[0].AsInteger,-2));
+           end;
+        2: begin
+             qrpven_prg.lanpa2.Caption  := '02)';
+             qrpven_prg.ladpa2.Caption  := formatDateTime('dd/mm/yy',uRETDTVencimento(incDay(qrpven_prg.romanROM_DROM.AsDateTime,QConsulta.fields[2].Value)));
+             qrpven_prg.lavpa2.Caption  := formatFloat('R$ #,0.00',roundto(valo/QConsulta.Fields[0].AsInteger,-2));
+           end;
+        3: begin
+             qrpven_prg.lanpa3.Caption  := '03)';
+             qrpven_prg.ladpa3.Caption  := formatDateTime('dd/mm/yy',uRETDTVencimento(incDay(qrpven_prg.romanROM_DROM.AsDateTime,QConsulta.fields[3].Value)));
+             qrpven_prg.lavpa3.Caption  := formatFloat('R$ #,0.00',roundto(valo/QConsulta.Fields[0].AsInteger,-2));
+           end;
+        4: begin
+             qrpven_prg.lanpa4.Caption  := '04)';
+             qrpven_prg.ladpa4.Caption  := formatDateTime('dd/mm/yy',uRETDTVencimento(incDay(qrpven_prg.romanROM_DROM.AsDateTime,QConsulta.fields[4].Value)));
+             qrpven_prg.lavpa4.Caption  := formatFloat('R$ #,0.00',roundto(valo/QConsulta.Fields[0].AsInteger,-2));
+           end;
+        5: begin
+             qrpven_prg.lanpa5.Caption  := '05)';
+             qrpven_prg.ladpa5.Caption  := formatDateTime('dd/mm/yy',uRETDTVencimento(incDay(qrpven_prg.romanROM_DROM.AsDateTime,QConsulta.fields[5].Value)));
+             qrpven_prg.lavpa5.Caption  := formatFloat('R$ #,0.00',roundto(valo/QConsulta.Fields[0].AsInteger,-2));
+           end;
+        6: begin
+             qrpven_prg.lanpa6.Caption  := '06)';
+             qrpven_prg.ladpa6.Caption  := formatDateTime('dd/mm/yy',uRETDTVencimento(incDay(qrpven_prg.romanROM_DROM.AsDateTime,QConsulta.fields[6].Value)));
+             qrpven_prg.lavpa6.Caption  := formatFloat('R$ #,0.00',roundto(valo/QConsulta.Fields[0].AsInteger,-2));
+           end;
+        7: begin
+             qrpven_prg.lanpa7.Caption  := '07)';
+             qrpven_prg.ladpa7.Caption  := formatDateTime('dd/mm/yy',uRETDTVencimento(incDay(qrpven_prg.romanROM_DROM.AsDateTime,QConsulta.fields[7].Value)));
+             qrpven_prg.lavpa7.Caption  := formatFloat('R$ #,0.00',roundto(valo/QConsulta.Fields[0].AsInteger,-2));
+           end;
+        8: begin
+             qrpven_prg.lanpa8.Caption  := '08)';
+             qrpven_prg.ladpa8.Caption  := formatDateTime('dd/mm/yy',uRETDTVencimento(incDay(qrpven_prg.romanROM_DROM.AsDateTime,QConsulta.fields[8].Value)));
+             qrpven_prg.lavpa8.Caption  := formatFloat('R$ #,0.00',roundto(valo/QConsulta.Fields[0].AsInteger,-2));
+           end;
+        9: begin
+             qrpven_prg.lanpa9.Caption  := '09)';
+             qrpven_prg.ladpa9.Caption  := formatDateTime('dd/mm/yy',uRETDTVencimento(incDay(qrpven_prg.romanROM_DROM.AsDateTime,QConsulta.fields[9].Value)));
+             qrpven_prg.lavpa9.Caption  := formatFloat('R$ #,0.00',roundto(valo/QConsulta.Fields[0].AsInteger,-2));
+           end;
+       10: begin
+             qrpven_prg.lanpa10.Caption  := '10)';
+             qrpven_prg.ladpa10.Caption  := formatDateTime('dd/mm/yy',uRETDTVencimento(incDay(qrpven_prg.romanROM_DROM.AsDateTime,QConsulta.fields[10].Value)));
+             qrpven_prg.lavpa10.Caption  := formatFloat('R$ #,0.00',roundto(valo/QConsulta.Fields[0].AsInteger,-2));
+           end;
+
+    end;
+  end;
+end;
+
+procedure Tfrmrelatorio_geral.GER_PRG_PRO_GERAL;
+begin
+  if cbGER_TVIS.Text = '' then
+  raise exception.Create('Tipo de visualização não informado !');
+
+  if cbGER_STFI.Text = '' then
+  raise exception.Create('Situação não informada !');
+
+  oPRN_EXE(Application.Handle,'Pedidos');
+
+  Data1 := dxDT1.Date;
+  Data2 := dxDT2.Date;
+  cDATA := 'PED_PRG_CAB.ROM_DROM';
+
+  qrpger_prg_pro_ger := Tqrpger_prg_pro_ger.Create(Nil);
+  try
+    oOTransact(qrpger_prg_pro_ger.TCadastro);
+    with qrpger_prg_pro_ger.relatorio do
+    begin
+      SQL.Clear;
+      SQL.Add('SELECT   PRO_CART,PRO_DUNI,ROM_DPRO,CLI_FANT,REP_FANT,SUM(ROM_QTDE) "ROM_QTDE",AVG(ROM_UNIT) "ROM_UNIT"');
+      SQL.Add('FROM     CAD_PRO,CAD_CLI,CAD_REP,'+SLPrincipal.Values['ped_prg_cab']+' "PED_PRG_CAB" ,'+SLPrincipal.Values['ped_prg_ite']+' "PED_PRG_ITE"');
+      SQL.Add('WHERE    PED_PRG_ITE.ROM_CCAB = PED_PRG_CAB.ID');
+      SQL.Add('AND      PED_PRG_ITE.ROM_CPRO = CAD_PRO.ID');
+      SQL.Add('AND      PED_PRG_CAB.ROM_CCLI = CAD_CLI.ID');
+      SQL.Add('AND      PED_PRG_CAB.ROM_CREP = CAD_REP.ID');
+
+      qrpger_prg_pro_ger.qrlfil.Caption := qrpger_prg_pro_ger.qrlfil.Caption+' TIPO DE VISUALIZAÇÃO '+trim(cbGER_TVIS.Text);
+
+      if cDATA <> '' then
+      begin
+        qrpger_prg_pro_ger.qrlfil.Caption := qrpger_prg_pro_ger.qrlfil.Caption+' '+cbGER_DATA.Text+' '+formatDateTime('dd/mm/yy',Data1)+' ATE '+formatDateTime('dd/mm/yy',Data2);
+        SQL.Add('AND '+cDATA+' BETWEEN '''+formatDateTime('mm/dd/yy',Data1)+''' AND '''+formatDateTime('mm/dd/yy',Data2)+'''');
+      end;
+
+      if cbGER_STFI.Text <> 'TODOS' then
+      begin
+        qrpger_prg_pro_ger.qrlfil.Caption := qrpger_prg_pro_ger.qrlfil.Caption+' SITUAÇÃO '+cbGER_STFI.Text;
+        SQL.Add('AND PED_PRG_CAB.ROM_STFI = '''+cbGER_STFI.Text+'''');
+      end else
+      SQL.Add('AND PED_PRG_CAB.ROM_STFI <> ''CANCELADO''');
+
+      if cbGER_FIL1.Text <> 'TODOS' then
+      begin
+        qrpger_prg_pro_ger.qrlfil.Caption := qrpger_prg_pro_ger.qrlfil.Caption+' Referencia '+cbGER_FIL1.Text;
+        SQL.Add('AND CAD_PRO.PRO_CPRO LIKE ''%'+cbGER_FIL1.Text+'%''');
+      end;
+
+      if cbGER_FIL2.Text <> 'TODOS' then
+      begin
+        qrpger_prg_pro_ger.qrlfil.Caption := qrpger_prg_pro_ger.qrlfil.Caption+' Grupo '+cbGER_FIL2.Text;
+        SQL.Add('AND CAD_PRO.PRO_DGRP LIKE ''%'+cbGER_FIL2.Text+'%''');
+      end;
+
+      SQL.Add('GROUP BY PRO_CART,PRO_DUNI,ROM_DPRO,CLI_FANT,REP_FANT');
+      SQL.Add('ORDER BY 5');
+      Open;
+    end;
+
+    { Cabeçalho Página }
+    _Report(qrpger_prg_pro_ger,'Programação de Vendas de Produtos');
+    qrpger_prg_pro_ger.Prepare;
+
+    if tag = 0 then
+       qrpger_prg_pro_ger.PreviewModal
+    else if tag = 1 then
+       qrpger_prg_pro_ger.Print
+    else if tag = 2 then
+    begin
+      qrpger_prg_pro_ger.ExportToFilter(
+                  TQRPDFDocumentFilter.Create(PChar(frmarquivo_geral.cblfile.Text+'\'+frmarquivo_geral.edfile.Text+'.PDF')));
+    end
+    else if tag = 3 then
+    begin
+      qrpger_prg_pro_ger.ExportToFilter(
+                  TQRXLSFilter.Create(PChar(frmarquivo_geral.cblfile.Text+'\'+frmarquivo_geral.edfile.Text+'.XLS')));
+    end
+    else if tag = 4 then
+    begin
+      qrpger_prg_pro_ger.ExportToFilter(
+                  TQRRTFExportFilter.Create(PChar(frmarquivo_geral.cblfile.Text+'\'+frmarquivo_geral.edfile.Text+'.DOC')));
+    end;
+  finally
+    oCTransact(qrpger_prg_pro_ger.TCadastro);
+    freeAndNil(qrpger_prg_pro_ger);
+  end;
 end;
 
 end.

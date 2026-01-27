@@ -244,7 +244,7 @@ end;
 procedure TFrmAviso_Reserva.CadastroAfterOpen(DataSet: TDataSet);
 begin
   inherited;
-  ACTProrrogar.Enabled := (bPSQUSER('USU_AUTO','Vendas','Pedidos','Autorizar Outros Usuários',False)) and
+  ACTProrrogar.Enabled := (RECUsuarios.Grupo = 'GER') and
                           (Cadastro.Locate('PZFI',0,[]) or (Cadastro.Locate('PZFI',1,[])));
 end;
 

@@ -2217,7 +2217,8 @@ begin
 
       oRefresh(Edicao);
 
-      if Showing then
+      if (Showing) then
+      if (PEDEPG.Enabled) and (PEDEPG.Visible) then
       PEDEPG.SetFocus;
     end;
   end;  

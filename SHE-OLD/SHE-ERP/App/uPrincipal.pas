@@ -375,9 +375,12 @@ type
     AREC_SHE_DEF: TREC_SHE_DEF;
     
     procedure _USER_LOGIN(AIDUSER: Variant; AIDEP,ADEEP: String);
+
     procedure _SetHintDefault;
     procedure _SetMouseLeave(var AMessage: TMessage); message WM_MOUSELEAVE;
     function  _SetMouseTracking: Boolean;
+
+    procedure _Aviso_Reserva;
   public
     { Public declarations }
   end;
@@ -472,7 +475,7 @@ uses bPrincipal, pSobre, pLogin, psenha, pImpressoras, pProduto, pPSQEND,
   pEXP_SEP_MAN, pctr_prc, pctr_prg, ptab_nat, ptab_pag, pctr_nfe, pven_nfd,
   pcad_con, pProduto_Custo_Importado, pfin_rec_con, pfin_dup, ppag_com,
   pProduto_Segmento, pCAD_PRO_PSQ, pven_nfe, pcad_cli, pcad_rep, pcad_for,
-  pcad_tra, pCAD_PRO_EST_ETQ;
+  pcad_tra, pCAD_PRO_EST_ETQ, pAviso_Reserva;
 
 {$R *.dfm}
 
@@ -2368,6 +2371,8 @@ begin
   OnActivate := Nil;
   if oEmpty(RECUsuarios.Id) then
   Exit;
+
+  _Aviso_Reserva;
 end;
 
 procedure TFrmPrincipal.FormCloseQuery(Sender: TObject;
@@ -3883,6 +3888,40 @@ end;
 procedure TFrmPrincipal.ACTFIN_PAG_CMVExecute(Sender: TObject);
 begin
   uFrmCreate(Application,TFrmpag_com,Frmpag_com);
+end;
+
+procedure TFrmPrincipal._Aviso_Reserva;
+var
+  nRecNo: Integer;
+begin
+  if RECUsuarios.Id = 0 then
+     Exit;
+     
+  nRecNo := 0;
+  if (RECParametros.EP_ID = 1) then
+  if (RECUsuarios.Grupo = 'VEN') or (RECUsuarios.Grupo = 'GER') then
+  with FBird do
+  try
+    oOTransact(TFBConsulta);
+    with SQLFBConsulta do
+    begin
+      Close;
+      SQL.Clear;
+      SQL.Add('SELECT MAX(PK.ID) FROM VW_PED_VEN_AVR AS PK');
+      SQL.Add('WHERE  PK.IDEP = '''+RECParametros.EP_ID+'''');
+
+      if RECUsuarios.Grupo = 'VEN' then
+         SQL.Add('AND PK.IDCV = '''+RECUsuarios.Id+'''');
+
+      ExecQuery;
+      nRecNo := Current.Vars[0].AsInteger;
+    end;
+  finally
+    oCTransact(TFBConsulta);
+  end;
+
+  if nRecNo > 0 then
+  TFrmAviso_Reserva._ExecForm(Nil,FrmAviso_Reserva);
 end;
 
 end.

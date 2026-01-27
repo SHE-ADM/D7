@@ -18,7 +18,6 @@ type
     TFBEEdicao: TIBTransaction;
     DBEvent: TIBEvents;
     SPFBEvent: TIBStoredProc;
-    TFBEvent: TIBTransaction;
     TFBConsulta: TIBTransaction;
     SQLFBConsulta: TIBSQL;
     LocalHost: TIdIPWatch;
@@ -380,6 +379,7 @@ type
     TFBEdicao: TIBTransaction;
     SQLFBEdicao: TIBSQL;
     SPFBEdicao: TIBStoredProc;
+    TFBEvent: TIBTransaction;
     procedure DataModuleCreate(Sender: TObject);
     procedure DataModuleDestroy(Sender: TObject);
     procedure DBEventEventAlert(Sender: TObject; EventName: String;
@@ -1147,6 +1147,7 @@ begin
 
   with FBird do
   try
+    oCTransact(TFBEdicao);
     oOTransact(TFBEdicao);
     with FBBAI_FINANCEIRO do
     begin
@@ -1497,6 +1498,7 @@ begin
      if AaIDCP[0] <> EmptyStr then
      with FBird do
      try
+       oCTransact(TFBEdicao);
        oOTransact(TFBEdicao);
        for i := 0 To (High(AaIDCP)) do
        begin
